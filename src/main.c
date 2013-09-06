@@ -13,13 +13,19 @@
 /* local type and constants     */
 
 /* local function declarations  */
+static void main_init(void);
+static void main_run(void);
 
 
 /* *** FUNCTION DEFINITIONS ************************************************** */
-int main(void)
+static void main_init(void)
 {
 	DDRC = 0xFF;
+}
 
+
+static void main_run(void)
+{
 	uint8_t led = 1;
 
 	for(;;) {
@@ -29,6 +35,12 @@ int main(void)
 		led++;
 		_delay_ms(1000);
 	}
+}
+
+int main(void)
+{
+	main_init();
+	main_run();
 }
 
 
