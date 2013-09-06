@@ -15,7 +15,7 @@
 #include <util/delay.h>
 
 /* local headers               */
-
+#include "uart.h"
 
 
 /* *** DECLARATIONS ********************************************************** */
