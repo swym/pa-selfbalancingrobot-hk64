@@ -11,11 +11,9 @@
 /* *** INCLUDES ************************************************************** */
 
 /* system headers              */ 
-#include <avr/io.h>
-#include <util/delay.h>
+
 
 /* local headers               */
-
 
 
 /* *** DECLARATIONS ********************************************************** */
@@ -26,6 +24,7 @@
 
 /* external functions          */
 extern int main(void);
+
 
 #endif /* MAIN_H_ */
 
