@@ -5,10 +5,18 @@
  *      Author: alexandermertens
  */
 
+/* *** INCLUDES ************************************************************** */
 #include <avr/io.h>
 #include <util/delay.h>
 
+/* *** DECLARATIONS ********************************************************** */
 
+/* local type and constants     */
+
+/* local function declarations  */
+
+
+/* *** FUNCTION DEFINITIONS ************************************************** */
 int main(void)
 {
 	DDRC = 0xFF;
@@ -23,3 +31,5 @@ int main(void)
 		_delay_ms(1000);
 	}
 }
+
+
