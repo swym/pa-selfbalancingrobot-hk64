@@ -38,7 +38,7 @@ void main_init(void)
 
 	UART_init(9600);	/* Init UART mit 9600 baud */
 
-	master_init();		/* Init TWI/I2C Schnittstelle */
+	twi_master_init();		/* Init TWI/I2C Schnittstelle */
 
 	sei();				/* Enable global interrupts */
 }
@@ -70,28 +70,28 @@ void test_twi_with_bma020(void)
 	uint16_t x, y, z;
 
 
-	send_buffer[0] = BMA020_X_LSB;
+	twi_send_buffer[0] = BMA020_X_LSB;
 
 	twi_master_set_ready();
-	send_data(BMA020_ADRESS, 1);
-	receive_data(BMA020_ADRESS, 6);
+	twi_send_data(BMA020_ADRESS, 1);
+	twi_receive_data(BMA020_ADRESS, 6);
 
-	temp_data = receive_buffer[0];
+	temp_data = twi_receive_buffer[0];
 	x = (uint16_t)(temp_data << 8);
 
-	temp_data = receive_buffer[1];
+	temp_data = twi_receive_buffer[1];
 	x = (uint16_t)(x | (temp_data & 0xC0));
 
-	temp_data = receive_buffer[2];
+	temp_data = twi_receive_buffer[2];
 	y = (uint16_t)(temp_data << 8);
 
-	temp_data = receive_buffer[3];
+	temp_data = twi_receive_buffer[3];
 	y = (uint16_t)(y | (temp_data & 0xC0));
 
-	temp_data = receive_buffer[4];
+	temp_data = twi_receive_buffer[4];
 	z = (uint16_t)(temp_data << 8);
 
-	temp_data = receive_buffer[5];
+	temp_data = twi_receive_buffer[5];
 	z = (uint16_t)(z | (temp_data & 0xC0));
 
 
