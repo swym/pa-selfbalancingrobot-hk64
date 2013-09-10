@@ -13,11 +13,11 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-extern volatile uint8_t twi_receive_buffer[BUFFER_SIZE];
-extern volatile uint8_t twi_send_buffer[BUFFER_SIZE];
+extern volatile uint8_t receive_buffer[BUFFER_SIZE];
+extern volatile uint8_t send_buffer[BUFFER_SIZE];
 
 
-extern void twi_master_init();
-extern void twi_send_data(uint8_t, uint8_t); /* param: uint8_t slave, uint8_t anz_bytes */
-void twi_receive_data(uint8_t, uint8_t);     /* param: uint8_t slave, uint8_t anz_bytes */
+extern void master_init();
+extern void send_data(uint8_t slave, uint8_t anz_bytes);
+void receive_data(uint8_t slave, uint8_t anz_bytes);
 extern void twi_master_set_ready();

@@ -2,8 +2,8 @@
 
 
 //----------- Global-Variables ----------//
-volatile uint8_t twi_receive_buffer[BUFFER_SIZE];
-volatile uint8_t twi_send_buffer[BUFFER_SIZE];
+volatile uint8_t receive_buffer[BUFFER_SIZE];
+volatile uint8_t send_buffer[BUFFER_SIZE];
 
 //----------- Modul-Variables -----------//
 volatile uint8_t transmitter;
@@ -33,7 +33,7 @@ TWSR |= 0x01;
 \endcode<br>
 As we can see in this tiny code fragment, the TWPS value is encoded by the two last bits of the TWSR register. 
 */
-void twi_master_init()
+void master_init()
 {
 
 
@@ -112,7 +112,7 @@ The ready flag is set within the ISR when the TWI reaches an end state that indi
 has finished.
 \endcode
 */
-void twi_send_data(uint8_t slave, uint8_t anz_bytes)
+void send_data(uint8_t slave, uint8_t anz_bytes)
 {
 	ready = false;
 	transmitter = true;
@@ -148,7 +148,7 @@ The only differences:
 \n
 Instead of sindex we set rindex to zero.
 */
-void twi_receive_data(uint8_t slave, uint8_t anz_bytes)
+void receive_data(uint8_t slave, uint8_t anz_bytes)
 {
 	ready = false;
 	transmitter = false;
@@ -210,7 +210,7 @@ ISR (TWI_vect)
 			}
 			else
 			{
-				TWDR = twi_send_buffer[sindx];
+				TWDR = send_buffer[sindx];
 				TWCR = (1<<TWINT) | (1<<TWEN) | (1<<TWIE);
 				number_of_bytes--;
 				sindx++;
@@ -244,7 +244,7 @@ ISR (TWI_vect)
 			}
 			else
 			{
-				TWDR = twi_send_buffer[sindx];
+				TWDR = send_buffer[sindx];
 				TWCR = (1<<TWINT) | (1<<TWEN) | (1<<TWIE);
 				number_of_bytes--;
 				sindx++;
@@ -282,7 +282,7 @@ ISR (TWI_vect)
 			break;
 
 		case TW_MR_DATA_ACK:
-			twi_receive_buffer[rindx] = TWDR;
+			receive_buffer[rindx] = TWDR;
 			number_of_bytes--;
 			rindx++;
 			if(number_of_bytes == 1)
@@ -296,7 +296,7 @@ ISR (TWI_vect)
 			break;
 
 		case TW_MR_DATA_NACK:
-			twi_receive_buffer[rindx] = TWDR;
+			receive_buffer[rindx] = TWDR;
 			TWCR = (1<<TWSTO) | (1<<TWINT) | (1<<TWEN) | (1<<TWIE);
 			ready = true;
 			break;
