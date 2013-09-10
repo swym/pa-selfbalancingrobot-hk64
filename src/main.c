@@ -17,7 +17,7 @@
 #include <stdbool.h>
 
 /* local headers               */
-#include "uart.h"
+#include "lib/uart.h"
 #include "twi_master.h"
 
 
