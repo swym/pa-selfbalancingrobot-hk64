@@ -18,7 +18,7 @@
 
 /* local headers               */
 #include "lib/uart.h"
-#include "twi_master.h"
+#include "lib/twi_master.h"
 
 
 /* *** DECLARATIONS ********************************************************** */
