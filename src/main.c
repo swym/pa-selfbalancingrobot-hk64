@@ -99,10 +99,16 @@ void test_twi_with_bma020(void)
 }
 
 
+/**
+ * @details Does something important
+ * @return
+ */
 int main(void)
 {
 	main_init();
 	main_run();
+
+	return 0;
 }
 
 
