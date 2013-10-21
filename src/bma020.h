@@ -60,6 +60,9 @@ extern void bma020_read_raw_acceleration(acceleration_t*); /* acceleration_t *ra
 extern bool bma020_set_range(uint8_t); /* uint8_t range */
 extern bool bma020_set_bandwidth(uint16_t); /* uint8_t bandwidth */
 
+extern void bma020_set_new_data_int(bool);
+extern bool bma020_get_new_data_int(void);
+
 extern uint8_t bma020_get_range(void);
 extern uint16_t bma020_get_bandwidth(void);
 

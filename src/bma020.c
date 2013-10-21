@@ -24,6 +24,8 @@
 #define BMA020_VALUE_RANGE_0		3
 #define BMA020_VALUE_RANGE_1		4
 
+#define BMA020_VALUE_NEW_DATA_INT	5
+
 
 
 
@@ -84,6 +86,7 @@ uint8_t bma020_get_range(void)
 	register_value = bma020_read_register_value(BMA020_REGISTER_CONTROL_RANGE_BANDWIDTH);
 	register_value &= (1<<BMA020_VALUE_RANGE_1 | 1<<BMA020_VALUE_RANGE_0); /* (value &= 0b00011000;)*/
 
+	/*convert to human readable values */
 	if(register_value == 1<<BMA020_VALUE_RANGE_0) {
 		return_value = 4;
 	} else if (register_value == 1<<BMA020_VALUE_RANGE_1) {
@@ -121,15 +124,15 @@ uint8_t bma020_get_range(void)
  */
 bool bma020_set_bandwidth(uint16_t bandwidth)
 {
-		uint8_t value;
+	uint8_t value;
 
-		if( bandwidth == 25   ||
-			bandwidth == 50   ||
-			bandwidth == 100  ||
-			bandwidth == 190  ||
-			bandwidth == 375  ||
-			bandwidth == 750  ||
-			bandwidth == 1500) {
+	if( bandwidth == 25   ||
+		bandwidth == 50   ||
+		bandwidth == 100  ||
+		bandwidth == 190  ||
+		bandwidth == 375  ||
+		bandwidth == 750  ||
+		bandwidth == 1500) {
 
 
 		/* read register and delete old value */
@@ -174,6 +177,7 @@ uint16_t bma020_get_bandwidth(void)
 					   1<<BMA020_VALUE_BANDWIDTH_1 |
 					   1<<BMA020_VALUE_BANDWIDTH_0); /* (value &= 0b00000111;)*/
 
+	/*convert to human readable values */
 	if(register_value == 1<<BMA020_VALUE_BANDWIDTH_0) {
 		return_value = 50;
 	} else if(register_value == 1<<BMA020_VALUE_BANDWIDTH_1) {
@@ -197,6 +201,35 @@ uint16_t bma020_get_bandwidth(void)
 	return return_value;
 }
 
+void bma020_set_new_data_int(bool enable)
+{
+	uint8_t register_value;
+
+	/* read register and delete data_int*/
+	register_value = bma020_read_register_value(BMA020_REGISTER_CONTROL_INT);
+	register_value &= ~(1<<BMA020_VALUE_NEW_DATA_INT);
+
+	if(enable) {
+		register_value |= (1<<BMA020_VALUE_NEW_DATA_INT);
+	}
+
+	//set register
+	bma020_write_register_value(BMA020_REGISTER_CONTROL_INT,
+								register_value);
+}
+
+bool bma020_get_new_data_int(void)
+{
+	uint8_t register_value;
+
+	register_value = bma020_read_register_value(BMA020_REGISTER_CONTROL_INT);
+
+	if(register_value & (1<<BMA020_VALUE_NEW_DATA_INT)) {
+		return true;
+	} else {
+		return false;
+	}
+}
 
 uint8_t bma020_read_register_value(uint8_t adress)
 {
