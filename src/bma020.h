@@ -57,14 +57,17 @@ typedef struct {
 extern void bma020_init(void);
 extern void bma020_read_raw_acceleration(acceleration_t*); /* acceleration_t *raw_vector */
 
-extern bool bma020_set_range(uint8_t); /* uint8_t range */
-extern bool bma020_set_bandwidth(uint16_t); /* uint8_t bandwidth */
+
+
 
 extern void bma020_set_new_data_int(bool);
 extern bool bma020_get_new_data_int(void);
 
-extern uint8_t bma020_get_range(void);
+extern uint8_t  bma020_get_range(void);
+extern bool     bma020_set_range(uint8_t); /* uint8_t range */
+
 extern uint16_t bma020_get_bandwidth(void);
+extern bool     bma020_set_bandwidth(uint16_t); /* uint8_t bandwidth */
 
 /* Spaeter private */
 uint8_t bma020_read_register_value(uint8_t);

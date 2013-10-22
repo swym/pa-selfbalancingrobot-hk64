@@ -24,8 +24,15 @@
 #define BMA020_VALUE_RANGE_0		3
 #define BMA020_VALUE_RANGE_1		4
 
-#define BMA020_VALUE_NEW_DATA_INT	5
 
+#define BMA020_VALUE_WAKE_UP			0
+#define BMA020_VALUE_WAKE_UP_PAUSE_0	1
+#define BMA020_VALUE_WAKE_UP_PAUSE_1	2
+#define BMA020_VALUE_SHADOW_DIS			3
+#define BMA020_VALUE_LATCH_INT			4
+#define BMA020_VALUE_NEW_DATA_INT		5
+#define BMA020_VALUE_ADVANCED_INT		6
+#define BMA020_VALUE_SPI4				7
 
 
 
@@ -35,6 +42,8 @@
 
 
 /* local function declarations  */
+static void bma020_set_register_bit(bool, uint8_t, uint8_t); /* bool enable, uint8_t register_adress, uint8_t bit */
+static bool bma020_get_register_bit(uint8_t register_adress, uint8_t bit); /* uint8_t register_adress, uint8_t bit */
 
 /**
  * These two bits (address 14h, bits 4 and 3) are used to select the full scale
@@ -203,33 +212,50 @@ uint16_t bma020_get_bandwidth(void)
 
 void bma020_set_new_data_int(bool enable)
 {
-	uint8_t register_value;
-
-	/* read register and delete data_int*/
-	register_value = bma020_read_register_value(BMA020_REGISTER_CONTROL_INT);
-	register_value &= ~(1<<BMA020_VALUE_NEW_DATA_INT);
-
-	if(enable) {
-		register_value |= (1<<BMA020_VALUE_NEW_DATA_INT);
-	}
-
-	//set register
-	bma020_write_register_value(BMA020_REGISTER_CONTROL_INT,
-								register_value);
+	bma020_set_register_bit(enable,
+							BMA020_REGISTER_CONTROL_INT,
+							BMA020_VALUE_NEW_DATA_INT);
 }
 
 bool bma020_get_new_data_int(void)
 {
+	return bma020_get_register_bit(BMA020_REGISTER_CONTROL_INT,
+								   BMA020_VALUE_NEW_DATA_INT);
+}
+
+
+void bma020_set_register_bit(bool enable, uint8_t register_adress, uint8_t bit)
+{
 	uint8_t register_value;
 
-	register_value = bma020_read_register_value(BMA020_REGISTER_CONTROL_INT);
+	/* read register and delete data_int*/
+	register_value = bma020_read_register_value(register_adress);
+	register_value &= ~(1<<bit);
 
-	if(register_value & (1<<BMA020_VALUE_NEW_DATA_INT)) {
+	if(enable) {
+		register_value |= (1<<bit);
+	}
+
+	//set register
+	bma020_write_register_value(register_adress, register_value);
+}
+
+
+bool bma020_get_register_bit(uint8_t register_adress, uint8_t bit)
+{
+	uint8_t register_value;
+
+	register_value = bma020_read_register_value(register_adress);
+
+	if(register_value & (1<<bit)) {
 		return true;
 	} else {
 		return false;
 	}
 }
+
+
+
 
 uint8_t bma020_read_register_value(uint8_t adress)
 {
