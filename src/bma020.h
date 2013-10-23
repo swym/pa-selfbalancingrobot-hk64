@@ -63,6 +63,21 @@ extern void bma020_read_raw_acceleration(acceleration_t*); /* acceleration_t *ra
 extern void bma020_set_new_data_int(bool);
 extern bool bma020_get_new_data_int(void);
 
+extern void bma020_set_wake_up(bool);
+extern bool bma020_get_wake_up(void);
+
+extern void bma020_set_shadow_dis(bool);
+extern bool bma020_get_shadow_dis(void);
+
+extern void bma020_set_latched_int(bool);
+extern bool bma020_get_latched_int(void);
+
+extern void bma020_set_advanced_int(bool);
+extern bool bma020_get_advanced_int(void);
+
+extern void bma020_set_spi4(bool);
+extern bool bma020_get_spi4(void);
+
 extern uint8_t  bma020_get_range(void);
 extern bool     bma020_set_range(uint8_t); /* uint8_t range */
 

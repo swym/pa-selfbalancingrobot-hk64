@@ -35,6 +35,23 @@
 #define BMA020_VALUE_SPI4				7
 
 
+#define BMA020_VALUE_ENABLE_LG			0
+#define BMA020_VALUE_ENABLE_HG			1
+#define BMA020_VALUE_COUNTER_LG_0		2
+#define BMA020_VALUE_COUNTER_LG_1		3
+#define BMA020_VALUE_COUNTER_HG_0		4
+#define BMA020_VALUE_COUNTER_HG_1		5
+#define	BMA020_VALUE_ANY_MOTION			6
+#define BMA020_VALUE_ALTERT				7
+
+
+#define BMA020_VALUE_RESET_INT			6
+#define BMA020_VALUE_SELF_TEST_1		3
+#define	BMA020_VALUE_SELF_TEST_0		2
+#define BMA020_VALUE_SOFT_RESET			1
+#define	BMA020_VALUE_SLEEP				0
+
+
 
 /* *** DECLARATIONS ********************************************************* */
 
@@ -189,12 +206,12 @@ uint16_t bma020_get_bandwidth(void)
 	/*convert to human readable values */
 	if(register_value == 1<<BMA020_VALUE_BANDWIDTH_0) {
 		return_value = 50;
-	} else if(register_value == 1<<BMA020_VALUE_BANDWIDTH_1) {
+	} else if(register_value ==  1<<BMA020_VALUE_BANDWIDTH_1)  {
 		return_value = 100;
 	} else if(register_value == (1<<BMA020_VALUE_BANDWIDTH_1 |
 								 1<<BMA020_VALUE_BANDWIDTH_0)) {
 		return_value = 190;
-	} else if(register_value == 1<<BMA020_VALUE_BANDWIDTH_2) {
+	} else if(register_value ==  1<<BMA020_VALUE_BANDWIDTH_2)  {
 		return_value = 375;
 	} else if(register_value == (1<<BMA020_VALUE_BANDWIDTH_2 |
 								 1<<BMA020_VALUE_BANDWIDTH_0)) {
@@ -210,6 +227,219 @@ uint16_t bma020_get_bandwidth(void)
 	return return_value;
 }
 
+/**
+ * These bits (address 15h, bit 2 and 1) define the sleep phase duration between
+ * each automatic wake-up.
+ * wake_up_pause<1:0>	Sleep phase duration
+ * 00					20 ms
+ * 01					80 ms
+ * 10					320 ms
+ * 11					2560 ms
+ *
+ * @param wake_up_time
+ * @return
+ */
+
+bool bma020_set_wake_up_pause(uint16_t wake_up_time)
+{
+	uint8_t register_value;
+
+	if( wake_up_time == 20   ||
+		wake_up_time == 80   ||
+		wake_up_time == 320  ||
+		wake_up_time == 2560) {
+
+		/* read register and delete old value */
+		register_value = bma020_read_register_value(BMA020_REGISTER_CONTROL_INT);
+		register_value &= ~(1<<BMA020_VALUE_WAKE_UP_PAUSE_1 |
+							1<<BMA020_VALUE_WAKE_UP_PAUSE_0); /* value &= 0b11111001; */
+
+
+		if(wake_up_time == 20) {
+			/* set no bits */
+		} else if (wake_up_time == 80) {
+			register_value |= (1<<BMA020_VALUE_WAKE_UP_PAUSE_0);
+		} else if(wake_up_time == 320) {
+			register_value |= (1<<BMA020_VALUE_WAKE_UP_PAUSE_1);
+		} else if(wake_up_time == 2560) {
+			register_value |= (1<<BMA020_VALUE_WAKE_UP_PAUSE_0 |
+							   1<<BMA020_VALUE_WAKE_UP_PAUSE_1);
+		}
+
+		bma020_write_register_value(BMA020_REGISTER_CONTROL_RANGE_BANDWIDTH,
+									register_value);
+
+		return true;
+	} else {
+		return false;
+	}
+}
+
+uint16_t bma020_get_wake_up_pause(void)
+{
+	uint8_t register_value;
+	uint16_t return_value;
+
+
+	/* read register and delete all non wake_up_pause */
+	register_value = bma020_read_register_value(BMA020_REGISTER_CONTROL_INT);
+	register_value &= (1<<BMA020_VALUE_WAKE_UP_PAUSE_1 |
+					   1<<BMA020_VALUE_WAKE_UP_PAUSE_0);
+
+	/* convert to human readable values*/
+	if(register_value == 1<<BMA020_VALUE_WAKE_UP_PAUSE_0) {
+		return_value = 80;
+	} else if(register_value ==  1<<BMA020_VALUE_WAKE_UP_PAUSE_1) {
+		return_value = 320;
+	} else if(register_value == (1<<BMA020_VALUE_WAKE_UP_PAUSE_0 |
+								 1<<BMA020_VALUE_WAKE_UP_PAUSE_1)) {
+		return_value = 2560;
+	} else {
+		return_value = 20;
+	}
+
+	return return_value;
+}
+
+
+bool bma020_set_counter_lg(uint8_t counter)
+{
+	if(counter >= 0 || counter <= 3) {
+
+		uint8_t register_value;
+
+		/* read register and delete old value */
+		register_value = bma020_read_register_value(BMA020_REGISTER_CONTROL_COUNTERS_ALERT_HG_LG_ENABLE);
+		register_value &= ~(1<<BMA020_VALUE_COUNTER_LG_1 |
+							1<<BMA020_VALUE_COUNTER_LG_0); /* (value &= 0b11110011;)*/
+
+		/* set new value (shift counter value on correct position */
+		register_value |= counter<<BMA020_VALUE_COUNTER_LG_0;
+
+		/*write new value to register */
+		bma020_write_register_value(BMA020_REGISTER_CONTROL_COUNTERS_ALERT_HG_LG_ENABLE,
+									register_value);
+
+		return true;
+	} else {
+		return false;
+	}
+}
+
+uint8_t bma020_get_counter_lg(void)
+{
+	uint8_t register_value;
+
+	/* read register and delete all non counter lg bits */
+	register_value = bma020_read_register_value(BMA020_REGISTER_CONTROL_COUNTERS_ALERT_HG_LG_ENABLE);
+	register_value &= (1<<BMA020_VALUE_COUNTER_LG_1 |
+					   1<<BMA020_VALUE_COUNTER_LG_0);
+
+	return (register_value >> BMA020_VALUE_COUNTER_LG_0);
+}
+
+
+bool bma020_set_counter_hg(uint8_t counter)
+{
+	if(counter >= 0 || counter <= 3) {
+
+		uint8_t register_value;
+
+		/* read register and delete old value */
+		register_value = bma020_read_register_value(BMA020_REGISTER_CONTROL_COUNTERS_ALERT_HG_LG_ENABLE);
+		register_value &= ~(1<<BMA020_VALUE_COUNTER_HG_1 |
+							1<<BMA020_VALUE_COUNTER_HG_0); /* (value &= 0b11110011;)*/
+
+		/* set new value (shift counter value on correct position */
+		register_value |= counter<<BMA020_VALUE_COUNTER_HG_0;
+
+		/*write new value to register */
+		bma020_write_register_value(BMA020_REGISTER_CONTROL_COUNTERS_ALERT_HG_LG_ENABLE,
+									register_value);
+
+		return true;
+	} else {
+		return false;
+	}
+}
+
+uint8_t bma020_get_counter_hg(void)
+{
+	uint8_t register_value;
+
+	/* read register and delete all non counter lg bits */
+	register_value = bma020_read_register_value(BMA020_REGISTER_CONTROL_COUNTERS_ALERT_HG_LG_ENABLE);
+	register_value &= (1<<BMA020_VALUE_COUNTER_HG_1 |
+					   1<<BMA020_VALUE_COUNTER_HG_0);
+
+	return (register_value >> BMA020_VALUE_COUNTER_HG_0);
+}
+
+
+
+void bma020_set_enable_lg(bool enable)
+{
+	bma020_set_register_bit(enable,
+							BMA020_REGISTER_CONTROL_COUNTERS_ALERT_HG_LG_ENABLE,
+							BMA020_VALUE_ENABLE_LG);
+}
+
+bool bma020_get_enable_lg(void)
+{
+	return bma020_get_register_bit(BMA020_REGISTER_CONTROL_COUNTERS_ALERT_HG_LG_ENABLE,
+								   BMA020_VALUE_ENABLE_LG);
+}
+
+
+
+void bma020_set_enable_hg(bool enable)
+{
+	bma020_set_register_bit(enable,
+							BMA020_REGISTER_CONTROL_COUNTERS_ALERT_HG_LG_ENABLE,
+							BMA020_VALUE_ENABLE_HG);
+}
+
+bool bma020_get_enable_hg(void)
+{
+	return bma020_get_register_bit(BMA020_REGISTER_CONTROL_COUNTERS_ALERT_HG_LG_ENABLE,
+								   BMA020_VALUE_ENABLE_HG);
+}
+
+
+
+
+void bma020_set_enable_any_motion(bool enable)
+{
+	bma020_set_register_bit(enable,
+							BMA020_REGISTER_CONTROL_COUNTERS_ALERT_HG_LG_ENABLE,
+							BMA020_VALUE_ANY_MOTION);
+}
+
+bool bma020_get_enable_any_motion(void)
+{
+	return bma020_get_register_bit(BMA020_REGISTER_CONTROL_COUNTERS_ALERT_HG_LG_ENABLE,
+								   BMA020_VALUE_ANY_MOTION);
+}
+
+
+
+
+void bma020_set_enable_motion_alert(bool enable)
+{
+	bma020_set_register_bit(enable,
+							BMA020_REGISTER_CONTROL_COUNTERS_ALERT_HG_LG_ENABLE,
+							BMA020_VALUE_ALTERT);
+}
+
+bool bma020_get_enable_motion_alert(void)
+{
+	return bma020_get_register_bit(BMA020_REGISTER_CONTROL_COUNTERS_ALERT_HG_LG_ENABLE,
+								   BMA020_VALUE_ALTERT);
+}
+
+
+
+
 void bma020_set_new_data_int(bool enable)
 {
 	bma020_set_register_bit(enable,
@@ -221,6 +451,110 @@ bool bma020_get_new_data_int(void)
 {
 	return bma020_get_register_bit(BMA020_REGISTER_CONTROL_INT,
 								   BMA020_VALUE_NEW_DATA_INT);
+}
+
+void bma020_set_wake_up(bool enable)
+{
+	bma020_set_register_bit(enable,
+							BMA020_REGISTER_CONTROL_INT,
+							BMA020_VALUE_WAKE_UP);
+}
+
+bool bma020_get_wake_up(void)
+{
+	return bma020_get_register_bit(BMA020_REGISTER_CONTROL_INT,
+								   BMA020_VALUE_WAKE_UP);
+}
+
+
+void bma020_set_shadow_dis(bool enable)
+{
+	bma020_set_register_bit(enable,
+							BMA020_REGISTER_CONTROL_INT,
+							BMA020_VALUE_SHADOW_DIS);
+}
+
+bool bma020_get_shadow_dis(void)
+{
+	return bma020_get_register_bit(BMA020_REGISTER_CONTROL_INT,
+								   BMA020_VALUE_SHADOW_DIS);
+}
+
+void bma020_set_latched_int(bool enable)
+{
+	bma020_set_register_bit(enable,
+							BMA020_REGISTER_CONTROL_INT,
+							BMA020_VALUE_LATCH_INT);
+}
+
+bool bma020_get_latched_int(void)
+{
+	return bma020_get_register_bit(BMA020_REGISTER_CONTROL_INT,
+								   BMA020_VALUE_LATCH_INT);
+}
+
+
+void bma020_set_advanced_int(bool enable)
+{
+	bma020_set_register_bit(enable,
+							BMA020_REGISTER_CONTROL_INT,
+							BMA020_VALUE_ADVANCED_INT);
+}
+
+bool bma020_get_advanced_int(void)
+{
+	return bma020_get_register_bit(BMA020_REGISTER_CONTROL_INT,
+								   BMA020_VALUE_ADVANCED_INT);
+}
+
+void bma020_set_spi4(bool enable)
+{
+	bma020_set_register_bit(enable,
+							BMA020_REGISTER_CONTROL_INT,
+							BMA020_VALUE_SPI4);
+}
+
+bool bma020_get_spi4(void)
+{
+	return bma020_get_register_bit(BMA020_REGISTER_CONTROL_INT,
+								   BMA020_VALUE_SPI4);
+}
+
+
+void bma020_reset_interrupt(void)
+{
+	bma020_set_register_bit(true,
+							BMA020_REGISTER_STATUS,
+							BMA020_VALUE_RESET_INT);
+}
+
+void bma020_perform_self_test_0(void)
+{
+	bma020_set_register_bit(true,
+							BMA020_REGISTER_STATUS,
+							BMA020_VALUE_SELF_TEST_0);
+}
+
+void bma020_perform_self_test_1(void)
+{
+	bma020_set_register_bit(true,
+							BMA020_REGISTER_STATUS,
+							BMA020_VALUE_SELF_TEST_1);
+}
+
+void bma020_soft_reset(void)
+{
+	bma020_set_register_bit(true,
+							BMA020_REGISTER_STATUS,
+							BMA020_VALUE_SOFT_RESET);
+}
+
+
+void bma020_sleep(void)
+{
+	bma020_set_register_bit(true,
+							BMA020_REGISTER_STATUS,
+							BMA020_VALUE_SLEEP);
 }
 
 
