@@ -327,7 +327,7 @@ bool bma020_set_counter_lg(uint8_t counter)
 		uint8_t register_value;
 
 		/* read register and delete old value */
-		register_value = bma020_read_register_value(BMA020_REGISTER_CONTROL_COUNTERS_ALERT_HG_LG_ENABLE);
+		register_value = bma020_read_register_value(BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG);
 		register_value &= ~(1<<BMA020_VALUE_COUNTER_LG_1 |
 							1<<BMA020_VALUE_COUNTER_LG_0); /* (value &= 0b11110011;)*/
 
@@ -335,7 +335,7 @@ bool bma020_set_counter_lg(uint8_t counter)
 		register_value |= counter<<BMA020_VALUE_COUNTER_LG_0;
 
 		/*write new value to register */
-		bma020_write_register_value(BMA020_REGISTER_CONTROL_COUNTERS_ALERT_HG_LG_ENABLE,
+		bma020_write_register_value(BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
 									register_value);
 
 		return true;
@@ -351,7 +351,7 @@ uint8_t bma020_get_counter_lg(void)
 	uint8_t register_value;
 
 	/* read register and delete all non counter lg bits */
-	register_value = bma020_read_register_value(BMA020_REGISTER_CONTROL_COUNTERS_ALERT_HG_LG_ENABLE);
+	register_value = bma020_read_register_value(BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG);
 	register_value &= (1<<BMA020_VALUE_COUNTER_LG_1 |
 					   1<<BMA020_VALUE_COUNTER_LG_0);
 
@@ -366,7 +366,7 @@ bool bma020_set_counter_hg(uint8_t counter)
 		uint8_t register_value;
 
 		/* read register and delete old value */
-		register_value = bma020_read_register_value(BMA020_REGISTER_CONTROL_COUNTERS_ALERT_HG_LG_ENABLE);
+		register_value = bma020_read_register_value(BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG);
 		register_value &= ~(1<<BMA020_VALUE_COUNTER_HG_1 |
 							1<<BMA020_VALUE_COUNTER_HG_0); /* (value &= 0b11110011;)*/
 
@@ -374,7 +374,7 @@ bool bma020_set_counter_hg(uint8_t counter)
 		register_value |= counter<<BMA020_VALUE_COUNTER_HG_0;
 
 		/*write new value to register */
-		bma020_write_register_value(BMA020_REGISTER_CONTROL_COUNTERS_ALERT_HG_LG_ENABLE,
+		bma020_write_register_value(BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
 									register_value);
 
 		return true;
@@ -388,7 +388,7 @@ uint8_t bma020_get_counter_hg(void)
 	uint8_t register_value;
 
 	/* read register and delete all non counter lg bits */
-	register_value = bma020_read_register_value(BMA020_REGISTER_CONTROL_COUNTERS_ALERT_HG_LG_ENABLE);
+	register_value = bma020_read_register_value(BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG);
 	register_value &= (1<<BMA020_VALUE_COUNTER_HG_1 |
 					   1<<BMA020_VALUE_COUNTER_HG_0);
 
@@ -582,13 +582,13 @@ uint8_t bma020_get_customer_reserved_2()
 void bma020_set_enable_lg(bool enable)
 {
 	bma020_set_register_bit(enable,
-							BMA020_REGISTER_CONTROL_COUNTERS_ALERT_HG_LG_ENABLE,
+							BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
 							BMA020_VALUE_ENABLE_LG);
 }
 
 bool bma020_get_enable_lg(void)
 {
-	return bma020_get_register_bit(BMA020_REGISTER_CONTROL_COUNTERS_ALERT_HG_LG_ENABLE,
+	return bma020_get_register_bit(BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
 								   BMA020_VALUE_ENABLE_LG);
 }
 
@@ -597,13 +597,13 @@ bool bma020_get_enable_lg(void)
 void bma020_set_enable_hg(bool enable)
 {
 	bma020_set_register_bit(enable,
-							BMA020_REGISTER_CONTROL_COUNTERS_ALERT_HG_LG_ENABLE,
+			BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
 							BMA020_VALUE_ENABLE_HG);
 }
 
 bool bma020_get_enable_hg(void)
 {
-	return bma020_get_register_bit(BMA020_REGISTER_CONTROL_COUNTERS_ALERT_HG_LG_ENABLE,
+	return bma020_get_register_bit(BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
 								   BMA020_VALUE_ENABLE_HG);
 }
 
@@ -613,13 +613,13 @@ bool bma020_get_enable_hg(void)
 void bma020_set_enable_any_motion(bool enable)
 {
 	bma020_set_register_bit(enable,
-							BMA020_REGISTER_CONTROL_COUNTERS_ALERT_HG_LG_ENABLE,
+							BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
 							BMA020_VALUE_ANY_MOTION);
 }
 
 bool bma020_get_enable_any_motion(void)
 {
-	return bma020_get_register_bit(BMA020_REGISTER_CONTROL_COUNTERS_ALERT_HG_LG_ENABLE,
+	return bma020_get_register_bit(BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
 								   BMA020_VALUE_ANY_MOTION);
 }
 
@@ -629,13 +629,13 @@ bool bma020_get_enable_any_motion(void)
 void bma020_set_enable_motion_alert(bool enable)
 {
 	bma020_set_register_bit(enable,
-							BMA020_REGISTER_CONTROL_COUNTERS_ALERT_HG_LG_ENABLE,
+							BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
 							BMA020_VALUE_ALTERT);
 }
 
 bool bma020_get_enable_motion_alert(void)
 {
-	return bma020_get_register_bit(BMA020_REGISTER_CONTROL_COUNTERS_ALERT_HG_LG_ENABLE,
+	return bma020_get_register_bit(BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
 								   BMA020_VALUE_ALTERT);
 }
 
@@ -645,7 +645,7 @@ bool bma020_get_enable_motion_alert(void)
 void bma020_set_new_data_int(bool enable)
 {
 	bma020_set_register_bit(enable,
-			BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
+							BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
 							BMA020_VALUE_NEW_DATA_INT);
 }
 
