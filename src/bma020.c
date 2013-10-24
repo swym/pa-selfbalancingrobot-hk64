@@ -404,7 +404,7 @@ bool bma020_set_any_motion_duration(uint8_t duration)
 
 
 		/* read register and delete old value */
-		register_value = bma020_read_register_value(BMA020_REGISTER_SETTINGS_HYSTERESE);
+		register_value = bma020_read_register_value(BMA020_REGISTER_AMD_HGH_LGH);
 		register_value &= ~(1<<BMA020_VALUE_ANY_MOTION_DURATION_1 |
 							1<<BMA020_VALUE_ANY_MOTION_DURATION_0); /* value &= 0b00111111; */
 
@@ -420,7 +420,7 @@ bool bma020_set_any_motion_duration(uint8_t duration)
 							   1<<BMA020_VALUE_ANY_MOTION_DURATION_1);
 		}
 
-		bma020_write_register_value(BMA020_REGISTER_SETTINGS_HYSTERESE,
+		bma020_write_register_value(BMA020_REGISTER_AMD_HGH_LGH,
 									register_value);
 
 		return true;
@@ -435,7 +435,7 @@ uint8_t bma020_get_any_motion_duration(void)
 	uint16_t return_value;
 
 	/* read register and delete all non any_motion_duration bits */
-	register_value = bma020_read_register_value(BMA020_REGISTER_SETTINGS_HYSTERESE);
+	register_value = bma020_read_register_value(BMA020_REGISTER_AMD_HGH_LGH);
 	register_value &= (1<<BMA020_VALUE_ANY_MOTION_DURATION_0 |
 					   1<<BMA020_VALUE_ANY_MOTION_DURATION_1);
 
@@ -463,7 +463,7 @@ void bma020_set_lg_hysterese(uint8_t hysterese)
 	hysterese &= 0x07;
 
 	/* read register and delete old value */
-	register_value  = bma020_read_register_value(BMA020_REGISTER_SETTINGS_HYSTERESE);
+	register_value  = bma020_read_register_value(BMA020_REGISTER_AMD_HGH_LGH);
 	register_value &= ~(BMA020_VALUE_LG_HYSTERESIS_0 |
 						BMA020_VALUE_LG_HYSTERESIS_1 |
 						BMA020_VALUE_LG_HYSTERESIS_2); /* value &= 0b00000111; */
@@ -472,7 +472,7 @@ void bma020_set_lg_hysterese(uint8_t hysterese)
 	register_value |= hysterese;
 
 	/*write back to register */
-	bma020_write_register_value(BMA020_REGISTER_SETTINGS_HYSTERESE,
+	bma020_write_register_value(BMA020_REGISTER_AMD_HGH_LGH,
 								register_value);
 }
 
@@ -480,7 +480,7 @@ uint8_t bma020_get_lg_hysterese(void)
 {
 	uint8_t register_value;
 
-	register_value = bma020_read_register_value(BMA020_REGISTER_SETTINGS_HYSTERESE);
+	register_value = bma020_read_register_value(BMA020_REGISTER_AMD_HGH_LGH);
 
 	/* only the lowest three bits represents the hyterese */
 	return (register_value & 0x07);
@@ -495,7 +495,7 @@ void bma020_set_hg_hysterese(uint8_t hysterese)
 	hysterese &= 0x07;
 
 	/* read register and delete old value */
-	register_value  = bma020_read_register_value(BMA020_REGISTER_SETTINGS_HYSTERESE);
+	register_value  = bma020_read_register_value(BMA020_REGISTER_AMD_HGH_LGH);
 	register_value &= ~(BMA020_VALUE_HG_HYSTERESIS_0 |
 						BMA020_VALUE_HG_HYSTERESIS_1 |
 						BMA020_VALUE_HG_HYSTERESIS_2); /* value &= 0b00111000; */
@@ -504,7 +504,7 @@ void bma020_set_hg_hysterese(uint8_t hysterese)
 	register_value |= hysterese<<BMA020_VALUE_HG_HYSTERESIS_0;
 
 	/*write back to register */
-	bma020_write_register_value(BMA020_REGISTER_SETTINGS_HYSTERESE,
+	bma020_write_register_value(BMA020_REGISTER_AMD_HGH_LGH,
 								register_value);
 }
 
@@ -513,7 +513,7 @@ uint8_t bma020_get_hg_hysterese(void)
 {
 	uint8_t register_value;
 
-	register_value = bma020_read_register_value(BMA020_REGISTER_SETTINGS_HYSTERESE);
+	register_value = bma020_read_register_value(BMA020_REGISTER_AMD_HGH_LGH);
 
 	/* only the bits 0b00111000 are the hyterese */
 	register_value &= 0x38;
@@ -524,37 +524,37 @@ uint8_t bma020_get_hg_hysterese(void)
 
 void bma020_set_any_motion_threshold(uint8_t threshold)
 {
-	bma020_write_register_value(BMA020_REGISTER_SETTINGS_ANY_MOTION_THRESHOLD,
+	bma020_write_register_value(BMA020_REGISTER_ANY_MOTION_THRESHOLD,
 								threshold);
 }
 
 uint8_t bma020_get_any_motion_threshold(void)
 {
-	return bma020_read_register_value(BMA020_REGISTER_SETTINGS_ANY_MOTION_THRESHOLD);
+	return bma020_read_register_value(BMA020_REGISTER_ANY_MOTION_THRESHOLD);
 }
 
 
 void bma020_set_hg_duration(uint8_t duration)
 {
-	bma020_write_register_value(BMA020_REGISTER_SETTINGS_HG_DURATION,
+	bma020_write_register_value(BMA020_REGISTER_HG_DURATION,
 								duration);
 }
 
 uint8_t bma020_get_hg_duration()
 {
-	return bma020_read_register_value(BMA020_REGISTER_SETTINGS_HG_DURATION);
+	return bma020_read_register_value(BMA020_REGISTER_HG_DURATION);
 }
 
 
 void bma020_set_lg_duration(uint8_t duration)
 {
-	bma020_write_register_value(BMA020_REGISTER_SETTINGS_LG_DURATION,
+	bma020_write_register_value(BMA020_REGISTER_LG_DURATION,
 								duration);
 }
 
 uint8_t bma020_get_lg_duration()
 {
-	return bma020_read_register_value(BMA020_REGISTER_SETTINGS_LG_DURATION);
+	return bma020_read_register_value(BMA020_REGISTER_LG_DURATION);
 }
 
 void bma020_set_customer_reserved_1(uint8_t duration)
