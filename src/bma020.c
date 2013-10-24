@@ -534,11 +534,50 @@ uint8_t bma020_get_any_motion_threshold(void)
 }
 
 
-void bma020_set_hg_duration()
+void bma020_set_hg_duration(uint8_t duration)
 {
-
+	bma020_write_register_value(BMA020_REGISTER_SETTINGS_HG_DURATION,
+								duration);
 }
 
+uint8_t bma020_get_hg_duration()
+{
+	return bma020_read_register_value(BMA020_REGISTER_SETTINGS_HG_DURATION);
+}
+
+
+void bma020_set_lg_duration(uint8_t duration)
+{
+	bma020_write_register_value(BMA020_REGISTER_SETTINGS_LG_DURATION,
+								duration);
+}
+
+uint8_t bma020_get_lg_duration()
+{
+	return bma020_read_register_value(BMA020_REGISTER_SETTINGS_LG_DURATION);
+}
+
+void bma020_set_customer_reserved_1(uint8_t duration)
+{
+	bma020_write_register_value(BMA020_REGISTER_CONTROL_CUSTOMER_1,
+								duration);
+}
+
+uint8_t bma020_get_customer_reserved_1()
+{
+	return bma020_read_register_value(BMA020_REGISTER_CONTROL_CUSTOMER_1);
+}
+
+void bma020_set_customer_reserved_2(uint8_t duration)
+{
+	bma020_write_register_value(BMA020_REGISTER_CONTROL_CUSTOMER_2,
+								duration);
+}
+
+uint8_t bma020_get_customer_reserved_2()
+{
+	return bma020_read_register_value(BMA020_REGISTER_CONTROL_CUSTOMER_2);
+}
 
 void bma020_set_enable_lg(bool enable)
 {
@@ -782,6 +821,22 @@ void bma020_reset_alert_phase(void)
 							BMA020_VALUE_ALERT_PHASE);
 }
 
+bool bma020_new_data(char axis)
+{
+	uint8_t register_adress;
+
+	if(axis == 'x') {
+		register_adress = BMA020_REGISTER_VALUE_X_LSB;
+	} else if(axis == 'y') {
+		register_adress = BMA020_REGISTER_VALUE_Y_LSB;
+	} else if(axis == 'z') {
+		register_adress = BMA020_REGISTER_VALUE_Z_LSB;
+	} else {
+		return false;
+	}
+
+	return bma020_get_register_bit(register_adress, 0);
+}
 
 void bma020_set_register_bit(bool enable, uint8_t register_adress, uint8_t bit)
 {
@@ -797,6 +852,30 @@ void bma020_set_register_bit(bool enable, uint8_t register_adress, uint8_t bit)
 
 	//set register
 	bma020_write_register_value(register_adress, register_value);
+}
+
+uint8_t bma020_get_ml_version()
+{
+	uint8_t register_value;
+
+	register_value = bma020_read_register_value(BMA020_REGISTER_VERSION);
+
+	return (0x0F & register_value);
+}
+
+
+uint8_t bma020_get_ai_version()
+{
+	uint8_t register_value;
+	register_value = bma020_read_register_value(BMA020_REGISTER_VERSION);
+	return (register_value >> 4);
+}
+
+uint8_t bma020_get_chip_id()
+{
+	uint8_t register_value;
+	register_value = bma020_read_register_value(BMA020_REGISTER_VERSION);
+	return (0x07 & register_value);
 }
 
 
@@ -840,6 +919,8 @@ void bma020_write_register_value(uint8_t adress, uint8_t value)
 	twi_master_set_ready();
 	twi_send_data(BMA020_TWI_ADRESS, 2);
 }
+
+
 
 
 /* *** */
