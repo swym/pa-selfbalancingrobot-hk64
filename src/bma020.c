@@ -579,14 +579,14 @@ uint8_t bma020_get_customer_reserved_2()
 	return bma020_read_register_value(BMA020_REGISTER_CUSTOMER_2);
 }
 
-void bma020_set_enable_lg(bool enable)
+void bma020_enable_lg(bool enable)
 {
 	bma020_set_register_bit(enable,
 							BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
 							BMA020_VALUE_ENABLE_LG);
 }
 
-bool bma020_get_enable_lg(void)
+bool bma020_is_enable_lg(void)
 {
 	return bma020_get_register_bit(BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
 								   BMA020_VALUE_ENABLE_LG);
@@ -594,14 +594,14 @@ bool bma020_get_enable_lg(void)
 
 
 
-void bma020_set_enable_hg(bool enable)
+void bma020_enable_hg(bool enable)
 {
 	bma020_set_register_bit(enable,
 			BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
 							BMA020_VALUE_ENABLE_HG);
 }
 
-bool bma020_get_enable_hg(void)
+bool bma020_is_enable_hg(void)
 {
 	return bma020_get_register_bit(BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
 								   BMA020_VALUE_ENABLE_HG);
@@ -610,30 +610,27 @@ bool bma020_get_enable_hg(void)
 
 
 
-void bma020_set_enable_any_motion(bool enable)
+void bma020_enable_any_motion(bool enable)
 {
 	bma020_set_register_bit(enable,
 							BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
 							BMA020_VALUE_ANY_MOTION);
 }
 
-bool bma020_get_enable_any_motion(void)
+bool bma020_is_enable_any_motion(void)
 {
 	return bma020_get_register_bit(BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
 								   BMA020_VALUE_ANY_MOTION);
 }
 
-
-
-
-void bma020_set_enable_motion_alert(bool enable)
+void bma020_enable_motion_alert(bool enable)
 {
 	bma020_set_register_bit(enable,
 							BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
 							BMA020_VALUE_ALTERT);
 }
 
-bool bma020_get_enable_motion_alert(void)
+bool bma020_is_enable_motion_alert(void)
 {
 	return bma020_get_register_bit(BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
 								   BMA020_VALUE_ALTERT);
@@ -642,81 +639,81 @@ bool bma020_get_enable_motion_alert(void)
 
 
 
-void bma020_set_new_data_int(bool enable)
+void bma020_enable_new_data_int(bool enable)
 {
 	bma020_set_register_bit(enable,
 							BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
 							BMA020_VALUE_NEW_DATA_INT);
 }
 
-bool bma020_get_new_data_int(void)
+bool bma020_is_new_data_int(void)
 {
 	return bma020_get_register_bit(BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
 								   BMA020_VALUE_NEW_DATA_INT);
 }
 
-void bma020_set_wake_up(bool enable)
+void bma020_enable_wake_up(bool enable)
 {
 	bma020_set_register_bit(enable,
 			BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
 							BMA020_VALUE_WAKE_UP);
 }
 
-bool bma020_get_wake_up(void)
+bool bma020_is_wake_up(void)
 {
 	return bma020_get_register_bit(BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
 								   BMA020_VALUE_WAKE_UP);
 }
 
 
-void bma020_set_shadow_dis(bool enable)
+void bma020_enable_shadow_dis(bool enable)
 {
 	bma020_set_register_bit(enable,
 			BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
 							BMA020_VALUE_SHADOW_DIS);
 }
 
-bool bma020_get_shadow_dis(void)
+bool bma020_is_shadow_dis(void)
 {
 	return bma020_get_register_bit(BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
 								   BMA020_VALUE_SHADOW_DIS);
 }
 
-void bma020_set_latched_int(bool enable)
+void bma020_enable_latched_int(bool enable)
 {
 	bma020_set_register_bit(enable,
 			BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
 							BMA020_VALUE_LATCH_INT);
 }
 
-bool bma020_get_latched_int(void)
+bool bma020_is_latched_int(void)
 {
 	return bma020_get_register_bit(BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
 								   BMA020_VALUE_LATCH_INT);
 }
 
 
-void bma020_set_advanced_int(bool enable)
+void bma020_enable_advanced_int(bool enable)
 {
 	bma020_set_register_bit(enable,
 			BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
 							BMA020_VALUE_ADVANCED_INT);
 }
 
-bool bma020_get_advanced_int(void)
+bool bma020_is_advanced_int(void)
 {
 	return bma020_get_register_bit(BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
 								   BMA020_VALUE_ADVANCED_INT);
 }
 
-void bma020_set_spi4(bool enable)
+void bma020_enable_spi4(bool enable)
 {
 	bma020_set_register_bit(enable,
 			BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
 							BMA020_VALUE_SPI4);
 }
 
-bool bma020_get_spi4(void)
+bool bma020_is_spi4(void)
 {
 	return bma020_get_register_bit(BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
 								   BMA020_VALUE_SPI4);
@@ -821,7 +818,7 @@ void bma020_reset_alert_phase(void)
 							BMA020_VALUE_ALERT_PHASE);
 }
 
-bool bma020_new_data(char axis)
+bool bma020_is_new_data(char axis)
 {
 	uint8_t register_adress;
 
