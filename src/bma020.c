@@ -14,7 +14,7 @@
 #include "lib/twi_master.h"
 
 /* *** DEFINES *** */
-#define BMA020_TWI_ADRESS			(0x70>>1)
+#define BMA020_TWI_ADDRESS			(0x70>>1)
 
 
 #define BMA020_VALUE_BANDWIDTH_0		0
@@ -83,16 +83,22 @@ static bool bma020_get_register_bit(uint8_t register_adress, uint8_t bit); /* ui
 /**
  * These two bits (address 14h, bits 4 and 3) are used to select the full scale
  * acceleration range. Directly after changing the full scale range it takes
- * 1/(2*bandwidth) to overwrite the data registers with filtered data according
- * to the selected bandwidth.
+ * \f$ \frac{1}{2 \cdot bandwidth} \f$ to overwrite the data registers with filtered
+ * data according to the selected bandwidth.
  *
- * range<1:0>	Full scale acceleration range
- * 00			+/- 2g
- * 01			+/- 4g
- * 10			+/- 8g
- * 11			Not authorised code
+ * Valid values for range (uint8_t):
  *
- * @param range; valid values: uint8_t = 2 || 4 || 8
+ * range (uint8_t)  | Full scale acceleration range
+ * :--------------: | : -----------------------------:
+ * 2                | +/- 2g
+ * 4                | +/- 4g
+ * 8                | +/- 8g
+ *
+ * @param range - New range value
+ * @return boolean - return true, if param is valid and write sequence to the
+ * 					 sensor is completed.
+ * 					 return false, if param is invalid. Then no write sqquence
+ * 					 was performed.
  */
 bool bma020_set_range(uint8_t range)
 {
@@ -835,12 +841,12 @@ bool bma020_is_new_data(char axis)
 	return bma020_get_register_bit(register_adress, 0);
 }
 
-void bma020_set_register_bit(bool enable, uint8_t register_adress, uint8_t bit)
+void bma020_set_register_bit(bool enable, uint8_t address, uint8_t bit)
 {
 	uint8_t register_value;
 
 	/* read register and delete data_int*/
-	register_value = bma020_read_register_value(register_adress);
+	register_value = bma020_read_register_value(address);
 	register_value &= ~(1<<bit);
 
 	if(enable) {
@@ -848,7 +854,7 @@ void bma020_set_register_bit(bool enable, uint8_t register_adress, uint8_t bit)
 	}
 
 	//set register
-	bma020_write_register_value(register_adress, register_value);
+	bma020_write_register_value(address, register_value);
 }
 
 uint8_t bma020_get_ml_version()
@@ -899,8 +905,8 @@ uint8_t bma020_read_register_value(uint8_t adress)
 	twi_send_buffer[0] = adress;
 
 	twi_master_set_ready();
-	twi_send_data(BMA020_TWI_ADRESS, 1);
-	twi_receive_data(BMA020_TWI_ADRESS, 1);
+	twi_send_data(BMA020_TWI_ADDRESS, 1);
+	twi_receive_data(BMA020_TWI_ADDRESS, 1);
 
 	value = twi_receive_buffer[0];
 
@@ -908,13 +914,13 @@ uint8_t bma020_read_register_value(uint8_t adress)
 }
 
 
-void bma020_write_register_value(uint8_t adress, uint8_t value)
+void bma020_write_register_value(uint8_t address, uint8_t value)
 {
-	twi_send_buffer[0] = adress;
+	twi_send_buffer[0] = address;
 	twi_send_buffer[1] = value;
 
 	twi_master_set_ready();
-	twi_send_data(BMA020_TWI_ADRESS, 2);
+	twi_send_data(BMA020_TWI_ADDRESS, 2);
 }
 
 
@@ -942,8 +948,8 @@ int16_t bma020_read_raw_z()
 	twi_send_buffer[0] = BMA020_REGISTER_VALUE_Z_LSB;
 
 	twi_master_set_ready();
-	twi_send_data(BMA020_TWI_ADRESS, 1);
-	twi_receive_data(BMA020_TWI_ADRESS, 2);
+	twi_send_data(BMA020_TWI_ADDRESS, 1);
+	twi_receive_data(BMA020_TWI_ADDRESS, 2);
 
 	/* convert value */
 	z_lsb = twi_receive_buffer[0];
@@ -966,8 +972,8 @@ void bma020_read_raw_acceleration(acceleration_t* raw_vector)
 	twi_send_buffer[0] = BMA020_REGISTER_VALUE_X_LSB;
 
 	twi_master_set_ready();
-	twi_send_data(BMA020_TWI_ADRESS, 1);
-	twi_receive_data(BMA020_TWI_ADRESS, 6);
+	twi_send_data(BMA020_TWI_ADDRESS, 1);
+	twi_receive_data(BMA020_TWI_ADDRESS, 6);
 
 	temp_data = twi_receive_buffer[0];
 	raw_vector->x = (uint16_t)((temp_data & 0xC0));
