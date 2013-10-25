@@ -1,3 +1,5 @@
 .cproject
 .settings/de.innot.avreclipse.core.prefs
-doc/doxygen
+doc/doxygen/doxygen
+doc/doxygen/mathjax-2.2
+doxygen - index.html alias
