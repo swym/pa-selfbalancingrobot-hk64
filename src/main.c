@@ -20,6 +20,9 @@
 #include "lib/uart.h"
 #include "lib/twi_master.h"
 
+#include "acceleration_t.h"
+#include "bma020.h"
+
 
 /* *** DECLARATIONS ********************************************************** */
 
@@ -28,7 +31,6 @@
 /* local function declarations  */
 static void main_init(void);
 static void main_run(void);
-static void test_twi_with_bma020(void);
 
 /* *** FUNCTION DEFINITIONS ************************************************** */
 
@@ -46,56 +48,14 @@ void main_init(void)
 
 void main_run(void)
 {
-	uint8_t led = 1;
+	uint8_t led = 0;
 
 	for(;;) {
-
 		PORTC = led;
-
-		printf("LED: %d\n", led);
-		test_twi_with_bma020();
-
 		led++;
-		_delay_ms(50);
+
+		_delay_ms(500);
 	}
-}
-
-void test_twi_with_bma020(void)
-{
-
-	const uint8_t BMA020_ADRESS = (0x70 >> 1);
-	const uint8_t BMA020_X_LSB  = 0x02;
-
-	uint8_t temp_data;
-	uint16_t x, y, z;
-
-
-	twi_send_buffer[0] = BMA020_X_LSB;
-
-	twi_master_set_ready();
-	twi_send_data(BMA020_ADRESS, 1);
-	twi_receive_data(BMA020_ADRESS, 6);
-
-	temp_data = twi_receive_buffer[0];
-	x = (uint16_t)(temp_data << 8);
-
-	temp_data = twi_receive_buffer[1];
-	x = (uint16_t)(x | (temp_data & 0xC0));
-
-	temp_data = twi_receive_buffer[2];
-	y = (uint16_t)(temp_data << 8);
-
-	temp_data = twi_receive_buffer[3];
-	y = (uint16_t)(y | (temp_data & 0xC0));
-
-	temp_data = twi_receive_buffer[4];
-	z = (uint16_t)(temp_data << 8);
-
-	temp_data = twi_receive_buffer[5];
-	z = (uint16_t)(z | (temp_data & 0xC0));
-
-
-	printf("X:%i Y:%i Z:%i\n",x, y, z);
 }
 
 
