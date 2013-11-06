@@ -13,14 +13,19 @@
 /* local type and constants     */
 
 /* local function declarations  */
-static void test_bma020_set_range(void);
-static void test_bma020_set_bandwidth(void);
-static void test_bma020_int(void);
-static void test_bma020(void);
+
 
 /* *** FUNCTION DEFINITIONS ************************************************** */
 
+void test_bma020_set_get_flag()
+{
 
+
+}
+
+
+
+/* OLD AND BUSTED ************************************************************ */
 
 void test_bma020_int(void)
 {
@@ -115,6 +120,7 @@ void test_bma020_set_range(void)
 	}
 	*/
 }
+
 void test_bma020(void)
 {
 	/*
