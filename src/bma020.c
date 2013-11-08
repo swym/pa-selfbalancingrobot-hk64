@@ -241,8 +241,9 @@ bool bma020_is_new_data(char axis)
 
 bool bma020_get_status_hg(void)
 {
-	return twi_master_read_register_bit(BMA020_TWI_ADDRESS, BMA020_REGISTER_STATUS,
-								   BMA020_BIT_STATUS_HG);
+	return twi_master_read_register_bit(BMA020_TWI_ADDRESS,
+										BMA020_REGISTER_STATUS,
+										BMA020_BIT_STATUS_HG);
 }
 
 /**
@@ -254,8 +255,9 @@ bool bma020_get_status_hg(void)
 
 bool bma020_get_status_lg(void)
 {
-	return twi_master_read_register_bit(BMA020_TWI_ADDRESS, BMA020_REGISTER_STATUS,
-								   BMA020_BIT_STATUS_LG);
+	return twi_master_read_register_bit(BMA020_TWI_ADDRESS,
+										BMA020_REGISTER_STATUS,
+										BMA020_BIT_STATUS_LG);
 }
 
 
@@ -269,8 +271,9 @@ bool bma020_get_status_lg(void)
 
 bool bma020_get_lg_latched(void)
 {
-	return twi_master_read_register_bit(BMA020_TWI_ADDRESS, BMA020_REGISTER_STATUS,
-								   BMA020_BIT_LG_LATCHED);
+	return twi_master_read_register_bit(BMA020_TWI_ADDRESS,
+										BMA020_REGISTER_STATUS,
+										BMA020_BIT_LG_LATCHED);
 }
 
 
@@ -293,8 +296,9 @@ void bma020_reset_lg_latched(void)
  */
 bool bma020_get_hg_latched(void)
 {
-	return twi_master_read_register_bit(BMA020_TWI_ADDRESS, BMA020_REGISTER_STATUS,
-								   BMA020_BIT_HG_LATCHED);
+	return twi_master_read_register_bit(BMA020_TWI_ADDRESS,
+										BMA020_REGISTER_STATUS,
+										BMA020_BIT_HG_LATCHED);
 }
 
 /**
@@ -323,8 +327,9 @@ void bma020_reset_hg_latched(void)
 
 bool bma020_get_alert_phase(void)
 {
-	return twi_master_read_register_bit(BMA020_TWI_ADDRESS, BMA020_REGISTER_STATUS,
-								   BMA020_BIT_ALERT_PHASE);
+	return twi_master_read_register_bit(BMA020_TWI_ADDRESS,
+										BMA020_REGISTER_STATUS,
+										BMA020_BIT_ALERT_PHASE);
 }
 
 
@@ -342,8 +347,9 @@ bool bma020_get_alert_phase(void)
 
 bool bma020_get_self_test_result(void)
 {
-	return twi_master_read_register_bit(BMA020_TWI_ADDRESS, BMA020_REGISTER_STATUS,
-								   BMA020_BIT_SELF_TEST_RESULT);
+	return twi_master_read_register_bit(BMA020_TWI_ADDRESS,
+										BMA020_REGISTER_STATUS,
+										BMA020_BIT_SELF_TEST_RESULT);
 }
 
 
@@ -446,8 +452,9 @@ void bma020_enable_spi4(bool enable)
 
 bool bma020_is_spi4(void)
 {
-	return twi_master_read_register_bit(BMA020_TWI_ADDRESS, BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
-								   BMA020_BIT_SPI4);
+	return twi_master_read_register_bit(BMA020_TWI_ADDRESS,
+										BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
+										BMA020_BIT_SPI4);
 }
 
 /**
@@ -471,8 +478,9 @@ void bma020_disable_shadow(bool disable)
  */
 bool bma020_is_shadow_disabled(void)
 {
-	return twi_master_read_register_bit(BMA020_TWI_ADDRESS, BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
-								   BMA020_BIT_SHADOW_DIS);
+	return twi_master_read_register_bit(BMA020_TWI_ADDRESS,
+										BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
+										BMA020_BIT_SHADOW_DIS);
 }
 
 
@@ -513,8 +521,9 @@ void bma020_enable_new_data_int(bool enable)
  */
 bool bma020_is_new_data_int(void)
 {
-	return twi_master_read_register_bit(BMA020_TWI_ADDRESS, BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
-								   BMA020_BIT_NEW_DATA_INT);
+	return twi_master_read_register_bit(BMA020_TWI_ADDRESS,
+										BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
+										BMA020_BIT_NEW_DATA_INT);
 }
 
 /**
@@ -535,8 +544,9 @@ void bma020_enable_lg(bool enable)
 
 bool bma020_is_enable_lg(void)
 {
-	return twi_master_read_register_bit(BMA020_TWI_ADDRESS, BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
-								   BMA020_BIT_ENABLE_LG);
+	return twi_master_read_register_bit(BMA020_TWI_ADDRESS,
+										BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
+										BMA020_BIT_ENABLE_LG);
 }
 
 
@@ -562,8 +572,9 @@ void bma020_enable_hg(bool enable)
 
 bool bma020_is_enable_hg(void)
 {
-	return twi_master_read_register_bit(BMA020_TWI_ADDRESS, BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
-								   BMA020_BIT_ENABLE_HG);
+	return twi_master_read_register_bit(BMA020_TWI_ADDRESS,
+										BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
+										BMA020_BIT_ENABLE_HG);
 }
 
 /**
@@ -588,8 +599,9 @@ void bma020_enable_advanced_int(bool enable)
 
 bool bma020_is_advanced_int(void)
 {
-	return twi_master_read_register_bit(BMA020_TWI_ADDRESS, BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
-								   BMA020_BIT_ADVANCED_INT);
+	return twi_master_read_register_bit(BMA020_TWI_ADDRESS,
+										BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
+										BMA020_BIT_ADVANCED_INT);
 }
 
 
@@ -616,8 +628,9 @@ void bma020_enable_any_motion(bool enable)
 
 bool bma020_is_enable_any_motion(void)
 {
-	return twi_master_read_register_bit(BMA020_TWI_ADDRESS, BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
-								   BMA020_BIT_ANY_MOTION);
+	return twi_master_read_register_bit(BMA020_TWI_ADDRESS,
+										BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
+										BMA020_BIT_ANY_MOTION);
 }
 
 /**
@@ -644,8 +657,9 @@ void bma020_enable_motion_alert(bool enable)
 
 bool bma020_is_enable_motion_alert(void)
 {
-	return twi_master_read_register_bit(BMA020_TWI_ADDRESS, BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
-								   BMA020_BIT_ALTERT);
+	return twi_master_read_register_bit(BMA020_TWI_ADDRESS,
+										BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
+										BMA020_BIT_ALTERT);
 }
 
 /**
@@ -671,8 +685,9 @@ void bma020_enable_latched_int(bool enable)
 
 bool bma020_is_latched_int(void)
 {
-	return twi_master_read_register_bit(BMA020_TWI_ADDRESS, BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
-								   BMA020_BIT_LATCH_INT);
+	return twi_master_read_register_bit(BMA020_TWI_ADDRESS,
+										BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
+										BMA020_BIT_LATCH_INT);
 }
 
 
@@ -1165,8 +1180,9 @@ void bma020_enable_wake_up(bool enable)
 
 bool bma020_is_wake_up(void)
 {
-	return twi_master_read_register_bit(BMA020_TWI_ADDRESS, BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
-								   BMA020_BIT_WAKE_UP);
+	return twi_master_read_register_bit(BMA020_TWI_ADDRESS,
+										BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
+										BMA020_BIT_WAKE_UP);
 }
 
 
