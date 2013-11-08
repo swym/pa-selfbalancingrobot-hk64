@@ -282,9 +282,10 @@ bool bma020_get_lg_latched(void)
  */
 void bma020_reset_lg_latched(void)
 {
-	twi_master_write_register_bit(BMA020_TWI_ADDRESS, false,
-							BMA020_REGISTER_STATUS,
-							BMA020_BIT_LG_LATCHED);
+	twi_master_write_register_bit(BMA020_TWI_ADDRESS,
+								  BMA020_REGISTER_STATUS,
+								  BMA020_BIT_LG_LATCHED,
+								  false);
 }
 
 /**
@@ -306,9 +307,10 @@ bool bma020_get_hg_latched(void)
  */
 void bma020_reset_hg_latched(void)
 {
-	twi_master_write_register_bit(BMA020_TWI_ADDRESS, false,
-							BMA020_REGISTER_STATUS,
-							BMA020_BIT_HG_LATCHED);
+	twi_master_write_register_bit(BMA020_TWI_ADDRESS,
+								  BMA020_REGISTER_STATUS,
+								  BMA020_BIT_HG_LATCHED,
+								  false);
 }
 
 
@@ -365,9 +367,10 @@ bool bma020_get_self_test_result(void)
 
 void bma020_sleep(void)
 {
-	twi_master_write_register_bit(BMA020_TWI_ADDRESS, true,
-							BMA020_REGISTER_CONTROL_TESTS_RESET_SLEEP,
-							BMA020_BIT_SLEEP);
+	twi_master_write_register_bit(BMA020_TWI_ADDRESS,
+								  BMA020_REGISTER_CONTROL_TESTS_RESET_SLEEP,
+								  BMA020_BIT_SLEEP,
+								  true);
 }
 
 
@@ -383,9 +386,10 @@ void bma020_sleep(void)
  */
 void bma020_soft_reset(void)
 {
-	twi_master_write_register_bit(BMA020_TWI_ADDRESS, true,
-							BMA020_REGISTER_CONTROL_TESTS_RESET_SLEEP,
-							BMA020_BIT_SOFT_RESET);
+	twi_master_write_register_bit(BMA020_TWI_ADDRESS,
+								  BMA020_REGISTER_CONTROL_TESTS_RESET_SLEEP,
+								  BMA020_BIT_SOFT_RESET,
+								  true);
 }
 
 
@@ -400,9 +404,10 @@ void bma020_soft_reset(void)
 
 void bma020_perform_self_test_0(void)
 {
-	twi_master_write_register_bit(BMA020_TWI_ADDRESS, true,
-							BMA020_REGISTER_CONTROL_TESTS_RESET_SLEEP,
-							BMA020_BIT_SELF_TEST_0);
+	twi_master_write_register_bit(BMA020_TWI_ADDRESS,
+								  BMA020_REGISTER_CONTROL_TESTS_RESET_SLEEP,
+								  BMA020_BIT_SELF_TEST_0,
+								  true);
 }
 
 /**
@@ -418,9 +423,10 @@ void bma020_perform_self_test_0(void)
 
 void bma020_perform_self_test_1(void)
 {
-	twi_master_write_register_bit(BMA020_TWI_ADDRESS, true,
-							BMA020_REGISTER_CONTROL_TESTS_RESET_SLEEP,
-							BMA020_BIT_SELF_TEST_1);
+	twi_master_write_register_bit(BMA020_TWI_ADDRESS,
+								  BMA020_REGISTER_CONTROL_TESTS_RESET_SLEEP,
+								  BMA020_BIT_SELF_TEST_1,
+								  true);
 }
 
 /**
@@ -440,9 +446,10 @@ void bma020_perform_self_test_1(void)
 
 void bma020_enable_spi4(bool enable)
 {
-	twi_master_write_register_bit(BMA020_TWI_ADDRESS, enable,
-			BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
-							BMA020_BIT_SPI4);
+	twi_master_write_register_bit(BMA020_TWI_ADDRESS,
+								  BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
+								  BMA020_BIT_SPI4,
+								  enable);
 }
 
 /**
@@ -467,9 +474,10 @@ bool bma020_is_spi4(void)
  */
 void bma020_disable_shadow(bool disable)
 {
-	twi_master_write_register_bit(BMA020_TWI_ADDRESS, disable,
-			BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
-							BMA020_BIT_SHADOW_DIS);
+	twi_master_write_register_bit(BMA020_TWI_ADDRESS,
+								  BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
+								  BMA020_BIT_SHADOW_DIS,
+								  disable);
 }
 
 /**
@@ -490,9 +498,10 @@ bool bma020_is_shadow_disabled(void)
  */
 void bma020_reset_interrupt(void)
 {
-	twi_master_write_register_bit(BMA020_TWI_ADDRESS, true,
-							BMA020_REGISTER_CONTROL_TESTS_RESET_SLEEP,
-							BMA020_BIT_RESET_INT);
+	twi_master_write_register_bit(BMA020_TWI_ADDRESS,
+								  BMA020_REGISTER_CONTROL_TESTS_RESET_SLEEP,
+								  BMA020_BIT_RESET_INT,
+								  true);
 }
 
 /**
@@ -510,9 +519,10 @@ void bma020_reset_interrupt(void)
  */
 void bma020_enable_new_data_int(bool enable)
 {
-	twi_master_write_register_bit(BMA020_TWI_ADDRESS, enable,
-							BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
-							BMA020_BIT_NEW_DATA_INT);
+	twi_master_write_register_bit(BMA020_TWI_ADDRESS,
+								  BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
+								  BMA020_BIT_NEW_DATA_INT,
+								  enable);
 }
 
 /**
@@ -532,9 +542,10 @@ bool bma020_is_new_data_int(void)
  */
 void bma020_enable_lg(bool enable)
 {
-	twi_master_write_register_bit(BMA020_TWI_ADDRESS, enable,
-							BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
-							BMA020_BIT_ENABLE_LG);
+	twi_master_write_register_bit(BMA020_TWI_ADDRESS,
+								  BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
+								  BMA020_BIT_ENABLE_LG,
+								  enable);
 }
 
 /**
@@ -559,9 +570,10 @@ bool bma020_is_enable_lg(void)
 
 void bma020_enable_hg(bool enable)
 {
-	twi_master_write_register_bit(BMA020_TWI_ADDRESS, enable,
-			BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
-							BMA020_BIT_ENABLE_HG);
+	twi_master_write_register_bit(BMA020_TWI_ADDRESS,
+								  BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
+								  BMA020_BIT_ENABLE_HG,
+								  enable);
 }
 
 /**
@@ -587,9 +599,10 @@ bool bma020_is_enable_hg(void)
 
 void bma020_enable_advanced_int(bool enable)
 {
-	twi_master_write_register_bit(BMA020_TWI_ADDRESS, enable,
-			BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
-							BMA020_BIT_ADVANCED_INT);
+	twi_master_write_register_bit(BMA020_TWI_ADDRESS,
+								  BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
+								  BMA020_BIT_ADVANCED_INT,
+								  enable);
 }
 
 /**
@@ -616,9 +629,10 @@ bool bma020_is_advanced_int(void)
 
 void bma020_enable_any_motion(bool enable)
 {
-	twi_master_write_register_bit(BMA020_TWI_ADDRESS, enable,
-							BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
-							BMA020_BIT_ANY_MOTION);
+	twi_master_write_register_bit(BMA020_TWI_ADDRESS,
+							      BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
+							      BMA020_BIT_ANY_MOTION,
+							      enable);
 }
 
 /**
@@ -644,9 +658,10 @@ bool bma020_is_enable_any_motion(void)
 
 void bma020_enable_motion_alert(bool enable)
 {
-	twi_master_write_register_bit(BMA020_TWI_ADDRESS, enable,
-							BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
-							BMA020_BIT_ALTERT);
+	twi_master_write_register_bit(BMA020_TWI_ADDRESS,
+								  BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
+								  BMA020_BIT_ALTERT,
+								  enable);
 }
 
 /**
@@ -673,9 +688,10 @@ bool bma020_is_enable_motion_alert(void)
 
 void bma020_enable_latched_int(bool enable)
 {
-	twi_master_write_register_bit(BMA020_TWI_ADDRESS, enable,
-			BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
-							BMA020_BIT_LATCH_INT);
+	twi_master_write_register_bit(BMA020_TWI_ADDRESS,
+								  BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
+								  BMA020_BIT_LATCH_INT,
+								  enable);
 }
 
 /**
@@ -1168,9 +1184,10 @@ uint8_t bma020_get_any_motion_duration(void)
  */
 void bma020_enable_wake_up(bool enable)
 {
-	twi_master_write_register_bit(BMA020_TWI_ADDRESS, enable,
-			BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
-							BMA020_BIT_WAKE_UP);
+	twi_master_write_register_bit(BMA020_TWI_ADDRESS,
+								  BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
+								  BMA020_BIT_WAKE_UP,
+								  enable);
 }
 
 /**
