@@ -318,3 +318,99 @@ ISR (TWI_vect)
 		************************/
 	}
 }
+
+
+/* ****************
+ *  HELPERFUNCTIONS
+ * **************** */
+
+// TODO: implement helperfunctions for byte-arrays
+
+/**
+ * Reads a full 8-bit register of a specifed slave
+ * @param slave_adress
+ * @param register_adress
+ * @return read value
+ */
+uint8_t twi_master_read_register(uint8_t slave_address,
+								 uint8_t register_address)
+{
+	uint8_t value;
+
+	twi_send_buffer[0] = register_address;
+
+	twi_master_set_ready();
+	twi_send_data(slave_address, 1);
+	twi_receive_data(slave_address, 1);
+
+	value = twi_receive_buffer[0];
+
+	return value;
+}
+
+/**
+ * Writes a register value to a specifed slave
+ * @param slave_address
+ * @param register_address
+ * @param value
+ */
+void twi_master_write_register(uint8_t slave_address,
+							   uint8_t register_address,
+							   uint8_t value)
+{
+	twi_send_buffer[0] = register_address;
+	twi_send_buffer[1] = value;
+
+	twi_master_set_ready();
+	twi_send_data(slave_address, 2);
+}
+
+
+/**
+ *
+ * @param slave_address
+ * @param register_address
+ * @param bit
+ * @return
+ */
+bool twi_master_read_register_bit(uint8_t slave_address,
+								  uint8_t register_address,
+								  uint8_t bit)
+{
+	uint8_t register_value;
+
+	register_value = twi_master_read_register(slave_address, register_address);
+
+	if(register_value & (1<<bit)) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+
+/**
+ *
+ * @param slave_address
+ * @param register_address
+ * @param bit
+ * @param enable
+ */
+void twi_master_write_register_bit(uint8_t  slave_address,
+							   uint8_t register_address,
+							   uint8_t bit,
+							   bool    enable)
+{
+	uint8_t register_value;
+
+	/* read register and delete data_int*/
+	register_value = twi_master_read_register(slave_address, register_address);
+	register_value &= ~(1<<bit);
+
+	if(enable) {
+		register_value |= (1<<bit);
+	}
+
+	//set register
+	twi_master_write_register(slave_address, register_address, register_value);
+}
