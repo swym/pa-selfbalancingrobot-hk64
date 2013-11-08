@@ -100,11 +100,6 @@
 /* local type and constants     */
 
 /* local function declarations  */
-static void bma020_set_register_bit(bool, uint8_t, uint8_t);  /* bool enable, uint8_t register_adress, uint8_t bit */
-static bool bma020_get_register_bit(uint8_t, uint8_t);		  /* uint8_t register_adress, uint8_t bit */
-
-static void bma020_write_register_value(uint8_t, uint8_t);	  /* uint8_t address, uint8_t value */
-static uint8_t bma020_read_register_value(uint8_t);			  /* address */
 
 
 /* *** FUNCTION DEFINITIONS ************************************************* */
@@ -1431,87 +1426,6 @@ void bma020_set_customer_reserved_2(uint8_t value)
 uint8_t bma020_get_customer_reserved_2()
 {
 	return twi_master_read_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_CUSTOMER_2);
-}
-
-
-/**
- * Helperfunction to set a single bit in a Register
- * TODO: Export to twi_master.c
- * @param enable
- * @param address
- * @param bit
- */
-
-void bma020_set_register_bit(bool enable, uint8_t address, uint8_t bit)
-{
-	uint8_t register_value;
-
-	/* read register and delete data_int*/
-	register_value = bma020_read_register_value(address);
-	register_value &= ~(1<<bit);
-
-	if(enable) {
-		register_value |= (1<<bit);
-	}
-
-	//set register
-	twi_master_write_register(BMA020_TWI_ADDRESS, address, register_value);
-}
-
-/**
- * Helperfunction that returns true, if a selected bit is set in a specific
- * register.
- * TODO: Export to twi_master.c
- * @param register_adress
- * @param bit
- * @return
- */
-bool bma020_get_register_bit(uint8_t register_adress, uint8_t bit)
-{
-	uint8_t register_value;
-
-	register_value = bma020_read_register_value(register_adress);
-
-	if(register_value & (1<<bit)) {
-		return true;
-	} else {
-		return false;
-	}
-}
-
-/**
- * Helperfunction that reads a entire register
- * TODO: Export to twi_master.c
- * @param adress
- * @return
- */
-uint8_t bma020_read_register_value(uint8_t adress)
-{
-	uint8_t value;
-
-	twi_send_buffer[0] = adress;
-
-	twi_master_set_ready();
-	twi_send_data(BMA020_TWI_ADDRESS, 1);
-	twi_receive_data(BMA020_TWI_ADDRESS, 1);
-
-	value = twi_receive_buffer[0];
-
-	return value;
-}
-
-/**
- * Helperfunction that writes a entire register
- * @param address
- * @param value
- */
-void bma020_write_register_value(uint8_t address, uint8_t value)
-{
-	twi_send_buffer[0] = address;
-	twi_send_buffer[1] = value;
-
-	twi_master_set_ready();
-	twi_send_data(BMA020_TWI_ADDRESS, 2);
 }
 
 /**
