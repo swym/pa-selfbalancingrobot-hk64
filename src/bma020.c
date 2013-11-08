@@ -113,7 +113,8 @@
 uint8_t bma020_get_chip_id()
 {
 	uint8_t register_value;
-	register_value = twi_master_read_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_VERSION);
+	register_value = twi_master_read_register(BMA020_TWI_ADDRESS,
+											  BMA020_REGISTER_VERSION);
 	return (0x07 & register_value);
 }
 
@@ -127,7 +128,8 @@ uint8_t bma020_get_ml_version()
 {
 	uint8_t register_value;
 
-	register_value = twi_master_read_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_VERSION);
+	register_value = twi_master_read_register(BMA020_TWI_ADDRESS,
+											  BMA020_REGISTER_VERSION);
 
 	return (0x0F & register_value);
 }
@@ -140,7 +142,8 @@ uint8_t bma020_get_ml_version()
 uint8_t bma020_get_ai_version()
 {
 	uint8_t register_value;
-	register_value = twi_master_read_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_VERSION);
+	register_value = twi_master_read_register(BMA020_TWI_ADDRESS,
+											  BMA020_REGISTER_VERSION);
 	return (register_value >> 4);
 }
 
@@ -238,8 +241,9 @@ bool bma020_is_new_data(char axis)
 
 bool bma020_get_status_hg(void)
 {
-	return twi_master_read_register_bit(BMA020_TWI_ADDRESS, BMA020_REGISTER_STATUS,
-								   BMA020_BIT_STATUS_HG);
+	return twi_master_read_register_bit(BMA020_TWI_ADDRESS,
+										BMA020_REGISTER_STATUS,
+										BMA020_BIT_STATUS_HG);
 }
 
 /**
@@ -251,8 +255,9 @@ bool bma020_get_status_hg(void)
 
 bool bma020_get_status_lg(void)
 {
-	return twi_master_read_register_bit(BMA020_TWI_ADDRESS, BMA020_REGISTER_STATUS,
-								   BMA020_BIT_STATUS_LG);
+	return twi_master_read_register_bit(BMA020_TWI_ADDRESS,
+										BMA020_REGISTER_STATUS,
+										BMA020_BIT_STATUS_LG);
 }
 
 
@@ -266,8 +271,9 @@ bool bma020_get_status_lg(void)
 
 bool bma020_get_lg_latched(void)
 {
-	return twi_master_read_register_bit(BMA020_TWI_ADDRESS, BMA020_REGISTER_STATUS,
-								   BMA020_BIT_LG_LATCHED);
+	return twi_master_read_register_bit(BMA020_TWI_ADDRESS,
+										BMA020_REGISTER_STATUS,
+										BMA020_BIT_LG_LATCHED);
 }
 
 
@@ -276,9 +282,10 @@ bool bma020_get_lg_latched(void)
  */
 void bma020_reset_lg_latched(void)
 {
-	twi_master_write_register_bit(BMA020_TWI_ADDRESS, false,
-							BMA020_REGISTER_STATUS,
-							BMA020_BIT_LG_LATCHED);
+	twi_master_write_register_bit(BMA020_TWI_ADDRESS,
+								  BMA020_REGISTER_STATUS,
+								  BMA020_BIT_LG_LATCHED,
+								  false);
 }
 
 /**
@@ -290,8 +297,9 @@ void bma020_reset_lg_latched(void)
  */
 bool bma020_get_hg_latched(void)
 {
-	return twi_master_read_register_bit(BMA020_TWI_ADDRESS, BMA020_REGISTER_STATUS,
-								   BMA020_BIT_HG_LATCHED);
+	return twi_master_read_register_bit(BMA020_TWI_ADDRESS,
+										BMA020_REGISTER_STATUS,
+										BMA020_BIT_HG_LATCHED);
 }
 
 /**
@@ -299,9 +307,10 @@ bool bma020_get_hg_latched(void)
  */
 void bma020_reset_hg_latched(void)
 {
-	twi_master_write_register_bit(BMA020_TWI_ADDRESS, false,
-							BMA020_REGISTER_STATUS,
-							BMA020_BIT_HG_LATCHED);
+	twi_master_write_register_bit(BMA020_TWI_ADDRESS,
+								  BMA020_REGISTER_STATUS,
+								  BMA020_BIT_HG_LATCHED,
+								  false);
 }
 
 
@@ -320,8 +329,9 @@ void bma020_reset_hg_latched(void)
 
 bool bma020_get_alert_phase(void)
 {
-	return twi_master_read_register_bit(BMA020_TWI_ADDRESS, BMA020_REGISTER_STATUS,
-								   BMA020_BIT_ALERT_PHASE);
+	return twi_master_read_register_bit(BMA020_TWI_ADDRESS,
+										BMA020_REGISTER_STATUS,
+										BMA020_BIT_ALERT_PHASE);
 }
 
 
@@ -339,8 +349,9 @@ bool bma020_get_alert_phase(void)
 
 bool bma020_get_self_test_result(void)
 {
-	return twi_master_read_register_bit(BMA020_TWI_ADDRESS, BMA020_REGISTER_STATUS,
-								   BMA020_BIT_SELF_TEST_RESULT);
+	return twi_master_read_register_bit(BMA020_TWI_ADDRESS,
+										BMA020_REGISTER_STATUS,
+										BMA020_BIT_SELF_TEST_RESULT);
 }
 
 
@@ -356,9 +367,10 @@ bool bma020_get_self_test_result(void)
 
 void bma020_sleep(void)
 {
-	twi_master_write_register_bit(BMA020_TWI_ADDRESS, true,
-							BMA020_REGISTER_CONTROL_TESTS_RESET_SLEEP,
-							BMA020_BIT_SLEEP);
+	twi_master_write_register_bit(BMA020_TWI_ADDRESS,
+								  BMA020_REGISTER_CONTROL_TESTS_RESET_SLEEP,
+								  BMA020_BIT_SLEEP,
+								  true);
 }
 
 
@@ -374,9 +386,10 @@ void bma020_sleep(void)
  */
 void bma020_soft_reset(void)
 {
-	twi_master_write_register_bit(BMA020_TWI_ADDRESS, true,
-							BMA020_REGISTER_CONTROL_TESTS_RESET_SLEEP,
-							BMA020_BIT_SOFT_RESET);
+	twi_master_write_register_bit(BMA020_TWI_ADDRESS,
+								  BMA020_REGISTER_CONTROL_TESTS_RESET_SLEEP,
+								  BMA020_BIT_SOFT_RESET,
+								  true);
 }
 
 
@@ -391,9 +404,10 @@ void bma020_soft_reset(void)
 
 void bma020_perform_self_test_0(void)
 {
-	twi_master_write_register_bit(BMA020_TWI_ADDRESS, true,
-							BMA020_REGISTER_CONTROL_TESTS_RESET_SLEEP,
-							BMA020_BIT_SELF_TEST_0);
+	twi_master_write_register_bit(BMA020_TWI_ADDRESS,
+								  BMA020_REGISTER_CONTROL_TESTS_RESET_SLEEP,
+								  BMA020_BIT_SELF_TEST_0,
+								  true);
 }
 
 /**
@@ -409,9 +423,10 @@ void bma020_perform_self_test_0(void)
 
 void bma020_perform_self_test_1(void)
 {
-	twi_master_write_register_bit(BMA020_TWI_ADDRESS, true,
-							BMA020_REGISTER_CONTROL_TESTS_RESET_SLEEP,
-							BMA020_BIT_SELF_TEST_1);
+	twi_master_write_register_bit(BMA020_TWI_ADDRESS,
+								  BMA020_REGISTER_CONTROL_TESTS_RESET_SLEEP,
+								  BMA020_BIT_SELF_TEST_1,
+								  true);
 }
 
 /**
@@ -431,9 +446,10 @@ void bma020_perform_self_test_1(void)
 
 void bma020_enable_spi4(bool enable)
 {
-	twi_master_write_register_bit(BMA020_TWI_ADDRESS, enable,
-			BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
-							BMA020_BIT_SPI4);
+	twi_master_write_register_bit(BMA020_TWI_ADDRESS,
+								  BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
+								  BMA020_BIT_SPI4,
+								  enable);
 }
 
 /**
@@ -443,8 +459,9 @@ void bma020_enable_spi4(bool enable)
 
 bool bma020_is_spi4(void)
 {
-	return twi_master_read_register_bit(BMA020_TWI_ADDRESS, BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
-								   BMA020_BIT_SPI4);
+	return twi_master_read_register_bit(BMA020_TWI_ADDRESS,
+										BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
+										BMA020_BIT_SPI4);
 }
 
 /**
@@ -457,9 +474,10 @@ bool bma020_is_spi4(void)
  */
 void bma020_disable_shadow(bool disable)
 {
-	twi_master_write_register_bit(BMA020_TWI_ADDRESS, disable,
-			BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
-							BMA020_BIT_SHADOW_DIS);
+	twi_master_write_register_bit(BMA020_TWI_ADDRESS,
+								  BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
+								  BMA020_BIT_SHADOW_DIS,
+								  disable);
 }
 
 /**
@@ -468,8 +486,9 @@ void bma020_disable_shadow(bool disable)
  */
 bool bma020_is_shadow_disabled(void)
 {
-	return twi_master_read_register_bit(BMA020_TWI_ADDRESS, BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
-								   BMA020_BIT_SHADOW_DIS);
+	return twi_master_read_register_bit(BMA020_TWI_ADDRESS,
+										BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
+										BMA020_BIT_SHADOW_DIS);
 }
 
 
@@ -479,9 +498,10 @@ bool bma020_is_shadow_disabled(void)
  */
 void bma020_reset_interrupt(void)
 {
-	twi_master_write_register_bit(BMA020_TWI_ADDRESS, true,
-							BMA020_REGISTER_CONTROL_TESTS_RESET_SLEEP,
-							BMA020_BIT_RESET_INT);
+	twi_master_write_register_bit(BMA020_TWI_ADDRESS,
+								  BMA020_REGISTER_CONTROL_TESTS_RESET_SLEEP,
+								  BMA020_BIT_RESET_INT,
+								  true);
 }
 
 /**
@@ -499,9 +519,10 @@ void bma020_reset_interrupt(void)
  */
 void bma020_enable_new_data_int(bool enable)
 {
-	twi_master_write_register_bit(BMA020_TWI_ADDRESS, enable,
-							BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
-							BMA020_BIT_NEW_DATA_INT);
+	twi_master_write_register_bit(BMA020_TWI_ADDRESS,
+								  BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
+								  BMA020_BIT_NEW_DATA_INT,
+								  enable);
 }
 
 /**
@@ -510,8 +531,9 @@ void bma020_enable_new_data_int(bool enable)
  */
 bool bma020_is_new_data_int(void)
 {
-	return twi_master_read_register_bit(BMA020_TWI_ADDRESS, BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
-								   BMA020_BIT_NEW_DATA_INT);
+	return twi_master_read_register_bit(BMA020_TWI_ADDRESS,
+										BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
+										BMA020_BIT_NEW_DATA_INT);
 }
 
 /**
@@ -520,9 +542,10 @@ bool bma020_is_new_data_int(void)
  */
 void bma020_enable_lg(bool enable)
 {
-	twi_master_write_register_bit(BMA020_TWI_ADDRESS, enable,
-							BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
-							BMA020_BIT_ENABLE_LG);
+	twi_master_write_register_bit(BMA020_TWI_ADDRESS,
+								  BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
+								  BMA020_BIT_ENABLE_LG,
+								  enable);
 }
 
 /**
@@ -532,8 +555,9 @@ void bma020_enable_lg(bool enable)
 
 bool bma020_is_enable_lg(void)
 {
-	return twi_master_read_register_bit(BMA020_TWI_ADDRESS, BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
-								   BMA020_BIT_ENABLE_LG);
+	return twi_master_read_register_bit(BMA020_TWI_ADDRESS,
+										BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
+										BMA020_BIT_ENABLE_LG);
 }
 
 
@@ -546,9 +570,10 @@ bool bma020_is_enable_lg(void)
 
 void bma020_enable_hg(bool enable)
 {
-	twi_master_write_register_bit(BMA020_TWI_ADDRESS, enable,
-			BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
-							BMA020_BIT_ENABLE_HG);
+	twi_master_write_register_bit(BMA020_TWI_ADDRESS,
+								  BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
+								  BMA020_BIT_ENABLE_HG,
+								  enable);
 }
 
 /**
@@ -559,8 +584,9 @@ void bma020_enable_hg(bool enable)
 
 bool bma020_is_enable_hg(void)
 {
-	return twi_master_read_register_bit(BMA020_TWI_ADDRESS, BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
-								   BMA020_BIT_ENABLE_HG);
+	return twi_master_read_register_bit(BMA020_TWI_ADDRESS,
+										BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
+										BMA020_BIT_ENABLE_HG);
 }
 
 /**
@@ -573,9 +599,10 @@ bool bma020_is_enable_hg(void)
 
 void bma020_enable_advanced_int(bool enable)
 {
-	twi_master_write_register_bit(BMA020_TWI_ADDRESS, enable,
-			BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
-							BMA020_BIT_ADVANCED_INT);
+	twi_master_write_register_bit(BMA020_TWI_ADDRESS,
+								  BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
+								  BMA020_BIT_ADVANCED_INT,
+								  enable);
 }
 
 /**
@@ -585,8 +612,9 @@ void bma020_enable_advanced_int(bool enable)
 
 bool bma020_is_advanced_int(void)
 {
-	return twi_master_read_register_bit(BMA020_TWI_ADDRESS, BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
-								   BMA020_BIT_ADVANCED_INT);
+	return twi_master_read_register_bit(BMA020_TWI_ADDRESS,
+										BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
+										BMA020_BIT_ADVANCED_INT);
 }
 
 
@@ -601,9 +629,10 @@ bool bma020_is_advanced_int(void)
 
 void bma020_enable_any_motion(bool enable)
 {
-	twi_master_write_register_bit(BMA020_TWI_ADDRESS, enable,
-							BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
-							BMA020_BIT_ANY_MOTION);
+	twi_master_write_register_bit(BMA020_TWI_ADDRESS,
+							      BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
+							      BMA020_BIT_ANY_MOTION,
+							      enable);
 }
 
 /**
@@ -613,8 +642,9 @@ void bma020_enable_any_motion(bool enable)
 
 bool bma020_is_enable_any_motion(void)
 {
-	return twi_master_read_register_bit(BMA020_TWI_ADDRESS, BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
-								   BMA020_BIT_ANY_MOTION);
+	return twi_master_read_register_bit(BMA020_TWI_ADDRESS,
+										BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
+										BMA020_BIT_ANY_MOTION);
 }
 
 /**
@@ -628,9 +658,10 @@ bool bma020_is_enable_any_motion(void)
 
 void bma020_enable_motion_alert(bool enable)
 {
-	twi_master_write_register_bit(BMA020_TWI_ADDRESS, enable,
-							BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
-							BMA020_BIT_ALTERT);
+	twi_master_write_register_bit(BMA020_TWI_ADDRESS,
+								  BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
+								  BMA020_BIT_ALTERT,
+								  enable);
 }
 
 /**
@@ -641,8 +672,9 @@ void bma020_enable_motion_alert(bool enable)
 
 bool bma020_is_enable_motion_alert(void)
 {
-	return twi_master_read_register_bit(BMA020_TWI_ADDRESS, BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
-								   BMA020_BIT_ALTERT);
+	return twi_master_read_register_bit(BMA020_TWI_ADDRESS,
+										BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
+										BMA020_BIT_ALTERT);
 }
 
 /**
@@ -656,9 +688,10 @@ bool bma020_is_enable_motion_alert(void)
 
 void bma020_enable_latched_int(bool enable)
 {
-	twi_master_write_register_bit(BMA020_TWI_ADDRESS, enable,
-			BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
-							BMA020_BIT_LATCH_INT);
+	twi_master_write_register_bit(BMA020_TWI_ADDRESS,
+								  BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
+								  BMA020_BIT_LATCH_INT,
+								  enable);
 }
 
 /**
@@ -668,8 +701,9 @@ void bma020_enable_latched_int(bool enable)
 
 bool bma020_is_latched_int(void)
 {
-	return twi_master_read_register_bit(BMA020_TWI_ADDRESS, BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
-								   BMA020_BIT_LATCH_INT);
+	return twi_master_read_register_bit(BMA020_TWI_ADDRESS,
+										BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
+										BMA020_BIT_LATCH_INT);
 }
 
 
@@ -713,8 +747,9 @@ bool bma020_is_latched_int(void)
 
 void bma020_set_lg_threshold(uint8_t threshold)
 {
-	twi_master_write_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_LG_THRESHOLD,
-								threshold);
+	twi_master_write_register(BMA020_TWI_ADDRESS,
+							  BMA020_REGISTER_LG_THRESHOLD,
+							  threshold);
 }
 
 /**
@@ -724,7 +759,8 @@ void bma020_set_lg_threshold(uint8_t threshold)
 
 uint8_t bma020_get_lg_threshold()
 {
-	return twi_master_read_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_LG_THRESHOLD);
+	return twi_master_read_register(BMA020_TWI_ADDRESS,
+									BMA020_REGISTER_LG_THRESHOLD);
 }
 
 /**
@@ -734,8 +770,9 @@ uint8_t bma020_get_lg_threshold()
 
 void bma020_set_lg_duration(uint8_t duration)
 {
-	twi_master_write_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_LG_DURATION,
-								duration);
+	twi_master_write_register(BMA020_TWI_ADDRESS,
+							  BMA020_REGISTER_LG_DURATION,
+							  duration);
 }
 
 /**
@@ -745,7 +782,8 @@ void bma020_set_lg_duration(uint8_t duration)
 
 uint8_t bma020_get_lg_duration()
 {
-	return twi_master_read_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_LG_DURATION);
+	return twi_master_read_register(BMA020_TWI_ADDRESS,
+									BMA020_REGISTER_LG_DURATION);
 }
 
 
@@ -763,7 +801,8 @@ bool bma020_set_counter_lg(uint8_t counter)
 		uint8_t register_value;
 
 		/* read register and delete old value */
-		register_value = twi_master_read_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG);
+		register_value = twi_master_read_register(BMA020_TWI_ADDRESS,
+												  BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG);
 		register_value &= ~(1<<BMA020_BIT_COUNTER_LG_1 |
 							1<<BMA020_BIT_COUNTER_LG_0); /* (value &= 0b11110011;)*/
 
@@ -771,8 +810,9 @@ bool bma020_set_counter_lg(uint8_t counter)
 		register_value |= counter<<BMA020_BIT_COUNTER_LG_0;
 
 		/*write new value to register */
-		twi_master_write_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
-									register_value);
+		twi_master_write_register(BMA020_TWI_ADDRESS,
+								  BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
+								  register_value);
 
 		return true;
 	} else {
@@ -791,7 +831,8 @@ uint8_t bma020_get_counter_lg(void)
 	uint8_t register_value;
 
 	/* read register and delete all non counter lg bits */
-	register_value = twi_master_read_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG);
+	register_value = twi_master_read_register(BMA020_TWI_ADDRESS,
+											  BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG);
 	register_value &= (1<<BMA020_BIT_COUNTER_LG_1 |
 					   1<<BMA020_BIT_COUNTER_LG_0);
 
@@ -811,7 +852,8 @@ void bma020_set_lg_hysterese(uint8_t hysterese)
 	hysterese &= 0x07;
 
 	/* read register and delete old value */
-	register_value  = twi_master_read_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_AMDUR_HGHYS_LGHYS);
+	register_value  = twi_master_read_register(BMA020_TWI_ADDRESS,
+											   BMA020_REGISTER_AMDUR_HGHYS_LGHYS);
 	register_value &= ~(BMA020_BIT_LG_HYSTERESIS_0 |
 						BMA020_BIT_LG_HYSTERESIS_1 |
 						BMA020_BIT_LG_HYSTERESIS_2); /* value &= 0b00000111; */
@@ -820,8 +862,9 @@ void bma020_set_lg_hysterese(uint8_t hysterese)
 	register_value |= hysterese;
 
 	/*write back to register */
-	twi_master_write_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_AMDUR_HGHYS_LGHYS,
-								register_value);
+	twi_master_write_register(BMA020_TWI_ADDRESS,
+							  BMA020_REGISTER_AMDUR_HGHYS_LGHYS,
+							  register_value);
 }
 
 /**
@@ -833,7 +876,8 @@ uint8_t bma020_get_lg_hysterese(void)
 {
 	uint8_t register_value;
 
-	register_value = twi_master_read_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_AMDUR_HGHYS_LGHYS);
+	register_value = twi_master_read_register(BMA020_TWI_ADDRESS,
+											  BMA020_REGISTER_AMDUR_HGHYS_LGHYS);
 
 	/* only the lowest three bits represents the hyterese */
 	return (register_value & 0x07);
@@ -875,8 +919,9 @@ uint8_t bma020_get_lg_hysterese(void)
 
 void bma020_set_hg_threshold(uint8_t threshold)
 {
-	twi_master_write_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_HG_THRESHOLD,
-								threshold);
+	twi_master_write_register(BMA020_TWI_ADDRESS,
+							  BMA020_REGISTER_HG_THRESHOLD,
+							  threshold);
 }
 
 /**
@@ -886,7 +931,8 @@ void bma020_set_hg_threshold(uint8_t threshold)
 
 uint8_t bma020_get_hg_threshold()
 {
-	return twi_master_read_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_HG_THRESHOLD);
+	return twi_master_read_register(BMA020_TWI_ADDRESS,
+									BMA020_REGISTER_HG_THRESHOLD);
 }
 
 
@@ -897,8 +943,9 @@ uint8_t bma020_get_hg_threshold()
 
 void bma020_set_hg_duration(uint8_t duration)
 {
-	twi_master_write_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_HG_DURATION,
-								duration);
+	twi_master_write_register(BMA020_TWI_ADDRESS,
+							  BMA020_REGISTER_HG_DURATION,
+							  duration);
 }
 
 /**
@@ -908,7 +955,8 @@ void bma020_set_hg_duration(uint8_t duration)
 
 uint8_t bma020_get_hg_duration()
 {
-	return twi_master_read_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_HG_DURATION);
+	return twi_master_read_register(BMA020_TWI_ADDRESS,
+									BMA020_REGISTER_HG_DURATION);
 }
 
 
@@ -925,7 +973,8 @@ bool bma020_set_counter_hg(uint8_t counter)
 		uint8_t register_value;
 
 		/* read register and delete old value */
-		register_value = twi_master_read_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG);
+		register_value = twi_master_read_register(BMA020_TWI_ADDRESS,
+												  BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG);
 		register_value &= ~(1<<BMA020_BIT_COUNTER_HG_1 |
 							1<<BMA020_BIT_COUNTER_HG_0); /* (value &= 0b11110011;)*/
 
@@ -933,8 +982,9 @@ bool bma020_set_counter_hg(uint8_t counter)
 		register_value |= counter<<BMA020_BIT_COUNTER_HG_0;
 
 		/*write new value to register */
-		twi_master_write_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
-									register_value);
+		twi_master_write_register(BMA020_TWI_ADDRESS,
+								  BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
+								  register_value);
 
 		return true;
 	} else {
@@ -951,7 +1001,8 @@ uint8_t bma020_get_counter_hg(void)
 	uint8_t register_value;
 
 	/* read register and delete all non counter lg bits */
-	register_value = twi_master_read_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG);
+	register_value = twi_master_read_register(BMA020_TWI_ADDRESS,
+											  BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG);
 	register_value &= (1<<BMA020_BIT_COUNTER_HG_1 |
 					   1<<BMA020_BIT_COUNTER_HG_0);
 
@@ -972,7 +1023,8 @@ void bma020_set_hg_hysterese(uint8_t hysterese)
 	hysterese &= 0x07;
 
 	/* read register and delete old value */
-	register_value  = twi_master_read_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_AMDUR_HGHYS_LGHYS);
+	register_value  = twi_master_read_register(BMA020_TWI_ADDRESS,
+											   BMA020_REGISTER_AMDUR_HGHYS_LGHYS);
 	register_value &= ~(BMA020_BIT_HG_HYSTERESIS_0 |
 						BMA020_BIT_HG_HYSTERESIS_1 |
 						BMA020_BIT_HG_HYSTERESIS_2); /* value &= 0b00111000; */
@@ -981,8 +1033,9 @@ void bma020_set_hg_hysterese(uint8_t hysterese)
 	register_value |= hysterese<<BMA020_BIT_HG_HYSTERESIS_0;
 
 	/*write back to register */
-	twi_master_write_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_AMDUR_HGHYS_LGHYS,
-								register_value);
+	twi_master_write_register(BMA020_TWI_ADDRESS,
+							  BMA020_REGISTER_AMDUR_HGHYS_LGHYS,
+							  register_value);
 }
 
 
@@ -995,7 +1048,8 @@ uint8_t bma020_get_hg_hysterese(void)
 {
 	uint8_t register_value;
 
-	register_value = twi_master_read_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_AMDUR_HGHYS_LGHYS);
+	register_value = twi_master_read_register(BMA020_TWI_ADDRESS,
+											  BMA020_REGISTER_AMDUR_HGHYS_LGHYS);
 
 	/* only the bits 0b00111000 are the hyterese */
 	register_value &= 0x38;
@@ -1022,8 +1076,9 @@ uint8_t bma020_get_hg_hysterese(void)
  */
 void bma020_set_any_motion_threshold(uint8_t threshold)
 {
-	twi_master_write_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_ANY_MOTION_THRESHOLD,
-								threshold);
+	twi_master_write_register(BMA020_TWI_ADDRESS,
+							  BMA020_REGISTER_ANY_MOTION_THRESHOLD,
+							  threshold);
 }
 
 /**
@@ -1032,7 +1087,8 @@ void bma020_set_any_motion_threshold(uint8_t threshold)
  */
 uint8_t bma020_get_any_motion_threshold(void)
 {
-	return twi_master_read_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_ANY_MOTION_THRESHOLD);
+	return twi_master_read_register(BMA020_TWI_ADDRESS,
+									BMA020_REGISTER_ANY_MOTION_THRESHOLD);
 }
 
 /**
@@ -1050,7 +1106,8 @@ bool bma020_set_any_motion_duration(uint8_t duration)
 
 
 		/* read register and delete old value */
-		register_value = twi_master_read_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_AMDUR_HGHYS_LGHYS);
+		register_value = twi_master_read_register(BMA020_TWI_ADDRESS,
+												  BMA020_REGISTER_AMDUR_HGHYS_LGHYS);
 		register_value &= ~(1<<BMA020_BIT_ANY_MOTION_DURATION_1 |
 							1<<BMA020_BIT_ANY_MOTION_DURATION_0); /* value &= 0b00111111; */
 
@@ -1066,8 +1123,9 @@ bool bma020_set_any_motion_duration(uint8_t duration)
 							   1<<BMA020_BIT_ANY_MOTION_DURATION_1);
 		}
 
-		twi_master_write_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_AMDUR_HGHYS_LGHYS,
-									register_value);
+		twi_master_write_register(BMA020_TWI_ADDRESS,
+								  BMA020_REGISTER_AMDUR_HGHYS_LGHYS,
+								  register_value);
 
 		return true;
 	} else {
@@ -1081,7 +1139,8 @@ uint8_t bma020_get_any_motion_duration(void)
 	uint16_t return_value;
 
 	/* read register and delete all non any_motion_duration bits */
-	register_value = twi_master_read_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_AMDUR_HGHYS_LGHYS);
+	register_value = twi_master_read_register(BMA020_TWI_ADDRESS,
+											  BMA020_REGISTER_AMDUR_HGHYS_LGHYS);
 	register_value &= (1<<BMA020_BIT_ANY_MOTION_DURATION_0 |
 					   1<<BMA020_BIT_ANY_MOTION_DURATION_1);
 
@@ -1125,9 +1184,10 @@ uint8_t bma020_get_any_motion_duration(void)
  */
 void bma020_enable_wake_up(bool enable)
 {
-	twi_master_write_register_bit(BMA020_TWI_ADDRESS, enable,
-			BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
-							BMA020_BIT_WAKE_UP);
+	twi_master_write_register_bit(BMA020_TWI_ADDRESS,
+								  BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
+								  BMA020_BIT_WAKE_UP,
+								  enable);
 }
 
 /**
@@ -1137,8 +1197,9 @@ void bma020_enable_wake_up(bool enable)
 
 bool bma020_is_wake_up(void)
 {
-	return twi_master_read_register_bit(BMA020_TWI_ADDRESS, BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
-								   BMA020_BIT_WAKE_UP);
+	return twi_master_read_register_bit(BMA020_TWI_ADDRESS,
+										BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
+										BMA020_BIT_WAKE_UP);
 }
 
 
@@ -1167,7 +1228,8 @@ bool bma020_set_wake_up_pause(uint16_t wake_up_time)
 		wake_up_time == 2560) {
 
 		/* read register and delete old value */
-		register_value = twi_master_read_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP);
+		register_value = twi_master_read_register(BMA020_TWI_ADDRESS,
+												  BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP);
 		register_value &= ~(1<<BMA020_BIT_WAKE_UP_PAUSE_1 |
 							1<<BMA020_BIT_WAKE_UP_PAUSE_0); /* value &= 0b11111001; */
 
@@ -1183,8 +1245,9 @@ bool bma020_set_wake_up_pause(uint16_t wake_up_time)
 							   1<<BMA020_BIT_WAKE_UP_PAUSE_1);
 		}
 
-		twi_master_write_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_CONTROL_RANGE_BANDWIDTH,
-									register_value);
+		twi_master_write_register(BMA020_TWI_ADDRESS,
+								  BMA020_REGISTER_CONTROL_RANGE_BANDWIDTH,
+								  register_value);
 
 		return true;
 	} else {
@@ -1199,7 +1262,8 @@ uint16_t bma020_get_wake_up_pause(void)
 
 
 	/* read register and delete all non wake_up_pause */
-	register_value = twi_master_read_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP);
+	register_value = twi_master_read_register(BMA020_TWI_ADDRESS,
+											  BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP);
 	register_value &= (1<<BMA020_BIT_WAKE_UP_PAUSE_1 |
 					   1<<BMA020_BIT_WAKE_UP_PAUSE_0);
 
@@ -1256,7 +1320,8 @@ bool bma020_set_bandwidth(uint16_t bandwidth)
 
 
 		/* read register and delete old value */
-		value = twi_master_read_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_CONTROL_RANGE_BANDWIDTH);
+		value = twi_master_read_register(BMA020_TWI_ADDRESS,
+										 BMA020_REGISTER_CONTROL_RANGE_BANDWIDTH);
 		value &= ~(1<<BMA020_BIT_BANDWIDTH_2 |
 				   1<<BMA020_BIT_BANDWIDTH_1 |
 				   1<<BMA020_BIT_BANDWIDTH_0); /* value &= 0b11111000; */
@@ -1278,7 +1343,9 @@ bool bma020_set_bandwidth(uint16_t bandwidth)
 			value |= ((1<<BMA020_BIT_BANDWIDTH_2) | (1<<BMA020_BIT_BANDWIDTH_1));
 		}
 
-		twi_master_write_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_CONTROL_RANGE_BANDWIDTH, value);
+		twi_master_write_register(BMA020_TWI_ADDRESS,
+								  BMA020_REGISTER_CONTROL_RANGE_BANDWIDTH,
+								  value);
 
 		return true;
 	} else {
@@ -1297,7 +1364,8 @@ uint16_t bma020_get_bandwidth(void)
 	uint16_t return_value;
 
 	/* read register and delete all non range-bits*/
-	register_value = twi_master_read_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_CONTROL_RANGE_BANDWIDTH);
+	register_value = twi_master_read_register(BMA020_TWI_ADDRESS,
+											  BMA020_REGISTER_CONTROL_RANGE_BANDWIDTH);
 	register_value &= (1<<BMA020_BIT_BANDWIDTH_2 |
 					   1<<BMA020_BIT_BANDWIDTH_1 |
 					   1<<BMA020_BIT_BANDWIDTH_0); /* (value &= 0b00000111;)*/
@@ -1353,7 +1421,8 @@ bool bma020_set_range(uint8_t range)
 		uint8_t value;
 
 		/* read register and delete old value */
-		value = twi_master_read_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_CONTROL_RANGE_BANDWIDTH);
+		value = twi_master_read_register(BMA020_TWI_ADDRESS,
+										 BMA020_REGISTER_CONTROL_RANGE_BANDWIDTH);
 		value &= ~(1<<BMA020_BIT_RANGE_1 | 1<<BMA020_BIT_RANGE_0); /* (value &= 0b11100111;)*/
 
 
@@ -1365,7 +1434,9 @@ bool bma020_set_range(uint8_t range)
 			value |= (1<<BMA020_BIT_RANGE_1);
 		}
 
-		twi_master_write_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_CONTROL_RANGE_BANDWIDTH, value);
+		twi_master_write_register(BMA020_TWI_ADDRESS,
+								  BMA020_REGISTER_CONTROL_RANGE_BANDWIDTH,
+								  value);
 
 		return true;
 	} else {
@@ -1384,7 +1455,8 @@ uint8_t bma020_get_range(void)
 	uint8_t return_value;
 
 	/* read register and delete all non range-bits*/
-	register_value = twi_master_read_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_CONTROL_RANGE_BANDWIDTH);
+	register_value = twi_master_read_register(BMA020_TWI_ADDRESS,
+											  BMA020_REGISTER_CONTROL_RANGE_BANDWIDTH);
 	register_value &= (1<<BMA020_BIT_RANGE_1 | 1<<BMA020_BIT_RANGE_0); /* (value &= 0b00011000;)*/
 
 	/*convert to human readable values */
@@ -1408,24 +1480,28 @@ uint8_t bma020_get_range(void)
 
 void bma020_set_customer_reserved_1(uint8_t value)
 {
-	twi_master_write_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_CUSTOMER_1,
-								value);
+	twi_master_write_register(BMA020_TWI_ADDRESS,
+							  BMA020_REGISTER_CUSTOMER_1,
+							  value);
 }
 
 uint8_t bma020_get_customer_reserved_1()
 {
-	return twi_master_read_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_CUSTOMER_1);
+	return twi_master_read_register(BMA020_TWI_ADDRESS,
+									BMA020_REGISTER_CUSTOMER_1);
 }
 
 void bma020_set_customer_reserved_2(uint8_t value)
 {
-	twi_master_write_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_CUSTOMER_2,
-								value);
+	twi_master_write_register(BMA020_TWI_ADDRESS,
+							  BMA020_REGISTER_CUSTOMER_2,
+							  value);
 }
 
 uint8_t bma020_get_customer_reserved_2()
 {
-	return twi_master_read_register(BMA020_TWI_ADDRESS, BMA020_REGISTER_CUSTOMER_2);
+	return twi_master_read_register(BMA020_TWI_ADDRESS,
+									BMA020_REGISTER_CUSTOMER_2);
 }
 
 /**
