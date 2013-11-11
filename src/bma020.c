@@ -1246,7 +1246,7 @@ bool bma020_set_wake_up_pause(uint16_t wake_up_time)
 		}
 
 		twi_master_write_register(BMA020_TWI_ADDRESS,
-								  BMA020_REGISTER_CONTROL_RANGE_BANDWIDTH,
+								  BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
 								  register_value);
 
 		return true;
