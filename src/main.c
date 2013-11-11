@@ -23,6 +23,10 @@
 #include "acceleration_t.h"
 #include "bma020.h"
 
+/* Tests */
+#include "test/test_twi_master.h"
+#include "test/test_bma020.h"
+
 
 /* *** DECLARATIONS ********************************************************** */
 
@@ -31,6 +35,7 @@
 /* local function declarations  */
 static void main_init(void);
 static void main_run(void);
+static void main_run_tests(void);
 
 /* *** FUNCTION DEFINITIONS ************************************************** */
 
@@ -50,12 +55,31 @@ void main_run(void)
 {
 	uint8_t led = 0;
 
+
 	for(;;) {
 		PORTC = led;
 		led++;
 
 		_delay_ms(500);
 	}
+}
+
+
+void main_run_tests(void)
+{
+	//test_twi_master_get_bytes();
+	//test_master_write_and_read_bytes();
+	//test_twi_master_read_and_write_bits();
+
+	uint8_t i;
+	uint8_t max = 1;
+
+	for(i = 0;i < max;i ++) {
+		test_bma020_settings();
+		_delay_ms(100);
+	}
+
+
 }
 
 
@@ -66,6 +90,8 @@ void main_run(void)
 int main(void)
 {
 	main_init();
+
+	main_run_tests();
 	main_run();
 
 	return 0;

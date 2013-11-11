@@ -10,6 +10,8 @@
 #include "test_twi_master.h"
 
 #include "../lib/twi_master.h"
+#include <stdbool.h>
+
 /* *** DECLARATIONS ********************************************************** */
 
 

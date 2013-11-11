@@ -27,6 +27,7 @@
 /* external objects            */
 
 /* external functions          */
+extern void test_bma020_settings(void);
 
 #endif /* TEST_BMA020_H_ */
 
