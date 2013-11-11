@@ -16,13 +16,21 @@
 
 /* local function declarations  */
 static void test_bma020_register0x15(bool, bool);
+static void test_bma020_register0x14(bool, bool);
+static void test_bma020_register0x11(bool, bool);
+static void test_bma020_register0x0B(bool, bool);
 
 /* *** FUNCTION DEFINITIONS ************************************************** */
 
 
 void test_bma020_settings()
 {
-	test_bma020_register0x15(true, true);
+//	test_bma020_register0x15(true, true);
+//	test_bma020_register0x14(true, true);
+//	test_bma020_register0x11(false, true);
+	test_bma020_register0x0B(true, true);
+
+
 }
 
 
@@ -69,6 +77,114 @@ void test_bma020_register0x15(bool reset_bma020, bool print_logical)
 		printf("wake_up_pause:     %d\n", bma020_get_wake_up_pause());
 		printf("wake_up_enabled:   %d\n", bma020_is_wake_up());
 	}
+}
+
+void test_bma020_register0x14(bool reset_bma020, bool print_logical)
+{
+	uint8_t slave_address = (0x70 >> 1);
+	uint8_t register_address = 0x14;
+	uint8_t val;
+
+	if(reset_bma020) {
+		bma020_soft_reset();
+		_delay_ms(10);
+	}
+
+
+
+	printf("read old values\n");
+	val = twi_master_read_register(slave_address, register_address);
+	printf("Register 0x%02X = 0x%02X\n",register_address, val);
+
+
+	printf("set new values through setters\n");
+
+	bma020_set_range(10);
+	bma020_set_bandwidth(1501);
+
+
+
+	printf("read new values\n");
+	val = twi_master_read_register(slave_address, register_address);
+	printf("Register 0x%02X = 0x%02X\n",register_address, val);
+
+	if(print_logical) {
+		printf("Range:             %d\n", bma020_get_range());
+		printf("Bandwidth:         %d\n", bma020_get_bandwidth());
+	}
+}
+
+void test_bma020_register0x11(bool reset_bma020, bool print_logical) {
+
+	uint8_t slave_address = (0x70 >> 1);
+	uint8_t register_address = 0x11;
+	uint8_t val;
+
+	if(reset_bma020) {
+		bma020_soft_reset();
+		_delay_ms(10);
+	}
+
+	printf("read old values\n");
+	val = twi_master_read_register(slave_address, register_address);
+	printf("Register 0x%02X = 0x%02X\n",register_address, val);
+
+	printf("set new values through setters\n");
+
+	bma020_set_any_motion_duration(3);
+	bma020_set_hg_hysterese(4);
+	bma020_set_lg_hysterese(-12);
+
+	printf("read new values\n");
+	val = twi_master_read_register(slave_address, register_address);
+	printf("Register 0x%02X = 0x%02X\n",register_address, val);
+
+	if(print_logical) {
+		printf("Any_Motion_dur   %d\n", bma020_get_any_motion_duration());
+		printf("HG_hysterese     %d\n", bma020_get_hg_hysterese());
+		printf("LG_hysterese     %d\n", bma020_get_lg_hysterese());
+	}
+}
+
+
+void test_bma020_register0x0B(bool reset_bma020, bool print_logical) {
+
+	uint8_t slave_address = (0x70 >> 1);
+	uint8_t register_address = 0x0B;
+	uint8_t val;
+
+	if(reset_bma020) {
+		bma020_soft_reset();
+		_delay_ms(10);
+	}
+
+	printf("read old values\n");
+	val = twi_master_read_register(slave_address, register_address);
+	printf("Register 0x%02X = 0x%02X\n",register_address, val);
+
+	printf("set new values through setters\n");
+
+	bma020_enable_motion_alert_int(true);
+	bma020_enable_any_motion_int(false);
+	bma020_set_counter_hg(1);
+	bma020_set_counter_lg(1);
+	bma020_enable_hg_int(true);
+	bma020_enable_lg_int(false);
+
+
+	printf("read new values\n");
+	val = twi_master_read_register(slave_address, register_address);
+	printf("Register 0x%02X = 0x%02X\n",register_address, val);
+
+	if(print_logical) {
+		printf("Motion Alert INT   %d\n", bma020_is_motion_alert_int());
+		printf("Any Motion INT     %d\n", bma020_is_any_motion_int());
+		printf("HG Counter         %d\n", bma020_get_counter_hg());
+		printf("LG Counter         %d\n", bma020_get_counter_lg());
+		printf("HG INT             %d\n", bma020_is_hg_int());
+		printf("LG INT             %d\n", bma020_is_lg_int());
+	}
+
 }
 
 /* OLD AND BUSTED ************************************************************ */
