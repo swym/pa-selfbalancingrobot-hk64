@@ -9,7 +9,11 @@
 /* *** INCLUDES ************************************************************** */
 #include "test_bma020.h"
 
+
 #include <util/delay.h>
+
+
+#include "../acceleration_t.h"
 /* *** DECLARATIONS ********************************************************** */
 
 /* local type and constants     */
@@ -19,6 +23,7 @@ static void test_bma020_register0x15(bool, bool);
 static void test_bma020_register0x14(bool, bool);
 static void test_bma020_register0x11(bool, bool);
 static void test_bma020_register0x0B(bool, bool);
+static void test_bma020_read_and_sleep(void);
 
 /* *** FUNCTION DEFINITIONS ************************************************** */
 
@@ -28,7 +33,9 @@ void test_bma020_settings()
 //	test_bma020_register0x15(true, true);
 //	test_bma020_register0x14(true, true);
 //	test_bma020_register0x11(false, true);
-	test_bma020_register0x0B(true, true);
+//	test_bma020_register0x0B(true, true);
+
+	test_bma020_read_and_sleep();
 
 
 }
@@ -146,7 +153,6 @@ void test_bma020_register0x11(bool reset_bma020, bool print_logical) {
 	}
 }
 
-
 void test_bma020_register0x0B(bool reset_bma020, bool print_logical) {
 
 	uint8_t slave_address = (0x70 >> 1);
@@ -185,6 +191,54 @@ void test_bma020_register0x0B(bool reset_bma020, bool print_logical) {
 		printf("LG INT             %d\n", bma020_is_lg_int());
 	}
 
+}
+
+
+void test_bma020_read_and_sleep() {
+
+
+	acceleration_t a_vector;
+	uint8_t i;
+
+
+	for(i = 0;i < 50;i++) {
+
+		bma020_read_raw_acceleration(&a_vector);
+
+		printf("X: %d Y: %d Z: %d\n",a_vector.x, a_vector.y, a_vector.z);
+
+		_delay_ms(10);
+	}
+
+	printf("\n");
+	printf("sleep well, little bma020..\n");
+	printf("\n");
+
+	bma020_sleep();
+
+	for(i = 0;i < 50;i++) {
+
+		bma020_read_raw_acceleration(&a_vector);
+
+		printf("X: %d Y: %d Z:%d\n",a_vector.x, a_vector.y, a_vector.z);
+
+		_delay_ms(10);
+	}
+
+	printf("\n");
+	printf("wake up!\n");
+	printf("\n");
+
+	bma020_soft_reset();
+
+	for(i = 0;i < 50;i++) {
+
+		bma020_read_raw_acceleration(&a_vector);
+
+		printf("X: %d Y: %d Z: %d\n",a_vector.x, a_vector.y, a_vector.z);
+
+		_delay_ms(10);
+	}
 }
 
 /* OLD AND BUSTED ************************************************************ */
