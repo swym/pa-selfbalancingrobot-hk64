@@ -67,20 +67,20 @@ extern void bma020_reset_interrupt(void);
 extern void bma020_enable_new_data_int(bool); /* bool enable */
 extern bool bma020_is_new_data_int(void);
 
-extern void bma020_enable_lg(bool); /* bool enable */
-extern bool bma020_is_enable_lg(void);
+extern void bma020_enable_lg_int(bool); /* bool enable */
+extern bool bma020_is_lg_int(void);
 
-extern void bma020_enable_hg(bool); /* bool enable */
-extern bool bma020_is_enable_hg(void);
+extern void bma020_enable_hg_int(bool); /* bool enable */
+extern bool bma020_is_hg_int(void);
 
 extern void bma020_enable_advanced_int(bool); /* bool enable */
 extern bool bma020_is_advanced_int(void);
 
-extern void bma020_enable_any_motion(bool); /* bool enable */
-extern bool bma020_is_enable_any_motion(void);
+extern void bma020_enable_any_motion_int(bool); /* bool enable */
+extern bool bma020_is_any_motion_int(void);
 
-extern void bma020_enable_motion_alert(bool); /* bool enable */
-extern bool bma020_is_enable_motion_alert(void);
+extern void bma020_enable_motion_alert_int(bool); /* bool enable */
+extern bool bma020_is_motion_alert_int(void);
 
 extern void bma020_enable_latched_int(bool); /* bool enable */
 extern bool bma020_is_latched_int(void);

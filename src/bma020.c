@@ -540,7 +540,7 @@ bool bma020_is_new_data_int(void)
  * This bit (address 0Bh, bit 0) enables the LG_thres criteria to generate an
  * interrupt.
  */
-void bma020_enable_lg(bool enable)
+void bma020_enable_lg_int(bool enable)
 {
 	twi_master_write_register_bit(BMA020_TWI_ADDRESS,
 								  BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
@@ -553,7 +553,7 @@ void bma020_enable_lg(bool enable)
  * @return
  */
 
-bool bma020_is_enable_lg(void)
+bool bma020_is_lg_int(void)
 {
 	return twi_master_read_register_bit(BMA020_TWI_ADDRESS,
 										BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
@@ -568,7 +568,7 @@ bool bma020_is_enable_lg(void)
  */
 
 
-void bma020_enable_hg(bool enable)
+void bma020_enable_hg_int(bool enable)
 {
 	twi_master_write_register_bit(BMA020_TWI_ADDRESS,
 								  BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
@@ -582,7 +582,7 @@ void bma020_enable_hg(bool enable)
  */
 
 
-bool bma020_is_enable_hg(void)
+bool bma020_is_hg_int(void)
 {
 	return twi_master_read_register_bit(BMA020_TWI_ADDRESS,
 										BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
@@ -627,7 +627,7 @@ bool bma020_is_advanced_int(void)
  * @param enable
  */
 
-void bma020_enable_any_motion(bool enable)
+void bma020_enable_any_motion_int(bool enable)
 {
 	twi_master_write_register_bit(BMA020_TWI_ADDRESS,
 							      BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
@@ -640,7 +640,7 @@ void bma020_enable_any_motion(bool enable)
  * @return
  */
 
-bool bma020_is_enable_any_motion(void)
+bool bma020_is_any_motion_int(void)
 {
 	return twi_master_read_register_bit(BMA020_TWI_ADDRESS,
 										BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
@@ -656,7 +656,7 @@ bool bma020_is_enable_any_motion(void)
  * @param enable
  */
 
-void bma020_enable_motion_alert(bool enable)
+void bma020_enable_motion_alert_int(bool enable)
 {
 	twi_master_write_register_bit(BMA020_TWI_ADDRESS,
 								  BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
@@ -670,7 +670,7 @@ void bma020_enable_motion_alert(bool enable)
  */
 
 
-bool bma020_is_enable_motion_alert(void)
+bool bma020_is_motion_alert_int(void)
 {
 	return twi_master_read_register_bit(BMA020_TWI_ADDRESS,
 										BMA020_REGISTER_ALERT_ENANYMOTION_CNTHG_CNTLG_ENHG_ENLG,
@@ -1246,7 +1246,7 @@ bool bma020_set_wake_up_pause(uint16_t wake_up_time)
 		}
 
 		twi_master_write_register(BMA020_TWI_ADDRESS,
-								  BMA020_REGISTER_CONTROL_RANGE_BANDWIDTH,
+								  BMA020_REGISTER_CONTROL_SPI4_INTERRUPT_WAKEUP,
 								  register_value);
 
 		return true;
