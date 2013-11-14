@@ -29,6 +29,10 @@ typedef struct {
 
 /* external functions          */
 extern void acceleration_get_current_acceleration(acceleration_t *);
+extern void acceleration_init(void);
+
+extern void acceleration_calibrate_offset(void);
+extern void acceleration_get_offset(acceleration_t *);
 
 
 #endif /* ACCELERATION_T_H_ */
