@@ -15,8 +15,6 @@
 
 /* local headers               */
 
-
-
 /* *** DECLARATIONS ********************************************************** */
 
 /* external type and constants */
@@ -30,5 +28,7 @@ typedef struct {
 /* external objects            */
 
 /* external functions          */
+extern void acceleration_get_current_acceleration(acceleration_t *);
+
 
 #endif /* ACCELERATION_T_H_ */
