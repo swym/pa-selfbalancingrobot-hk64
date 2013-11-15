@@ -9,6 +9,7 @@
 #include "acceleration_t.h"
 
 #include "bma020.h"
+#include "moving_average.h"
 /* *** TODO BMA020
  * - Offset automatisch ermitteln
  * - evtl Werte glŠtten/filtern
@@ -24,6 +25,9 @@
 /* local type and constants     */
 static acceleration_t offset;
 
+static moving_average_t average_acceleration_x;
+static moving_average_t average_acceleration_y;
+static moving_average_t average_acceleration_z;
 
 /* local function declarations  */
 
@@ -32,19 +36,36 @@ static acceleration_t offset;
 
 /**
  * reads a acceleceration vector from the accelerationsensor. also includes the
- * offset.
+ * offset and calculates average
  *
  * @param acceleration
  */
 void acceleration_get_current_acceleration(acceleration_t *acceleration)
 {
+	acceleration_t new_accel;
+
 	//read new value
-	bma020_read_raw_acceleration(acceleration);
+	bma020_read_raw_acceleration(&new_accel);
 
 	//correct with offset
-	acceleration->x += offset.x;
-	acceleration->y += offset.y;
-	acceleration->z += offset.z;
+	new_accel.x += offset.x;
+	new_accel.y += offset.y;
+	new_accel.z += offset.z;
+
+//	acceleration->x = new_accel.x;
+//	acceleration->y = new_accel.y;
+//	acceleration->z = new_accel.z;
+
+
+	//calculate mean
+	moving_average_simple_put_element(&average_acceleration_x, new_accel.x);
+	moving_average_simple_put_element(&average_acceleration_y, new_accel.y);
+	moving_average_simple_put_element(&average_acceleration_z, new_accel.z);
+
+	//prepare acceleration struct
+	acceleration->x = average_acceleration_x.mean;
+	acceleration->y = average_acceleration_y.mean;
+	acceleration->z = average_acceleration_z.mean;
 }
 
 /**
