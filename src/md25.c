@@ -34,20 +34,11 @@
 #define MD25_REGISTER_MODE					0x0F
 #define MD25_REGISTER_COMMAND				0x10
 
-#define MD25_MODE_1_UNSIGNED_SPEED			0
-#define MD25_MODE_2_SIGNED_SPEED			1
-#define MD25_MODE_3_UNSIGNED_TURN			2
-#define MD25_MODE_4_SIGNED_TURN				3
-
-#define MD25_ACCELERATION_MIN				1
-#define MD25_ACCELERATION_MAX				10
-
 #define MD25_CMD_RESET_ENCODERS				0x20
 #define MD25_CMD_DISABLE_SPEED_REGULATION	0x30
 #define MD25_CMD_ENABLE_SPEED_REGULATION	0x31
 #define MD25_CMD_DISABLE_I2C_TIMEOUT		0x32
 #define MD25_CMD_ENABLE_I2C_TIMEOUT			0x33
-
 
 #define MD25_TWI_ADRESS						(0xB0>>1)
 
@@ -114,10 +105,14 @@ uint8_t md25_get_acceleration_rate(void)
 
 void md25_set_mode(uint8_t mode)
 {
-	//TODO: implement mode 3 and mode 4
-	if(mode == MD25_MODE_1_UNSIGNED_SPEED ||
-	   mode == MD25_MODE_2_SIGNED_SPEED) {
 
+
+	//TODO: implement mode 3 and mode 4
+	if(mode == MD25_MODE_SIGNED_SPEED   ||
+	   mode == MD25_MODE_UNSIGNED_SPEED ||
+	   mode == MD25_MODE_SIGNED_TURN    ||
+	   mode == MD25_MODE_UNSIGNED_TURN)
+	{
 		twi_master_write_register(MD25_TWI_ADRESS,
 								  MD25_REGISTER_MODE,
 								  mode);
@@ -148,10 +143,10 @@ uint32_t md25_get_motor_encoder(uint8_t motor)
 	temp_data  = twi_receive_buffer[0];
 	enc_val    = (temp_data << 24);
 
-	temp_data  = twi_receive_buffer[0];
+	temp_data  = twi_receive_buffer[1];
 	enc_val   |= (temp_data << 16);
 
-	temp_data  = twi_receive_buffer[0];
+	temp_data  = twi_receive_buffer[2];
 	enc_val   |= (temp_data << 8);
 
 	enc_val   |= (uint32_t)(twi_receive_buffer[3]);

@@ -22,8 +22,17 @@
 /* *** DECLARATIONS ********************************************************** */
 
 /* external type and constants */
-#define MD25_MOTOR1 0
-#define MD25_MOTOR2 1
+#define MD25_MOTOR1					0
+#define MD25_MOTOR2					1
+
+#define MD25_MODE_UNSIGNED_SPEED	0
+#define MD25_MODE_SIGNED_SPEED		1
+#define MD25_MODE_UNSIGNED_TURN		2
+#define MD25_MODE_SIGNED_TURN		3
+
+#define MD25_ACCELERATION_MIN		1
+#define MD25_ACCELERATION_MAX		10
+
 /* external objects            */
 
 /* external functions          */
