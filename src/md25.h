@@ -12,6 +12,7 @@
 /* *** INCLUDES ************************************************************** */
 
 /* system headers              */ 
+#include <stdbool.h>
 
 /* local headers               */
 
@@ -24,30 +25,31 @@
 /* external objects            */
 
 /* external functions          */
-extern void md25_set_speed(uint8, uint8); /*uint8 motor1, uint8 motor2 */
-extern void md25_set_motor1_speed();
-extern void md25_set_motor2_speed();
+extern void md25_set_speed(uint8_t, uint8_t); /*uint8 motor1, uint8 motor2 */
 
-extern void md25_get_motor2_speed();
-extern void md25_get_motor2_speed();
+extern void md25_set_motor1_speed(uint8_t);   /* uint8_t speed */
+extern void md25_set_motor2_speed(uint8_t);   /* uint8_t speed */
+
+extern uint8_t md25_get_motor2_speed(void);
+extern uint8_t md25_get_motor2_speed(void);
 
 extern void md25_set_acceleration_rate();
-extern void md25_get_acceleration_rate();
+extern uint8_t md25_get_acceleration_rate(void);
 
-extern void md25_set_mode();
-extern void md25_get_mode();
+extern void md25_set_mode(uint8_t);
+extern uint8_t md25_get_mode(void);
 
-extern void md25_get_motor_encoder_1();
-extern void md25_get_motor_encoder_2();
+extern uint32_t md25_get_motor_encoder_1(void);
+extern uint32_t md25_get_motor_encoder_2(void);
 
-extern void md25_get_battery_volts();
-extern void md25_get_motor1_current();
-extern void md25_get_motor2_current();
-extern void md25_get_software_revision();
+extern uint8_t md25_get_battery_volts(void);
+extern uint8_t md25_get_motor1_current(void);
+extern uint8_t md25_get_motor2_current(void);
+extern uint8_t md25_get_software_revision(void);
 
-extern void md25_cmd_reset_encoders();
-extern void md25_cmd_enable_speed_regulation(bool);
-extern void md25_cmd_enable_i2c_timout(bool);
+extern void md25_cmd_reset_encoders(void);
+extern void md25_cmd_enable_speed_regulation(bool); /*bool enable */
+extern void md25_cmd_enable_i2c_timout(bool);		/*bool enable */
 //TODO: Implement functions for changing the i2c bus address
 
 #endif /* MD25_H_ */
