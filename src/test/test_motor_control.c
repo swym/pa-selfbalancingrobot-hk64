@@ -10,8 +10,10 @@
 #include "test_motor_control.h"
 
 #include "../motor_control.h"
+#include "../md25.h"
 
 #include <util/delay.h>
+#include <stdio.h>
 /* *** DECLARATIONS ********************************************************** */
 
 /* local type and constants     */
@@ -25,7 +27,9 @@ void test_motor_control_set_different_speeds(void)
 	motor_contol_speed_t speed;
 
 	//init
+	md25_set_mode(MD25_MODE_SIGNED_SPEED);
 
+	printf("test_motor_control_set_different_speeds(void)");
 	printf("init\n");
 
 	//1:neue Geschwindigkeit einstellen
@@ -122,4 +126,5 @@ void test_motor_control_set_different_speeds(void)
 
 	_delay_ms(2000.0);
 
+	printf("stop\n");
 }
