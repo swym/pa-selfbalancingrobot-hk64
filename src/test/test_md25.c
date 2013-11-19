@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 #include <avr/io.h>
 #include <util/delay.h>
@@ -100,5 +101,41 @@ void test_md25_mode(void)
 	for(i = 0;i < 32;i++) {
 		md25_set_speed(64, 64);
 		_delay_ms(100.0);
+	}
+}
+
+void test_md25_acceleration(void)
+{
+	uint8_t i = 0;
+
+	printf("start test_md25_acceleration(void)\n");
+
+
+	printf("md25_set_speed(0, 0)\n");
+	md25_set_mode(MD25_MODE_SIGNED_SPEED);
+	md25_cmd_enable_speed_regulation(true);
+	md25_set_speed(0, 0);
+
+	printf("md25_set_acceleration_rate(MD25_ACCELERATION_MIN)\n");
+	md25_set_acceleration_rate(MD25_ACCELERATION_MIN);
+
+	printf("md25_set_speed(100, 0);\n");
+	for(i = 0;i < 10;i++) {
+		md25_set_speed(100, 0);
+		_delay_ms(1000.0);
+	}
+
+	printf("md25_cmd_enable_speed_regulation(false);\n");
+	md25_cmd_enable_speed_regulation(false);
+
+	printf("md25_set_speed(0, 0)\n");
+	md25_set_speed(0, 0);
+
+	_delay_ms(5000.0);
+
+	printf("md25_set_speed(100, 0)\n");
+	for(i = 0;i < 5;i++) {
+		md25_set_speed(100, 0);
+		_delay_ms(1000.0);
 	}
 }

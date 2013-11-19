@@ -27,6 +27,7 @@
 extern void test_md25_encoders(void);
 extern void test_md25_volts_and_currents(void);
 extern void test_md25_mode(void);
+extern void test_md25_acceleration(void);
 
 #endif /* TEST_MD25_H_ */
 
