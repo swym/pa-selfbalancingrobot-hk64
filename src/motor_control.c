@@ -21,6 +21,17 @@ static motor_contol_speed_t new_speed;
 
 
 /* *** FUNCTION DEFINITIONS ************************************************** */
+void motor_control_init()
+{
+	current_speed.motor_1 = 0;
+	current_speed.motor_2 = 0;
+
+	new_speed.motor_1 = 0;
+	new_speed.motor_2 = 0;
+
+	md25_init();
+}
+
 
 /**
  * Saves the new calculated motor_speeds. To set the new speeds a call of
