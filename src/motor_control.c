@@ -21,6 +21,10 @@ static motor_contol_speed_t new_speed;
 
 
 /* *** FUNCTION DEFINITIONS ************************************************** */
+
+/**
+ * Initialize the Motor-Controller and the underlaying Motor-driver MD25
+ */
 void motor_control_init()
 {
 	current_speed.motor_1 = 0;
