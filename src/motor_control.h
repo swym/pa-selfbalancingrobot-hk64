@@ -12,7 +12,7 @@
 /* *** INCLUDES ************************************************************** */
 
 /* system headers              */ 
-
+#include <stdint.h>
 /* local headers               */
 
 
