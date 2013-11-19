@@ -24,7 +24,7 @@
 /* external objects            */
 
 /* external functions          */
-
+extern void test_motor_control_set_different_speeds(void);
 #endif /* TEST_MOTOR_CONTROL_H_ */
 
 
