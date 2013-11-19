@@ -36,6 +36,8 @@
 /* external objects            */
 
 /* external functions          */
+extern void md25_init(void);
+
 extern void md25_set_speed(int8_t, int8_t); /*int8 motor1, int8 motor2 */
 
 extern void md25_set_motor1_speed(int8_t);   /* int8_t speed */

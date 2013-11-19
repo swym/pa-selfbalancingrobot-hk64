@@ -216,5 +216,8 @@ void md25_cmd_enable_i2c_timout(bool enable)
 void md25_init()
 {
 	md25_set_mode(MD25_MODE_SIGNED_SPEED);
+
 	md25_set_acceleration_rate(MD25_ACCELERATION_MAX);
+
+	md25_set_speed(0,0);
 }
