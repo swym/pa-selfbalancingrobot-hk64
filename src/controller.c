@@ -15,24 +15,20 @@
 /* *** DECLARATIONS ********************************************************** */
 
 /* local type and constants     */
-volatile bool timer1_compare_reached = false;
+volatile bool timer0_compare_reached = false;
 /* local function declarations  */
 
 /*
-Discription: Timer1 alle 10 Millisekunden einen Interrupt auslösen. OCR1A und
-             der Prescaler werden dabei so gewählt, dass mit dem gegebenen Takt
-             die ISR (TIMER1_COMPA_vect) entsprechend ausgelöst wird.
+				Timer0 wird auf eine Periodenlänge von T = 4 ms einstellt
 
-                F_CPU               = 16000000
-                F_OC1A == t = 1/s   = 100
-                Prescaler           = 64
+				F_OC0 = 250
 
-                OCR1A = ?
+				OCR0    = ?
 
-				F_OC1A  =    (F_CPU) / (2 * Prescaler * (1 + OCR1A))
-				OCR1A   =   ((F_CPU) / (2 * Prescaler * F_OC1A)) - 1
-				OCR1A   =  (16000000 / (2 * 64 * 100)) - 1
-				OCR1A   =  1249
+				F_OC0   =    (F_CPU) / (2 * Prescaler * (1 + OCR0))
+				OCR0    =   ((F_CPU) / (2 * Prescaler * F_OC0)) - 1
+				OCR0    =  (16000000 / (2 * 256 * 250)) - 1
+				OCR0    =  124
 
 	Vgl.:	Atmel-2490-8-bit-AVR-Microcontroller-ATmega64-L_datasheet.pdf
 			Seite 125
@@ -41,20 +37,20 @@ Discription: Timer1 alle 10 Millisekunden einen Interrupt auslösen. OCR1A und
 /* *** FUNCTION DEFINITIONS ************************************************** */
 void controller_init(void)
 {
-	/* Timer1 wird auf eine Periodenlänge von T = 10 ms einstellt */
+	/* Timer0 wird auf eine Periodenlänge von T = 4 ms einstellt */
 
-	//Timer1 Betriebsart festlegen
-	TCCR1B |= (1 << WGM12); //Mode 04: CTC
+	//Timer0 Betriebsart festlegen - Timer/Counter Control Register:
+	TCCR0 |= (1 << WGM01); 				// Mode 4 - CTC
 
 	//Timer1 Prescaler festlegen
-	TCCR1B |= (1 << CS11 | 1 << CS10);	//Prescaler = 64
+	TCCR0 |= (1 << CS02 | 1 << CS01);	//Prescaler = 256
 
 	//Interruptverhalten definieren
-	TIMSK |= (1 << OCIE1A);				//OCIE1A: Timer/Counter1,
-										//Output Compare A Match Interrupt Enable
+	TIMSK |= (1 << OCIE0);				//OCIE1A: Timer/Counter0,
+										//Output Compare Match Interrupt Enable
 
-	//Timer1 OCR-Register vorladen
-	OCR1A = 1249;						//OCR1A: Output Compare Register 1 A
+	//Timer0 OCR-Register vorladen
+	OCR0 = 124;						//OCR0: Output Compare Register
 }
 
 void controller_run(void)
@@ -63,17 +59,17 @@ void controller_run(void)
 
 	for(;;) {
 
-		if(timer1_compare_reached) {
+		if(timer0_compare_reached) {
 
 			led_value++;
 
-			timer1_compare_reached = false;
+			timer0_compare_reached = false;
 		}
 		PORTC = led_value;
 	}
 }
 
-ISR(TIMER1_COMPA_vect)
+ISR(TIMER0_COMP_vect)
 {
-	timer1_compare_reached = true;
+	timer0_compare_reached = true;
 }
