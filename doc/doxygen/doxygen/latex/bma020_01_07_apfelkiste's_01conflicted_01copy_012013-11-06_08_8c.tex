@@ -1,0 +1,1982 @@
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c}{\section{bma020 (Apfelkiste's conflicted copy 2013-\/11-\/06).c File Reference}
+\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c}\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+}
+{\ttfamily \#include \char`\"{}bma020.\-h\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}lib/twi\-\_\-master.\-h\char`\"{}}\\*
+Include dependency graph for bma020 (Apfelkiste's conflicted copy 2013-\/11-\/06).c\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c__incl}
+\end{center}
+\end{figure}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a910ebdcbf3fe3a5499b9d427c95369ad}{B\-M\-A020\-\_\-\-T\-W\-I\-\_\-\-A\-D\-D\-R\-E\-S\-S}~(0x70$>$$>$1)
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ae2e8a268ceac616785b0515665b01bb4}{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-H\-I\-P\-I\-D}~0x00
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a36bed1b115f30a8f83929aa6912ef90f}{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-E\-R\-S\-I\-O\-N}~0x01
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a6b948feae41f5da16e97ff1bd9e3334d}{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-X\-\_\-\-L\-S\-B}~0x02
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ad3f2bc45b1d488802ca938203944ce07}{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-X\-\_\-\-M\-S\-B}~0x03
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ac0e18c6e342e41ec51273064e789eb71}{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-Y\-\_\-\-L\-S\-B}~0x04
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a4890cf05c47f87b1cafce312d70cbe61}{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-Y\-\_\-\-M\-S\-B}~0x05
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a34537e4b701cf6c8ccbd35dddb50cdae}{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-Z\-\_\-\-L\-S\-B}~0x06
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ad7d861a9c537ae4d858d675cabeb72ab}{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-Z\-\_\-\-M\-S\-B}~0x07
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a31b18d783e0814107d12497480f83c16}{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-U\-N\-U\-S\-E\-D}~0x08
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a4b0153203b4e4eedaacb8898a981a782}{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-S\-T\-A\-T\-U\-S}~0x09
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a5e888189b9d1de2c93925224e91135ed}{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-T\-E\-S\-T\-S\-\_\-\-R\-E\-S\-E\-T\-\_\-\-S\-L\-E\-E\-P}~0x0\-A
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a0d57597e9444b2d2527e51fbac95737f}{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-L\-E\-R\-T\-\_\-\-E\-N\-A\-N\-Y\-M\-O\-T\-I\-O\-N\-\_\-\-C\-N\-T\-H\-G\-\_\-\-C\-N\-T\-L\-G\-\_\-\-E\-N\-H\-G\-\_\-\-E\-N\-L\-G}~0x0\-B
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a0768026989e7f0e8dafa136b0b836778}{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-L\-G\-\_\-\-T\-H\-R\-E\-S\-H\-O\-L\-D}~0x0\-C
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_adb75b4cfabce54c8835a60667ca2fec6}{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-L\-G\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N}~0x0\-D
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a6ae61e1f922e9dc1deac5c123c1f5392}{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-H\-G\-\_\-\-T\-H\-R\-E\-S\-H\-O\-L\-D}~0x0\-E
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a986414c08eaff36b51caf3fa4270b676}{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-H\-G\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N}~0x0\-F
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a879872e3c026a4839f7a1dcce279ebbc}{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N\-\_\-\-T\-H\-R\-E\-S\-H\-O\-L\-D}~0x10
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a7948d646abd9564270e781e7d1542ea2}{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-M\-D\-U\-R\-\_\-\-H\-G\-H\-Y\-S\-\_\-\-L\-G\-H\-Y\-S}~0x11
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a41a38da26d08f31a9e57b78c25c86fc3}{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-U\-S\-T\-O\-M\-E\-R\-\_\-1}~0x12
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a731c45918ee8c88a458532e5aaf1e8e8}{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-U\-S\-T\-O\-M\-E\-R\-\_\-2}~0x13
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a348818f726073a02dcfb2acc73b21d3c}{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-R\-A\-N\-G\-E\-\_\-\-B\-A\-N\-D\-W\-I\-D\-T\-H}~0x14
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a4acb39507d72445b72e8ec37cfc7e110}{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-S\-P\-I4\-\_\-\-I\-N\-T\-E\-R\-R\-U\-P\-T\-\_\-\-W\-A\-K\-E\-U\-P}~0x15
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a975fb727d6224967de9b9c59a8386b4e}{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-T\-A\-T\-U\-S\-\_\-\-H\-G}~0
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a82a0471a876781d862c73fcf2d2d294c}{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-T\-A\-T\-U\-S\-\_\-\-L\-G}~1
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ac2782347bec913ffd6b4886260d4a1c9}{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-H\-G\-\_\-\-L\-A\-T\-C\-H\-E\-D}~2
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ac8707c5ff4823f57d53166c68b93a64d}{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-G\-\_\-\-L\-A\-T\-C\-H\-E\-D}~3
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ac632ae4a1bc7d097f799ae65f8189d8e}{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-L\-E\-R\-T\-\_\-\-P\-H\-A\-S\-E}~4
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a8cee37199daf753a3ed843455d8c2a09}{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-E\-L\-F\-\_\-\-T\-E\-S\-T\-\_\-\-R\-E\-S\-U\-L\-T}~7
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_acc826408b5998aa06e5c14dff972fd6f}{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-L\-E\-E\-P}~0
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ab3a25deb0aee6d5e44900e95d425c83b}{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-O\-F\-T\-\_\-\-R\-E\-S\-E\-T}~1
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a16d0d9c77ebf3a62c7b0751085fb4d93}{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-E\-L\-F\-\_\-\-T\-E\-S\-T\-\_\-0}~2
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a7fdbfb38eda34b405088ce97d5c78c40}{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-E\-L\-F\-\_\-\-T\-E\-S\-T\-\_\-1}~3
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a165460cff50e3bf8af5fe35ffca3abc6}{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-R\-E\-S\-E\-T\-\_\-\-I\-N\-T}~6
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a925aaafeefd3816288eb460c34837aef}{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-E\-N\-A\-B\-L\-E\-\_\-\-L\-G}~0
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a5a3e6dcc957c52b8d335bdd974b12e94}{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-E\-N\-A\-B\-L\-E\-\_\-\-H\-G}~1
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a6ebd350d7b315f6c7d569a78cde496ce}{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-L\-G\-\_\-0}~2
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a8538d5673ade5e44d08f5f38ee43e094}{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-L\-G\-\_\-1}~3
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a064c3ec3608ecbd1f7f379f2dd322fa7}{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-H\-G\-\_\-0}~4
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a78bb70f1295257936f12414b2581b681}{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-H\-G\-\_\-1}~5
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_af7d31105bcb02dc50e6a92763a86231c}{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N}~6
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a0a8db97d7c0230486028ca4ac0be595c}{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-L\-T\-E\-R\-T}~7
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a059560827f070835f7a4c8b313ceb84e}{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-0}~0
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a1502001a7f24242b327f1c0e47a2241c}{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-1}~1
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a576762122658d43da865ea1e86c1fc71}{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-2}~2
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a933aa5877c72d903e9ab78e9ab592cd4}{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-H\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-0}~3
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a34468ab47faece6bb997f04b7346eb87}{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-H\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-1}~4
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a19d394a2a00ac726548dae99f86eabd1}{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-H\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-2}~5
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_abbb0a86052c45170a3d6bec56231b6d1}{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N\-\_\-0}~6
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a236cae0610d4977b7c33d61da6c0283a}{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N\-\_\-1}~7
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_aa800c186a424bd30d9a74171485a6637}{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-B\-A\-N\-D\-W\-I\-D\-T\-H\-\_\-0}~0
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a1988901e033e97c59ecf3a7838105965}{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-B\-A\-N\-D\-W\-I\-D\-T\-H\-\_\-1}~1
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a544b437e7c147c78f0d5c7809aa30ef4}{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-B\-A\-N\-D\-W\-I\-D\-T\-H\-\_\-2}~2
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a50cb14ce8207239ab2c36e499a9cd70f}{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-R\-A\-N\-G\-E\-\_\-0}~3
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a0c818caa68bb04f65df611469144ae24}{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-R\-A\-N\-G\-E\-\_\-1}~4
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_aa805f5b363f2c391346bfc3d320a025d}{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-W\-A\-K\-E\-\_\-\-U\-P}~0
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a689c1751e1bca1798ebe5475811a0fcb}{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-W\-A\-K\-E\-\_\-\-U\-P\-\_\-\-P\-A\-U\-S\-E\-\_\-0}~1
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ae682be14fa6f0456267646dbf61663e2}{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-W\-A\-K\-E\-\_\-\-U\-P\-\_\-\-P\-A\-U\-S\-E\-\_\-1}~2
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ab60ba5f17308fb2482b5a2c612c42a8b}{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-H\-A\-D\-O\-W\-\_\-\-D\-I\-S}~3
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ad5d46d9c4eb32f7bb2c583852a762f86}{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-A\-T\-C\-H\-\_\-\-I\-N\-T}~4
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_aff110e4eec403c02f3bb802db28b56e3}{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-N\-E\-W\-\_\-\-D\-A\-T\-A\-\_\-\-I\-N\-T}~5
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a86fd77658f1cd3d91f7a0b4ceef55d1b}{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-D\-V\-A\-N\-C\-E\-D\-\_\-\-I\-N\-T}~6
+\item 
+\#define \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a8100c404a0fb79baa3a2f9540223e01b}{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-P\-I4}~7
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+uint8\-\_\-t \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_af61528e1bbdc91a9acac39c776cfc11b}{bma020\-\_\-get\-\_\-chip\-\_\-id} ()
+\item 
+uint8\-\_\-t \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ad815b4dc0e95fa9e9109930e4c1ba39a}{bma020\-\_\-get\-\_\-ml\-\_\-version} ()
+\item 
+uint8\-\_\-t \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a411ed87bf0eebcd6464a2efa0b303940}{bma020\-\_\-get\-\_\-ai\-\_\-version} ()
+\item 
+void \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a26f79cde9e7a22ae5727f39850fc5eae}{bma020\-\_\-read\-\_\-raw\-\_\-acceleration} (\hyperlink{structacceleration__t}{acceleration\-\_\-t} $\ast$raw\-\_\-a\-\_\-vector)
+\item 
+bool \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_aa3922b9a261401e957502b0dc0c5395a}{bma020\-\_\-is\-\_\-new\-\_\-data} (char axis)
+\item 
+bool \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_af8352dba63a90d34734410f4f97eced4}{bma020\-\_\-get\-\_\-status\-\_\-hg} (void)
+\item 
+bool \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ab06787c50f090a339e8ed4d4a1408f6b}{bma020\-\_\-get\-\_\-status\-\_\-lg} (void)
+\item 
+bool \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a48178f75ec28ec3a881c0bd23ec16dfc}{bma020\-\_\-get\-\_\-lg\-\_\-latched} (void)
+\item 
+void \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_aa591678c9c225c04379f31f443da516f}{bma020\-\_\-reset\-\_\-lg\-\_\-latched} (void)
+\item 
+bool \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a5607b1f4a151f90262f63ac79ec8dbd9}{bma020\-\_\-get\-\_\-hg\-\_\-latched} (void)
+\item 
+void \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a996664698b38ebcbdc5f35277c86271f}{bma020\-\_\-reset\-\_\-hg\-\_\-latched} (void)
+\item 
+bool \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ada7359286e7b2e8f5efe66dbc7e0ec3e}{bma020\-\_\-get\-\_\-alert\-\_\-phase} (void)
+\item 
+bool \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a225a6d888c491bc9eeaa587c71658530}{bma020\-\_\-get\-\_\-self\-\_\-test\-\_\-result} (void)
+\item 
+void \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ae46fb2b7063713e26d4f939a01c410b4}{bma020\-\_\-sleep} (void)
+\item 
+void \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_aee5899ae2a2762d1f20c4f2895298e34}{bma020\-\_\-soft\-\_\-reset} (void)
+\item 
+void \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a1b4d80e962496fd3d254dc1adb060ccd}{bma020\-\_\-perform\-\_\-self\-\_\-test\-\_\-0} (void)
+\item 
+void \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_aafad8d4b857d14f771e1b5584b540087}{bma020\-\_\-perform\-\_\-self\-\_\-test\-\_\-1} (void)
+\item 
+void \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ac523767751ba8462faae363f828af936}{bma020\-\_\-reset\-\_\-interrupt} (void)
+\item 
+void \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_aeec5f00abc70a8693a10b23f12e25ab6}{bma020\-\_\-enable\-\_\-new\-\_\-data\-\_\-int} (bool enable)
+\item 
+bool \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a3f70726f60c671a6cd7250c84cc9ee7a}{bma020\-\_\-is\-\_\-new\-\_\-data\-\_\-int} (void)
+\item 
+void \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a8e25a2cb420e06ca77ea5b0d97c32e82}{bma020\-\_\-enable\-\_\-lg} (bool enable)
+\item 
+bool \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a47004eaf6774aa870fd8e2d4d5c1ae80}{bma020\-\_\-is\-\_\-enable\-\_\-lg} (void)
+\item 
+void \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ac3fa540d0f8c03f95efc25d8798f42b6}{bma020\-\_\-enable\-\_\-hg} (bool enable)
+\item 
+bool \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a8bbc44dd5bf3320c9ea06ce54100fafc}{bma020\-\_\-is\-\_\-enable\-\_\-hg} (void)
+\item 
+void \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_aeb518ad22636eeb17dd1113306c17e1e}{bma020\-\_\-enable\-\_\-advanced\-\_\-int} (bool enable)
+\item 
+bool \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a7d48379dad99c291f448af6889a10c65}{bma020\-\_\-is\-\_\-advanced\-\_\-int} (void)
+\item 
+void \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ae69d8ecda7ddd2b067989f4a78718969}{bma020\-\_\-enable\-\_\-any\-\_\-motion} (bool enable)
+\item 
+bool \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a7aaedcf13c31ab032c6014cf2f11d03e}{bma020\-\_\-is\-\_\-enable\-\_\-any\-\_\-motion} (void)
+\item 
+void \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a9ae38bcf7e1bbb2a12b62b8d1dc3d8e2}{bma020\-\_\-enable\-\_\-motion\-\_\-alert} (bool enable)
+\item 
+bool \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a460b42665cb432f91a3e54c132f9891e}{bma020\-\_\-is\-\_\-enable\-\_\-motion\-\_\-alert} (void)
+\item 
+void \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a9e25d8b9f372bf654a72ed94dd5b4a74}{bma020\-\_\-enable\-\_\-latched\-\_\-int} (bool enable)
+\item 
+bool \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a3e5636663c087915feeacb349b44ce31}{bma020\-\_\-is\-\_\-latched\-\_\-int} (void)
+\item 
+void \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ab3fa54af803bedc74927f8f2cf00aedc}{bma020\-\_\-set\-\_\-lg\-\_\-threshold} (uint8\-\_\-t threshold)
+\item 
+uint8\-\_\-t \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ab9c52c7427ba44b7f40c7de7effd6b70}{bma020\-\_\-get\-\_\-lg\-\_\-threshold} ()
+\item 
+void \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a76e0c3a6398d21ff31571d06dff824a8}{bma020\-\_\-set\-\_\-lg\-\_\-duration} (uint8\-\_\-t duration)
+\item 
+uint8\-\_\-t \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_af3021e4c25165a76c664be19c968ed7a}{bma020\-\_\-get\-\_\-lg\-\_\-duration} ()
+\item 
+bool \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a60af41cd9745b579ec231ecbcc61868e}{bma020\-\_\-set\-\_\-counter\-\_\-lg} (uint8\-\_\-t counter)
+\item 
+uint8\-\_\-t \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a851c0bbf26d7d95e294beae813e2c6f8}{bma020\-\_\-get\-\_\-counter\-\_\-lg} (void)
+\item 
+bool \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a503460a9fa8d3366a3fd57bc3e278c5c}{bma020\-\_\-set\-\_\-range} (uint8\-\_\-t range)
+\item 
+uint8\-\_\-t \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a9a0c0e161ae1c7ac0963a98f1a499c00}{bma020\-\_\-get\-\_\-range} (void)
+\item 
+bool \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a4c14ca5b6efeec9be6739252812ba8ae}{bma020\-\_\-set\-\_\-bandwidth} (uint16\-\_\-t bandwidth)
+\item 
+uint16\-\_\-t \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a7638286b73693422b67c4fabef32fe24}{bma020\-\_\-get\-\_\-bandwidth} (void)
+\item 
+bool \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ae73261ee46188952993f69970854e386}{bma020\-\_\-set\-\_\-wake\-\_\-up\-\_\-pause} (uint16\-\_\-t wake\-\_\-up\-\_\-time)
+\item 
+uint16\-\_\-t \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a9e076fdb4daec0fe8352340385006b7d}{bma020\-\_\-get\-\_\-wake\-\_\-up\-\_\-pause} (void)
+\item 
+bool \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ad8ef8d59af38fd4b7a2e271a433eb36a}{bma020\-\_\-set\-\_\-counter\-\_\-hg} (uint8\-\_\-t counter)
+\item 
+uint8\-\_\-t \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_aec5666921548a0d1a7c81c9b71dd9d44}{bma020\-\_\-get\-\_\-counter\-\_\-hg} (void)
+\item 
+bool \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a487a45e193399a5d13f378b130989447}{bma020\-\_\-set\-\_\-any\-\_\-motion\-\_\-duration} (uint8\-\_\-t duration)
+\item 
+uint8\-\_\-t \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_aa0957d9a759593bf02c37f61dac4a41b}{bma020\-\_\-get\-\_\-any\-\_\-motion\-\_\-duration} (void)
+\item 
+void \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_acf15f8f2a17ea937719f4f49af0c019f}{bma020\-\_\-set\-\_\-lg\-\_\-hysterese} (uint8\-\_\-t hysterese)
+\item 
+uint8\-\_\-t \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a73397e5a2d7ec9443c34e9f2fd4e7e8e}{bma020\-\_\-get\-\_\-lg\-\_\-hysterese} (void)
+\item 
+void \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a918407085e71e3ceb626d46afb0f36e0}{bma020\-\_\-set\-\_\-hg\-\_\-hysterese} (uint8\-\_\-t hysterese)
+\item 
+uint8\-\_\-t \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a532014744107ba2e88a56d2c4119db40}{bma020\-\_\-get\-\_\-hg\-\_\-hysterese} (void)
+\item 
+void \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ab98b298250deca2b3e71ac59d9f8ddd3}{bma020\-\_\-set\-\_\-any\-\_\-motion\-\_\-threshold} (uint8\-\_\-t threshold)
+\item 
+uint8\-\_\-t \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_aa886f09ffd7a8a7237198a56ee262fc5}{bma020\-\_\-get\-\_\-any\-\_\-motion\-\_\-threshold} (void)
+\item 
+void \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a285be18086194248979609a9333e0a47}{bma020\-\_\-set\-\_\-hg\-\_\-duration} (uint8\-\_\-t duration)
+\item 
+uint8\-\_\-t \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a298d59459d1e3fd4a27ad187027ecea2}{bma020\-\_\-get\-\_\-hg\-\_\-duration} ()
+\item 
+void \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_acbdb7c3ebc522fae8479446115161504}{bma020\-\_\-set\-\_\-customer\-\_\-reserved\-\_\-1} (uint8\-\_\-t duration)
+\item 
+uint8\-\_\-t \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a772e31e89870de0eebfdf2d00bbf145a}{bma020\-\_\-get\-\_\-customer\-\_\-reserved\-\_\-1} ()
+\item 
+void \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_abb127e792ad5c7a332c5e7e46cc828ae}{bma020\-\_\-set\-\_\-customer\-\_\-reserved\-\_\-2} (uint8\-\_\-t duration)
+\item 
+uint8\-\_\-t \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a57c220a687c54813b3971dbb53e4d341}{bma020\-\_\-get\-\_\-customer\-\_\-reserved\-\_\-2} ()
+\item 
+void \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a84ad4c88f3a38ec91b3639e58ded55ae}{bma020\-\_\-enable\-\_\-wake\-\_\-up} (bool enable)
+\item 
+bool \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a754386a5ed68093f02f5bec3f5e98cbd}{bma020\-\_\-is\-\_\-wake\-\_\-up} (void)
+\item 
+void \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a0980d95e18d69c73a088500e847784e0}{bma020\-\_\-enable\-\_\-shadow\-\_\-dis} (bool enable)
+\item 
+bool \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ad580d8161600c28b62f8c69dbbcbc43b}{bma020\-\_\-is\-\_\-shadow\-\_\-dis} (void)
+\item 
+void \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a81d4cd9fa30f06a446febbde9b62cef1}{bma020\-\_\-enable\-\_\-spi4} (bool enable)
+\item 
+bool \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a62a15f74e49f2463c1872dbe43dce521}{bma020\-\_\-is\-\_\-spi4} (void)
+\item 
+void \hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ac5c1a01ed031d3c8826f4a54cbae6efe}{bma020\-\_\-init} (void)
+\end{DoxyCompactItemize}
+
+
+\subsection{Macro Definition Documentation}
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a86fd77658f1cd3d91f7a0b4ceef55d1b}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-D\-V\-A\-N\-C\-E\-D\-\_\-\-I\-N\-T@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-D\-V\-A\-N\-C\-E\-D\-\_\-\-I\-N\-T}}
+\index{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-D\-V\-A\-N\-C\-E\-D\-\_\-\-I\-N\-T@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-D\-V\-A\-N\-C\-E\-D\-\_\-\-I\-N\-T}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-D\-V\-A\-N\-C\-E\-D\-\_\-\-I\-N\-T}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-D\-V\-A\-N\-C\-E\-D\-\_\-\-I\-N\-T~6}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a86fd77658f1cd3d91f7a0b4ceef55d1b}
+
+
+Definition at line 94 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-enable\-\_\-advanced\-\_\-int(), and bma020\-\_\-is\-\_\-advanced\-\_\-int().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ac632ae4a1bc7d097f799ae65f8189d8e}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-L\-E\-R\-T\-\_\-\-P\-H\-A\-S\-E@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-L\-E\-R\-T\-\_\-\-P\-H\-A\-S\-E}}
+\index{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-L\-E\-R\-T\-\_\-\-P\-H\-A\-S\-E@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-L\-E\-R\-T\-\_\-\-P\-H\-A\-S\-E}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-L\-E\-R\-T\-\_\-\-P\-H\-A\-S\-E}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-L\-E\-R\-T\-\_\-\-P\-H\-A\-S\-E~4}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ac632ae4a1bc7d097f799ae65f8189d8e}
+
+
+Definition at line 50 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-get\-\_\-alert\-\_\-phase().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a0a8db97d7c0230486028ca4ac0be595c}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-L\-T\-E\-R\-T@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-L\-T\-E\-R\-T}}
+\index{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-L\-T\-E\-R\-T@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-L\-T\-E\-R\-T}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-L\-T\-E\-R\-T}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-L\-T\-E\-R\-T~7}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a0a8db97d7c0230486028ca4ac0be595c}
+
+
+Definition at line 68 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-enable\-\_\-motion\-\_\-alert(), and bma020\-\_\-is\-\_\-enable\-\_\-motion\-\_\-alert().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_af7d31105bcb02dc50e6a92763a86231c}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N}}
+\index{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N~6}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_af7d31105bcb02dc50e6a92763a86231c}
+
+
+Definition at line 67 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-enable\-\_\-any\-\_\-motion(), and bma020\-\_\-is\-\_\-enable\-\_\-any\-\_\-motion().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_abbb0a86052c45170a3d6bec56231b6d1}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N\-\_\-0@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N\-\_\-0}}
+\index{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N\-\_\-0@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N\-\_\-0}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N\-\_\-0}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N\-\_\-0~6}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_abbb0a86052c45170a3d6bec56231b6d1}
+
+
+Definition at line 77 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-get\-\_\-any\-\_\-motion\-\_\-duration(), and bma020\-\_\-set\-\_\-any\-\_\-motion\-\_\-duration().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a236cae0610d4977b7c33d61da6c0283a}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N\-\_\-1@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N\-\_\-1}}
+\index{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N\-\_\-1@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N\-\_\-1}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N\-\_\-1}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N\-\_\-1~7}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a236cae0610d4977b7c33d61da6c0283a}
+
+
+Definition at line 78 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-get\-\_\-any\-\_\-motion\-\_\-duration(), and bma020\-\_\-set\-\_\-any\-\_\-motion\-\_\-duration().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_aa800c186a424bd30d9a74171485a6637}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-B\-A\-N\-D\-W\-I\-D\-T\-H\-\_\-0@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-B\-A\-N\-D\-W\-I\-D\-T\-H\-\_\-0}}
+\index{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-B\-A\-N\-D\-W\-I\-D\-T\-H\-\_\-0@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-B\-A\-N\-D\-W\-I\-D\-T\-H\-\_\-0}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-B\-A\-N\-D\-W\-I\-D\-T\-H\-\_\-0}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-B\-A\-N\-D\-W\-I\-D\-T\-H\-\_\-0~0}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_aa800c186a424bd30d9a74171485a6637}
+
+
+Definition at line 81 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-get\-\_\-bandwidth(), and bma020\-\_\-set\-\_\-bandwidth().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a1988901e033e97c59ecf3a7838105965}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-B\-A\-N\-D\-W\-I\-D\-T\-H\-\_\-1@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-B\-A\-N\-D\-W\-I\-D\-T\-H\-\_\-1}}
+\index{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-B\-A\-N\-D\-W\-I\-D\-T\-H\-\_\-1@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-B\-A\-N\-D\-W\-I\-D\-T\-H\-\_\-1}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-B\-A\-N\-D\-W\-I\-D\-T\-H\-\_\-1}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-B\-A\-N\-D\-W\-I\-D\-T\-H\-\_\-1~1}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a1988901e033e97c59ecf3a7838105965}
+
+
+Definition at line 82 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-get\-\_\-bandwidth(), and bma020\-\_\-set\-\_\-bandwidth().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a544b437e7c147c78f0d5c7809aa30ef4}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-B\-A\-N\-D\-W\-I\-D\-T\-H\-\_\-2@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-B\-A\-N\-D\-W\-I\-D\-T\-H\-\_\-2}}
+\index{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-B\-A\-N\-D\-W\-I\-D\-T\-H\-\_\-2@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-B\-A\-N\-D\-W\-I\-D\-T\-H\-\_\-2}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-B\-A\-N\-D\-W\-I\-D\-T\-H\-\_\-2}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-B\-A\-N\-D\-W\-I\-D\-T\-H\-\_\-2~2}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a544b437e7c147c78f0d5c7809aa30ef4}
+
+
+Definition at line 83 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-get\-\_\-bandwidth(), and bma020\-\_\-set\-\_\-bandwidth().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a064c3ec3608ecbd1f7f379f2dd322fa7}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-H\-G\-\_\-0@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-H\-G\-\_\-0}}
+\index{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-H\-G\-\_\-0@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-H\-G\-\_\-0}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-H\-G\-\_\-0}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-H\-G\-\_\-0~4}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a064c3ec3608ecbd1f7f379f2dd322fa7}
+
+
+Definition at line 65 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-get\-\_\-counter\-\_\-hg(), and bma020\-\_\-set\-\_\-counter\-\_\-hg().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a78bb70f1295257936f12414b2581b681}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-H\-G\-\_\-1@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-H\-G\-\_\-1}}
+\index{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-H\-G\-\_\-1@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-H\-G\-\_\-1}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-H\-G\-\_\-1}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-H\-G\-\_\-1~5}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a78bb70f1295257936f12414b2581b681}
+
+
+Definition at line 66 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-get\-\_\-counter\-\_\-hg(), and bma020\-\_\-set\-\_\-counter\-\_\-hg().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a6ebd350d7b315f6c7d569a78cde496ce}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-L\-G\-\_\-0@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-L\-G\-\_\-0}}
+\index{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-L\-G\-\_\-0@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-L\-G\-\_\-0}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-L\-G\-\_\-0}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-L\-G\-\_\-0~2}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a6ebd350d7b315f6c7d569a78cde496ce}
+
+
+Definition at line 63 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-get\-\_\-counter\-\_\-lg(), and bma020\-\_\-set\-\_\-counter\-\_\-lg().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a8538d5673ade5e44d08f5f38ee43e094}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-L\-G\-\_\-1@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-L\-G\-\_\-1}}
+\index{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-L\-G\-\_\-1@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-L\-G\-\_\-1}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-L\-G\-\_\-1}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-L\-G\-\_\-1~3}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a8538d5673ade5e44d08f5f38ee43e094}
+
+
+Definition at line 64 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-get\-\_\-counter\-\_\-lg(), and bma020\-\_\-set\-\_\-counter\-\_\-lg().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a5a3e6dcc957c52b8d335bdd974b12e94}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-E\-N\-A\-B\-L\-E\-\_\-\-H\-G@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-E\-N\-A\-B\-L\-E\-\_\-\-H\-G}}
+\index{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-E\-N\-A\-B\-L\-E\-\_\-\-H\-G@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-E\-N\-A\-B\-L\-E\-\_\-\-H\-G}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-E\-N\-A\-B\-L\-E\-\_\-\-H\-G}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-E\-N\-A\-B\-L\-E\-\_\-\-H\-G~1}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a5a3e6dcc957c52b8d335bdd974b12e94}
+
+
+Definition at line 62 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-enable\-\_\-hg(), and bma020\-\_\-is\-\_\-enable\-\_\-hg().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a925aaafeefd3816288eb460c34837aef}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-E\-N\-A\-B\-L\-E\-\_\-\-L\-G@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-E\-N\-A\-B\-L\-E\-\_\-\-L\-G}}
+\index{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-E\-N\-A\-B\-L\-E\-\_\-\-L\-G@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-E\-N\-A\-B\-L\-E\-\_\-\-L\-G}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-E\-N\-A\-B\-L\-E\-\_\-\-L\-G}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-E\-N\-A\-B\-L\-E\-\_\-\-L\-G~0}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a925aaafeefd3816288eb460c34837aef}
+
+
+Definition at line 61 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-enable\-\_\-lg(), and bma020\-\_\-is\-\_\-enable\-\_\-lg().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a933aa5877c72d903e9ab78e9ab592cd4}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-H\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-0@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-H\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-0}}
+\index{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-H\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-0@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-H\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-0}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-H\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-0}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-H\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-0~3}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a933aa5877c72d903e9ab78e9ab592cd4}
+
+
+Definition at line 74 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-set\-\_\-hg\-\_\-hysterese().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a34468ab47faece6bb997f04b7346eb87}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-H\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-1@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-H\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-1}}
+\index{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-H\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-1@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-H\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-1}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-H\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-1}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-H\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-1~4}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a34468ab47faece6bb997f04b7346eb87}
+
+
+Definition at line 75 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-set\-\_\-hg\-\_\-hysterese().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a19d394a2a00ac726548dae99f86eabd1}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-H\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-2@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-H\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-2}}
+\index{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-H\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-2@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-H\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-2}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-H\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-2}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-H\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-2~5}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a19d394a2a00ac726548dae99f86eabd1}
+
+
+Definition at line 76 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-set\-\_\-hg\-\_\-hysterese().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ac2782347bec913ffd6b4886260d4a1c9}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-H\-G\-\_\-\-L\-A\-T\-C\-H\-E\-D@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-H\-G\-\_\-\-L\-A\-T\-C\-H\-E\-D}}
+\index{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-H\-G\-\_\-\-L\-A\-T\-C\-H\-E\-D@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-H\-G\-\_\-\-L\-A\-T\-C\-H\-E\-D}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-H\-G\-\_\-\-L\-A\-T\-C\-H\-E\-D}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-H\-G\-\_\-\-L\-A\-T\-C\-H\-E\-D~2}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ac2782347bec913ffd6b4886260d4a1c9}
+
+
+Definition at line 48 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-get\-\_\-hg\-\_\-latched(), and bma020\-\_\-reset\-\_\-hg\-\_\-latched().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ad5d46d9c4eb32f7bb2c583852a762f86}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-A\-T\-C\-H\-\_\-\-I\-N\-T@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-A\-T\-C\-H\-\_\-\-I\-N\-T}}
+\index{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-A\-T\-C\-H\-\_\-\-I\-N\-T@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-A\-T\-C\-H\-\_\-\-I\-N\-T}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-A\-T\-C\-H\-\_\-\-I\-N\-T}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-A\-T\-C\-H\-\_\-\-I\-N\-T~4}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ad5d46d9c4eb32f7bb2c583852a762f86}
+
+
+Definition at line 92 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-enable\-\_\-latched\-\_\-int(), and bma020\-\_\-is\-\_\-latched\-\_\-int().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a059560827f070835f7a4c8b313ceb84e}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-0@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-0}}
+\index{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-0@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-0}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-0}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-0~0}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a059560827f070835f7a4c8b313ceb84e}
+
+
+Definition at line 71 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-set\-\_\-lg\-\_\-hysterese().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a1502001a7f24242b327f1c0e47a2241c}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-1@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-1}}
+\index{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-1@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-1}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-1}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-1~1}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a1502001a7f24242b327f1c0e47a2241c}
+
+
+Definition at line 72 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-set\-\_\-lg\-\_\-hysterese().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a576762122658d43da865ea1e86c1fc71}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-2@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-2}}
+\index{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-2@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-2}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-2}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-2~2}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a576762122658d43da865ea1e86c1fc71}
+
+
+Definition at line 73 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-set\-\_\-lg\-\_\-hysterese().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ac8707c5ff4823f57d53166c68b93a64d}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-G\-\_\-\-L\-A\-T\-C\-H\-E\-D@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-G\-\_\-\-L\-A\-T\-C\-H\-E\-D}}
+\index{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-G\-\_\-\-L\-A\-T\-C\-H\-E\-D@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-G\-\_\-\-L\-A\-T\-C\-H\-E\-D}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-G\-\_\-\-L\-A\-T\-C\-H\-E\-D}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-G\-\_\-\-L\-A\-T\-C\-H\-E\-D~3}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ac8707c5ff4823f57d53166c68b93a64d}
+
+
+Definition at line 49 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-get\-\_\-lg\-\_\-latched(), and bma020\-\_\-reset\-\_\-lg\-\_\-latched().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_aff110e4eec403c02f3bb802db28b56e3}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-N\-E\-W\-\_\-\-D\-A\-T\-A\-\_\-\-I\-N\-T@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-N\-E\-W\-\_\-\-D\-A\-T\-A\-\_\-\-I\-N\-T}}
+\index{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-N\-E\-W\-\_\-\-D\-A\-T\-A\-\_\-\-I\-N\-T@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-N\-E\-W\-\_\-\-D\-A\-T\-A\-\_\-\-I\-N\-T}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-N\-E\-W\-\_\-\-D\-A\-T\-A\-\_\-\-I\-N\-T}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-N\-E\-W\-\_\-\-D\-A\-T\-A\-\_\-\-I\-N\-T~5}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_aff110e4eec403c02f3bb802db28b56e3}
+
+
+Definition at line 93 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-enable\-\_\-new\-\_\-data\-\_\-int(), and bma020\-\_\-is\-\_\-new\-\_\-data\-\_\-int().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a50cb14ce8207239ab2c36e499a9cd70f}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-R\-A\-N\-G\-E\-\_\-0@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-R\-A\-N\-G\-E\-\_\-0}}
+\index{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-R\-A\-N\-G\-E\-\_\-0@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-R\-A\-N\-G\-E\-\_\-0}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-R\-A\-N\-G\-E\-\_\-0}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-R\-A\-N\-G\-E\-\_\-0~3}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a50cb14ce8207239ab2c36e499a9cd70f}
+
+
+Definition at line 84 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-get\-\_\-range(), and bma020\-\_\-set\-\_\-range().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a0c818caa68bb04f65df611469144ae24}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-R\-A\-N\-G\-E\-\_\-1@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-R\-A\-N\-G\-E\-\_\-1}}
+\index{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-R\-A\-N\-G\-E\-\_\-1@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-R\-A\-N\-G\-E\-\_\-1}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-R\-A\-N\-G\-E\-\_\-1}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-R\-A\-N\-G\-E\-\_\-1~4}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a0c818caa68bb04f65df611469144ae24}
+
+
+Definition at line 85 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-get\-\_\-range(), and bma020\-\_\-set\-\_\-range().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a165460cff50e3bf8af5fe35ffca3abc6}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-R\-E\-S\-E\-T\-\_\-\-I\-N\-T@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-R\-E\-S\-E\-T\-\_\-\-I\-N\-T}}
+\index{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-R\-E\-S\-E\-T\-\_\-\-I\-N\-T@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-R\-E\-S\-E\-T\-\_\-\-I\-N\-T}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-R\-E\-S\-E\-T\-\_\-\-I\-N\-T}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-R\-E\-S\-E\-T\-\_\-\-I\-N\-T~6}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a165460cff50e3bf8af5fe35ffca3abc6}
+
+
+Definition at line 58 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-reset\-\_\-interrupt().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a16d0d9c77ebf3a62c7b0751085fb4d93}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-E\-L\-F\-\_\-\-T\-E\-S\-T\-\_\-0@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-E\-L\-F\-\_\-\-T\-E\-S\-T\-\_\-0}}
+\index{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-E\-L\-F\-\_\-\-T\-E\-S\-T\-\_\-0@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-E\-L\-F\-\_\-\-T\-E\-S\-T\-\_\-0}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-E\-L\-F\-\_\-\-T\-E\-S\-T\-\_\-0}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-E\-L\-F\-\_\-\-T\-E\-S\-T\-\_\-0~2}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a16d0d9c77ebf3a62c7b0751085fb4d93}
+
+
+Definition at line 56 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-perform\-\_\-self\-\_\-test\-\_\-0().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a7fdbfb38eda34b405088ce97d5c78c40}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-E\-L\-F\-\_\-\-T\-E\-S\-T\-\_\-1@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-E\-L\-F\-\_\-\-T\-E\-S\-T\-\_\-1}}
+\index{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-E\-L\-F\-\_\-\-T\-E\-S\-T\-\_\-1@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-E\-L\-F\-\_\-\-T\-E\-S\-T\-\_\-1}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-E\-L\-F\-\_\-\-T\-E\-S\-T\-\_\-1}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-E\-L\-F\-\_\-\-T\-E\-S\-T\-\_\-1~3}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a7fdbfb38eda34b405088ce97d5c78c40}
+
+
+Definition at line 57 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-perform\-\_\-self\-\_\-test\-\_\-1().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a8cee37199daf753a3ed843455d8c2a09}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-E\-L\-F\-\_\-\-T\-E\-S\-T\-\_\-\-R\-E\-S\-U\-L\-T@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-E\-L\-F\-\_\-\-T\-E\-S\-T\-\_\-\-R\-E\-S\-U\-L\-T}}
+\index{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-E\-L\-F\-\_\-\-T\-E\-S\-T\-\_\-\-R\-E\-S\-U\-L\-T@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-E\-L\-F\-\_\-\-T\-E\-S\-T\-\_\-\-R\-E\-S\-U\-L\-T}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-E\-L\-F\-\_\-\-T\-E\-S\-T\-\_\-\-R\-E\-S\-U\-L\-T}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-E\-L\-F\-\_\-\-T\-E\-S\-T\-\_\-\-R\-E\-S\-U\-L\-T~7}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a8cee37199daf753a3ed843455d8c2a09}
+
+
+Definition at line 51 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-get\-\_\-self\-\_\-test\-\_\-result().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ab60ba5f17308fb2482b5a2c612c42a8b}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-H\-A\-D\-O\-W\-\_\-\-D\-I\-S@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-H\-A\-D\-O\-W\-\_\-\-D\-I\-S}}
+\index{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-H\-A\-D\-O\-W\-\_\-\-D\-I\-S@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-H\-A\-D\-O\-W\-\_\-\-D\-I\-S}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-H\-A\-D\-O\-W\-\_\-\-D\-I\-S}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-H\-A\-D\-O\-W\-\_\-\-D\-I\-S~3}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ab60ba5f17308fb2482b5a2c612c42a8b}
+
+
+Definition at line 91 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-enable\-\_\-shadow\-\_\-dis(), and bma020\-\_\-is\-\_\-shadow\-\_\-dis().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_acc826408b5998aa06e5c14dff972fd6f}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-L\-E\-E\-P@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-L\-E\-E\-P}}
+\index{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-L\-E\-E\-P@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-L\-E\-E\-P}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-L\-E\-E\-P}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-L\-E\-E\-P~0}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_acc826408b5998aa06e5c14dff972fd6f}
+
+
+Definition at line 54 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-sleep().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ab3a25deb0aee6d5e44900e95d425c83b}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-O\-F\-T\-\_\-\-R\-E\-S\-E\-T@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-O\-F\-T\-\_\-\-R\-E\-S\-E\-T}}
+\index{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-O\-F\-T\-\_\-\-R\-E\-S\-E\-T@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-O\-F\-T\-\_\-\-R\-E\-S\-E\-T}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-O\-F\-T\-\_\-\-R\-E\-S\-E\-T}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-O\-F\-T\-\_\-\-R\-E\-S\-E\-T~1}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ab3a25deb0aee6d5e44900e95d425c83b}
+
+
+Definition at line 55 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-soft\-\_\-reset().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a8100c404a0fb79baa3a2f9540223e01b}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-P\-I4@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-P\-I4}}
+\index{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-P\-I4@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-P\-I4}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-P\-I4}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-P\-I4~7}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a8100c404a0fb79baa3a2f9540223e01b}
+
+
+Definition at line 95 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-enable\-\_\-spi4(), and bma020\-\_\-is\-\_\-spi4().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a975fb727d6224967de9b9c59a8386b4e}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-T\-A\-T\-U\-S\-\_\-\-H\-G@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-T\-A\-T\-U\-S\-\_\-\-H\-G}}
+\index{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-T\-A\-T\-U\-S\-\_\-\-H\-G@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-T\-A\-T\-U\-S\-\_\-\-H\-G}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-T\-A\-T\-U\-S\-\_\-\-H\-G}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-T\-A\-T\-U\-S\-\_\-\-H\-G~0}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a975fb727d6224967de9b9c59a8386b4e}
+
+
+Definition at line 46 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-get\-\_\-status\-\_\-hg().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a82a0471a876781d862c73fcf2d2d294c}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-T\-A\-T\-U\-S\-\_\-\-L\-G@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-T\-A\-T\-U\-S\-\_\-\-L\-G}}
+\index{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-T\-A\-T\-U\-S\-\_\-\-L\-G@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-T\-A\-T\-U\-S\-\_\-\-L\-G}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-T\-A\-T\-U\-S\-\_\-\-L\-G}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-T\-A\-T\-U\-S\-\_\-\-L\-G~1}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a82a0471a876781d862c73fcf2d2d294c}
+
+
+Definition at line 47 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-get\-\_\-status\-\_\-lg().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_aa805f5b363f2c391346bfc3d320a025d}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-W\-A\-K\-E\-\_\-\-U\-P@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-W\-A\-K\-E\-\_\-\-U\-P}}
+\index{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-W\-A\-K\-E\-\_\-\-U\-P@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-W\-A\-K\-E\-\_\-\-U\-P}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-W\-A\-K\-E\-\_\-\-U\-P}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-W\-A\-K\-E\-\_\-\-U\-P~0}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_aa805f5b363f2c391346bfc3d320a025d}
+
+
+Definition at line 88 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-enable\-\_\-wake\-\_\-up(), and bma020\-\_\-is\-\_\-wake\-\_\-up().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a689c1751e1bca1798ebe5475811a0fcb}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-W\-A\-K\-E\-\_\-\-U\-P\-\_\-\-P\-A\-U\-S\-E\-\_\-0@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-W\-A\-K\-E\-\_\-\-U\-P\-\_\-\-P\-A\-U\-S\-E\-\_\-0}}
+\index{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-W\-A\-K\-E\-\_\-\-U\-P\-\_\-\-P\-A\-U\-S\-E\-\_\-0@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-W\-A\-K\-E\-\_\-\-U\-P\-\_\-\-P\-A\-U\-S\-E\-\_\-0}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-W\-A\-K\-E\-\_\-\-U\-P\-\_\-\-P\-A\-U\-S\-E\-\_\-0}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-W\-A\-K\-E\-\_\-\-U\-P\-\_\-\-P\-A\-U\-S\-E\-\_\-0~1}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a689c1751e1bca1798ebe5475811a0fcb}
+
+
+Definition at line 89 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-get\-\_\-wake\-\_\-up\-\_\-pause(), and bma020\-\_\-set\-\_\-wake\-\_\-up\-\_\-pause().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ae682be14fa6f0456267646dbf61663e2}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-W\-A\-K\-E\-\_\-\-U\-P\-\_\-\-P\-A\-U\-S\-E\-\_\-1@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-W\-A\-K\-E\-\_\-\-U\-P\-\_\-\-P\-A\-U\-S\-E\-\_\-1}}
+\index{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-W\-A\-K\-E\-\_\-\-U\-P\-\_\-\-P\-A\-U\-S\-E\-\_\-1@{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-W\-A\-K\-E\-\_\-\-U\-P\-\_\-\-P\-A\-U\-S\-E\-\_\-1}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-W\-A\-K\-E\-\_\-\-U\-P\-\_\-\-P\-A\-U\-S\-E\-\_\-1}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-W\-A\-K\-E\-\_\-\-U\-P\-\_\-\-P\-A\-U\-S\-E\-\_\-1~2}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ae682be14fa6f0456267646dbf61663e2}
+
+
+Definition at line 90 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-get\-\_\-wake\-\_\-up\-\_\-pause(), and bma020\-\_\-set\-\_\-wake\-\_\-up\-\_\-pause().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a0d57597e9444b2d2527e51fbac95737f}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-L\-E\-R\-T\-\_\-\-E\-N\-A\-N\-Y\-M\-O\-T\-I\-O\-N\-\_\-\-C\-N\-T\-H\-G\-\_\-\-C\-N\-T\-L\-G\-\_\-\-E\-N\-H\-G\-\_\-\-E\-N\-L\-G@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-L\-E\-R\-T\-\_\-\-E\-N\-A\-N\-Y\-M\-O\-T\-I\-O\-N\-\_\-\-C\-N\-T\-H\-G\-\_\-\-C\-N\-T\-L\-G\-\_\-\-E\-N\-H\-G\-\_\-\-E\-N\-L\-G}}
+\index{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-L\-E\-R\-T\-\_\-\-E\-N\-A\-N\-Y\-M\-O\-T\-I\-O\-N\-\_\-\-C\-N\-T\-H\-G\-\_\-\-C\-N\-T\-L\-G\-\_\-\-E\-N\-H\-G\-\_\-\-E\-N\-L\-G@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-L\-E\-R\-T\-\_\-\-E\-N\-A\-N\-Y\-M\-O\-T\-I\-O\-N\-\_\-\-C\-N\-T\-H\-G\-\_\-\-C\-N\-T\-L\-G\-\_\-\-E\-N\-H\-G\-\_\-\-E\-N\-L\-G}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-L\-E\-R\-T\-\_\-\-E\-N\-A\-N\-Y\-M\-O\-T\-I\-O\-N\-\_\-\-C\-N\-T\-H\-G\-\_\-\-C\-N\-T\-L\-G\-\_\-\-E\-N\-H\-G\-\_\-\-E\-N\-L\-G}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-L\-E\-R\-T\-\_\-\-E\-N\-A\-N\-Y\-M\-O\-T\-I\-O\-N\-\_\-\-C\-N\-T\-H\-G\-\_\-\-C\-N\-T\-L\-G\-\_\-\-E\-N\-H\-G\-\_\-\-E\-N\-L\-G~0x0\-B}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a0d57597e9444b2d2527e51fbac95737f}
+
+
+Definition at line 32 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-enable\-\_\-any\-\_\-motion(), bma020\-\_\-enable\-\_\-hg(), bma020\-\_\-enable\-\_\-lg(), bma020\-\_\-enable\-\_\-motion\-\_\-alert(), bma020\-\_\-get\-\_\-counter\-\_\-hg(), bma020\-\_\-get\-\_\-counter\-\_\-lg(), bma020\-\_\-is\-\_\-enable\-\_\-any\-\_\-motion(), bma020\-\_\-is\-\_\-enable\-\_\-hg(), bma020\-\_\-is\-\_\-enable\-\_\-lg(), bma020\-\_\-is\-\_\-enable\-\_\-motion\-\_\-alert(), bma020\-\_\-set\-\_\-counter\-\_\-hg(), and bma020\-\_\-set\-\_\-counter\-\_\-lg().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a7948d646abd9564270e781e7d1542ea2}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-M\-D\-U\-R\-\_\-\-H\-G\-H\-Y\-S\-\_\-\-L\-G\-H\-Y\-S@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-M\-D\-U\-R\-\_\-\-H\-G\-H\-Y\-S\-\_\-\-L\-G\-H\-Y\-S}}
+\index{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-M\-D\-U\-R\-\_\-\-H\-G\-H\-Y\-S\-\_\-\-L\-G\-H\-Y\-S@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-M\-D\-U\-R\-\_\-\-H\-G\-H\-Y\-S\-\_\-\-L\-G\-H\-Y\-S}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-M\-D\-U\-R\-\_\-\-H\-G\-H\-Y\-S\-\_\-\-L\-G\-H\-Y\-S}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-M\-D\-U\-R\-\_\-\-H\-G\-H\-Y\-S\-\_\-\-L\-G\-H\-Y\-S~0x11}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a7948d646abd9564270e781e7d1542ea2}
+
+
+Definition at line 38 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-get\-\_\-any\-\_\-motion\-\_\-duration(), bma020\-\_\-get\-\_\-hg\-\_\-hysterese(), bma020\-\_\-get\-\_\-lg\-\_\-hysterese(), bma020\-\_\-set\-\_\-any\-\_\-motion\-\_\-duration(), bma020\-\_\-set\-\_\-hg\-\_\-hysterese(), and bma020\-\_\-set\-\_\-lg\-\_\-hysterese().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a879872e3c026a4839f7a1dcce279ebbc}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N\-\_\-\-T\-H\-R\-E\-S\-H\-O\-L\-D@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N\-\_\-\-T\-H\-R\-E\-S\-H\-O\-L\-D}}
+\index{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N\-\_\-\-T\-H\-R\-E\-S\-H\-O\-L\-D@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N\-\_\-\-T\-H\-R\-E\-S\-H\-O\-L\-D}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N\-\_\-\-T\-H\-R\-E\-S\-H\-O\-L\-D}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N\-\_\-\-T\-H\-R\-E\-S\-H\-O\-L\-D~0x10}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a879872e3c026a4839f7a1dcce279ebbc}
+
+
+Definition at line 37 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-get\-\_\-any\-\_\-motion\-\_\-threshold(), and bma020\-\_\-set\-\_\-any\-\_\-motion\-\_\-threshold().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ae2e8a268ceac616785b0515665b01bb4}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-H\-I\-P\-I\-D@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-H\-I\-P\-I\-D}}
+\index{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-H\-I\-P\-I\-D@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-H\-I\-P\-I\-D}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-H\-I\-P\-I\-D}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-H\-I\-P\-I\-D~0x00}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ae2e8a268ceac616785b0515665b01bb4}
+
+
+Definition at line 21 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a348818f726073a02dcfb2acc73b21d3c}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-R\-A\-N\-G\-E\-\_\-\-B\-A\-N\-D\-W\-I\-D\-T\-H@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-R\-A\-N\-G\-E\-\_\-\-B\-A\-N\-D\-W\-I\-D\-T\-H}}
+\index{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-R\-A\-N\-G\-E\-\_\-\-B\-A\-N\-D\-W\-I\-D\-T\-H@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-R\-A\-N\-G\-E\-\_\-\-B\-A\-N\-D\-W\-I\-D\-T\-H}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-R\-A\-N\-G\-E\-\_\-\-B\-A\-N\-D\-W\-I\-D\-T\-H}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-R\-A\-N\-G\-E\-\_\-\-B\-A\-N\-D\-W\-I\-D\-T\-H~0x14}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a348818f726073a02dcfb2acc73b21d3c}
+
+
+Definition at line 41 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-get\-\_\-bandwidth(), bma020\-\_\-get\-\_\-range(), bma020\-\_\-set\-\_\-bandwidth(), bma020\-\_\-set\-\_\-range(), and bma020\-\_\-set\-\_\-wake\-\_\-up\-\_\-pause().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a4acb39507d72445b72e8ec37cfc7e110}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-S\-P\-I4\-\_\-\-I\-N\-T\-E\-R\-R\-U\-P\-T\-\_\-\-W\-A\-K\-E\-U\-P@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-S\-P\-I4\-\_\-\-I\-N\-T\-E\-R\-R\-U\-P\-T\-\_\-\-W\-A\-K\-E\-U\-P}}
+\index{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-S\-P\-I4\-\_\-\-I\-N\-T\-E\-R\-R\-U\-P\-T\-\_\-\-W\-A\-K\-E\-U\-P@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-S\-P\-I4\-\_\-\-I\-N\-T\-E\-R\-R\-U\-P\-T\-\_\-\-W\-A\-K\-E\-U\-P}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-S\-P\-I4\-\_\-\-I\-N\-T\-E\-R\-R\-U\-P\-T\-\_\-\-W\-A\-K\-E\-U\-P}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-S\-P\-I4\-\_\-\-I\-N\-T\-E\-R\-R\-U\-P\-T\-\_\-\-W\-A\-K\-E\-U\-P~0x15}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a4acb39507d72445b72e8ec37cfc7e110}
+
+
+Definition at line 42 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-enable\-\_\-advanced\-\_\-int(), bma020\-\_\-enable\-\_\-latched\-\_\-int(), bma020\-\_\-enable\-\_\-new\-\_\-data\-\_\-int(), bma020\-\_\-enable\-\_\-shadow\-\_\-dis(), bma020\-\_\-enable\-\_\-spi4(), bma020\-\_\-enable\-\_\-wake\-\_\-up(), bma020\-\_\-get\-\_\-wake\-\_\-up\-\_\-pause(), bma020\-\_\-is\-\_\-advanced\-\_\-int(), bma020\-\_\-is\-\_\-latched\-\_\-int(), bma020\-\_\-is\-\_\-new\-\_\-data\-\_\-int(), bma020\-\_\-is\-\_\-shadow\-\_\-dis(), bma020\-\_\-is\-\_\-spi4(), bma020\-\_\-is\-\_\-wake\-\_\-up(), and bma020\-\_\-set\-\_\-wake\-\_\-up\-\_\-pause().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a5e888189b9d1de2c93925224e91135ed}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-T\-E\-S\-T\-S\-\_\-\-R\-E\-S\-E\-T\-\_\-\-S\-L\-E\-E\-P@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-T\-E\-S\-T\-S\-\_\-\-R\-E\-S\-E\-T\-\_\-\-S\-L\-E\-E\-P}}
+\index{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-T\-E\-S\-T\-S\-\_\-\-R\-E\-S\-E\-T\-\_\-\-S\-L\-E\-E\-P@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-T\-E\-S\-T\-S\-\_\-\-R\-E\-S\-E\-T\-\_\-\-S\-L\-E\-E\-P}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-T\-E\-S\-T\-S\-\_\-\-R\-E\-S\-E\-T\-\_\-\-S\-L\-E\-E\-P}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-T\-E\-S\-T\-S\-\_\-\-R\-E\-S\-E\-T\-\_\-\-S\-L\-E\-E\-P~0x0\-A}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a5e888189b9d1de2c93925224e91135ed}
+
+
+Definition at line 31 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-perform\-\_\-self\-\_\-test\-\_\-0(), bma020\-\_\-perform\-\_\-self\-\_\-test\-\_\-1(), bma020\-\_\-reset\-\_\-interrupt(), bma020\-\_\-sleep(), and bma020\-\_\-soft\-\_\-reset().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a41a38da26d08f31a9e57b78c25c86fc3}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-U\-S\-T\-O\-M\-E\-R\-\_\-1@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-U\-S\-T\-O\-M\-E\-R\-\_\-1}}
+\index{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-U\-S\-T\-O\-M\-E\-R\-\_\-1@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-U\-S\-T\-O\-M\-E\-R\-\_\-1}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-U\-S\-T\-O\-M\-E\-R\-\_\-1}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-U\-S\-T\-O\-M\-E\-R\-\_\-1~0x12}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a41a38da26d08f31a9e57b78c25c86fc3}
+
+
+Definition at line 39 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-get\-\_\-customer\-\_\-reserved\-\_\-1(), and bma020\-\_\-set\-\_\-customer\-\_\-reserved\-\_\-1().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a731c45918ee8c88a458532e5aaf1e8e8}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-U\-S\-T\-O\-M\-E\-R\-\_\-2@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-U\-S\-T\-O\-M\-E\-R\-\_\-2}}
+\index{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-U\-S\-T\-O\-M\-E\-R\-\_\-2@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-U\-S\-T\-O\-M\-E\-R\-\_\-2}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-U\-S\-T\-O\-M\-E\-R\-\_\-2}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-U\-S\-T\-O\-M\-E\-R\-\_\-2~0x13}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a731c45918ee8c88a458532e5aaf1e8e8}
+
+
+Definition at line 40 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-get\-\_\-customer\-\_\-reserved\-\_\-2(), and bma020\-\_\-set\-\_\-customer\-\_\-reserved\-\_\-2().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a986414c08eaff36b51caf3fa4270b676}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-H\-G\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-H\-G\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N}}
+\index{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-H\-G\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-H\-G\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-H\-G\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-H\-G\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N~0x0\-F}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a986414c08eaff36b51caf3fa4270b676}
+
+
+Definition at line 36 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-get\-\_\-hg\-\_\-duration(), and bma020\-\_\-set\-\_\-hg\-\_\-duration().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a6ae61e1f922e9dc1deac5c123c1f5392}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-H\-G\-\_\-\-T\-H\-R\-E\-S\-H\-O\-L\-D@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-H\-G\-\_\-\-T\-H\-R\-E\-S\-H\-O\-L\-D}}
+\index{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-H\-G\-\_\-\-T\-H\-R\-E\-S\-H\-O\-L\-D@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-H\-G\-\_\-\-T\-H\-R\-E\-S\-H\-O\-L\-D}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-H\-G\-\_\-\-T\-H\-R\-E\-S\-H\-O\-L\-D}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-H\-G\-\_\-\-T\-H\-R\-E\-S\-H\-O\-L\-D~0x0\-E}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a6ae61e1f922e9dc1deac5c123c1f5392}
+
+
+Definition at line 35 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_adb75b4cfabce54c8835a60667ca2fec6}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-L\-G\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-L\-G\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N}}
+\index{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-L\-G\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-L\-G\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-L\-G\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-L\-G\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N~0x0\-D}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_adb75b4cfabce54c8835a60667ca2fec6}
+
+
+Definition at line 34 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-get\-\_\-lg\-\_\-duration(), and bma020\-\_\-set\-\_\-lg\-\_\-duration().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a0768026989e7f0e8dafa136b0b836778}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-L\-G\-\_\-\-T\-H\-R\-E\-S\-H\-O\-L\-D@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-L\-G\-\_\-\-T\-H\-R\-E\-S\-H\-O\-L\-D}}
+\index{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-L\-G\-\_\-\-T\-H\-R\-E\-S\-H\-O\-L\-D@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-L\-G\-\_\-\-T\-H\-R\-E\-S\-H\-O\-L\-D}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-L\-G\-\_\-\-T\-H\-R\-E\-S\-H\-O\-L\-D}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-L\-G\-\_\-\-T\-H\-R\-E\-S\-H\-O\-L\-D~0x0\-C}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a0768026989e7f0e8dafa136b0b836778}
+
+
+Definition at line 33 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-get\-\_\-lg\-\_\-threshold(), and bma020\-\_\-set\-\_\-lg\-\_\-threshold().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a4b0153203b4e4eedaacb8898a981a782}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-S\-T\-A\-T\-U\-S@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-S\-T\-A\-T\-U\-S}}
+\index{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-S\-T\-A\-T\-U\-S@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-S\-T\-A\-T\-U\-S}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-S\-T\-A\-T\-U\-S}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-S\-T\-A\-T\-U\-S~0x09}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a4b0153203b4e4eedaacb8898a981a782}
+
+
+Definition at line 30 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-get\-\_\-alert\-\_\-phase(), bma020\-\_\-get\-\_\-hg\-\_\-latched(), bma020\-\_\-get\-\_\-lg\-\_\-latched(), bma020\-\_\-get\-\_\-self\-\_\-test\-\_\-result(), bma020\-\_\-get\-\_\-status\-\_\-hg(), bma020\-\_\-get\-\_\-status\-\_\-lg(), bma020\-\_\-reset\-\_\-hg\-\_\-latched(), and bma020\-\_\-reset\-\_\-lg\-\_\-latched().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a31b18d783e0814107d12497480f83c16}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-U\-N\-U\-S\-E\-D@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-U\-N\-U\-S\-E\-D}}
+\index{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-U\-N\-U\-S\-E\-D@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-U\-N\-U\-S\-E\-D}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-U\-N\-U\-S\-E\-D}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-U\-N\-U\-S\-E\-D~0x08}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a31b18d783e0814107d12497480f83c16}
+
+
+Definition at line 29 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a6b948feae41f5da16e97ff1bd9e3334d}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-X\-\_\-\-L\-S\-B@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-X\-\_\-\-L\-S\-B}}
+\index{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-X\-\_\-\-L\-S\-B@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-X\-\_\-\-L\-S\-B}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-X\-\_\-\-L\-S\-B}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-X\-\_\-\-L\-S\-B~0x02}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a6b948feae41f5da16e97ff1bd9e3334d}
+
+
+Definition at line 23 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-is\-\_\-new\-\_\-data(), and bma020\-\_\-read\-\_\-raw\-\_\-acceleration().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ad3f2bc45b1d488802ca938203944ce07}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-X\-\_\-\-M\-S\-B@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-X\-\_\-\-M\-S\-B}}
+\index{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-X\-\_\-\-M\-S\-B@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-X\-\_\-\-M\-S\-B}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-X\-\_\-\-M\-S\-B}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-X\-\_\-\-M\-S\-B~0x03}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ad3f2bc45b1d488802ca938203944ce07}
+
+
+Definition at line 24 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ac0e18c6e342e41ec51273064e789eb71}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-Y\-\_\-\-L\-S\-B@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-Y\-\_\-\-L\-S\-B}}
+\index{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-Y\-\_\-\-L\-S\-B@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-Y\-\_\-\-L\-S\-B}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-Y\-\_\-\-L\-S\-B}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-Y\-\_\-\-L\-S\-B~0x04}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ac0e18c6e342e41ec51273064e789eb71}
+
+
+Definition at line 25 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-is\-\_\-new\-\_\-data().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a4890cf05c47f87b1cafce312d70cbe61}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-Y\-\_\-\-M\-S\-B@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-Y\-\_\-\-M\-S\-B}}
+\index{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-Y\-\_\-\-M\-S\-B@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-Y\-\_\-\-M\-S\-B}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-Y\-\_\-\-M\-S\-B}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-Y\-\_\-\-M\-S\-B~0x05}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a4890cf05c47f87b1cafce312d70cbe61}
+
+
+Definition at line 26 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a34537e4b701cf6c8ccbd35dddb50cdae}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-Z\-\_\-\-L\-S\-B@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-Z\-\_\-\-L\-S\-B}}
+\index{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-Z\-\_\-\-L\-S\-B@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-Z\-\_\-\-L\-S\-B}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-Z\-\_\-\-L\-S\-B}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-Z\-\_\-\-L\-S\-B~0x06}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a34537e4b701cf6c8ccbd35dddb50cdae}
+
+
+Definition at line 27 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-is\-\_\-new\-\_\-data().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ad7d861a9c537ae4d858d675cabeb72ab}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-Z\-\_\-\-M\-S\-B@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-Z\-\_\-\-M\-S\-B}}
+\index{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-Z\-\_\-\-M\-S\-B@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-Z\-\_\-\-M\-S\-B}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-Z\-\_\-\-M\-S\-B}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-Z\-\_\-\-M\-S\-B~0x07}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ad7d861a9c537ae4d858d675cabeb72ab}
+
+
+Definition at line 28 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a36bed1b115f30a8f83929aa6912ef90f}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-E\-R\-S\-I\-O\-N@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-E\-R\-S\-I\-O\-N}}
+\index{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-E\-R\-S\-I\-O\-N@{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-E\-R\-S\-I\-O\-N}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-E\-R\-S\-I\-O\-N}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-E\-R\-S\-I\-O\-N~0x01}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a36bed1b115f30a8f83929aa6912ef90f}
+
+
+Definition at line 22 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-get\-\_\-ai\-\_\-version(), bma020\-\_\-get\-\_\-chip\-\_\-id(), and bma020\-\_\-get\-\_\-ml\-\_\-version().
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a910ebdcbf3fe3a5499b9d427c95369ad}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!B\-M\-A020\-\_\-\-T\-W\-I\-\_\-\-A\-D\-D\-R\-E\-S\-S@{B\-M\-A020\-\_\-\-T\-W\-I\-\_\-\-A\-D\-D\-R\-E\-S\-S}}
+\index{B\-M\-A020\-\_\-\-T\-W\-I\-\_\-\-A\-D\-D\-R\-E\-S\-S@{B\-M\-A020\-\_\-\-T\-W\-I\-\_\-\-A\-D\-D\-R\-E\-S\-S}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{B\-M\-A020\-\_\-\-T\-W\-I\-\_\-\-A\-D\-D\-R\-E\-S\-S}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-M\-A020\-\_\-\-T\-W\-I\-\_\-\-A\-D\-D\-R\-E\-S\-S~(0x70$>$$>$1)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a910ebdcbf3fe3a5499b9d427c95369ad}
+
+
+Definition at line 18 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+Referenced by bma020\-\_\-read\-\_\-raw\-\_\-acceleration().
+
+
+
+\subsection{Function Documentation}
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_aeb518ad22636eeb17dd1113306c17e1e}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-enable\-\_\-advanced\-\_\-int@{bma020\-\_\-enable\-\_\-advanced\-\_\-int}}
+\index{bma020\-\_\-enable\-\_\-advanced\-\_\-int@{bma020\-\_\-enable\-\_\-advanced\-\_\-int}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-enable\-\_\-advanced\-\_\-int}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-enable\-\_\-advanced\-\_\-int (
+\begin{DoxyParamCaption}
+\item[{bool}]{enable}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_aeb518ad22636eeb17dd1113306c17e1e}
+This bit (address 15h, bit 6) is used to disable advanced interrupt control bits (any\-\_\-motion, alert). If enable\-\_\-adv\-\_\-\-I\-N\-T=0, writing to these bits has no effect on sensor I\-C function. 
+\begin{DoxyParams}{Parameters}
+{\em enable} & \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 524 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ae69d8ecda7ddd2b067989f4a78718969}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-enable\-\_\-any\-\_\-motion@{bma020\-\_\-enable\-\_\-any\-\_\-motion}}
+\index{bma020\-\_\-enable\-\_\-any\-\_\-motion@{bma020\-\_\-enable\-\_\-any\-\_\-motion}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-enable\-\_\-any\-\_\-motion}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-enable\-\_\-any\-\_\-motion (
+\begin{DoxyParamCaption}
+\item[{bool}]{enable}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ae69d8ecda7ddd2b067989f4a78718969}
+This bit ((address 0\-Bh, bit 6)enables the any motion criteria to generate directly an interrupt. It can not be turned on simultaneously with alert. This bit can be masked by enable\-\_\- adv\-\_\-\-I\-N\-T, the value of this bit is ignored when enable\-\_\-adv\-\_\-\-I\-N\-T=0 (section 3.\-2.\-3).
+
+
+\begin{DoxyParams}{Parameters}
+{\em enable} & \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 552 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ac3fa540d0f8c03f95efc25d8798f42b6}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-enable\-\_\-hg@{bma020\-\_\-enable\-\_\-hg}}
+\index{bma020\-\_\-enable\-\_\-hg@{bma020\-\_\-enable\-\_\-hg}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-enable\-\_\-hg}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-enable\-\_\-hg (
+\begin{DoxyParamCaption}
+\item[{bool}]{enable}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ac3fa540d0f8c03f95efc25d8798f42b6}
+This bit (address 0\-Bh, bit 1) enables the H\-G\-\_\-thres criteria to generate an interrupt. 
+\begin{DoxyParams}{Parameters}
+{\em enable} & \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 497 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a9e25d8b9f372bf654a72ed94dd5b4a74}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-enable\-\_\-latched\-\_\-int@{bma020\-\_\-enable\-\_\-latched\-\_\-int}}
+\index{bma020\-\_\-enable\-\_\-latched\-\_\-int@{bma020\-\_\-enable\-\_\-latched\-\_\-int}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-enable\-\_\-latched\-\_\-int}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-enable\-\_\-latched\-\_\-int (
+\begin{DoxyParamCaption}
+\item[{bool}]{enable}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a9e25d8b9f372bf654a72ed94dd5b4a74}
+If this bit (address 15h, bit 4) is at 1, interrupts are latched. The I\-N\-T pad stays high until microprocessor detects it and writes reset\-\_\-\-I\-N\-T control bit to 1 (section 3.\-3.\-1). When this bit is at 0, interrupts are set and reset directly by B\-M\-A020 according to programmable criteria (sections 3.\-2.\-7 and 3.\-2.\-8). 
+\begin{DoxyParams}{Parameters}
+{\em enable} & \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 607 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a8e25a2cb420e06ca77ea5b0d97c32e82}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-enable\-\_\-lg@{bma020\-\_\-enable\-\_\-lg}}
+\index{bma020\-\_\-enable\-\_\-lg@{bma020\-\_\-enable\-\_\-lg}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-enable\-\_\-lg}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-enable\-\_\-lg (
+\begin{DoxyParamCaption}
+\item[{bool}]{enable}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a8e25a2cb420e06ca77ea5b0d97c32e82}
+This bit (address 0\-Bh, bit 0) enables the L\-G\-\_\-thres criteria to generate an interrupt. 
+
+Definition at line 471 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a9ae38bcf7e1bbb2a12b62b8d1dc3d8e2}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-enable\-\_\-motion\-\_\-alert@{bma020\-\_\-enable\-\_\-motion\-\_\-alert}}
+\index{bma020\-\_\-enable\-\_\-motion\-\_\-alert@{bma020\-\_\-enable\-\_\-motion\-\_\-alert}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-enable\-\_\-motion\-\_\-alert}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-enable\-\_\-motion\-\_\-alert (
+\begin{DoxyParamCaption}
+\item[{bool}]{enable}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a9ae38bcf7e1bbb2a12b62b8d1dc3d8e2}
+f this bit (address 0\-Bh, bit 7) is at 1, the any\-\_\-motion criterion will set B\-M\-A020 into alert mode (section 3.\-2.\-9). This bit can be masked by enable\-\_\-adv\-\_\-\-I\-N\-T, the value of this bit is ignored when enable\-\_\-adv\-\_\-\-I\-N\-T=0 (section 3.\-2.\-3).
+
+
+\begin{DoxyParams}{Parameters}
+{\em enable} & \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 579 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_aeec5f00abc70a8693a10b23f12e25ab6}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-enable\-\_\-new\-\_\-data\-\_\-int@{bma020\-\_\-enable\-\_\-new\-\_\-data\-\_\-int}}
+\index{bma020\-\_\-enable\-\_\-new\-\_\-data\-\_\-int@{bma020\-\_\-enable\-\_\-new\-\_\-data\-\_\-int}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-enable\-\_\-new\-\_\-data\-\_\-int}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-enable\-\_\-new\-\_\-data\-\_\-int (
+\begin{DoxyParamCaption}
+\item[{bool}]{enable}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_aeec5f00abc70a8693a10b23f12e25ab6}
+If this bit (address 15h, bit 5) is set to 1, an interrupt will be generated when all three axes acceleration values are new, i.\-e. B\-M\-A020 updated all acceleration values after latest serial read-\/out. Interrupt generated from new data detection is a latched one; microcontroller has to write reset\-\_\-\-I\-N\-T at 1 after interrupt has been detected high (section 3.\-3.\-1). This interrupt is also reset by any acceleration byte read procedure (read access to address 02h to 07h). New data interrupt always occurs at the end of the Z-\/axis value update in the output register (3k\-Hz rate). Following figure shows two examples of X-\/axis read out and the corresponding interrupt generation. 
+\begin{DoxyParams}{Parameters}
+{\em enable} & \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 448 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a0980d95e18d69c73a088500e847784e0}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-enable\-\_\-shadow\-\_\-dis@{bma020\-\_\-enable\-\_\-shadow\-\_\-dis}}
+\index{bma020\-\_\-enable\-\_\-shadow\-\_\-dis@{bma020\-\_\-enable\-\_\-shadow\-\_\-dis}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-enable\-\_\-shadow\-\_\-dis}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-enable\-\_\-shadow\-\_\-dis (
+\begin{DoxyParamCaption}
+\item[{bool}]{enable}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a0980d95e18d69c73a088500e847784e0}
+
+
+Definition at line 1202 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-H\-A\-D\-O\-W\-\_\-\-D\-I\-S, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-S\-P\-I4\-\_\-\-I\-N\-T\-E\-R\-R\-U\-P\-T\-\_\-\-W\-A\-K\-E\-U\-P.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a81d4cd9fa30f06a446febbde9b62cef1}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-enable\-\_\-spi4@{bma020\-\_\-enable\-\_\-spi4}}
+\index{bma020\-\_\-enable\-\_\-spi4@{bma020\-\_\-enable\-\_\-spi4}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-enable\-\_\-spi4}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-enable\-\_\-spi4 (
+\begin{DoxyParamCaption}
+\item[{bool}]{enable}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a81d4cd9fa30f06a446febbde9b62cef1}
+
+
+Definition at line 1217 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-P\-I4, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-S\-P\-I4\-\_\-\-I\-N\-T\-E\-R\-R\-U\-P\-T\-\_\-\-W\-A\-K\-E\-U\-P.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a84ad4c88f3a38ec91b3639e58ded55ae}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-enable\-\_\-wake\-\_\-up@{bma020\-\_\-enable\-\_\-wake\-\_\-up}}
+\index{bma020\-\_\-enable\-\_\-wake\-\_\-up@{bma020\-\_\-enable\-\_\-wake\-\_\-up}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-enable\-\_\-wake\-\_\-up}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-enable\-\_\-wake\-\_\-up (
+\begin{DoxyParamCaption}
+\item[{bool}]{enable}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a84ad4c88f3a38ec91b3639e58ded55ae}
+
+
+Definition at line 1188 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-W\-A\-K\-E\-\_\-\-U\-P, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-S\-P\-I4\-\_\-\-I\-N\-T\-E\-R\-R\-U\-P\-T\-\_\-\-W\-A\-K\-E\-U\-P.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a411ed87bf0eebcd6464a2efa0b303940}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-get\-\_\-ai\-\_\-version@{bma020\-\_\-get\-\_\-ai\-\_\-version}}
+\index{bma020\-\_\-get\-\_\-ai\-\_\-version@{bma020\-\_\-get\-\_\-ai\-\_\-version}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-get\-\_\-ai\-\_\-version}]{\setlength{\rightskip}{0pt plus 5cm}uint8\-\_\-t bma020\-\_\-get\-\_\-ai\-\_\-version (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a411ed87bf0eebcd6464a2efa0b303940}
+A\-L Version is used with M\-L Version to identify the chip revision \begin{DoxyReturn}{Returns}
+A\-L Version 
+\end{DoxyReturn}
+
+
+Definition at line 145 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ada7359286e7b2e8f5efe66dbc7e0ec3e}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-get\-\_\-alert\-\_\-phase@{bma020\-\_\-get\-\_\-alert\-\_\-phase}}
+\index{bma020\-\_\-get\-\_\-alert\-\_\-phase@{bma020\-\_\-get\-\_\-alert\-\_\-phase}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-get\-\_\-alert\-\_\-phase}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-get\-\_\-alert\-\_\-phase (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ada7359286e7b2e8f5efe66dbc7e0ec3e}
+This function returns ture, if alert mode is activated and an any motion criterion has been detected. During alert phase, H\-G\-\_\-dur and L\-G\-\_\-dur variables are decreased to have a smaller reaction time when H\-G\-\_\-thres and L\-G\-\_\-thres thresholds are crossed; the decrease rate is by 1 ms per ms.\-The alert mode is reset when an interrupt generated due to a high threshold or a low threshold event or when both H\-G\-\_\-dur and L\-G\-\_\-dur variables are at 0. When alert is reset, H\-G\-\_\-dur and L\-G\-\_\-dur variables come back to their original values stored in image registers. \begin{DoxyReturn}{Returns}
+true if alare criterias are fullified 
+\end{DoxyReturn}
+
+
+Definition at line 326 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_aa0957d9a759593bf02c37f61dac4a41b}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-get\-\_\-any\-\_\-motion\-\_\-duration@{bma020\-\_\-get\-\_\-any\-\_\-motion\-\_\-duration}}
+\index{bma020\-\_\-get\-\_\-any\-\_\-motion\-\_\-duration@{bma020\-\_\-get\-\_\-any\-\_\-motion\-\_\-duration}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-get\-\_\-any\-\_\-motion\-\_\-duration}]{\setlength{\rightskip}{0pt plus 5cm}uint8\-\_\-t bma020\-\_\-get\-\_\-any\-\_\-motion\-\_\-duration (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_aa0957d9a759593bf02c37f61dac4a41b}
+
+
+Definition at line 1041 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N\-\_\-0, B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N\-\_\-1, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-M\-D\-U\-R\-\_\-\-H\-G\-H\-Y\-S\-\_\-\-L\-G\-H\-Y\-S.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_aa886f09ffd7a8a7237198a56ee262fc5}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-get\-\_\-any\-\_\-motion\-\_\-threshold@{bma020\-\_\-get\-\_\-any\-\_\-motion\-\_\-threshold}}
+\index{bma020\-\_\-get\-\_\-any\-\_\-motion\-\_\-threshold@{bma020\-\_\-get\-\_\-any\-\_\-motion\-\_\-threshold}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-get\-\_\-any\-\_\-motion\-\_\-threshold}]{\setlength{\rightskip}{0pt plus 5cm}uint8\-\_\-t bma020\-\_\-get\-\_\-any\-\_\-motion\-\_\-threshold (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_aa886f09ffd7a8a7237198a56ee262fc5}
+
+
+Definition at line 1140 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+References B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N\-\_\-\-T\-H\-R\-E\-S\-H\-O\-L\-D.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a7638286b73693422b67c4fabef32fe24}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-get\-\_\-bandwidth@{bma020\-\_\-get\-\_\-bandwidth}}
+\index{bma020\-\_\-get\-\_\-bandwidth@{bma020\-\_\-get\-\_\-bandwidth}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-get\-\_\-bandwidth}]{\setlength{\rightskip}{0pt plus 5cm}uint16\-\_\-t bma020\-\_\-get\-\_\-bandwidth (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a7638286b73693422b67c4fabef32fe24}
+
+
+Definition at line 861 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_af61528e1bbdc91a9acac39c776cfc11b}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-get\-\_\-chip\-\_\-id@{bma020\-\_\-get\-\_\-chip\-\_\-id}}
+\index{bma020\-\_\-get\-\_\-chip\-\_\-id@{bma020\-\_\-get\-\_\-chip\-\_\-id}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-get\-\_\-chip\-\_\-id}]{\setlength{\rightskip}{0pt plus 5cm}uint8\-\_\-t bma020\-\_\-get\-\_\-chip\-\_\-id (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_af61528e1bbdc91a9acac39c776cfc11b}
+The Chip I\-D is used by customer to be able to recognize B\-M\-A020. This code is fixed to 010b. \begin{DoxyReturn}{Returns}
+Chip I\-D 
+\end{DoxyReturn}
+
+
+Definition at line 118 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_aec5666921548a0d1a7c81c9b71dd9d44}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-get\-\_\-counter\-\_\-hg@{bma020\-\_\-get\-\_\-counter\-\_\-hg}}
+\index{bma020\-\_\-get\-\_\-counter\-\_\-hg@{bma020\-\_\-get\-\_\-counter\-\_\-hg}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-get\-\_\-counter\-\_\-hg}]{\setlength{\rightskip}{0pt plus 5cm}uint8\-\_\-t bma020\-\_\-get\-\_\-counter\-\_\-hg (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_aec5666921548a0d1a7c81c9b71dd9d44}
+
+
+Definition at line 995 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-H\-G\-\_\-0, B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-H\-G\-\_\-1, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-L\-E\-R\-T\-\_\-\-E\-N\-A\-N\-Y\-M\-O\-T\-I\-O\-N\-\_\-\-C\-N\-T\-H\-G\-\_\-\-C\-N\-T\-L\-G\-\_\-\-E\-N\-H\-G\-\_\-\-E\-N\-L\-G.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a851c0bbf26d7d95e294beae813e2c6f8}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-get\-\_\-counter\-\_\-lg@{bma020\-\_\-get\-\_\-counter\-\_\-lg}}
+\index{bma020\-\_\-get\-\_\-counter\-\_\-lg@{bma020\-\_\-get\-\_\-counter\-\_\-lg}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-get\-\_\-counter\-\_\-lg}]{\setlength{\rightskip}{0pt plus 5cm}uint8\-\_\-t bma020\-\_\-get\-\_\-counter\-\_\-lg (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a851c0bbf26d7d95e294beae813e2c6f8}
+
+
+Definition at line 712 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-L\-G\-\_\-0, B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-L\-G\-\_\-1, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-L\-E\-R\-T\-\_\-\-E\-N\-A\-N\-Y\-M\-O\-T\-I\-O\-N\-\_\-\-C\-N\-T\-H\-G\-\_\-\-C\-N\-T\-L\-G\-\_\-\-E\-N\-H\-G\-\_\-\-E\-N\-L\-G.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a772e31e89870de0eebfdf2d00bbf145a}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-get\-\_\-customer\-\_\-reserved\-\_\-1@{bma020\-\_\-get\-\_\-customer\-\_\-reserved\-\_\-1}}
+\index{bma020\-\_\-get\-\_\-customer\-\_\-reserved\-\_\-1@{bma020\-\_\-get\-\_\-customer\-\_\-reserved\-\_\-1}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-get\-\_\-customer\-\_\-reserved\-\_\-1}]{\setlength{\rightskip}{0pt plus 5cm}uint8\-\_\-t bma020\-\_\-get\-\_\-customer\-\_\-reserved\-\_\-1 (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a772e31e89870de0eebfdf2d00bbf145a}
+
+
+Definition at line 1163 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+References B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-U\-S\-T\-O\-M\-E\-R\-\_\-1.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a57c220a687c54813b3971dbb53e4d341}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-get\-\_\-customer\-\_\-reserved\-\_\-2@{bma020\-\_\-get\-\_\-customer\-\_\-reserved\-\_\-2}}
+\index{bma020\-\_\-get\-\_\-customer\-\_\-reserved\-\_\-2@{bma020\-\_\-get\-\_\-customer\-\_\-reserved\-\_\-2}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-get\-\_\-customer\-\_\-reserved\-\_\-2}]{\setlength{\rightskip}{0pt plus 5cm}uint8\-\_\-t bma020\-\_\-get\-\_\-customer\-\_\-reserved\-\_\-2 (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a57c220a687c54813b3971dbb53e4d341}
+
+
+Definition at line 1174 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+References B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-U\-S\-T\-O\-M\-E\-R\-\_\-2.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a298d59459d1e3fd4a27ad187027ecea2}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-get\-\_\-hg\-\_\-duration@{bma020\-\_\-get\-\_\-hg\-\_\-duration}}
+\index{bma020\-\_\-get\-\_\-hg\-\_\-duration@{bma020\-\_\-get\-\_\-hg\-\_\-duration}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-get\-\_\-hg\-\_\-duration}]{\setlength{\rightskip}{0pt plus 5cm}uint8\-\_\-t bma020\-\_\-get\-\_\-hg\-\_\-duration (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a298d59459d1e3fd4a27ad187027ecea2}
+
+
+Definition at line 1152 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+References B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-H\-G\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a532014744107ba2e88a56d2c4119db40}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-get\-\_\-hg\-\_\-hysterese@{bma020\-\_\-get\-\_\-hg\-\_\-hysterese}}
+\index{bma020\-\_\-get\-\_\-hg\-\_\-hysterese@{bma020\-\_\-get\-\_\-hg\-\_\-hysterese}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-get\-\_\-hg\-\_\-hysterese}]{\setlength{\rightskip}{0pt plus 5cm}uint8\-\_\-t bma020\-\_\-get\-\_\-hg\-\_\-hysterese (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a532014744107ba2e88a56d2c4119db40}
+
+
+Definition at line 1121 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+References B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-M\-D\-U\-R\-\_\-\-H\-G\-H\-Y\-S\-\_\-\-L\-G\-H\-Y\-S.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a5607b1f4a151f90262f63ac79ec8dbd9}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-get\-\_\-hg\-\_\-latched@{bma020\-\_\-get\-\_\-hg\-\_\-latched}}
+\index{bma020\-\_\-get\-\_\-hg\-\_\-latched@{bma020\-\_\-get\-\_\-hg\-\_\-latched}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-get\-\_\-hg\-\_\-latched}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-get\-\_\-hg\-\_\-latched (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a5607b1f4a151f90262f63ac79ec8dbd9}
+These status bit is set when the corresponding criteria have been issued. They are latched and thus only the microcontroller can reset them. When both high acceleration and low acceleration thresholds are enabled, these bits can be used by microprocessor to detect which criteria generated the interrupt. \begin{DoxyReturn}{Returns}
+true if, hg criteria is fullified 
+\end{DoxyReturn}
+
+
+Definition at line 296 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_af3021e4c25165a76c664be19c968ed7a}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-get\-\_\-lg\-\_\-duration@{bma020\-\_\-get\-\_\-lg\-\_\-duration}}
+\index{bma020\-\_\-get\-\_\-lg\-\_\-duration@{bma020\-\_\-get\-\_\-lg\-\_\-duration}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-get\-\_\-lg\-\_\-duration}]{\setlength{\rightskip}{0pt plus 5cm}uint8\-\_\-t bma020\-\_\-get\-\_\-lg\-\_\-duration (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_af3021e4c25165a76c664be19c968ed7a}
+
+
+Definition at line 674 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+References B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-L\-G\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a73397e5a2d7ec9443c34e9f2fd4e7e8e}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-get\-\_\-lg\-\_\-hysterese@{bma020\-\_\-get\-\_\-lg\-\_\-hysterese}}
+\index{bma020\-\_\-get\-\_\-lg\-\_\-hysterese@{bma020\-\_\-get\-\_\-lg\-\_\-hysterese}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-get\-\_\-lg\-\_\-hysterese}]{\setlength{\rightskip}{0pt plus 5cm}uint8\-\_\-t bma020\-\_\-get\-\_\-lg\-\_\-hysterese (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a73397e5a2d7ec9443c34e9f2fd4e7e8e}
+
+
+Definition at line 1088 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+References B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-M\-D\-U\-R\-\_\-\-H\-G\-H\-Y\-S\-\_\-\-L\-G\-H\-Y\-S.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a48178f75ec28ec3a881c0bd23ec16dfc}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-get\-\_\-lg\-\_\-latched@{bma020\-\_\-get\-\_\-lg\-\_\-latched}}
+\index{bma020\-\_\-get\-\_\-lg\-\_\-latched@{bma020\-\_\-get\-\_\-lg\-\_\-latched}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-get\-\_\-lg\-\_\-latched}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-get\-\_\-lg\-\_\-latched (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a48178f75ec28ec3a881c0bd23ec16dfc}
+These status bit is set when the corresponding criteria have been issued. They are latched and thus only the microcontroller can reset them. When both high acceleration and low acceleration thresholds are enabled, these bits can be used by microprocessor to detect which criteria generated the interrupt. \begin{DoxyReturn}{Returns}
+true if, lg criteria is fullified 
+\end{DoxyReturn}
+
+
+Definition at line 272 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ab9c52c7427ba44b7f40c7de7effd6b70}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-get\-\_\-lg\-\_\-threshold@{bma020\-\_\-get\-\_\-lg\-\_\-threshold}}
+\index{bma020\-\_\-get\-\_\-lg\-\_\-threshold@{bma020\-\_\-get\-\_\-lg\-\_\-threshold}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-get\-\_\-lg\-\_\-threshold}]{\setlength{\rightskip}{0pt plus 5cm}uint8\-\_\-t bma020\-\_\-get\-\_\-lg\-\_\-threshold (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ab9c52c7427ba44b7f40c7de7effd6b70}
+
+
+Definition at line 655 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+References B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-L\-G\-\_\-\-T\-H\-R\-E\-S\-H\-O\-L\-D.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ad815b4dc0e95fa9e9109930e4c1ba39a}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-get\-\_\-ml\-\_\-version@{bma020\-\_\-get\-\_\-ml\-\_\-version}}
+\index{bma020\-\_\-get\-\_\-ml\-\_\-version@{bma020\-\_\-get\-\_\-ml\-\_\-version}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-get\-\_\-ml\-\_\-version}]{\setlength{\rightskip}{0pt plus 5cm}uint8\-\_\-t bma020\-\_\-get\-\_\-ml\-\_\-version (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ad815b4dc0e95fa9e9109930e4c1ba39a}
+M\-L Version is used with A\-L Version to identify the chip revision \begin{DoxyReturn}{Returns}
+M\-L Version 
+\end{DoxyReturn}
+
+
+Definition at line 131 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a9a0c0e161ae1c7ac0963a98f1a499c00}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-get\-\_\-range@{bma020\-\_\-get\-\_\-range}}
+\index{bma020\-\_\-get\-\_\-range@{bma020\-\_\-get\-\_\-range}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-get\-\_\-range}]{\setlength{\rightskip}{0pt plus 5cm}uint8\-\_\-t bma020\-\_\-get\-\_\-range (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a9a0c0e161ae1c7ac0963a98f1a499c00}
+
+
+Definition at line 772 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a225a6d888c491bc9eeaa587c71658530}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-get\-\_\-self\-\_\-test\-\_\-result@{bma020\-\_\-get\-\_\-self\-\_\-test\-\_\-result}}
+\index{bma020\-\_\-get\-\_\-self\-\_\-test\-\_\-result@{bma020\-\_\-get\-\_\-self\-\_\-test\-\_\-result}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-get\-\_\-self\-\_\-test\-\_\-result}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-get\-\_\-self\-\_\-test\-\_\-result (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a225a6d888c491bc9eeaa587c71658530}
+It can be used together with selftest\-\_\-0 control bit (section 3.\-3.\-4). After selftest\-\_\-0 has been set, self-\/test procedure starts. At the end selftest\-\_\-0 is written to 0 and microcontroller can react by reading st\-\_\-result bit. When st\-\_\-result=1 the self test passed successfully.\-The result of the st\-\_\-result can be taken into account to evaluate the basic function of the sensor. Note\-: Evaluation of the st\-\_\-result bit should only be understood as one part of a wider functionality test. It should not be taken into consideration as the only criterion. \begin{DoxyReturn}{Returns}
+true if self test passed 
+\end{DoxyReturn}
+
+
+Definition at line 345 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_af8352dba63a90d34734410f4f97eced4}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-get\-\_\-status\-\_\-hg@{bma020\-\_\-get\-\_\-status\-\_\-hg}}
+\index{bma020\-\_\-get\-\_\-status\-\_\-hg@{bma020\-\_\-get\-\_\-status\-\_\-hg}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-get\-\_\-status\-\_\-hg}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-get\-\_\-status\-\_\-hg (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_af8352dba63a90d34734410f4f97eced4}
+\hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_af8352dba63a90d34734410f4f97eced4}{bma020\-\_\-get\-\_\-status\-\_\-hg()} returns true, if the when the corresponding criteria have been issued; they are automatically reset by B\-M\-A020 when the criteria disappear. \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 244 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ab06787c50f090a339e8ed4d4a1408f6b}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-get\-\_\-status\-\_\-lg@{bma020\-\_\-get\-\_\-status\-\_\-lg}}
+\index{bma020\-\_\-get\-\_\-status\-\_\-lg@{bma020\-\_\-get\-\_\-status\-\_\-lg}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-get\-\_\-status\-\_\-lg}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-get\-\_\-status\-\_\-lg (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ab06787c50f090a339e8ed4d4a1408f6b}
+\hyperlink{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ab06787c50f090a339e8ed4d4a1408f6b}{bma020\-\_\-get\-\_\-status\-\_\-lg()} returns true, if the when the corresponding criteria have been issued; they are automatically reset by B\-M\-A020 when the criteria disappear. \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 257 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a9e076fdb4daec0fe8352340385006b7d}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-get\-\_\-wake\-\_\-up\-\_\-pause@{bma020\-\_\-get\-\_\-wake\-\_\-up\-\_\-pause}}
+\index{bma020\-\_\-get\-\_\-wake\-\_\-up\-\_\-pause@{bma020\-\_\-get\-\_\-wake\-\_\-up\-\_\-pause}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-get\-\_\-wake\-\_\-up\-\_\-pause}]{\setlength{\rightskip}{0pt plus 5cm}uint16\-\_\-t bma020\-\_\-get\-\_\-wake\-\_\-up\-\_\-pause (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a9e076fdb4daec0fe8352340385006b7d}
+
+
+Definition at line 944 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-W\-A\-K\-E\-\_\-\-U\-P\-\_\-\-P\-A\-U\-S\-E\-\_\-0, B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-W\-A\-K\-E\-\_\-\-U\-P\-\_\-\-P\-A\-U\-S\-E\-\_\-1, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-S\-P\-I4\-\_\-\-I\-N\-T\-E\-R\-R\-U\-P\-T\-\_\-\-W\-A\-K\-E\-U\-P.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ac5c1a01ed031d3c8826f4a54cbae6efe}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-init@{bma020\-\_\-init}}
+\index{bma020\-\_\-init@{bma020\-\_\-init}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-init}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-init (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ac5c1a01ed031d3c8826f4a54cbae6efe}
+
+
+Definition at line 1287 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a7d48379dad99c291f448af6889a10c65}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-is\-\_\-advanced\-\_\-int@{bma020\-\_\-is\-\_\-advanced\-\_\-int}}
+\index{bma020\-\_\-is\-\_\-advanced\-\_\-int@{bma020\-\_\-is\-\_\-advanced\-\_\-int}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-is\-\_\-advanced\-\_\-int}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-is\-\_\-advanced\-\_\-int (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a7d48379dad99c291f448af6889a10c65}
+returns true if the advanced interrupt is enabled. \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 536 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a7aaedcf13c31ab032c6014cf2f11d03e}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-is\-\_\-enable\-\_\-any\-\_\-motion@{bma020\-\_\-is\-\_\-enable\-\_\-any\-\_\-motion}}
+\index{bma020\-\_\-is\-\_\-enable\-\_\-any\-\_\-motion@{bma020\-\_\-is\-\_\-enable\-\_\-any\-\_\-motion}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-is\-\_\-enable\-\_\-any\-\_\-motion}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-is\-\_\-enable\-\_\-any\-\_\-motion (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a7aaedcf13c31ab032c6014cf2f11d03e}
+returns true if the any motion interrupt is enabled. \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 564 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a8bbc44dd5bf3320c9ea06ce54100fafc}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-is\-\_\-enable\-\_\-hg@{bma020\-\_\-is\-\_\-enable\-\_\-hg}}
+\index{bma020\-\_\-is\-\_\-enable\-\_\-hg@{bma020\-\_\-is\-\_\-enable\-\_\-hg}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-is\-\_\-enable\-\_\-hg}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-is\-\_\-enable\-\_\-hg (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a8bbc44dd5bf3320c9ea06ce54100fafc}
+returns true if the lg interrupt is enabled. \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 510 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a47004eaf6774aa870fd8e2d4d5c1ae80}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-is\-\_\-enable\-\_\-lg@{bma020\-\_\-is\-\_\-enable\-\_\-lg}}
+\index{bma020\-\_\-is\-\_\-enable\-\_\-lg@{bma020\-\_\-is\-\_\-enable\-\_\-lg}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-is\-\_\-enable\-\_\-lg}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-is\-\_\-enable\-\_\-lg (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a47004eaf6774aa870fd8e2d4d5c1ae80}
+returns true if the lg interrupt is enabled. \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 483 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a460b42665cb432f91a3e54c132f9891e}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-is\-\_\-enable\-\_\-motion\-\_\-alert@{bma020\-\_\-is\-\_\-enable\-\_\-motion\-\_\-alert}}
+\index{bma020\-\_\-is\-\_\-enable\-\_\-motion\-\_\-alert@{bma020\-\_\-is\-\_\-enable\-\_\-motion\-\_\-alert}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-is\-\_\-enable\-\_\-motion\-\_\-alert}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-is\-\_\-enable\-\_\-motion\-\_\-alert (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a460b42665cb432f91a3e54c132f9891e}
+returns true if the motion alert interrupt is enabled. \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 592 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a3e5636663c087915feeacb349b44ce31}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-is\-\_\-latched\-\_\-int@{bma020\-\_\-is\-\_\-latched\-\_\-int}}
+\index{bma020\-\_\-is\-\_\-latched\-\_\-int@{bma020\-\_\-is\-\_\-latched\-\_\-int}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-is\-\_\-latched\-\_\-int}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-is\-\_\-latched\-\_\-int (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a3e5636663c087915feeacb349b44ce31}
+returns true if latched interrupt is enabled. \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 619 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_aa3922b9a261401e957502b0dc0c5395a}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-is\-\_\-new\-\_\-data@{bma020\-\_\-is\-\_\-new\-\_\-data}}
+\index{bma020\-\_\-is\-\_\-new\-\_\-data@{bma020\-\_\-is\-\_\-new\-\_\-data}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-is\-\_\-new\-\_\-data}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-is\-\_\-new\-\_\-data (
+\begin{DoxyParamCaption}
+\item[{char}]{axis}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_aa3922b9a261401e957502b0dc0c5395a}
+This function is true of the acceleration registers have been updated.
+
+Valid values for axis are 'x', 'y' or 'z'.
+
+
+\begin{DoxyParams}{Parameters}
+{\em axis} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true, if the axis value is new 
+\end{DoxyReturn}
+
+
+Definition at line 219 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a3f70726f60c671a6cd7250c84cc9ee7a}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-is\-\_\-new\-\_\-data\-\_\-int@{bma020\-\_\-is\-\_\-new\-\_\-data\-\_\-int}}
+\index{bma020\-\_\-is\-\_\-new\-\_\-data\-\_\-int@{bma020\-\_\-is\-\_\-new\-\_\-data\-\_\-int}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-is\-\_\-new\-\_\-data\-\_\-int}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-is\-\_\-new\-\_\-data\-\_\-int (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a3f70726f60c671a6cd7250c84cc9ee7a}
+returns the current state of new\-\_\-data\-\_\-int. enabled == true, disabled == false. \begin{DoxyReturn}{Returns}
+returns the current state of new\-\_\-data\-\_\-int 
+\end{DoxyReturn}
+
+
+Definition at line 460 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ad580d8161600c28b62f8c69dbbcbc43b}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-is\-\_\-shadow\-\_\-dis@{bma020\-\_\-is\-\_\-shadow\-\_\-dis}}
+\index{bma020\-\_\-is\-\_\-shadow\-\_\-dis@{bma020\-\_\-is\-\_\-shadow\-\_\-dis}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-is\-\_\-shadow\-\_\-dis}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-is\-\_\-shadow\-\_\-dis (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ad580d8161600c28b62f8c69dbbcbc43b}
+
+
+Definition at line 1209 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-H\-A\-D\-O\-W\-\_\-\-D\-I\-S, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-S\-P\-I4\-\_\-\-I\-N\-T\-E\-R\-R\-U\-P\-T\-\_\-\-W\-A\-K\-E\-U\-P.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a62a15f74e49f2463c1872dbe43dce521}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-is\-\_\-spi4@{bma020\-\_\-is\-\_\-spi4}}
+\index{bma020\-\_\-is\-\_\-spi4@{bma020\-\_\-is\-\_\-spi4}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-is\-\_\-spi4}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-is\-\_\-spi4 (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a62a15f74e49f2463c1872dbe43dce521}
+
+
+Definition at line 1224 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-P\-I4, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-S\-P\-I4\-\_\-\-I\-N\-T\-E\-R\-R\-U\-P\-T\-\_\-\-W\-A\-K\-E\-U\-P.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a754386a5ed68093f02f5bec3f5e98cbd}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-is\-\_\-wake\-\_\-up@{bma020\-\_\-is\-\_\-wake\-\_\-up}}
+\index{bma020\-\_\-is\-\_\-wake\-\_\-up@{bma020\-\_\-is\-\_\-wake\-\_\-up}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-is\-\_\-wake\-\_\-up}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-is\-\_\-wake\-\_\-up (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a754386a5ed68093f02f5bec3f5e98cbd}
+
+
+Definition at line 1195 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-W\-A\-K\-E\-\_\-\-U\-P, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-S\-P\-I4\-\_\-\-I\-N\-T\-E\-R\-R\-U\-P\-T\-\_\-\-W\-A\-K\-E\-U\-P.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a1b4d80e962496fd3d254dc1adb060ccd}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-perform\-\_\-self\-\_\-test\-\_\-0@{bma020\-\_\-perform\-\_\-self\-\_\-test\-\_\-0}}
+\index{bma020\-\_\-perform\-\_\-self\-\_\-test\-\_\-0@{bma020\-\_\-perform\-\_\-self\-\_\-test\-\_\-0}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-perform\-\_\-self\-\_\-test\-\_\-0}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-perform\-\_\-self\-\_\-test\-\_\-0 (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a1b4d80e962496fd3d254dc1adb060ccd}
+The self-\/test command (address 0\-Ah, bit 2) uses electrostatic forces to move the M\-E\-M\-S common electrode. The result from selftest can be verified by reading st\-\_\-result (section 3.\-4.\-1). During the self-\/test procedure no external change of the acceleration should be generated. 
+
+Definition at line 397 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_aafad8d4b857d14f771e1b5584b540087}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-perform\-\_\-self\-\_\-test\-\_\-1@{bma020\-\_\-perform\-\_\-self\-\_\-test\-\_\-1}}
+\index{bma020\-\_\-perform\-\_\-self\-\_\-test\-\_\-1@{bma020\-\_\-perform\-\_\-self\-\_\-test\-\_\-1}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-perform\-\_\-self\-\_\-test\-\_\-1}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-perform\-\_\-self\-\_\-test\-\_\-1 (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_aafad8d4b857d14f771e1b5584b540087}
+This self test bit (address 0\-Ah, bit3) does not generate any electrostatic force in the M\-E\-M\-S element but is used to verify the interrupt function is working correctly and that microprocessor is able to react to the interrupts. 0g acceleration is emulated at A\-D\-C input and the user can detect the whole logic path for interrupt, including the P\-C\-B path integrity. The L\-G\-\_\-thres register must be set to about 0.\-4g while L\-G\-\_\-dur = 0 to generate a low-\/g interrupt 
+
+Definition at line 415 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a26f79cde9e7a22ae5727f39850fc5eae}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-read\-\_\-raw\-\_\-acceleration@{bma020\-\_\-read\-\_\-raw\-\_\-acceleration}}
+\index{bma020\-\_\-read\-\_\-raw\-\_\-acceleration@{bma020\-\_\-read\-\_\-raw\-\_\-acceleration}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-read\-\_\-raw\-\_\-acceleration}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-read\-\_\-raw\-\_\-acceleration (
+\begin{DoxyParamCaption}
+\item[{{\bf acceleration\-\_\-t} $\ast$}]{raw\-\_\-a\-\_\-vector}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a26f79cde9e7a22ae5727f39850fc5eae}
+T\-O\-D\-O\-: complete behavior description This function reads the acceleration registers of the acceleration sensor. The sensor delivers a 10-\/bit raw value per axis. This function leftshifts it so it writes a 16-\/bit value to the struct. That has also the effect hat small changes results a bigger change of the value. This should filterd and smoothed by higher funtions. But so the read operation is much easier.
+
+The digital signal of x, y, z is 2's complement.
+
+Depending on the range the maxia value is +/-\/2g, +/-\/4g or +/-\/8g.
+
+Example\-: range = 2g;
+
+T\-O\-D\-O\-: Check table! \begin{TabularC}{2}
+\hline
+\rowcolor{lightgray}\PBS\centering {\bf G }&\PBS\centering {\bf Bit pattern  }\\\cline{1-2}
+\PBS\centering -\/2.\-000 g &\PBS\centering 1000 0000 0000 0000 \\\cline{1-2}
+\PBS\centering -\/1.\-996 g &\PBS\centering 1000 0000 0100 0000 \\\cline{1-2}
+\PBS\centering -\/1.\-992 g &\PBS\centering 1000 0000 1000 0000 \\\cline{1-2}
+\PBS\centering ... &\PBS\centering ... \\\cline{1-2}
+\PBS\centering -\/0.\-004 g &\PBS\centering 1111 1111 1111 1111 \\\cline{1-2}
+\PBS\centering 0.\-000 g &\PBS\centering 0000 0000 0000 0000 \\\cline{1-2}
+\PBS\centering +0.004 g &\PBS\centering 0000 0000 0100 0000 \\\cline{1-2}
+\PBS\centering ... &\PBS\centering ... \\\cline{1-2}
+\PBS\centering +1.988 g &\PBS\centering 0111 1111 1111 1101 \\\cline{1-2}
+\PBS\centering +1.992 g &\PBS\centering 0111 1111 1111 1110 \\\cline{1-2}
+\PBS\centering +1.996 g &\PBS\centering 0111 1111 1111 1111 \\\cline{1-2}
+\end{TabularC}
+
+\begin{DoxyParams}{Parameters}
+{\em raw\-\_\-a\-\_\-vector} & a acceleration script, which stores the acceleration values \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 183 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a996664698b38ebcbdc5f35277c86271f}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-reset\-\_\-hg\-\_\-latched@{bma020\-\_\-reset\-\_\-hg\-\_\-latched}}
+\index{bma020\-\_\-reset\-\_\-hg\-\_\-latched@{bma020\-\_\-reset\-\_\-hg\-\_\-latched}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-reset\-\_\-hg\-\_\-latched}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-reset\-\_\-hg\-\_\-latched (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a996664698b38ebcbdc5f35277c86271f}
+Resets the H\-G Criteria Bit. 
+
+Definition at line 305 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ac523767751ba8462faae363f828af936}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-reset\-\_\-interrupt@{bma020\-\_\-reset\-\_\-interrupt}}
+\index{bma020\-\_\-reset\-\_\-interrupt@{bma020\-\_\-reset\-\_\-interrupt}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-reset\-\_\-interrupt}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-reset\-\_\-interrupt (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ac523767751ba8462faae363f828af936}
+This interrupt (address 0\-Ah, bit 6) is reset (interrupt pad goes to low) each time this bit is written to 1. 
+
+Definition at line 427 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_aa591678c9c225c04379f31f443da516f}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-reset\-\_\-lg\-\_\-latched@{bma020\-\_\-reset\-\_\-lg\-\_\-latched}}
+\index{bma020\-\_\-reset\-\_\-lg\-\_\-latched@{bma020\-\_\-reset\-\_\-lg\-\_\-latched}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-reset\-\_\-lg\-\_\-latched}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-reset\-\_\-lg\-\_\-latched (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_aa591678c9c225c04379f31f443da516f}
+Resets the L\-G Criteria Bit. 
+
+Definition at line 282 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a487a45e193399a5d13f378b130989447}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-set\-\_\-any\-\_\-motion\-\_\-duration@{bma020\-\_\-set\-\_\-any\-\_\-motion\-\_\-duration}}
+\index{bma020\-\_\-set\-\_\-any\-\_\-motion\-\_\-duration@{bma020\-\_\-set\-\_\-any\-\_\-motion\-\_\-duration}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-set\-\_\-any\-\_\-motion\-\_\-duration}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-set\-\_\-any\-\_\-motion\-\_\-duration (
+\begin{DoxyParamCaption}
+\item[{uint8\-\_\-t}]{duration}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a487a45e193399a5d13f378b130989447}
+
+
+Definition at line 1008 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N\-\_\-0, B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N\-\_\-1, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-M\-D\-U\-R\-\_\-\-H\-G\-H\-Y\-S\-\_\-\-L\-G\-H\-Y\-S.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ab98b298250deca2b3e71ac59d9f8ddd3}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-set\-\_\-any\-\_\-motion\-\_\-threshold@{bma020\-\_\-set\-\_\-any\-\_\-motion\-\_\-threshold}}
+\index{bma020\-\_\-set\-\_\-any\-\_\-motion\-\_\-threshold@{bma020\-\_\-set\-\_\-any\-\_\-motion\-\_\-threshold}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-set\-\_\-any\-\_\-motion\-\_\-threshold}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-set\-\_\-any\-\_\-motion\-\_\-threshold (
+\begin{DoxyParamCaption}
+\item[{uint8\-\_\-t}]{threshold}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ab98b298250deca2b3e71ac59d9f8ddd3}
+
+
+Definition at line 1134 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+References B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N\-\_\-\-T\-H\-R\-E\-S\-H\-O\-L\-D.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a4c14ca5b6efeec9be6739252812ba8ae}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-set\-\_\-bandwidth@{bma020\-\_\-set\-\_\-bandwidth}}
+\index{bma020\-\_\-set\-\_\-bandwidth@{bma020\-\_\-set\-\_\-bandwidth}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-set\-\_\-bandwidth}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-set\-\_\-bandwidth (
+\begin{DoxyParamCaption}
+\item[{uint16\-\_\-t}]{bandwidth}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a4c14ca5b6efeec9be6739252812ba8ae}
+These three bits (address 14h, bits 2-\/0) are used to setup the digital filtering of A\-D\-C output data to obtain the desired bandwidth. A second order analogue filter defines the max. bandwidth to 1.\-5k\-Hz. Digital filters can be activated to reduce the bandwidth down to 25\-Hz in order to reduce signal noise. The digital filters are moving average filters of various length with a refresh rate of 3k\-Hz. Since the bandwidth is reduced by a digital filter for the factor 1/2 , 1/4, ... of the analogue filter frequency of 1.\-5k\-Hz the mean values of the bandwidth are slightly deviating from the rounded nominal values. Table 4 shows the corresponding data\-:
+
+bandwidth$<$2\-:0$>$ Mean bandwidth\mbox{[}Hz\mbox{]} 000 25 001 50 010 100 011 190 100 375 101 750 110 1500 111 Not authorised code
+
+
+\begin{DoxyParams}{Parameters}
+{\em bandwidth} & \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 817 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ad8ef8d59af38fd4b7a2e271a433eb36a}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-set\-\_\-counter\-\_\-hg@{bma020\-\_\-set\-\_\-counter\-\_\-hg}}
+\index{bma020\-\_\-set\-\_\-counter\-\_\-hg@{bma020\-\_\-set\-\_\-counter\-\_\-hg}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-set\-\_\-counter\-\_\-hg}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-set\-\_\-counter\-\_\-hg (
+\begin{DoxyParamCaption}
+\item[{uint8\-\_\-t}]{counter}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ad8ef8d59af38fd4b7a2e271a433eb36a}
+
+
+Definition at line 971 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-H\-G\-\_\-0, B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-H\-G\-\_\-1, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-L\-E\-R\-T\-\_\-\-E\-N\-A\-N\-Y\-M\-O\-T\-I\-O\-N\-\_\-\-C\-N\-T\-H\-G\-\_\-\-C\-N\-T\-L\-G\-\_\-\-E\-N\-H\-G\-\_\-\-E\-N\-L\-G.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a60af41cd9745b579ec231ecbcc61868e}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-set\-\_\-counter\-\_\-lg@{bma020\-\_\-set\-\_\-counter\-\_\-lg}}
+\index{bma020\-\_\-set\-\_\-counter\-\_\-lg@{bma020\-\_\-set\-\_\-counter\-\_\-lg}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-set\-\_\-counter\-\_\-lg}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-set\-\_\-counter\-\_\-lg (
+\begin{DoxyParamCaption}
+\item[{uint8\-\_\-t}]{counter}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a60af41cd9745b579ec231ecbcc61868e}
+
+
+Definition at line 686 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-L\-G\-\_\-0, B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-L\-G\-\_\-1, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-L\-E\-R\-T\-\_\-\-E\-N\-A\-N\-Y\-M\-O\-T\-I\-O\-N\-\_\-\-C\-N\-T\-H\-G\-\_\-\-C\-N\-T\-L\-G\-\_\-\-E\-N\-H\-G\-\_\-\-E\-N\-L\-G.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_acbdb7c3ebc522fae8479446115161504}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-set\-\_\-customer\-\_\-reserved\-\_\-1@{bma020\-\_\-set\-\_\-customer\-\_\-reserved\-\_\-1}}
+\index{bma020\-\_\-set\-\_\-customer\-\_\-reserved\-\_\-1@{bma020\-\_\-set\-\_\-customer\-\_\-reserved\-\_\-1}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-set\-\_\-customer\-\_\-reserved\-\_\-1}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-set\-\_\-customer\-\_\-reserved\-\_\-1 (
+\begin{DoxyParamCaption}
+\item[{uint8\-\_\-t}]{duration}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_acbdb7c3ebc522fae8479446115161504}
+
+
+Definition at line 1157 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+References B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-U\-S\-T\-O\-M\-E\-R\-\_\-1.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_abb127e792ad5c7a332c5e7e46cc828ae}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-set\-\_\-customer\-\_\-reserved\-\_\-2@{bma020\-\_\-set\-\_\-customer\-\_\-reserved\-\_\-2}}
+\index{bma020\-\_\-set\-\_\-customer\-\_\-reserved\-\_\-2@{bma020\-\_\-set\-\_\-customer\-\_\-reserved\-\_\-2}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-set\-\_\-customer\-\_\-reserved\-\_\-2}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-set\-\_\-customer\-\_\-reserved\-\_\-2 (
+\begin{DoxyParamCaption}
+\item[{uint8\-\_\-t}]{duration}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_abb127e792ad5c7a332c5e7e46cc828ae}
+
+
+Definition at line 1168 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+References B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-U\-S\-T\-O\-M\-E\-R\-\_\-2.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a285be18086194248979609a9333e0a47}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-set\-\_\-hg\-\_\-duration@{bma020\-\_\-set\-\_\-hg\-\_\-duration}}
+\index{bma020\-\_\-set\-\_\-hg\-\_\-duration@{bma020\-\_\-set\-\_\-hg\-\_\-duration}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-set\-\_\-hg\-\_\-duration}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-set\-\_\-hg\-\_\-duration (
+\begin{DoxyParamCaption}
+\item[{uint8\-\_\-t}]{duration}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a285be18086194248979609a9333e0a47}
+
+
+Definition at line 1146 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+References B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-H\-G\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a918407085e71e3ceb626d46afb0f36e0}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-set\-\_\-hg\-\_\-hysterese@{bma020\-\_\-set\-\_\-hg\-\_\-hysterese}}
+\index{bma020\-\_\-set\-\_\-hg\-\_\-hysterese@{bma020\-\_\-set\-\_\-hg\-\_\-hysterese}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-set\-\_\-hg\-\_\-hysterese}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-set\-\_\-hg\-\_\-hysterese (
+\begin{DoxyParamCaption}
+\item[{uint8\-\_\-t}]{hysterese}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a918407085e71e3ceb626d46afb0f36e0}
+
+
+Definition at line 1099 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-H\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-0, B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-H\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-1, B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-H\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-2, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-M\-D\-U\-R\-\_\-\-H\-G\-H\-Y\-S\-\_\-\-L\-G\-H\-Y\-S.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a76e0c3a6398d21ff31571d06dff824a8}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-set\-\_\-lg\-\_\-duration@{bma020\-\_\-set\-\_\-lg\-\_\-duration}}
+\index{bma020\-\_\-set\-\_\-lg\-\_\-duration@{bma020\-\_\-set\-\_\-lg\-\_\-duration}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-set\-\_\-lg\-\_\-duration}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-set\-\_\-lg\-\_\-duration (
+\begin{DoxyParamCaption}
+\item[{uint8\-\_\-t}]{duration}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a76e0c3a6398d21ff31571d06dff824a8}
+
+
+Definition at line 668 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+References B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-L\-G\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_acf15f8f2a17ea937719f4f49af0c019f}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-set\-\_\-lg\-\_\-hysterese@{bma020\-\_\-set\-\_\-lg\-\_\-hysterese}}
+\index{bma020\-\_\-set\-\_\-lg\-\_\-hysterese@{bma020\-\_\-set\-\_\-lg\-\_\-hysterese}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-set\-\_\-lg\-\_\-hysterese}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-set\-\_\-lg\-\_\-hysterese (
+\begin{DoxyParamCaption}
+\item[{uint8\-\_\-t}]{hysterese}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_acf15f8f2a17ea937719f4f49af0c019f}
+
+
+Definition at line 1067 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-0, B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-1, B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-2, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-M\-D\-U\-R\-\_\-\-H\-G\-H\-Y\-S\-\_\-\-L\-G\-H\-Y\-S.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ab3fa54af803bedc74927f8f2cf00aedc}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-set\-\_\-lg\-\_\-threshold@{bma020\-\_\-set\-\_\-lg\-\_\-threshold}}
+\index{bma020\-\_\-set\-\_\-lg\-\_\-threshold@{bma020\-\_\-set\-\_\-lg\-\_\-threshold}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-set\-\_\-lg\-\_\-threshold}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-set\-\_\-lg\-\_\-threshold (
+\begin{DoxyParamCaption}
+\item[{uint8\-\_\-t}]{threshold}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ab3fa54af803bedc74927f8f2cf00aedc}
+L\-G\-\_\-thres (address 0\-C, bits 7-\/0 / low-\/g threshold) and L\-G\-\_\-hyst (address 11h, bits 2-\/0 / low-\/g threshold hysteresis) can basically (although not recommended with B\-M\-A020) be used to detect a free fall. The threshold and duration codes define one criterion for interrupt generation when absolute value of acceleration is low for long enough duration.
+
+L\-G\-\_\-thres criterion\-\_\-x is true if $|$ $|$acc\-\_\-x $|$ ² L\-G\-\_\-thres / 255 $\ast$ range L\-G\-\_\-thres interrupt is set if $|$ (L\-G\-\_\-thres criterion\-\_\-x A\-N\-D L\-G\-\_\-thres criterion\-\_\-y A\-N\-D $|$ L\-G\-\_\-thres criterion\-\_\-z) A\-N\-D interrupt counter = (L\-G\-\_\-dur+1) L\-G\-\_\-thres criterion\-\_\-x is false if $|$ $|$acc\-\_\-x $|$ $>$ (L\-G\-\_\-thres + 32$\ast$\-L\-G\-\_\-hyst) / 255 $\ast$ range
+
+When L\-G\-\_\-thres criterion becomes active, an interrupt counter is incremented by 1 L\-S\-B/ms. When the low-\/g interrupt counter value equals (L\-G\-\_\-dur+1), an interrupt is generated. Depending on counter\-\_\-\-L\-G (address 0\-Bh, bit 3 and 2) register, the counter could also be reset or count down when L\-G\-\_\-thres criterion is false.
+
+
+\begin{DoxyParams}{Parameters}
+{\em threshold} & \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 649 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+References B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-L\-G\-\_\-\-T\-H\-R\-E\-S\-H\-O\-L\-D.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a503460a9fa8d3366a3fd57bc3e278c5c}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-set\-\_\-range@{bma020\-\_\-set\-\_\-range}}
+\index{bma020\-\_\-set\-\_\-range@{bma020\-\_\-set\-\_\-range}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-set\-\_\-range}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-set\-\_\-range (
+\begin{DoxyParamCaption}
+\item[{uint8\-\_\-t}]{range}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_a503460a9fa8d3366a3fd57bc3e278c5c}
+These two bits (address 14h, bits 4 and 3) are used to select the full scale acceleration range. Directly after changing the full scale range it takes $ \frac{1}{2 \cdot bandwidth} $ to overwrite the data registers with filtered data according to the selected bandwidth.
+
+Valid values for range (uint8\-\_\-t)\-:
+
+\begin{TabularC}{2}
+\hline
+\rowcolor{lightgray}\PBS\centering {\bf range (uint8\-\_\-t) }&\PBS\centering {\bf Full scale acceleration range  }\\\cline{1-2}
+\PBS\centering 2 &\PBS\centering +/-\/ 2g \\\cline{1-2}
+\PBS\centering 4 &\PBS\centering +/-\/ 4g \\\cline{1-2}
+\PBS\centering 8 &\PBS\centering +/-\/ 8g \\\cline{1-2}
+\end{TabularC}
+
+\begin{DoxyParams}{Parameters}
+{\em range} & -\/ New range value \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+boolean -\/ return true, if param is valid and write sequence to the sensor is completed. return false, if param is invalid. Then no write sqquence was performed. 
+\end{DoxyReturn}
+
+
+Definition at line 745 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ae73261ee46188952993f69970854e386}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-set\-\_\-wake\-\_\-up\-\_\-pause@{bma020\-\_\-set\-\_\-wake\-\_\-up\-\_\-pause}}
+\index{bma020\-\_\-set\-\_\-wake\-\_\-up\-\_\-pause@{bma020\-\_\-set\-\_\-wake\-\_\-up\-\_\-pause}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-set\-\_\-wake\-\_\-up\-\_\-pause}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-set\-\_\-wake\-\_\-up\-\_\-pause (
+\begin{DoxyParamCaption}
+\item[{uint16\-\_\-t}]{wake\-\_\-up\-\_\-time}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ae73261ee46188952993f69970854e386}
+These bits (address 15h, bit 2 and 1) define the sleep phase duration between each automatic wake-\/up. wake\-\_\-up\-\_\-pause$<$1\-:0$>$ Sleep phase duration 00 20 ms 01 80 ms 10 320 ms 11 2560 ms
+
+
+\begin{DoxyParams}{Parameters}
+{\em wake\-\_\-up\-\_\-time} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 909 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-W\-A\-K\-E\-\_\-\-U\-P\-\_\-\-P\-A\-U\-S\-E\-\_\-0, B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-W\-A\-K\-E\-\_\-\-U\-P\-\_\-\-P\-A\-U\-S\-E\-\_\-1, B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-R\-A\-N\-G\-E\-\_\-\-B\-A\-N\-D\-W\-I\-D\-T\-H, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-S\-P\-I4\-\_\-\-I\-N\-T\-E\-R\-R\-U\-P\-T\-\_\-\-W\-A\-K\-E\-U\-P.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ae46fb2b7063713e26d4f939a01c410b4}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-sleep@{bma020\-\_\-sleep}}
+\index{bma020\-\_\-sleep@{bma020\-\_\-sleep}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-sleep}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-sleep (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_ae46fb2b7063713e26d4f939a01c410b4}
+This function turns the sensor I\-C in sleep mode. Control and image registers are not cleared. When B\-M\-A020 is in sleep mode no operation can be performed but wake-\/up the sensor I\-C by setting sleep=0 or soft\-\_\-reset. As a consequence all write and read operations are forbidden when the sensor I\-C is in sleep mode except command used to wake up the device or soft\-\_\-reset command. After sleep mode removal, it takes 1ms to obtain stable acceleration values ($>$99\% data integrity). 
+
+Definition at line 362 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+
+\hypertarget{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_aee5899ae2a2762d1f20c4f2895298e34}{\index{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}!bma020\-\_\-soft\-\_\-reset@{bma020\-\_\-soft\-\_\-reset}}
+\index{bma020\-\_\-soft\-\_\-reset@{bma020\-\_\-soft\-\_\-reset}!bma020 (Apfelkiste's conflicted copy 2013-11-06).c@{bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c}}
+\subsubsection[{bma020\-\_\-soft\-\_\-reset}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-soft\-\_\-reset (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_01_07_apfelkiste's_01conflicted_01copy_012013-11-06_08_8c_aee5899ae2a2762d1f20c4f2895298e34}
+B\-M\-A020 is reset each time this bit (address 0\-Ah, bit 1) is written to 1. The effect is identical to power-\/on reset. Control, status and image registers are reset to values stored in the default setting registers (see also memory map). After soft\-\_\-reset or power-\/on reset B\-M\-A020 comes up in normal mode or wake-\/up mode. It is not possible to boot B\-M\-A020 to sleep mode. No serial transaction should occur within 10 microsec. after soft\-\_\-reset cmd.. The soft\-\_\-reset procedure may overwrite the S\-P\-I4 setting (section 3.\-1.\-1). Thus the correct interface configuration may have to be updated. 
+
+Definition at line 380 of file bma020 (\-Apfelkiste's conflicted copy 2013-\/11-\/06).\-c.
+

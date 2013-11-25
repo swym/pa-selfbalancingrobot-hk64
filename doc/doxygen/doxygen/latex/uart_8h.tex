@@ -1,0 +1,88 @@
+\hypertarget{uart_8h}{\section{lib/uart.h File Reference}
+\label{uart_8h}\index{lib/uart.\-h@{lib/uart.\-h}}
+}
+
+
+Initialisierung einer seriellen Konsole.  
+
+
+{\ttfamily \#include $<$inttypes.\-h$>$}\\*
+Include dependency graph for uart.\-h\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=138pt]{uart_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=198pt]{uart_8h__dep__incl}
+\end{center}
+\end{figure}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+uint8\-\_\-t \hyperlink{uart_8h_a8a42498d12d934e63b9b071228a7f39b}{U\-A\-R\-T\-\_\-char\-\_\-received} (void)
+\item 
+void \hyperlink{uart_8h_ad36599f57b7f2fe3d1d9ee67b937dfdb}{U\-A\-R\-T\-\_\-clr\-\_\-rx\-\_\-buf} (void)
+\item 
+void \hyperlink{uart_8h_a821ba6a21f4896a9a815940bfcf5d45c}{U\-A\-R\-T\-\_\-init} (uint32\-\_\-t baudrate)
+\begin{DoxyCompactList}\small\item\em Initialisierung einer seriellen Konsole. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Initialisierung einer seriellen Konsole. Durch das Modul {\itshape uart} werden die Standard-\/\-Datenströme \href{http://de.wikipedia.org/wiki/Stdin}{\tt stdin}, \href{http://de.wikipedia.org/wiki/Stdout}{\tt stdout} und \href{http://de.wikipedia.org/wiki/Stderr}{\tt stderr} mit dem {\itshape U\-S\-A\-R\-T-\/}Gerät des \href{http://www.atmel.com/}{\tt A\-Tmega32} verbunden. Physikalisch steht diese serielle Schnittstelle nach außen gemäß dem \href{http://de.wikipedia.org/wiki/EIA-232}{\tt E\-I\-A-\/232-\/}Standard zur Verfügung und kann somit mit einem P\-C verbunden werden. Standardmäßig wird das System in der Betriebsart {\itshape 8\-N1 ohne Handshake} eingerichtet.
+
+Nach dem Aufruf von \hyperlink{uart_8c_a821ba6a21f4896a9a815940bfcf5d45c}{U\-A\-R\-T\-\_\-init()} stehen zu Ein-\/ und Ausgabezwecken die in der \href{http://de.wikipedia.org/wiki/Header-Datei}{\tt stdio.\-h-\/}Datei definierten Standard-\/\-Ein-\/ und Ausgabefunktionen der \href{http://www.nongnu.org/avr-libc/}{\tt A\-V\-R Libc} zur Verfügung, also z.\-B. printf, fgets usw. Siehe auch \href{http://de.wikibooks.org/wiki/C-Programmierung:_Einfache_Ein-_und_Ausgabe}{\tt Einführung}.
+
+Zum Verbinden mit einem P\-C wird zudem ein Terminalprogramm, wie z.\-B. \href{http://hp.vector.co.jp/authors/VA002416/teraterm.html}{\tt Tera Term}, \href{http://de.wikipedia.org/wiki/HyperTerminal}{\tt Hyper\-Terminal} oder \href{http://de.wikipedia.org/wiki/Minicom}{\tt Minicom}, benötigt. 
+
+Definition in file \hyperlink{uart_8h_source}{uart.\-h}.
+
+
+
+\subsection{Function Documentation}
+\hypertarget{uart_8h_a8a42498d12d934e63b9b071228a7f39b}{\index{uart.\-h@{uart.\-h}!U\-A\-R\-T\-\_\-char\-\_\-received@{U\-A\-R\-T\-\_\-char\-\_\-received}}
+\index{U\-A\-R\-T\-\_\-char\-\_\-received@{U\-A\-R\-T\-\_\-char\-\_\-received}!uart.h@{uart.\-h}}
+\subsubsection[{U\-A\-R\-T\-\_\-char\-\_\-received}]{\setlength{\rightskip}{0pt plus 5cm}uint8\-\_\-t U\-A\-R\-T\-\_\-char\-\_\-received (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{uart_8h_a8a42498d12d934e63b9b071228a7f39b}
+
+
+Definition at line 112 of file uart.\-c.
+
+\hypertarget{uart_8h_ad36599f57b7f2fe3d1d9ee67b937dfdb}{\index{uart.\-h@{uart.\-h}!U\-A\-R\-T\-\_\-clr\-\_\-rx\-\_\-buf@{U\-A\-R\-T\-\_\-clr\-\_\-rx\-\_\-buf}}
+\index{U\-A\-R\-T\-\_\-clr\-\_\-rx\-\_\-buf@{U\-A\-R\-T\-\_\-clr\-\_\-rx\-\_\-buf}!uart.h@{uart.\-h}}
+\subsubsection[{U\-A\-R\-T\-\_\-clr\-\_\-rx\-\_\-buf}]{\setlength{\rightskip}{0pt plus 5cm}void U\-A\-R\-T\-\_\-clr\-\_\-rx\-\_\-buf (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{uart_8h_ad36599f57b7f2fe3d1d9ee67b937dfdb}
+
+
+Definition at line 118 of file uart.\-c.
+
+\hypertarget{uart_8h_a821ba6a21f4896a9a815940bfcf5d45c}{\index{uart.\-h@{uart.\-h}!U\-A\-R\-T\-\_\-init@{U\-A\-R\-T\-\_\-init}}
+\index{U\-A\-R\-T\-\_\-init@{U\-A\-R\-T\-\_\-init}!uart.h@{uart.\-h}}
+\subsubsection[{U\-A\-R\-T\-\_\-init}]{\setlength{\rightskip}{0pt plus 5cm}void U\-A\-R\-T\-\_\-init (
+\begin{DoxyParamCaption}
+\item[{uint32\-\_\-t}]{baudrate}
+\end{DoxyParamCaption}
+)}}\label{uart_8h_a821ba6a21f4896a9a815940bfcf5d45c}
+
+
+Initialisierung einer seriellen Konsole. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em baudrate} & Gewünschte Baudrate der seriellen Konsole.\\
+\hline
+\end{DoxyParams}
+Um die serielle Schnittstelle einzurichten, muss diese Funktion aufgerufen werden. Für den Parameter {\itshape baudrate} sollten gebräuchliche Werte wie 9600, 19200 und, je nach Kabellänge, auch 115200 verwendet werden. Hierbei ist das U\-S\-A\-R\-T-\/\-Kapitel, insbesondere die am Kapitelende aufgeführten Daten der Tabelle "Examples of U\-B\-R\-R Settings for Commonly Used Oscillator Frequencies" der Herstellerdokumentation des Mikrocontrollers zu beachten, nach dem sich nicht für jede Oszillatorfrequenz gültige Toleranzwerte für alle Übertragungsraten ergeben werden. 
+
+Definition at line 128 of file uart.\-c.
+
