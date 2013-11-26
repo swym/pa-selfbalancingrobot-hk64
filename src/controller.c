@@ -55,14 +55,6 @@ void controller_run(void)
 	for(;;) {
 
 
-
-
-		/* Bei Interrupt Slot-Counter herh�hen */
-//		if(timer0_compare_reached) {
-//
-//			timer0_compare_reached = false;
-//		}
-
 		if(timer_compare_reached) {
 
 			timer_compare_reached = false;
