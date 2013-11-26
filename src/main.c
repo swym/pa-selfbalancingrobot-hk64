@@ -24,11 +24,13 @@
 #include "motor_control.h"
 #include "bma020.h"
 #include "controller.h"
+#include "timer.h"
 
 /* Tests */
 //#include "test/test_twi_master.h"
 //#include "test/test_bma020.h"
 #include "test/test_motor_control.h"
+#include "test/test_acceleration.h"
 
 
 /* *** DECLARATIONS ********************************************************** */
@@ -48,7 +50,9 @@ void main_init(void)
 
 	UART_init(9600);	/* Init UART mit 9600 baud */
 	twi_master_init();	/* Init TWI/I2C Schnittstelle */
+	timer_init();
 	sei();				/* Enable global interrupts */
+
 
 	acceleration_init();
 	motor_control_init();
@@ -78,6 +82,9 @@ void main_run(void)
 
 void main_run_tests(void)
 {
+//	test_acceleration_init_and_calibration();
+//	test_motor_control_set_different_speeds();
+
 	//test_twi_master_get_bytes();
 	//test_master_write_and_read_bytes();
 	//test_twi_master_read_and_write_bits();
@@ -103,7 +110,7 @@ int main(void)
 {
 	main_init();
 
-	main_run_tests();
+//	main_run_tests();
 	main_run();
 
 	return 0;

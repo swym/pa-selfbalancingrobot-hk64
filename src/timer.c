@@ -11,12 +11,30 @@
 #include <avr/interrupt.h>
 
 
+//global Data
+volatile bool timer_compare_reached;
+volatile uint8_t timer_slot_counter;
 
 
+/*
+	Timer0 wird auf eine Periodenl�nge von T = 4 ms einstellt
+
+	F_OC0 = 250
+
+	OCR0    = ?
+
+	F_OC0   =    (F_CPU) / (2 * Prescaler * (1 + OCR0))
+	OCR0    =   ((F_CPU) / (2 * Prescaler * F_OC0)) - 1
+	OCR0    =  (16000000 / (2 * 256 * 250)) - 1
+	OCR0    =  124
+
+	Vgl.:	Atmel-2490-8-bit-AVR-Microcontroller-ATmega64-L_datasheet.pdf
+			Seite 125
+*/
 void timer_init()
 {
 	timer_compare_reached = false;
-	timer_slot_cnt = 0;
+	timer_slot_counter = 0;
 
 
 	/* Timer0 wird auf eine Periodenl�nge von T = 4 ms einstellt */
@@ -32,7 +50,7 @@ void timer_init()
 										//Output Compare Match Interrupt Enable
 
 	//Timer0 OCR-Register vorladen
-	OCR0 = 149;						//OCR0: Output Compare Register
+	OCR0 = 249;						//OCR0: Output Compare Register
 
 
 }
@@ -40,10 +58,10 @@ void timer_init()
 
 ISR(TIMER0_COMP_vect)
 {
-	if(timer_slot_cnt >= TIMER_SLOT_COUNTER_MAX) {
-		timer_slot_cnt = 0;
+	if(timer_slot_counter >= TIMER_SLOT_COUNTER_MAX) {
+		timer_slot_counter = 0;
 	} else {
-		timer_slot_cnt++;
+		timer_slot_counter++;
 	}
 	timer_compare_reached = true;
 }

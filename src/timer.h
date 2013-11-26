@@ -17,7 +17,7 @@
 
 //External Data
 extern volatile bool timer_compare_reached;
-extern volatile uint8_t timer_slot_cnt;
+extern volatile uint8_t timer_slot_counter;
 
 //External Functions
 extern void timer_init(void);
