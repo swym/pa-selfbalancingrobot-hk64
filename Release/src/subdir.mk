@@ -10,7 +10,9 @@ C_SRCS += \
 ../src/main.c \
 ../src/md25.c \
 ../src/motor_control.c \
-../src/moving_average.c 
+../src/moving_average.c \
+../src/pid.c \
+../src/timer.c 
 
 OBJS += \
 ./src/acceleration_t.o \
@@ -19,7 +21,9 @@ OBJS += \
 ./src/main.o \
 ./src/md25.o \
 ./src/motor_control.o \
-./src/moving_average.o 
+./src/moving_average.o \
+./src/pid.o \
+./src/timer.o 
 
 C_DEPS += \
 ./src/acceleration_t.d \
@@ -28,7 +32,9 @@ C_DEPS += \
 ./src/main.d \
 ./src/md25.d \
 ./src/motor_control.d \
-./src/moving_average.d 
+./src/moving_average.d \
+./src/pid.d \
+./src/timer.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
