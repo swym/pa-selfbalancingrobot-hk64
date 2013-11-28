@@ -14,7 +14,6 @@
 
 /* local headers               */
 
-
 /* *** DECLARATIONS ********************************************************** */
 
 /* external type and constants */
@@ -22,5 +21,6 @@
 /* external objects            */
 
 /* external functions          */
+extern void configuration_terminal_state_machine(void);
 
 #endif /* CONFIGURATION_TERMINAL_H_ */
