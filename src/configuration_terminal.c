@@ -5,5 +5,16 @@
  *      Author: alexandermertens
  */
 
-
+/* *** INCLUDES ************************************************************** */
 #include "configuration_terminal.h"
+
+/* *** DECLARATIONS ********************************************************** */
+
+/* local type and constants     */
+
+//-------------------Defines--------------------//
+
+/* local function declarations  */
+
+
+/* *** FUNCTION DEFINITIONS ************************************************** */
