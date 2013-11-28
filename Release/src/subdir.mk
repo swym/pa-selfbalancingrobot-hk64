@@ -11,6 +11,7 @@ C_SRCS += \
 ../src/md25.c \
 ../src/motor_control.c \
 ../src/moving_average.c \
+../src/pid.c \
 ../src/timer.c 
 
 OBJS += \
@@ -21,6 +22,7 @@ OBJS += \
 ./src/md25.o \
 ./src/motor_control.o \
 ./src/moving_average.o \
+./src/pid.o \
 ./src/timer.o 
 
 C_DEPS += \
@@ -31,6 +33,7 @@ C_DEPS += \
 ./src/md25.d \
 ./src/motor_control.d \
 ./src/moving_average.d \
+./src/pid.d \
 ./src/timer.d 
 
 

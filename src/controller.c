@@ -12,6 +12,7 @@
 #include "acceleration_t.h"
 #include "motor_control.h"
 #include "timer.h"
+#include "pid.h"
 
 
 
@@ -34,6 +35,8 @@ volatile bool timer_compare_reached;
 volatile uint8_t timer_slot_counter;
 
 /* local function declarations  */
+pidData_t pid_controller_settings;
+
 
 
 /* *** FUNCTION DEFINITIONS ************************************************** */
@@ -41,12 +44,13 @@ volatile uint8_t timer_slot_counter;
 
 void controller_init(void)
 {
-
+	pid_Init(10486, 0, 0, &pid_controller_settings);
 }
 
 void controller_run(void)
 {
 	uint8_t led_value = 0;
+	uint16_t speed = 0;
 	acceleration_t current_accel;
 	motor_contol_speed_t new_speed;
 
@@ -77,17 +81,17 @@ void controller_run(void)
 				x = (double)(current_accel.x);
 				z = (double)(current_accel.z);
 
-				position = -atan2(x, z);
-
-				position = position * 2;
+				position = atan2(x, z) * 100;
 
 				/* TODO: als IST-Wert in den PID-Regler geben
 				 * Stellgr��e an Motorsteuerung weitergeben, ABER noch nicht setzen
 				 */
 
 
-				new_speed.motor_1 = 10;
-				new_speed.motor_2 = 10;
+				speed = pid_Controller(0, (int16_t)(position), &pid_controller_settings);
+
+				new_speed.motor_1 = speed >> 8;
+				new_speed.motor_2 = speed >> 8;
 
 				motor_control_prepare_new_speed(&new_speed);
 				PORTC ^= LED2;

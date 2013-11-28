@@ -22,9 +22,9 @@
 
 #include "stdint.h"
 
-#define SCALING_FACTOR  128
+//#define SCALING_FACTOR  128
 // 2^23
-//#define SCALING_FACTOR  8388608
+#define SCALING_FACTOR  2
 
 /*! \brief PID Status
  *
@@ -54,7 +54,7 @@ typedef struct PID_DATA{
 // Maximum value of variables
 #define MAX_INT         INT16_MAX
 #define MAX_LONG        INT32_MAX
-#define MAX_I_TERM      (MAX_LONG / 2)
+#define MAX_I_TERM      (INT16_MAX / 2)
 
 // Boolean values
 #define FALSE           0

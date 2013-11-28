@@ -25,6 +25,7 @@
 #include "bma020.h"
 #include "controller.h"
 #include "timer.h"
+#include "pid.h"
 
 /* Tests */
 //#include "test/test_twi_master.h"
@@ -53,8 +54,8 @@ void main_init(void)
 	timer_init();
 	sei();				/* Enable global interrupts */
 
-
 	acceleration_init();
+	acceleration_calibrate_offset();
 	motor_control_init();
 
 	controller_init();
