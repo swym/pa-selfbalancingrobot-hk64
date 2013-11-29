@@ -23,9 +23,17 @@
 
 /* local type and constants     */
 typedef enum {
+	STATE_WAITING,
 	STATE_MAIN_MENU,
-	STATE_SETPID,
-	STATE_TARA_ACCEL
+	STATE_PID_MENU,
+	STATE_PID_SET_P,
+	STATE_PID_SET_I,
+	STATE_PID_SET_D,
+	STATE_PID_SET_SCALINGFACTOR,
+	STATE_ACCELERATIONSENSOR_MENU,
+	STATE_ACCELERATIONSENSOR_SHOW,
+	STATE_ACCELERATIONSENSOR_TARA,
+	STATE_ACCELERATIONSENSOR_SET_SCALINGFACTOR
 } configuration_terminal_state_t;
 
 static configuration_terminal_state_t current_state = STATE_MAIN_MENU;
@@ -33,19 +41,26 @@ static configuration_terminal_state_t current_state = STATE_MAIN_MENU;
 static char input_buffer[INPUT_BUFFER_SIZE];
 
 
-
 /* local function declarations  */
 void configuration_terminal_clear_screen(void);
 void configuration_terminal_set_cursor_top_left(void);
 char configuration_terminal_get_choice(void);
+void configuration_terminal_clear_all(void);
 void configuration_terminal_set_cursor_on_position(uint8_t, uint8_t); /* uint8_t x, uint8_t y */
-
 void configuration_terminal_clear_input_buffer(void);
 
 /* states */
+void configuration_terminal_state_waiting(void);
 void configuration_terminal_state_main_menu(void);
-void configuration_terminal_state_setPID(void);
-void configuration_terminal_state_tata_acceleration(void);
+void configuration_terminal_state_PID_menu(void);
+void configuration_terminal_state_PID_set_P(void);
+void configuration_terminal_state_PID_set_I(void);
+void configuration_terminal_state_PID_set_D(void);
+void configuration_terminal_state_PID_set_scalingfactor(void);
+void configuration_terminal_state_accelerationsensor_menu(void);
+void configuration_terminal_state_accelerationsensor_show(void);
+void configuration_terminal_state_accelerationsensor_tara(void);
+void configuration_terminal_state_accelerationsensor_set_scalingfactor(void);
 
 /* *** FUNCTION DEFINITIONS ************************************************** */
 
@@ -56,27 +71,71 @@ void configuration_terminal_state_machine(void)
 	configuration_terminal_clear_screen();
 
  	for(;;) {
-
 		switch(current_state) {
+
+			case STATE_WAITING:
+				configuration_terminal_state_waiting();
+			break;
 
 			case STATE_MAIN_MENU:
 				configuration_terminal_state_main_menu();
 			break;
 
-			case STATE_SETPID:
-				configuration_terminal_state_setPID();
+			case STATE_PID_MENU:
+				configuration_terminal_state_PID_menu();
 			break;
 
-			case STATE_TARA_ACCEL:
-				configuration_terminal_state_tata_acceleration();
+			case STATE_PID_SET_P:
+				configuration_terminal_state_PID_set_P();
+			break;
+
+			case STATE_PID_SET_I:
+				configuration_terminal_state_PID_set_I();
+			break;
+
+			case STATE_PID_SET_D:
+				configuration_terminal_state_PID_set_D();
+			break;
+
+			case STATE_PID_SET_SCALINGFACTOR:
+				configuration_terminal_state_PID_set_scalingfactor();
+			break;
+
+			case STATE_ACCELERATIONSENSOR_MENU:
+				configuration_terminal_state_accelerationsensor_menu();
+			break;
+
+			case STATE_ACCELERATIONSENSOR_SHOW:
+				configuration_terminal_state_accelerationsensor_show();
+			break;
+
+			case STATE_ACCELERATIONSENSOR_TARA:
+				configuration_terminal_state_accelerationsensor_tara();
+			break;
+
+			case STATE_ACCELERATIONSENSOR_SET_SCALINGFACTOR:
+				configuration_terminal_state_accelerationsensor_set_scalingfactor();
 			break;
 		}
-
-		_delay_ms(2000.0);
 	}
 }
 
 
+void configuration_terminal_state_waiting(void)
+{
+	// ENTRY
+
+
+	// DO
+
+
+	// EXIT
+
+}
+
+
+
+/*
 void configuration_terminal_state_main_menu(void)
 {
 
@@ -128,6 +187,10 @@ void configuration_terminal_state_tata_acceleration(void)
 
 }
 
+*/
+
+/* *** HELPERFUNCTIONS *** */
+
 char configuration_terminal_get_choice(void)
 {
 	char choice = 0;
@@ -138,7 +201,7 @@ char configuration_terminal_get_choice(void)
 	//Nur den ersten Char verarbeiten
 	choice = input_buffer[0];
 
-	//Wertebereichprüfung und convertierung zu Großbuchstaben
+	//Wertebereichprüfung und Kconvertierung zu Großbuchstaben
 	if(isalpha(choice)) {
 		choice = toupper(choice);
 	} else {
@@ -149,6 +212,13 @@ char configuration_terminal_get_choice(void)
 	configuration_terminal_clear_input_buffer();
 
 	return choice;
+}
+
+void configuration_terminal_clear_all(void)
+{
+	configuration_terminal_clear_screen();
+	configuration_terminal_set_cursor_top_left();
+	configuration_terminal_clear_input_buffer();
 }
 
 void configuration_terminal_clear_input_buffer(void)
@@ -182,19 +252,17 @@ void configuration_terminal_set_cursor_top_left(void)
 
 void configuration_terminal_set_cursor_on_position(uint8_t line, uint8_t column)
 {
-	char cmd[50];
+	char cmd[24];
 
 	//check range of line; set to 1 if invalid
 	if(line < 1) {
 		line = 1;
 	}
 
-
 	//check range of line; set to 1 if invalid
 	if(column < 1) {
 		column = 1;
 	}
-
 	sprintf(cmd, "%c[%d;%dH", ASCII_ESC, line, column);
 	printf(cmd);
 }
