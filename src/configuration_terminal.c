@@ -12,6 +12,7 @@
 #include <util/delay.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 #include <ctype.h>
 
 /* *** DECLARATIONS ********************************************************** */
@@ -19,7 +20,11 @@
 //-------------------Defines--------------------//
 
 #define INPUT_BUFFER_SIZE 8
+
 #define ASCII_ESC		  (char)(27)
+
+#define STATE_WAITING_TIMEOUT 5			//Seconds for Timeout
+#define STATE_WAITING_PARTS   4
 
 /* local type and constants     */
 typedef enum {
@@ -33,10 +38,13 @@ typedef enum {
 	STATE_ACCELERATIONSENSOR_MENU,
 	STATE_ACCELERATIONSENSOR_SHOW,
 	STATE_ACCELERATIONSENSOR_TARA,
-	STATE_ACCELERATIONSENSOR_SET_SCALINGFACTOR
+	STATE_ACCELERATIONSENSOR_SET_SCALINGFACTOR,
+	STATE_FINAL,
+	STATE_NULL
 } configuration_terminal_state_t;
 
-static configuration_terminal_state_t current_state = STATE_MAIN_MENU;
+static configuration_terminal_state_t current_state = STATE_WAITING;
+static configuration_terminal_state_t next_state = STATE_NULL;
 
 static char input_buffer[INPUT_BUFFER_SIZE];
 
@@ -70,7 +78,7 @@ void configuration_terminal_state_machine(void)
 
 	configuration_terminal_clear_screen();
 
- 	for(;;) {
+ 	while(current_state != STATE_FINAL) {
 		switch(current_state) {
 
 			case STATE_WAITING:
@@ -116,14 +124,156 @@ void configuration_terminal_state_machine(void)
 			case STATE_ACCELERATIONSENSOR_SET_SCALINGFACTOR:
 				configuration_terminal_state_accelerationsensor_set_scalingfactor();
 			break;
+
+			case STATE_FINAL:
+			break;
+			case STATE_NULL:
+			break;
 		}
+
+		current_state = next_state;
+		next_state = STATE_NULL;
 	}
+ 	configuration_terminal_clear_all();
+ 	printf("FINAL");
 }
 
 
 void configuration_terminal_state_waiting(void)
 {
+	uint8_t waiting_time = STATE_WAITING_TIMEOUT;
+	bool user_irq_received = false;
+	double delay = 1000.0/(STATE_WAITING_PARTS + 1);
+
+
+	uint8_t parts_of_seconds_counter = 0;
+
+
 	// ENTRY
+	configuration_terminal_clear_all();
+
+	printf("Press any key for entering configuration menu...\n");
+
+	// DO
+	while(waiting_time > 0 && !user_irq_received) {
+
+		//if user send any byte over usart then show configuration main menu
+		if(UART_char_received()) {
+			user_irq_received = true;
+			UART_clr_rx_buf();
+			break;
+		}
+
+		//Display Counter and decreae timeout
+		if(parts_of_seconds_counter == 0) {
+			printf("%d", waiting_time);
+			waiting_time--;
+			parts_of_seconds_counter = STATE_WAITING_PARTS;
+		} else {
+			printf(".");
+			parts_of_seconds_counter--;
+		}
+
+		_delay_ms(delay);
+	}
+
+	if(user_irq_received) {
+		next_state = STATE_MAIN_MENU;
+	} else {
+		next_state = STATE_FINAL;
+	}
+
+	// EXIT
+
+}
+
+void configuration_terminal_state_main_menu(void)
+{
+	char choice;
+
+	// ENTRY
+	configuration_terminal_clear_all();
+
+	//Greeting
+	printf("   === MAIN MENU ===\n\n");
+	printf("Current PID Parameters:\n  P: -na-\n  I: -na-\n  D: -na-\n\n");
+	printf("Select a option by pressing the correspondending key\n\n");
+	printf(" [P] Configure PID-controller\n");
+	printf(" [A] Configure accelerationsensor\n\n");
+	printf(" [X] Start PID Contoller without changes\n\n");
+
+	// DO
+	//Waiting for users choice
+	do {
+		choice = configuration_terminal_get_choice();
+
+		if(choice == 'P') {
+			next_state = STATE_PID_MENU;
+		} else if(choice == 'A') {
+			next_state = STATE_ACCELERATIONSENSOR_MENU;
+		} else if(choice == 'X') {
+			next_state = STATE_FINAL;
+		} else {
+			printf("Invalid choice! Please retry:\n");
+			choice = 0;
+		}
+
+	} while(choice == 0);
+
+	// EXIT
+
+}
+
+
+void configuration_terminal_state_PID_menu(void)
+{
+	char choice;
+
+	// ENTRY
+	configuration_terminal_clear_all();
+
+	//Greeting
+	printf("   === MAIN MENU ===\n\n");
+	printf("Current PID Parameters:\n  P: -na-\n  I: -na-\n  D: -na-\n\n");
+	printf("Select a option by pressing the correspondending key\n\n");
+	printf(" [P] change proportional parameter\n");
+	printf(" [I] change integral parameter\n");
+	printf(" [D] change derivative parameter\n\n");
+	printf(" [F] change scaling factor\n\n");
+	printf(" [X] Back to Main Menu\n");
+
+	// DO
+	do {
+		choice = configuration_terminal_get_choice();
+
+		if(choice == 'P') {
+			next_state = STATE_PID_SET_P;
+		} else if(choice == 'I') {
+			next_state = STATE_PID_SET_I;
+		} else if(choice == 'D') {
+			next_state = STATE_PID_SET_D;
+		} else if(choice == 'F') {
+			next_state = STATE_PID_SET_SCALINGFACTOR;
+		} else if(choice == 'X') {
+			next_state = STATE_MAIN_MENU;
+		} else {
+			printf("Invalid choice! Please retry:\n");
+			choice = 0;
+		}
+
+	} while(choice == 0);
+
+	// EXIT
+
+}
+
+
+void configuration_terminal_state_PID_set_P(void)
+{
+	// ENTRY
+	configuration_terminal_clear_all();
+
+	printf("P MENU");
 
 
 	// DO
@@ -133,6 +283,116 @@ void configuration_terminal_state_waiting(void)
 
 }
 
+
+void configuration_terminal_state_PID_set_I(void)
+{
+	// ENTRY
+	configuration_terminal_clear_all();
+
+	printf("I MENU");
+
+
+	// DO
+
+
+	// EXIT
+
+}
+
+
+void configuration_terminal_state_PID_set_D(void)
+{
+	// ENTRY
+	configuration_terminal_clear_all();
+
+	printf("D MENU");
+
+
+	// DO
+
+
+	// EXIT
+
+}
+
+
+void configuration_terminal_state_PID_set_scalingfactor(void)
+{
+	// ENTRY
+	configuration_terminal_clear_all();
+
+	printf("SCALINGFACTOR PID MENU");
+
+
+	// DO
+
+
+	// EXIT
+
+}
+
+void configuration_terminal_state_accelerationsensor_menu(void)
+{
+	// ENTRY
+	configuration_terminal_clear_all();
+
+	printf("ACCEL MENU");
+
+
+	// DO
+
+
+	// EXIT
+
+}
+
+
+void configuration_terminal_state_accelerationsensor_show(void)
+{
+	// ENTRY
+	configuration_terminal_clear_all();
+
+	printf("ACCEL SHOW MENU");
+
+
+	// DO
+
+
+	// EXIT
+
+}
+
+
+void configuration_terminal_state_accelerationsensor_tara(void)
+{
+	// ENTRY
+	configuration_terminal_clear_all();
+
+	printf("ACCEL TARA MENU");
+
+
+	// DO
+
+
+	// EXIT
+
+}
+
+
+void configuration_terminal_state_accelerationsensor_set_scalingfactor(void)
+{
+	// ENTRY
+	configuration_terminal_clear_all();
+
+	printf("ACCEL SCALINGFACTOR MENU");
+
+
+	// DO
+
+
+	// EXIT
+
+}
 
 
 /*
