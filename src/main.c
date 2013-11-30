@@ -27,11 +27,14 @@
 #include "timer.h"
 #include "pid.h"
 
+
 /* Tests */
 //#include "test/test_twi_master.h"
 //#include "test/test_bma020.h"
-#include "test/test_motor_control.h"
-#include "test/test_acceleration.h"
+//#include "test/test_motor_control.h"
+//#include "test/test_acceleration.h"
+#include "test/test_configuration_terminal.h"
+
 
 
 /* *** DECLARATIONS ********************************************************** */
@@ -59,8 +62,6 @@ void main_init(void)
 	motor_control_init();
 
 	controller_init();
-
-
 }
 
 
@@ -99,6 +100,7 @@ void main_run_tests(void)
 //	}
 	//test_motor_control_set_different_speeds();
 
+	test_configuration_terminal_test_state_machine();
 
 }
 
@@ -111,8 +113,8 @@ int main(void)
 {
 	main_init();
 
-//	main_run_tests();
-	main_run();
+	main_run_tests();
+//	main_run();
 
 	return 0;
 }

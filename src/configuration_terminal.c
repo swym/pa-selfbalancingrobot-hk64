@@ -19,12 +19,12 @@
 
 //-------------------Defines--------------------//
 
-#define INPUT_BUFFER_SIZE 8
+#define INPUT_BUFFER_SIZE		24
 
-#define ASCII_ESC		  (char)(27)
+#define ASCII_ESC		  		(char)(27)
 
-#define STATE_WAITING_TIMEOUT 5			//Seconds for Timeout
-#define STATE_WAITING_PARTS   4
+#define STATE_WAITING_TIMEOUT	5			//Seconds for Timeout
+#define STATE_WAITING_PARTS   	4
 
 /* local type and constants     */
 typedef enum {
@@ -37,7 +37,7 @@ typedef enum {
 	STATE_PID_SET_SCALINGFACTOR,
 	STATE_ACCELERATIONSENSOR_MENU,
 	STATE_ACCELERATIONSENSOR_SHOW,
-	STATE_ACCELERATIONSENSOR_TARA,
+	STATE_ACCELERATIONSENSOR_SET_ZERO,
 	STATE_ACCELERATIONSENSOR_SET_SCALINGFACTOR,
 	STATE_FINAL,
 	STATE_NULL
@@ -67,7 +67,7 @@ void configuration_terminal_state_PID_set_D(void);
 void configuration_terminal_state_PID_set_scalingfactor(void);
 void configuration_terminal_state_accelerationsensor_menu(void);
 void configuration_terminal_state_accelerationsensor_show(void);
-void configuration_terminal_state_accelerationsensor_tara(void);
+void configuration_terminal_state_accelerationsensor_set_zero(void);
 void configuration_terminal_state_accelerationsensor_set_scalingfactor(void);
 
 /* *** FUNCTION DEFINITIONS ************************************************** */
@@ -117,8 +117,8 @@ void configuration_terminal_state_machine(void)
 				configuration_terminal_state_accelerationsensor_show();
 			break;
 
-			case STATE_ACCELERATIONSENSOR_TARA:
-				configuration_terminal_state_accelerationsensor_tara();
+			case STATE_ACCELERATIONSENSOR_SET_ZERO:
+				configuration_terminal_state_accelerationsensor_set_zero();
 			break;
 
 			case STATE_ACCELERATIONSENSOR_SET_SCALINGFACTOR:
@@ -196,11 +196,11 @@ void configuration_terminal_state_main_menu(void)
 
 	//Greeting
 	printf("   === MAIN MENU ===\n\n");
-	printf("Current PID Parameters:\n  P: -na-\n  I: -na-\n  D: -na-\n\n");
+	printf("Current PID parameters:\n  P: -na-\n  I: -na-\n  D: -na-\n\n");
 	printf("Select a option by pressing the correspondending key\n\n");
 	printf(" [P] Configure PID-controller\n");
 	printf(" [A] Configure accelerationsensor\n\n");
-	printf(" [X] Start PID Contoller without changes\n\n");
+	printf(" [X] Start PID controller with current parameters\n\n");
 
 	// DO
 	//Waiting for users choice
@@ -233,7 +233,7 @@ void configuration_terminal_state_PID_menu(void)
 	configuration_terminal_clear_all();
 
 	//Greeting
-	printf("   === MAIN MENU ===\n\n");
+	printf("   === PID CONTROLLER MENU ===\n\n");
 	printf("Current PID Parameters:\n  P: -na-\n  I: -na-\n  D: -na-\n\n");
 	printf("Select a option by pressing the correspondending key\n\n");
 	printf(" [P] change proportional parameter\n");
@@ -270,14 +270,44 @@ void configuration_terminal_state_PID_menu(void)
 
 void configuration_terminal_state_PID_set_P(void)
 {
+	uint16_t new_value = 0;
+	bool read_value = true;
+	int ret;
+
 	// ENTRY
 	configuration_terminal_clear_all();
 
-	printf("P MENU");
+	printf("=== CHANGE PROPORTIONAL PARAMETER ===\n\n");
+	printf("Current value: -na-\n\n");
+	printf("Please enter a uint16_t:\n");
 
+
+	printf("%d\n", sizeof(unsigned int));
 
 	// DO
+	do {
+		//read user input
+		fgets(input_buffer, INPUT_BUFFER_SIZE, stdin);
 
+		//try to convert to uint16_t;
+		if(sscanf(input_buffer, "%u",&new_value)) {
+			//if convertation is successful; break and set new_value
+
+			//TODO: SET NEW VALUE
+
+			read_value = false;
+
+		} else {
+			printf("Invalid Input! Please retry:\n");
+		}
+
+	} while(read_value);
+
+	printf("new_value: %d\n", new_value);
+
+	_delay_ms(2000.0);
+
+	next_state = STATE_PID_MENU;
 
 	// EXIT
 
@@ -333,13 +363,37 @@ void configuration_terminal_state_PID_set_scalingfactor(void)
 
 void configuration_terminal_state_accelerationsensor_menu(void)
 {
+	char choice;
+
 	// ENTRY
 	configuration_terminal_clear_all();
 
-	printf("ACCEL MENU");
-
+	//Greeting
+	printf("   === ACCELERATIONSENSOR MENU ===\n\n");
+	printf("Select a option by pressing the correspondending key\n\n");
+	printf(" [Z] Set zero\n");
+	printf(" [S] Show acceleration and position\n");
+	printf(" [F] Change scaling factor\n\n");
+	printf(" [X] Back to Main Menu\n");
 
 	// DO
+	do {
+		choice = configuration_terminal_get_choice();
+
+		if(choice == 'Z') {
+			next_state = STATE_ACCELERATIONSENSOR_SET_ZERO;
+		} else if(choice == 'S') {
+			next_state = STATE_ACCELERATIONSENSOR_SHOW;
+		} else if(choice == 'F') {
+			next_state = STATE_ACCELERATIONSENSOR_SET_SCALINGFACTOR;
+		} else if(choice == 'X') {
+			next_state = STATE_MAIN_MENU;
+		} else {
+			printf("Invalid choice! Please retry:\n");
+			choice = 0;
+		}
+
+	} while(choice == 0);
 
 
 	// EXIT
@@ -363,7 +417,7 @@ void configuration_terminal_state_accelerationsensor_show(void)
 }
 
 
-void configuration_terminal_state_accelerationsensor_tara(void)
+void configuration_terminal_state_accelerationsensor_set_zero(void)
 {
 	// ENTRY
 	configuration_terminal_clear_all();
