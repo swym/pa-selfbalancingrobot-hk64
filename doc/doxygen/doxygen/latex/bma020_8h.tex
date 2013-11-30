@@ -1,0 +1,1531 @@
+\hypertarget{bma020_8h}{\section{bma020.\-h File Reference}
+\label{bma020_8h}\index{bma020.\-h@{bma020.\-h}}
+}
+
+
+This modul implements a low level driver for the bma020 acceleration sensor. All registers and flags are accessable through functions. But the readed acceleration values arn't filterd or calibrated. This must be implemented on a higer level of abstraction.  
+
+
+{\ttfamily \#include \char`\"{}stdbool.\-h\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}acceleration\-\_\-t.\-h\char`\"{}}\\*
+Include dependency graph for bma020.\-h\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=241pt]{bma020_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=202pt]{bma020_8h__dep__incl}
+\end{center}
+\end{figure}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+uint8\-\_\-t \hyperlink{bma020_8h_af61528e1bbdc91a9acac39c776cfc11b}{bma020\-\_\-get\-\_\-chip\-\_\-id} ()
+\item 
+uint8\-\_\-t \hyperlink{bma020_8h_ad815b4dc0e95fa9e9109930e4c1ba39a}{bma020\-\_\-get\-\_\-ml\-\_\-version} ()
+\item 
+uint8\-\_\-t \hyperlink{bma020_8h_a411ed87bf0eebcd6464a2efa0b303940}{bma020\-\_\-get\-\_\-ai\-\_\-version} ()
+\item 
+void \hyperlink{bma020_8h_aa049661ba05ba57de64bee327c9d668f}{bma020\-\_\-read\-\_\-raw\-\_\-acceleration} (\hyperlink{structacceleration__t}{acceleration\-\_\-t} $\ast$)
+\item 
+bool \hyperlink{bma020_8h_a5a11de6c62517d876636ffaaccbe99f8}{bma020\-\_\-is\-\_\-new\-\_\-data} (char)
+\item 
+bool \hyperlink{bma020_8h_af8352dba63a90d34734410f4f97eced4}{bma020\-\_\-get\-\_\-status\-\_\-hg} (void)
+\item 
+bool \hyperlink{bma020_8h_ab06787c50f090a339e8ed4d4a1408f6b}{bma020\-\_\-get\-\_\-status\-\_\-lg} (void)
+\item 
+bool \hyperlink{bma020_8h_a48178f75ec28ec3a881c0bd23ec16dfc}{bma020\-\_\-get\-\_\-lg\-\_\-latched} (void)
+\item 
+void \hyperlink{bma020_8h_aa591678c9c225c04379f31f443da516f}{bma020\-\_\-reset\-\_\-lg\-\_\-latched} (void)
+\item 
+bool \hyperlink{bma020_8h_a5607b1f4a151f90262f63ac79ec8dbd9}{bma020\-\_\-get\-\_\-hg\-\_\-latched} (void)
+\item 
+void \hyperlink{bma020_8h_a996664698b38ebcbdc5f35277c86271f}{bma020\-\_\-reset\-\_\-hg\-\_\-latched} (void)
+\item 
+bool \hyperlink{bma020_8h_ada7359286e7b2e8f5efe66dbc7e0ec3e}{bma020\-\_\-get\-\_\-alert\-\_\-phase} (void)
+\item 
+bool \hyperlink{bma020_8h_a225a6d888c491bc9eeaa587c71658530}{bma020\-\_\-get\-\_\-self\-\_\-test\-\_\-result} (void)
+\item 
+void \hyperlink{bma020_8h_ae46fb2b7063713e26d4f939a01c410b4}{bma020\-\_\-sleep} (void)
+\item 
+void \hyperlink{bma020_8h_aee5899ae2a2762d1f20c4f2895298e34}{bma020\-\_\-soft\-\_\-reset} (void)
+\item 
+void \hyperlink{bma020_8h_a1b4d80e962496fd3d254dc1adb060ccd}{bma020\-\_\-perform\-\_\-self\-\_\-test\-\_\-0} (void)
+\item 
+void \hyperlink{bma020_8h_aafad8d4b857d14f771e1b5584b540087}{bma020\-\_\-perform\-\_\-self\-\_\-test\-\_\-1} (void)
+\item 
+void \hyperlink{bma020_8h_a3060609bb2160962da7d73617c70b5a5}{bma020\-\_\-enable\-\_\-spi4} (bool)
+\item 
+bool \hyperlink{bma020_8h_a62a15f74e49f2463c1872dbe43dce521}{bma020\-\_\-is\-\_\-spi4} (void)
+\item 
+void \hyperlink{bma020_8h_aee001eb4d6bdaa5fb882d7063c289f64}{bma020\-\_\-disable\-\_\-shadow} (bool)
+\item 
+bool \hyperlink{bma020_8h_ad5d778ebe7f19ffc5447b05392bc81d5}{bma020\-\_\-is\-\_\-shadow\-\_\-disabled} (void)
+\item 
+void \hyperlink{bma020_8h_ac523767751ba8462faae363f828af936}{bma020\-\_\-reset\-\_\-interrupt} (void)
+\item 
+void \hyperlink{bma020_8h_aeafb1eaaefef0c0631616ee8bb1ba4b5}{bma020\-\_\-enable\-\_\-new\-\_\-data\-\_\-int} (bool)
+\item 
+bool \hyperlink{bma020_8h_a3f70726f60c671a6cd7250c84cc9ee7a}{bma020\-\_\-is\-\_\-new\-\_\-data\-\_\-int} (void)
+\item 
+void \hyperlink{bma020_8h_a308701ebfc10d9b112400a28736d43bb}{bma020\-\_\-enable\-\_\-lg} (bool)
+\item 
+bool \hyperlink{bma020_8h_a47004eaf6774aa870fd8e2d4d5c1ae80}{bma020\-\_\-is\-\_\-enable\-\_\-lg} (void)
+\item 
+void \hyperlink{bma020_8h_af1880cc730341de89b63540a43ee3430}{bma020\-\_\-enable\-\_\-hg} (bool)
+\item 
+bool \hyperlink{bma020_8h_a8bbc44dd5bf3320c9ea06ce54100fafc}{bma020\-\_\-is\-\_\-enable\-\_\-hg} (void)
+\item 
+void \hyperlink{bma020_8h_ae3589f40d1137a6b1837d58398c2ad0a}{bma020\-\_\-enable\-\_\-advanced\-\_\-int} (bool)
+\item 
+bool \hyperlink{bma020_8h_a7d48379dad99c291f448af6889a10c65}{bma020\-\_\-is\-\_\-advanced\-\_\-int} (void)
+\item 
+void \hyperlink{bma020_8h_af856d34c25ecc193c09ea7ed4573e4cf}{bma020\-\_\-enable\-\_\-any\-\_\-motion} (bool)
+\item 
+bool \hyperlink{bma020_8h_a7aaedcf13c31ab032c6014cf2f11d03e}{bma020\-\_\-is\-\_\-enable\-\_\-any\-\_\-motion} (void)
+\item 
+void \hyperlink{bma020_8h_ab1f89e73571acf071a07008e421a3a7d}{bma020\-\_\-enable\-\_\-motion\-\_\-alert} (bool)
+\item 
+bool \hyperlink{bma020_8h_a460b42665cb432f91a3e54c132f9891e}{bma020\-\_\-is\-\_\-enable\-\_\-motion\-\_\-alert} (void)
+\item 
+void \hyperlink{bma020_8h_a39c465b7b841da82750c106add157ee6}{bma020\-\_\-enable\-\_\-latched\-\_\-int} (bool)
+\item 
+bool \hyperlink{bma020_8h_a3e5636663c087915feeacb349b44ce31}{bma020\-\_\-is\-\_\-latched\-\_\-int} (void)
+\item 
+void \hyperlink{bma020_8h_ab3fa54af803bedc74927f8f2cf00aedc}{bma020\-\_\-set\-\_\-lg\-\_\-threshold} (uint8\-\_\-t threshold)
+\item 
+uint8\-\_\-t \hyperlink{bma020_8h_ab9c52c7427ba44b7f40c7de7effd6b70}{bma020\-\_\-get\-\_\-lg\-\_\-threshold} ()
+\item 
+void \hyperlink{bma020_8h_a9c88ac2767f5099da4bceb35d5185247}{bma020\-\_\-set\-\_\-lg\-\_\-duration} (uint8\-\_\-t)
+\item 
+uint8\-\_\-t \hyperlink{bma020_8h_af3021e4c25165a76c664be19c968ed7a}{bma020\-\_\-get\-\_\-lg\-\_\-duration} ()
+\item 
+bool \hyperlink{bma020_8h_a0925a60b0799b1f000b04d026027e626}{bma020\-\_\-set\-\_\-counter\-\_\-lg} (uint8\-\_\-t)
+\item 
+uint8\-\_\-t \hyperlink{bma020_8h_a851c0bbf26d7d95e294beae813e2c6f8}{bma020\-\_\-get\-\_\-counter\-\_\-lg} (void)
+\item 
+void \hyperlink{bma020_8h_acf15f8f2a17ea937719f4f49af0c019f}{bma020\-\_\-set\-\_\-lg\-\_\-hysterese} (uint8\-\_\-t hysterese)
+\item 
+uint8\-\_\-t \hyperlink{bma020_8h_a73397e5a2d7ec9443c34e9f2fd4e7e8e}{bma020\-\_\-get\-\_\-lg\-\_\-hysterese} (void)
+\item 
+void \hyperlink{bma020_8h_ab9b82b4d29bd5c0d921903469a1ceae3}{bma020\-\_\-set\-\_\-hg\-\_\-threshold} (uint8\-\_\-t)
+\item 
+uint8\-\_\-t \hyperlink{bma020_8h_a7574ff05e7bc504eb37df267bd1a6d54}{bma020\-\_\-get\-\_\-hg\-\_\-threshold} ()
+\item 
+void \hyperlink{bma020_8h_aa7bb61399c444a272182bcb266d36b35}{bma020\-\_\-set\-\_\-hg\-\_\-duration} (uint8\-\_\-t)
+\item 
+uint8\-\_\-t \hyperlink{bma020_8h_a298d59459d1e3fd4a27ad187027ecea2}{bma020\-\_\-get\-\_\-hg\-\_\-duration} ()
+\item 
+bool \hyperlink{bma020_8h_acc8c5b0f1114ea09cd6653d2d7e3fb38}{bma020\-\_\-set\-\_\-counter\-\_\-hg} (uint8\-\_\-t)
+\item 
+uint8\-\_\-t \hyperlink{bma020_8h_aec5666921548a0d1a7c81c9b71dd9d44}{bma020\-\_\-get\-\_\-counter\-\_\-hg} (void)
+\item 
+void \hyperlink{bma020_8h_a24882f81d49e4db67665fb7d74bed976}{bma020\-\_\-set\-\_\-hg\-\_\-hysterese} (uint8\-\_\-t)
+\item 
+uint8\-\_\-t \hyperlink{bma020_8h_a532014744107ba2e88a56d2c4119db40}{bma020\-\_\-get\-\_\-hg\-\_\-hysterese} (void)
+\item 
+void \hyperlink{bma020_8h_a2fb9ce02a8f8f96bea6822dacb3dbdda}{bma020\-\_\-set\-\_\-any\-\_\-motion\-\_\-threshold} (uint8\-\_\-t)
+\item 
+uint8\-\_\-t \hyperlink{bma020_8h_aa886f09ffd7a8a7237198a56ee262fc5}{bma020\-\_\-get\-\_\-any\-\_\-motion\-\_\-threshold} (void)
+\item 
+bool \hyperlink{bma020_8h_a2fa0d7fb2232f63015927a4411b6936f}{bma020\-\_\-set\-\_\-any\-\_\-motion\-\_\-duration} (uint8\-\_\-t)
+\item 
+uint8\-\_\-t \hyperlink{bma020_8h_aa0957d9a759593bf02c37f61dac4a41b}{bma020\-\_\-get\-\_\-any\-\_\-motion\-\_\-duration} (void)
+\item 
+void \hyperlink{bma020_8h_a84ad4c88f3a38ec91b3639e58ded55ae}{bma020\-\_\-enable\-\_\-wake\-\_\-up} (bool enable)
+\item 
+bool \hyperlink{bma020_8h_a754386a5ed68093f02f5bec3f5e98cbd}{bma020\-\_\-is\-\_\-wake\-\_\-up} (void)
+\item 
+bool \hyperlink{bma020_8h_ae73261ee46188952993f69970854e386}{bma020\-\_\-set\-\_\-wake\-\_\-up\-\_\-pause} (uint16\-\_\-t wake\-\_\-up\-\_\-time)
+\item 
+uint16\-\_\-t \hyperlink{bma020_8h_a9e076fdb4daec0fe8352340385006b7d}{bma020\-\_\-get\-\_\-wake\-\_\-up\-\_\-pause} (void)
+\item 
+uint16\-\_\-t \hyperlink{bma020_8h_a7638286b73693422b67c4fabef32fe24}{bma020\-\_\-get\-\_\-bandwidth} (void)
+\item 
+bool \hyperlink{bma020_8h_a9bd3b24299e9db9b1444ec92790b3e68}{bma020\-\_\-set\-\_\-bandwidth} (uint16\-\_\-t)
+\item 
+uint8\-\_\-t \hyperlink{bma020_8h_a9a0c0e161ae1c7ac0963a98f1a499c00}{bma020\-\_\-get\-\_\-range} (void)
+\item 
+bool \hyperlink{bma020_8h_ac7f7e61919fd9f19b2620e2009fad92c}{bma020\-\_\-set\-\_\-range} (uint8\-\_\-t)
+\item 
+void \hyperlink{bma020_8h_af0a438e715f02efa689bc251ccbb8050}{bma020\-\_\-set\-\_\-customer\-\_\-reserved\-\_\-1} (uint8\-\_\-t value)
+\item 
+uint8\-\_\-t \hyperlink{bma020_8h_a772e31e89870de0eebfdf2d00bbf145a}{bma020\-\_\-get\-\_\-customer\-\_\-reserved\-\_\-1} ()
+\item 
+void \hyperlink{bma020_8h_aff774b72ecf7cfae5dd7855cac989953}{bma020\-\_\-set\-\_\-customer\-\_\-reserved\-\_\-2} (uint8\-\_\-t value)
+\item 
+uint8\-\_\-t \hyperlink{bma020_8h_a57c220a687c54813b3971dbb53e4d341}{bma020\-\_\-get\-\_\-customer\-\_\-reserved\-\_\-2} ()
+\item 
+void \hyperlink{bma020_8h_ac5c1a01ed031d3c8826f4a54cbae6efe}{bma020\-\_\-init} (void)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+This modul implements a low level driver for the bma020 acceleration sensor. All registers and flags are accessable through functions. But the readed acceleration values arn't filterd or calibrated. This must be implemented on a higer level of abstraction. Alexander Mertens (\href{mailto:alexander.mertens@stud.fh-dortmund.de}{\tt alexander.\-mertens@stud.\-fh-\/dortmund.\-de}) \begin{DoxyDate}{Date}
+06.\-11.\-2013 Detailed description of file. 
+\end{DoxyDate}
+
+
+Definition in file \hyperlink{bma020_8h_source}{bma020.\-h}.
+
+
+
+\subsection{Function Documentation}
+\hypertarget{bma020_8h_aee001eb4d6bdaa5fb882d7063c289f64}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-disable\-\_\-shadow@{bma020\-\_\-disable\-\_\-shadow}}
+\index{bma020\-\_\-disable\-\_\-shadow@{bma020\-\_\-disable\-\_\-shadow}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-disable\-\_\-shadow}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-disable\-\_\-shadow (
+\begin{DoxyParamCaption}
+\item[{bool}]{disable}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_aee001eb4d6bdaa5fb882d7063c289f64}
+B\-M\-A020 provides the possibility to block the update of data M\-S\-B while L\-S\-B are read out. This avoids a potential mixing of L\-S\-B and M\-S\-B of successive conversion cycles. When this bit (address 15h, bit 3) is at 1, the blocking procedure for M\-S\-B is not realized and M\-S\-B only reading is possible. 
+\begin{DoxyParams}{Parameters}
+{\em disable} & \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 463 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-H\-A\-D\-O\-W\-\_\-\-D\-I\-S, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-S\-P\-I4\-\_\-\-I\-N\-T\-E\-R\-R\-U\-P\-T\-\_\-\-W\-A\-K\-E\-U\-P.
+
+\hypertarget{bma020_8h_ae3589f40d1137a6b1837d58398c2ad0a}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-enable\-\_\-advanced\-\_\-int@{bma020\-\_\-enable\-\_\-advanced\-\_\-int}}
+\index{bma020\-\_\-enable\-\_\-advanced\-\_\-int@{bma020\-\_\-enable\-\_\-advanced\-\_\-int}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-enable\-\_\-advanced\-\_\-int}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-enable\-\_\-advanced\-\_\-int (
+\begin{DoxyParamCaption}
+\item[{bool}]{enable}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_ae3589f40d1137a6b1837d58398c2ad0a}
+This bit (address 15h, bit 6) is used to disable advanced interrupt control bits (any\-\_\-motion, alert). If enable\-\_\-adv\-\_\-\-I\-N\-T=0, writing to these bits has no effect on sensor I\-C function. 
+\begin{DoxyParams}{Parameters}
+{\em enable} & \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 579 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-D\-V\-A\-N\-C\-E\-D\-\_\-\-I\-N\-T, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-S\-P\-I4\-\_\-\-I\-N\-T\-E\-R\-R\-U\-P\-T\-\_\-\-W\-A\-K\-E\-U\-P.
+
+\hypertarget{bma020_8h_af856d34c25ecc193c09ea7ed4573e4cf}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-enable\-\_\-any\-\_\-motion@{bma020\-\_\-enable\-\_\-any\-\_\-motion}}
+\index{bma020\-\_\-enable\-\_\-any\-\_\-motion@{bma020\-\_\-enable\-\_\-any\-\_\-motion}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-enable\-\_\-any\-\_\-motion}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-enable\-\_\-any\-\_\-motion (
+\begin{DoxyParamCaption}
+\item[{bool}]{enable}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_af856d34c25ecc193c09ea7ed4573e4cf}
+This bit ((address 0\-Bh, bit 6)enables the any motion criteria to generate directly an interrupt. It can not be turned on simultaneously with alert. This bit can be masked by enable\-\_\- adv\-\_\-\-I\-N\-T, the value of this bit is ignored when enable\-\_\-adv\-\_\-\-I\-N\-T=0 (section 3.\-2.\-3).
+
+
+\begin{DoxyParams}{Parameters}
+{\em enable} & \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 607 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-L\-E\-R\-T\-\_\-\-E\-N\-A\-N\-Y\-M\-O\-T\-I\-O\-N\-\_\-\-C\-N\-T\-H\-G\-\_\-\-C\-N\-T\-L\-G\-\_\-\-E\-N\-H\-G\-\_\-\-E\-N\-L\-G.
+
+\hypertarget{bma020_8h_af1880cc730341de89b63540a43ee3430}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-enable\-\_\-hg@{bma020\-\_\-enable\-\_\-hg}}
+\index{bma020\-\_\-enable\-\_\-hg@{bma020\-\_\-enable\-\_\-hg}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-enable\-\_\-hg}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-enable\-\_\-hg (
+\begin{DoxyParamCaption}
+\item[{bool}]{enable}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_af1880cc730341de89b63540a43ee3430}
+This bit (address 0\-Bh, bit 1) enables the H\-G\-\_\-thres criteria to generate an interrupt. 
+\begin{DoxyParams}{Parameters}
+{\em enable} & \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 552 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-E\-N\-A\-B\-L\-E\-\_\-\-H\-G, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-L\-E\-R\-T\-\_\-\-E\-N\-A\-N\-Y\-M\-O\-T\-I\-O\-N\-\_\-\-C\-N\-T\-H\-G\-\_\-\-C\-N\-T\-L\-G\-\_\-\-E\-N\-H\-G\-\_\-\-E\-N\-L\-G.
+
+\hypertarget{bma020_8h_a39c465b7b841da82750c106add157ee6}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-enable\-\_\-latched\-\_\-int@{bma020\-\_\-enable\-\_\-latched\-\_\-int}}
+\index{bma020\-\_\-enable\-\_\-latched\-\_\-int@{bma020\-\_\-enable\-\_\-latched\-\_\-int}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-enable\-\_\-latched\-\_\-int}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-enable\-\_\-latched\-\_\-int (
+\begin{DoxyParamCaption}
+\item[{bool}]{enable}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_a39c465b7b841da82750c106add157ee6}
+If this bit (address 15h, bit 4) is at 1, interrupts are latched. The I\-N\-T pad stays high until microprocessor detects it and writes reset\-\_\-\-I\-N\-T control bit to 1 (section 3.\-3.\-1). When this bit is at 0, interrupts are set and reset directly by B\-M\-A020 according to programmable criteria (sections 3.\-2.\-7 and 3.\-2.\-8). 
+\begin{DoxyParams}{Parameters}
+{\em enable} & \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 662 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-A\-T\-C\-H\-\_\-\-I\-N\-T, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-S\-P\-I4\-\_\-\-I\-N\-T\-E\-R\-R\-U\-P\-T\-\_\-\-W\-A\-K\-E\-U\-P.
+
+\hypertarget{bma020_8h_a308701ebfc10d9b112400a28736d43bb}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-enable\-\_\-lg@{bma020\-\_\-enable\-\_\-lg}}
+\index{bma020\-\_\-enable\-\_\-lg@{bma020\-\_\-enable\-\_\-lg}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-enable\-\_\-lg}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-enable\-\_\-lg (
+\begin{DoxyParamCaption}
+\item[{bool}]{enable}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_a308701ebfc10d9b112400a28736d43bb}
+This bit (address 0\-Bh, bit 0) enables the L\-G\-\_\-thres criteria to generate an interrupt. 
+
+Definition at line 526 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-E\-N\-A\-B\-L\-E\-\_\-\-L\-G, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-L\-E\-R\-T\-\_\-\-E\-N\-A\-N\-Y\-M\-O\-T\-I\-O\-N\-\_\-\-C\-N\-T\-H\-G\-\_\-\-C\-N\-T\-L\-G\-\_\-\-E\-N\-H\-G\-\_\-\-E\-N\-L\-G.
+
+\hypertarget{bma020_8h_ab1f89e73571acf071a07008e421a3a7d}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-enable\-\_\-motion\-\_\-alert@{bma020\-\_\-enable\-\_\-motion\-\_\-alert}}
+\index{bma020\-\_\-enable\-\_\-motion\-\_\-alert@{bma020\-\_\-enable\-\_\-motion\-\_\-alert}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-enable\-\_\-motion\-\_\-alert}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-enable\-\_\-motion\-\_\-alert (
+\begin{DoxyParamCaption}
+\item[{bool}]{enable}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_ab1f89e73571acf071a07008e421a3a7d}
+f this bit (address 0\-Bh, bit 7) is at 1, the any\-\_\-motion criterion will set B\-M\-A020 into alert mode (section 3.\-2.\-9). This bit can be masked by enable\-\_\-adv\-\_\-\-I\-N\-T, the value of this bit is ignored when enable\-\_\-adv\-\_\-\-I\-N\-T=0 (section 3.\-2.\-3).
+
+
+\begin{DoxyParams}{Parameters}
+{\em enable} & \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 634 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-L\-T\-E\-R\-T, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-L\-E\-R\-T\-\_\-\-E\-N\-A\-N\-Y\-M\-O\-T\-I\-O\-N\-\_\-\-C\-N\-T\-H\-G\-\_\-\-C\-N\-T\-L\-G\-\_\-\-E\-N\-H\-G\-\_\-\-E\-N\-L\-G.
+
+\hypertarget{bma020_8h_aeafb1eaaefef0c0631616ee8bb1ba4b5}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-enable\-\_\-new\-\_\-data\-\_\-int@{bma020\-\_\-enable\-\_\-new\-\_\-data\-\_\-int}}
+\index{bma020\-\_\-enable\-\_\-new\-\_\-data\-\_\-int@{bma020\-\_\-enable\-\_\-new\-\_\-data\-\_\-int}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-enable\-\_\-new\-\_\-data\-\_\-int}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-enable\-\_\-new\-\_\-data\-\_\-int (
+\begin{DoxyParamCaption}
+\item[{bool}]{enable}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_aeafb1eaaefef0c0631616ee8bb1ba4b5}
+If this bit (address 15h, bit 5) is set to 1, an interrupt will be generated when all three axes acceleration values are new, i.\-e. B\-M\-A020 updated all acceleration values after latest serial read-\/out. Interrupt generated from new data detection is a latched one; microcontroller has to write reset\-\_\-\-I\-N\-T at 1 after interrupt has been detected high (section 3.\-3.\-1). This interrupt is also reset by any acceleration byte read procedure (read access to address 02h to 07h). New data interrupt always occurs at the end of the Z-\/axis value update in the output register (3k\-Hz rate). Following figure shows two examples of X-\/axis read out and the corresponding interrupt generation. 
+\begin{DoxyParams}{Parameters}
+{\em enable} & \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 505 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-N\-E\-W\-\_\-\-D\-A\-T\-A\-\_\-\-I\-N\-T, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-S\-P\-I4\-\_\-\-I\-N\-T\-E\-R\-R\-U\-P\-T\-\_\-\-W\-A\-K\-E\-U\-P.
+
+\hypertarget{bma020_8h_a3060609bb2160962da7d73617c70b5a5}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-enable\-\_\-spi4@{bma020\-\_\-enable\-\_\-spi4}}
+\index{bma020\-\_\-enable\-\_\-spi4@{bma020\-\_\-enable\-\_\-spi4}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-enable\-\_\-spi4}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-enable\-\_\-spi4 (
+\begin{DoxyParamCaption}
+\item[{bool}]{enable}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_a3060609bb2160962da7d73617c70b5a5}
+The S\-P\-I4 bit ((address 15h, bit 7) is used to select the correct S\-P\-I protocol (three-\/wire or four-\/ wire, S\-P\-I-\/mode 3). The default value is S\-P\-I4=1 (four-\/wire S\-P\-I is default value). After power on reset or soft reset it is recommended to set the S\-P\-I4-\/bit to the correct value. This first writing is possible because only C\-S\-B, S\-C\-K and S\-D\-I are required for a write sequence and the 3 bit timing diagrams are identical in three-\/wire and four-\/wire configuration.
+
+Recommended procedure\-: Set S\-P\-I4 to the correct value (S\-P\-I4=0 for S\-P\-I three-\/wire, S\-P\-I4=1 for S\-P\-I four-\/wire (=default)) every time after power on reset or soft reset. 
+\begin{DoxyParams}{Parameters}
+{\em enable} & \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 437 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-P\-I4, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-S\-P\-I4\-\_\-\-I\-N\-T\-E\-R\-R\-U\-P\-T\-\_\-\-W\-A\-K\-E\-U\-P.
+
+\hypertarget{bma020_8h_a84ad4c88f3a38ec91b3639e58ded55ae}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-enable\-\_\-wake\-\_\-up@{bma020\-\_\-enable\-\_\-wake\-\_\-up}}
+\index{bma020\-\_\-enable\-\_\-wake\-\_\-up@{bma020\-\_\-enable\-\_\-wake\-\_\-up}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-enable\-\_\-wake\-\_\-up}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-enable\-\_\-wake\-\_\-up (
+\begin{DoxyParamCaption}
+\item[{bool}]{enable}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_a84ad4c88f3a38ec91b3639e58ded55ae}
+This bit (address 15h, bit 0) makes B\-M\-A020 automatically switching from sleep mode to normal mode after the delay defined by wake\-\_\-up\-\_\-pause (section 3.\-1.\-5). When the sensor I\-C goes from sleep to normal mode, it starts acceleration acquisition and performs interrupt verification (section 3.\-2). The sensor I\-C automatically switches back from normal to sleep mode again if no fulfilment of programmed interrupt criteria has been detected. The I\-C wakes-\/up for a minimum duration which depends on the number of required valid acceleration data to determine if an interrupt should be generated.
+
+If a latched interrupt is generated, this can be used to wake-\/up a microprocessor. The sensor I\-C will wait for a reset\-\_\-\-I\-N\-T command and restart interrupt verification. B\-M\-A020 can not go back to sleep mode if reset\-\_\-\-I\-N\-T is not issued after a latched interrupt.
+
+If a not-\/latched interrupt is generated, the device waits in the normal mode till the interrupt condition disappears. The minimum duration of interrupt activation is 330microsecs. If no interrupt is generated, the sensor I\-C goes to sleep mode for a defined time (wake\-\_\-up\-\_\-pause). For more details on the wake-\/up functionality, please refer to chapter 7.\-3
+
+
+\begin{DoxyParams}{Parameters}
+{\em enable} & \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 1131 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-W\-A\-K\-E\-\_\-\-U\-P, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-S\-P\-I4\-\_\-\-I\-N\-T\-E\-R\-R\-U\-P\-T\-\_\-\-W\-A\-K\-E\-U\-P.
+
+\hypertarget{bma020_8h_a411ed87bf0eebcd6464a2efa0b303940}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-get\-\_\-ai\-\_\-version@{bma020\-\_\-get\-\_\-ai\-\_\-version}}
+\index{bma020\-\_\-get\-\_\-ai\-\_\-version@{bma020\-\_\-get\-\_\-ai\-\_\-version}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-get\-\_\-ai\-\_\-version}]{\setlength{\rightskip}{0pt plus 5cm}uint8\-\_\-t bma020\-\_\-get\-\_\-ai\-\_\-version (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_a411ed87bf0eebcd6464a2efa0b303940}
+A\-L Version is used with M\-L Version to identify the chip revision \begin{DoxyReturn}{Returns}
+A\-L Version 
+\end{DoxyReturn}
+
+
+Definition at line 145 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-E\-R\-S\-I\-O\-N.
+
+\hypertarget{bma020_8h_ada7359286e7b2e8f5efe66dbc7e0ec3e}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-get\-\_\-alert\-\_\-phase@{bma020\-\_\-get\-\_\-alert\-\_\-phase}}
+\index{bma020\-\_\-get\-\_\-alert\-\_\-phase@{bma020\-\_\-get\-\_\-alert\-\_\-phase}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-get\-\_\-alert\-\_\-phase}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-get\-\_\-alert\-\_\-phase (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_ada7359286e7b2e8f5efe66dbc7e0ec3e}
+This function returns ture, if alert mode is activated and an any motion criterion has been detected. During alert phase, H\-G\-\_\-dur and L\-G\-\_\-dur variables are decreased to have a smaller reaction time when H\-G\-\_\-thres and L\-G\-\_\-thres thresholds are crossed; the decrease rate is by 1 ms per ms.\-The alert mode is reset when an interrupt generated due to a high threshold or a low threshold event or when both H\-G\-\_\-dur and L\-G\-\_\-dur variables are at 0. When alert is reset, H\-G\-\_\-dur and L\-G\-\_\-dur variables come back to their original values stored in image registers. \begin{DoxyReturn}{Returns}
+true if alare criterias are fullified 
+\end{DoxyReturn}
+
+
+Definition at line 326 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-L\-E\-R\-T\-\_\-\-P\-H\-A\-S\-E, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-S\-T\-A\-T\-U\-S.
+
+\hypertarget{bma020_8h_aa0957d9a759593bf02c37f61dac4a41b}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-get\-\_\-any\-\_\-motion\-\_\-duration@{bma020\-\_\-get\-\_\-any\-\_\-motion\-\_\-duration}}
+\index{bma020\-\_\-get\-\_\-any\-\_\-motion\-\_\-duration@{bma020\-\_\-get\-\_\-any\-\_\-motion\-\_\-duration}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-get\-\_\-any\-\_\-motion\-\_\-duration}]{\setlength{\rightskip}{0pt plus 5cm}uint8\-\_\-t bma020\-\_\-get\-\_\-any\-\_\-motion\-\_\-duration (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_aa0957d9a759593bf02c37f61dac4a41b}
+
+
+Definition at line 1083 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N\-\_\-0, B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N\-\_\-1, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-M\-D\-U\-R\-\_\-\-H\-G\-H\-Y\-S\-\_\-\-L\-G\-H\-Y\-S.
+
+\hypertarget{bma020_8h_aa886f09ffd7a8a7237198a56ee262fc5}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-get\-\_\-any\-\_\-motion\-\_\-threshold@{bma020\-\_\-get\-\_\-any\-\_\-motion\-\_\-threshold}}
+\index{bma020\-\_\-get\-\_\-any\-\_\-motion\-\_\-threshold@{bma020\-\_\-get\-\_\-any\-\_\-motion\-\_\-threshold}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-get\-\_\-any\-\_\-motion\-\_\-threshold}]{\setlength{\rightskip}{0pt plus 5cm}uint8\-\_\-t bma020\-\_\-get\-\_\-any\-\_\-motion\-\_\-threshold (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_aa886f09ffd7a8a7237198a56ee262fc5}
+returns any motion threshold \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 1038 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N\-\_\-\-T\-H\-R\-E\-S\-H\-O\-L\-D.
+
+\hypertarget{bma020_8h_a7638286b73693422b67c4fabef32fe24}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-get\-\_\-bandwidth@{bma020\-\_\-get\-\_\-bandwidth}}
+\index{bma020\-\_\-get\-\_\-bandwidth@{bma020\-\_\-get\-\_\-bandwidth}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-get\-\_\-bandwidth}]{\setlength{\rightskip}{0pt plus 5cm}uint16\-\_\-t bma020\-\_\-get\-\_\-bandwidth (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_a7638286b73693422b67c4fabef32fe24}
+returns the current bandwidth \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 1299 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-B\-A\-N\-D\-W\-I\-D\-T\-H\-\_\-0, B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-B\-A\-N\-D\-W\-I\-D\-T\-H\-\_\-1, B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-B\-A\-N\-D\-W\-I\-D\-T\-H\-\_\-2, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-R\-A\-N\-G\-E\-\_\-\-B\-A\-N\-D\-W\-I\-D\-T\-H.
+
+\hypertarget{bma020_8h_af61528e1bbdc91a9acac39c776cfc11b}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-get\-\_\-chip\-\_\-id@{bma020\-\_\-get\-\_\-chip\-\_\-id}}
+\index{bma020\-\_\-get\-\_\-chip\-\_\-id@{bma020\-\_\-get\-\_\-chip\-\_\-id}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-get\-\_\-chip\-\_\-id}]{\setlength{\rightskip}{0pt plus 5cm}uint8\-\_\-t bma020\-\_\-get\-\_\-chip\-\_\-id (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_af61528e1bbdc91a9acac39c776cfc11b}
+The Chip I\-D is used by customer to be able to recognize B\-M\-A020. This code is fixed to 010b. \begin{DoxyReturn}{Returns}
+Chip I\-D 
+\end{DoxyReturn}
+
+
+Definition at line 118 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-E\-R\-S\-I\-O\-N.
+
+\hypertarget{bma020_8h_aec5666921548a0d1a7c81c9b71dd9d44}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-get\-\_\-counter\-\_\-hg@{bma020\-\_\-get\-\_\-counter\-\_\-hg}}
+\index{bma020\-\_\-get\-\_\-counter\-\_\-hg@{bma020\-\_\-get\-\_\-counter\-\_\-hg}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-get\-\_\-counter\-\_\-hg}]{\setlength{\rightskip}{0pt plus 5cm}uint8\-\_\-t bma020\-\_\-get\-\_\-counter\-\_\-hg (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_aec5666921548a0d1a7c81c9b71dd9d44}
+returns the current counter \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 954 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-H\-G\-\_\-0, B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-H\-G\-\_\-1, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-L\-E\-R\-T\-\_\-\-E\-N\-A\-N\-Y\-M\-O\-T\-I\-O\-N\-\_\-\-C\-N\-T\-H\-G\-\_\-\-C\-N\-T\-L\-G\-\_\-\-E\-N\-H\-G\-\_\-\-E\-N\-L\-G.
+
+\hypertarget{bma020_8h_a851c0bbf26d7d95e294beae813e2c6f8}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-get\-\_\-counter\-\_\-lg@{bma020\-\_\-get\-\_\-counter\-\_\-lg}}
+\index{bma020\-\_\-get\-\_\-counter\-\_\-lg@{bma020\-\_\-get\-\_\-counter\-\_\-lg}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-get\-\_\-counter\-\_\-lg}]{\setlength{\rightskip}{0pt plus 5cm}uint8\-\_\-t bma020\-\_\-get\-\_\-counter\-\_\-lg (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_a851c0bbf26d7d95e294beae813e2c6f8}
+returns current counter\-\_\-lg \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 794 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-L\-G\-\_\-0, B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-L\-G\-\_\-1, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-L\-E\-R\-T\-\_\-\-E\-N\-A\-N\-Y\-M\-O\-T\-I\-O\-N\-\_\-\-C\-N\-T\-H\-G\-\_\-\-C\-N\-T\-L\-G\-\_\-\-E\-N\-H\-G\-\_\-\-E\-N\-L\-G.
+
+\hypertarget{bma020_8h_a772e31e89870de0eebfdf2d00bbf145a}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-get\-\_\-customer\-\_\-reserved\-\_\-1@{bma020\-\_\-get\-\_\-customer\-\_\-reserved\-\_\-1}}
+\index{bma020\-\_\-get\-\_\-customer\-\_\-reserved\-\_\-1@{bma020\-\_\-get\-\_\-customer\-\_\-reserved\-\_\-1}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-get\-\_\-customer\-\_\-reserved\-\_\-1}]{\setlength{\rightskip}{0pt plus 5cm}uint8\-\_\-t bma020\-\_\-get\-\_\-customer\-\_\-reserved\-\_\-1 (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_a772e31e89870de0eebfdf2d00bbf145a}
+
+
+Definition at line 1420 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-U\-S\-T\-O\-M\-E\-R\-\_\-1.
+
+\hypertarget{bma020_8h_a57c220a687c54813b3971dbb53e4d341}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-get\-\_\-customer\-\_\-reserved\-\_\-2@{bma020\-\_\-get\-\_\-customer\-\_\-reserved\-\_\-2}}
+\index{bma020\-\_\-get\-\_\-customer\-\_\-reserved\-\_\-2@{bma020\-\_\-get\-\_\-customer\-\_\-reserved\-\_\-2}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-get\-\_\-customer\-\_\-reserved\-\_\-2}]{\setlength{\rightskip}{0pt plus 5cm}uint8\-\_\-t bma020\-\_\-get\-\_\-customer\-\_\-reserved\-\_\-2 (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_a57c220a687c54813b3971dbb53e4d341}
+
+
+Definition at line 1431 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-U\-S\-T\-O\-M\-E\-R\-\_\-2.
+
+\hypertarget{bma020_8h_a298d59459d1e3fd4a27ad187027ecea2}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-get\-\_\-hg\-\_\-duration@{bma020\-\_\-get\-\_\-hg\-\_\-duration}}
+\index{bma020\-\_\-get\-\_\-hg\-\_\-duration@{bma020\-\_\-get\-\_\-hg\-\_\-duration}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-get\-\_\-hg\-\_\-duration}]{\setlength{\rightskip}{0pt plus 5cm}uint8\-\_\-t bma020\-\_\-get\-\_\-hg\-\_\-duration (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_a298d59459d1e3fd4a27ad187027ecea2}
+return the hg\-\_\-duration \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 914 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-H\-G\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N.
+
+\hypertarget{bma020_8h_a532014744107ba2e88a56d2c4119db40}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-get\-\_\-hg\-\_\-hysterese@{bma020\-\_\-get\-\_\-hg\-\_\-hysterese}}
+\index{bma020\-\_\-get\-\_\-hg\-\_\-hysterese@{bma020\-\_\-get\-\_\-hg\-\_\-hysterese}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-get\-\_\-hg\-\_\-hysterese}]{\setlength{\rightskip}{0pt plus 5cm}uint8\-\_\-t bma020\-\_\-get\-\_\-hg\-\_\-hysterese (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_a532014744107ba2e88a56d2c4119db40}
+returns the hg\-\_\-hysterese \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 999 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-M\-D\-U\-R\-\_\-\-H\-G\-H\-Y\-S\-\_\-\-L\-G\-H\-Y\-S.
+
+\hypertarget{bma020_8h_a5607b1f4a151f90262f63ac79ec8dbd9}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-get\-\_\-hg\-\_\-latched@{bma020\-\_\-get\-\_\-hg\-\_\-latched}}
+\index{bma020\-\_\-get\-\_\-hg\-\_\-latched@{bma020\-\_\-get\-\_\-hg\-\_\-latched}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-get\-\_\-hg\-\_\-latched}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-get\-\_\-hg\-\_\-latched (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_a5607b1f4a151f90262f63ac79ec8dbd9}
+These status bit is set when the corresponding criteria have been issued. They are latched and thus only the microcontroller can reset them. When both high acceleration and low acceleration thresholds are enabled, these bits can be used by microprocessor to detect which criteria generated the interrupt. \begin{DoxyReturn}{Returns}
+true if, hg criteria is fullified 
+\end{DoxyReturn}
+
+
+Definition at line 296 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-H\-G\-\_\-\-L\-A\-T\-C\-H\-E\-D, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-S\-T\-A\-T\-U\-S.
+
+\hypertarget{bma020_8h_a7574ff05e7bc504eb37df267bd1a6d54}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-get\-\_\-hg\-\_\-threshold@{bma020\-\_\-get\-\_\-hg\-\_\-threshold}}
+\index{bma020\-\_\-get\-\_\-hg\-\_\-threshold@{bma020\-\_\-get\-\_\-hg\-\_\-threshold}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-get\-\_\-hg\-\_\-threshold}]{\setlength{\rightskip}{0pt plus 5cm}uint8\-\_\-t bma020\-\_\-get\-\_\-hg\-\_\-threshold (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_a7574ff05e7bc504eb37df267bd1a6d54}
+returns the current set hg\-\_\-threshold \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 892 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-H\-G\-\_\-\-T\-H\-R\-E\-S\-H\-O\-L\-D.
+
+\hypertarget{bma020_8h_af3021e4c25165a76c664be19c968ed7a}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-get\-\_\-lg\-\_\-duration@{bma020\-\_\-get\-\_\-lg\-\_\-duration}}
+\index{bma020\-\_\-get\-\_\-lg\-\_\-duration@{bma020\-\_\-get\-\_\-lg\-\_\-duration}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-get\-\_\-lg\-\_\-duration}]{\setlength{\rightskip}{0pt plus 5cm}uint8\-\_\-t bma020\-\_\-get\-\_\-lg\-\_\-duration (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_af3021e4c25165a76c664be19c968ed7a}
+returns the current set lg\-\_\-duration \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 751 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-L\-G\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N.
+
+\hypertarget{bma020_8h_a73397e5a2d7ec9443c34e9f2fd4e7e8e}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-get\-\_\-lg\-\_\-hysterese@{bma020\-\_\-get\-\_\-lg\-\_\-hysterese}}
+\index{bma020\-\_\-get\-\_\-lg\-\_\-hysterese@{bma020\-\_\-get\-\_\-lg\-\_\-hysterese}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-get\-\_\-lg\-\_\-hysterese}]{\setlength{\rightskip}{0pt plus 5cm}uint8\-\_\-t bma020\-\_\-get\-\_\-lg\-\_\-hysterese (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_a73397e5a2d7ec9443c34e9f2fd4e7e8e}
+\begin{DoxyReturn}{Returns}
+lg\-\_\-hysterese 
+\end{DoxyReturn}
+
+
+Definition at line 837 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-M\-D\-U\-R\-\_\-\-H\-G\-H\-Y\-S\-\_\-\-L\-G\-H\-Y\-S.
+
+\hypertarget{bma020_8h_a48178f75ec28ec3a881c0bd23ec16dfc}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-get\-\_\-lg\-\_\-latched@{bma020\-\_\-get\-\_\-lg\-\_\-latched}}
+\index{bma020\-\_\-get\-\_\-lg\-\_\-latched@{bma020\-\_\-get\-\_\-lg\-\_\-latched}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-get\-\_\-lg\-\_\-latched}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-get\-\_\-lg\-\_\-latched (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_a48178f75ec28ec3a881c0bd23ec16dfc}
+These status bit is set when the corresponding criteria have been issued. They are latched and thus only the microcontroller can reset them. When both high acceleration and low acceleration thresholds are enabled, these bits can be used by microprocessor to detect which criteria generated the interrupt. \begin{DoxyReturn}{Returns}
+true if, lg criteria is fullified 
+\end{DoxyReturn}
+
+
+Definition at line 272 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-G\-\_\-\-L\-A\-T\-C\-H\-E\-D, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-S\-T\-A\-T\-U\-S.
+
+\hypertarget{bma020_8h_ab9c52c7427ba44b7f40c7de7effd6b70}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-get\-\_\-lg\-\_\-threshold@{bma020\-\_\-get\-\_\-lg\-\_\-threshold}}
+\index{bma020\-\_\-get\-\_\-lg\-\_\-threshold@{bma020\-\_\-get\-\_\-lg\-\_\-threshold}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-get\-\_\-lg\-\_\-threshold}]{\setlength{\rightskip}{0pt plus 5cm}uint8\-\_\-t bma020\-\_\-get\-\_\-lg\-\_\-threshold (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_ab9c52c7427ba44b7f40c7de7effd6b70}
+returns the current set lg\-\_\-threshold \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 730 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-L\-G\-\_\-\-T\-H\-R\-E\-S\-H\-O\-L\-D.
+
+\hypertarget{bma020_8h_ad815b4dc0e95fa9e9109930e4c1ba39a}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-get\-\_\-ml\-\_\-version@{bma020\-\_\-get\-\_\-ml\-\_\-version}}
+\index{bma020\-\_\-get\-\_\-ml\-\_\-version@{bma020\-\_\-get\-\_\-ml\-\_\-version}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-get\-\_\-ml\-\_\-version}]{\setlength{\rightskip}{0pt plus 5cm}uint8\-\_\-t bma020\-\_\-get\-\_\-ml\-\_\-version (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_ad815b4dc0e95fa9e9109930e4c1ba39a}
+M\-L Version is used with A\-L Version to identify the chip revision \begin{DoxyReturn}{Returns}
+M\-L Version 
+\end{DoxyReturn}
+
+
+Definition at line 131 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-E\-R\-S\-I\-O\-N.
+
+\hypertarget{bma020_8h_a9a0c0e161ae1c7ac0963a98f1a499c00}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-get\-\_\-range@{bma020\-\_\-get\-\_\-range}}
+\index{bma020\-\_\-get\-\_\-range@{bma020\-\_\-get\-\_\-range}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-get\-\_\-range}]{\setlength{\rightskip}{0pt plus 5cm}uint8\-\_\-t bma020\-\_\-get\-\_\-range (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_a9a0c0e161ae1c7ac0963a98f1a499c00}
+returns current range \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 1386 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-R\-A\-N\-G\-E\-\_\-0, B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-R\-A\-N\-G\-E\-\_\-1, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-R\-A\-N\-G\-E\-\_\-\-B\-A\-N\-D\-W\-I\-D\-T\-H.
+
+\hypertarget{bma020_8h_a225a6d888c491bc9eeaa587c71658530}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-get\-\_\-self\-\_\-test\-\_\-result@{bma020\-\_\-get\-\_\-self\-\_\-test\-\_\-result}}
+\index{bma020\-\_\-get\-\_\-self\-\_\-test\-\_\-result@{bma020\-\_\-get\-\_\-self\-\_\-test\-\_\-result}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-get\-\_\-self\-\_\-test\-\_\-result}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-get\-\_\-self\-\_\-test\-\_\-result (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_a225a6d888c491bc9eeaa587c71658530}
+It can be used together with selftest\-\_\-0 control bit (section 3.\-3.\-4). After selftest\-\_\-0 has been set, self-\/test procedure starts. At the end selftest\-\_\-0 is written to 0 and microcontroller can react by reading st\-\_\-result bit. When st\-\_\-result=1 the self test passed successfully.\-The result of the st\-\_\-result can be taken into account to evaluate the basic function of the sensor. Note\-: Evaluation of the st\-\_\-result bit should only be understood as one part of a wider functionality test. It should not be taken into consideration as the only criterion. \begin{DoxyReturn}{Returns}
+true if self test passed 
+\end{DoxyReturn}
+
+
+Definition at line 345 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-E\-L\-F\-\_\-\-T\-E\-S\-T\-\_\-\-R\-E\-S\-U\-L\-T, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-S\-T\-A\-T\-U\-S.
+
+\hypertarget{bma020_8h_af8352dba63a90d34734410f4f97eced4}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-get\-\_\-status\-\_\-hg@{bma020\-\_\-get\-\_\-status\-\_\-hg}}
+\index{bma020\-\_\-get\-\_\-status\-\_\-hg@{bma020\-\_\-get\-\_\-status\-\_\-hg}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-get\-\_\-status\-\_\-hg}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-get\-\_\-status\-\_\-hg (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_af8352dba63a90d34734410f4f97eced4}
+\hyperlink{bma020_8c_af8352dba63a90d34734410f4f97eced4}{bma020\-\_\-get\-\_\-status\-\_\-hg()} returns true, if the when the corresponding criteria have been issued; they are automatically reset by B\-M\-A020 when the criteria disappear. \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 244 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-T\-A\-T\-U\-S\-\_\-\-H\-G, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-S\-T\-A\-T\-U\-S.
+
+\hypertarget{bma020_8h_ab06787c50f090a339e8ed4d4a1408f6b}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-get\-\_\-status\-\_\-lg@{bma020\-\_\-get\-\_\-status\-\_\-lg}}
+\index{bma020\-\_\-get\-\_\-status\-\_\-lg@{bma020\-\_\-get\-\_\-status\-\_\-lg}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-get\-\_\-status\-\_\-lg}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-get\-\_\-status\-\_\-lg (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_ab06787c50f090a339e8ed4d4a1408f6b}
+\hyperlink{bma020_8c_ab06787c50f090a339e8ed4d4a1408f6b}{bma020\-\_\-get\-\_\-status\-\_\-lg()} returns true, if the when the corresponding criteria have been issued; they are automatically reset by B\-M\-A020 when the criteria disappear. \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 257 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-T\-A\-T\-U\-S\-\_\-\-L\-G, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-S\-T\-A\-T\-U\-S.
+
+\hypertarget{bma020_8h_a9e076fdb4daec0fe8352340385006b7d}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-get\-\_\-wake\-\_\-up\-\_\-pause@{bma020\-\_\-get\-\_\-wake\-\_\-up\-\_\-pause}}
+\index{bma020\-\_\-get\-\_\-wake\-\_\-up\-\_\-pause@{bma020\-\_\-get\-\_\-wake\-\_\-up\-\_\-pause}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-get\-\_\-wake\-\_\-up\-\_\-pause}]{\setlength{\rightskip}{0pt plus 5cm}uint16\-\_\-t bma020\-\_\-get\-\_\-wake\-\_\-up\-\_\-pause (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_a9e076fdb4daec0fe8352340385006b7d}
+
+
+Definition at line 1200 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-W\-A\-K\-E\-\_\-\-U\-P\-\_\-\-P\-A\-U\-S\-E\-\_\-0, B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-W\-A\-K\-E\-\_\-\-U\-P\-\_\-\-P\-A\-U\-S\-E\-\_\-1, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-S\-P\-I4\-\_\-\-I\-N\-T\-E\-R\-R\-U\-P\-T\-\_\-\-W\-A\-K\-E\-U\-P.
+
+\hypertarget{bma020_8h_ac5c1a01ed031d3c8826f4a54cbae6efe}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-init@{bma020\-\_\-init}}
+\index{bma020\-\_\-init@{bma020\-\_\-init}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-init}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-init (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_ac5c1a01ed031d3c8826f4a54cbae6efe}
+Initialize the B\-M\-A020 accelerationsensor 
+
+Definition at line 1520 of file bma020.\-c.
+
+\hypertarget{bma020_8h_a7d48379dad99c291f448af6889a10c65}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-is\-\_\-advanced\-\_\-int@{bma020\-\_\-is\-\_\-advanced\-\_\-int}}
+\index{bma020\-\_\-is\-\_\-advanced\-\_\-int@{bma020\-\_\-is\-\_\-advanced\-\_\-int}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-is\-\_\-advanced\-\_\-int}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-is\-\_\-advanced\-\_\-int (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_a7d48379dad99c291f448af6889a10c65}
+returns true if the advanced interrupt is enabled. \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 591 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-D\-V\-A\-N\-C\-E\-D\-\_\-\-I\-N\-T, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-S\-P\-I4\-\_\-\-I\-N\-T\-E\-R\-R\-U\-P\-T\-\_\-\-W\-A\-K\-E\-U\-P.
+
+\hypertarget{bma020_8h_a7aaedcf13c31ab032c6014cf2f11d03e}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-is\-\_\-enable\-\_\-any\-\_\-motion@{bma020\-\_\-is\-\_\-enable\-\_\-any\-\_\-motion}}
+\index{bma020\-\_\-is\-\_\-enable\-\_\-any\-\_\-motion@{bma020\-\_\-is\-\_\-enable\-\_\-any\-\_\-motion}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-is\-\_\-enable\-\_\-any\-\_\-motion}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-is\-\_\-enable\-\_\-any\-\_\-motion (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_a7aaedcf13c31ab032c6014cf2f11d03e}
+returns true if the any motion interrupt is enabled. \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 619 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-L\-E\-R\-T\-\_\-\-E\-N\-A\-N\-Y\-M\-O\-T\-I\-O\-N\-\_\-\-C\-N\-T\-H\-G\-\_\-\-C\-N\-T\-L\-G\-\_\-\-E\-N\-H\-G\-\_\-\-E\-N\-L\-G.
+
+\hypertarget{bma020_8h_a8bbc44dd5bf3320c9ea06ce54100fafc}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-is\-\_\-enable\-\_\-hg@{bma020\-\_\-is\-\_\-enable\-\_\-hg}}
+\index{bma020\-\_\-is\-\_\-enable\-\_\-hg@{bma020\-\_\-is\-\_\-enable\-\_\-hg}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-is\-\_\-enable\-\_\-hg}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-is\-\_\-enable\-\_\-hg (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_a8bbc44dd5bf3320c9ea06ce54100fafc}
+returns true if the lg interrupt is enabled. \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 565 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-E\-N\-A\-B\-L\-E\-\_\-\-H\-G, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-L\-E\-R\-T\-\_\-\-E\-N\-A\-N\-Y\-M\-O\-T\-I\-O\-N\-\_\-\-C\-N\-T\-H\-G\-\_\-\-C\-N\-T\-L\-G\-\_\-\-E\-N\-H\-G\-\_\-\-E\-N\-L\-G.
+
+\hypertarget{bma020_8h_a47004eaf6774aa870fd8e2d4d5c1ae80}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-is\-\_\-enable\-\_\-lg@{bma020\-\_\-is\-\_\-enable\-\_\-lg}}
+\index{bma020\-\_\-is\-\_\-enable\-\_\-lg@{bma020\-\_\-is\-\_\-enable\-\_\-lg}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-is\-\_\-enable\-\_\-lg}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-is\-\_\-enable\-\_\-lg (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_a47004eaf6774aa870fd8e2d4d5c1ae80}
+returns true if the lg interrupt is enabled. \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 538 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-E\-N\-A\-B\-L\-E\-\_\-\-L\-G, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-L\-E\-R\-T\-\_\-\-E\-N\-A\-N\-Y\-M\-O\-T\-I\-O\-N\-\_\-\-C\-N\-T\-H\-G\-\_\-\-C\-N\-T\-L\-G\-\_\-\-E\-N\-H\-G\-\_\-\-E\-N\-L\-G.
+
+\hypertarget{bma020_8h_a460b42665cb432f91a3e54c132f9891e}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-is\-\_\-enable\-\_\-motion\-\_\-alert@{bma020\-\_\-is\-\_\-enable\-\_\-motion\-\_\-alert}}
+\index{bma020\-\_\-is\-\_\-enable\-\_\-motion\-\_\-alert@{bma020\-\_\-is\-\_\-enable\-\_\-motion\-\_\-alert}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-is\-\_\-enable\-\_\-motion\-\_\-alert}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-is\-\_\-enable\-\_\-motion\-\_\-alert (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_a460b42665cb432f91a3e54c132f9891e}
+returns true if the motion alert interrupt is enabled. \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 647 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-L\-T\-E\-R\-T, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-L\-E\-R\-T\-\_\-\-E\-N\-A\-N\-Y\-M\-O\-T\-I\-O\-N\-\_\-\-C\-N\-T\-H\-G\-\_\-\-C\-N\-T\-L\-G\-\_\-\-E\-N\-H\-G\-\_\-\-E\-N\-L\-G.
+
+\hypertarget{bma020_8h_a3e5636663c087915feeacb349b44ce31}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-is\-\_\-latched\-\_\-int@{bma020\-\_\-is\-\_\-latched\-\_\-int}}
+\index{bma020\-\_\-is\-\_\-latched\-\_\-int@{bma020\-\_\-is\-\_\-latched\-\_\-int}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-is\-\_\-latched\-\_\-int}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-is\-\_\-latched\-\_\-int (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_a3e5636663c087915feeacb349b44ce31}
+returns true if latched interrupt is enabled. \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 674 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-A\-T\-C\-H\-\_\-\-I\-N\-T, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-S\-P\-I4\-\_\-\-I\-N\-T\-E\-R\-R\-U\-P\-T\-\_\-\-W\-A\-K\-E\-U\-P.
+
+\hypertarget{bma020_8h_a5a11de6c62517d876636ffaaccbe99f8}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-is\-\_\-new\-\_\-data@{bma020\-\_\-is\-\_\-new\-\_\-data}}
+\index{bma020\-\_\-is\-\_\-new\-\_\-data@{bma020\-\_\-is\-\_\-new\-\_\-data}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-is\-\_\-new\-\_\-data}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-is\-\_\-new\-\_\-data (
+\begin{DoxyParamCaption}
+\item[{char}]{axis}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_a5a11de6c62517d876636ffaaccbe99f8}
+This function is true of the acceleration registers have been updated.
+
+Valid values for axis are 'x', 'y' or 'z'.
+
+
+\begin{DoxyParams}{Parameters}
+{\em axis} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true, if the axis value is new 
+\end{DoxyReturn}
+
+
+Definition at line 219 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-X\-\_\-\-L\-S\-B, B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-Y\-\_\-\-L\-S\-B, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-Z\-\_\-\-L\-S\-B.
+
+\hypertarget{bma020_8h_a3f70726f60c671a6cd7250c84cc9ee7a}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-is\-\_\-new\-\_\-data\-\_\-int@{bma020\-\_\-is\-\_\-new\-\_\-data\-\_\-int}}
+\index{bma020\-\_\-is\-\_\-new\-\_\-data\-\_\-int@{bma020\-\_\-is\-\_\-new\-\_\-data\-\_\-int}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-is\-\_\-new\-\_\-data\-\_\-int}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-is\-\_\-new\-\_\-data\-\_\-int (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_a3f70726f60c671a6cd7250c84cc9ee7a}
+returns the current state of new\-\_\-data\-\_\-int. enabled == true, disabled == false. \begin{DoxyReturn}{Returns}
+returns the current state of new\-\_\-data\-\_\-int 
+\end{DoxyReturn}
+
+
+Definition at line 516 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-N\-E\-W\-\_\-\-D\-A\-T\-A\-\_\-\-I\-N\-T, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-S\-P\-I4\-\_\-\-I\-N\-T\-E\-R\-R\-U\-P\-T\-\_\-\-W\-A\-K\-E\-U\-P.
+
+\hypertarget{bma020_8h_ad5d778ebe7f19ffc5447b05392bc81d5}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-is\-\_\-shadow\-\_\-disabled@{bma020\-\_\-is\-\_\-shadow\-\_\-disabled}}
+\index{bma020\-\_\-is\-\_\-shadow\-\_\-disabled@{bma020\-\_\-is\-\_\-shadow\-\_\-disabled}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-is\-\_\-shadow\-\_\-disabled}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-is\-\_\-shadow\-\_\-disabled (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_ad5d778ebe7f19ffc5447b05392bc81d5}
+returns true, if value shadowing is disabled. \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 474 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-H\-A\-D\-O\-W\-\_\-\-D\-I\-S, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-S\-P\-I4\-\_\-\-I\-N\-T\-E\-R\-R\-U\-P\-T\-\_\-\-W\-A\-K\-E\-U\-P.
+
+\hypertarget{bma020_8h_a62a15f74e49f2463c1872dbe43dce521}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-is\-\_\-spi4@{bma020\-\_\-is\-\_\-spi4}}
+\index{bma020\-\_\-is\-\_\-spi4@{bma020\-\_\-is\-\_\-spi4}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-is\-\_\-spi4}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-is\-\_\-spi4 (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_a62a15f74e49f2463c1872dbe43dce521}
+returns true if 4 wire S\-P\-I is activated. \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 449 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-P\-I4, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-S\-P\-I4\-\_\-\-I\-N\-T\-E\-R\-R\-U\-P\-T\-\_\-\-W\-A\-K\-E\-U\-P.
+
+\hypertarget{bma020_8h_a754386a5ed68093f02f5bec3f5e98cbd}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-is\-\_\-wake\-\_\-up@{bma020\-\_\-is\-\_\-wake\-\_\-up}}
+\index{bma020\-\_\-is\-\_\-wake\-\_\-up@{bma020\-\_\-is\-\_\-wake\-\_\-up}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-is\-\_\-wake\-\_\-up}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-is\-\_\-wake\-\_\-up (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_a754386a5ed68093f02f5bec3f5e98cbd}
+returns true, if wake\-\_\-uo behavior is enabled. \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 1143 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-W\-A\-K\-E\-\_\-\-U\-P, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-S\-P\-I4\-\_\-\-I\-N\-T\-E\-R\-R\-U\-P\-T\-\_\-\-W\-A\-K\-E\-U\-P.
+
+\hypertarget{bma020_8h_a1b4d80e962496fd3d254dc1adb060ccd}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-perform\-\_\-self\-\_\-test\-\_\-0@{bma020\-\_\-perform\-\_\-self\-\_\-test\-\_\-0}}
+\index{bma020\-\_\-perform\-\_\-self\-\_\-test\-\_\-0@{bma020\-\_\-perform\-\_\-self\-\_\-test\-\_\-0}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-perform\-\_\-self\-\_\-test\-\_\-0}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-perform\-\_\-self\-\_\-test\-\_\-0 (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_a1b4d80e962496fd3d254dc1adb060ccd}
+The self-\/test command (address 0\-Ah, bit 2) uses electrostatic forces to move the M\-E\-M\-S common electrode. The result from selftest can be verified by reading st\-\_\-result (section 3.\-4.\-1). During the self-\/test procedure no external change of the acceleration should be generated. 
+
+Definition at line 397 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-E\-L\-F\-\_\-\-T\-E\-S\-T\-\_\-0, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-T\-E\-S\-T\-S\-\_\-\-R\-E\-S\-E\-T\-\_\-\-S\-L\-E\-E\-P.
+
+\hypertarget{bma020_8h_aafad8d4b857d14f771e1b5584b540087}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-perform\-\_\-self\-\_\-test\-\_\-1@{bma020\-\_\-perform\-\_\-self\-\_\-test\-\_\-1}}
+\index{bma020\-\_\-perform\-\_\-self\-\_\-test\-\_\-1@{bma020\-\_\-perform\-\_\-self\-\_\-test\-\_\-1}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-perform\-\_\-self\-\_\-test\-\_\-1}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-perform\-\_\-self\-\_\-test\-\_\-1 (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_aafad8d4b857d14f771e1b5584b540087}
+This self test bit (address 0\-Ah, bit3) does not generate any electrostatic force in the M\-E\-M\-S element but is used to verify the interrupt function is working correctly and that microprocessor is able to react to the interrupts. 0g acceleration is emulated at A\-D\-C input and the user can detect the whole logic path for interrupt, including the P\-C\-B path integrity. The L\-G\-\_\-thres register must be set to about 0.\-4g while L\-G\-\_\-dur = 0 to generate a low-\/g interrupt 
+
+Definition at line 415 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-E\-L\-F\-\_\-\-T\-E\-S\-T\-\_\-1, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-T\-E\-S\-T\-S\-\_\-\-R\-E\-S\-E\-T\-\_\-\-S\-L\-E\-E\-P.
+
+\hypertarget{bma020_8h_aa049661ba05ba57de64bee327c9d668f}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-read\-\_\-raw\-\_\-acceleration@{bma020\-\_\-read\-\_\-raw\-\_\-acceleration}}
+\index{bma020\-\_\-read\-\_\-raw\-\_\-acceleration@{bma020\-\_\-read\-\_\-raw\-\_\-acceleration}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-read\-\_\-raw\-\_\-acceleration}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-read\-\_\-raw\-\_\-acceleration (
+\begin{DoxyParamCaption}
+\item[{{\bf acceleration\-\_\-t} $\ast$}]{raw\-\_\-a\-\_\-vector}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_aa049661ba05ba57de64bee327c9d668f}
+T\-O\-D\-O\-: complete behavior description This function reads the acceleration registers of the acceleration sensor. The sensor delivers a 10-\/bit raw value per axis. This function leftshifts it so it writes a 16-\/bit value to the struct. That has also the effect hat small changes results a bigger change of the value. This should filterd and smoothed by higher funtions. But so the read operation is much easier.
+
+The digital signal of x, y, z is 2's complement.
+
+Depending on the range the maxia value is +/-\/2g, +/-\/4g or +/-\/8g.
+
+Example\-: range = 2g;
+
+T\-O\-D\-O\-: Check table! \begin{TabularC}{2}
+\hline
+\rowcolor{lightgray}\PBS\centering {\bf G }&\PBS\centering {\bf Bit pattern  }\\\cline{1-2}
+\PBS\centering -\/2.\-000 g &\PBS\centering 1000 0000 0000 0000 \\\cline{1-2}
+\PBS\centering -\/1.\-996 g &\PBS\centering 1000 0000 0100 0000 \\\cline{1-2}
+\PBS\centering -\/1.\-992 g &\PBS\centering 1000 0000 1000 0000 \\\cline{1-2}
+\PBS\centering ... &\PBS\centering ... \\\cline{1-2}
+\PBS\centering -\/0.\-004 g &\PBS\centering 1111 1111 1111 1111 \\\cline{1-2}
+\PBS\centering 0.\-000 g &\PBS\centering 0000 0000 0000 0000 \\\cline{1-2}
+\PBS\centering +0.004 g &\PBS\centering 0000 0000 0100 0000 \\\cline{1-2}
+\PBS\centering ... &\PBS\centering ... \\\cline{1-2}
+\PBS\centering +1.988 g &\PBS\centering 0111 1111 1111 1101 \\\cline{1-2}
+\PBS\centering +1.992 g &\PBS\centering 0111 1111 1111 1110 \\\cline{1-2}
+\PBS\centering +1.996 g &\PBS\centering 0111 1111 1111 1111 \\\cline{1-2}
+\end{TabularC}
+
+\begin{DoxyParams}{Parameters}
+{\em raw\-\_\-a\-\_\-vector} & a acceleration script, which stores the acceleration values \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 183 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-\-X\-\_\-\-L\-S\-B, B\-M\-A020\-\_\-\-T\-W\-I\-\_\-\-A\-D\-D\-R\-E\-S\-S, twi\-\_\-master\-\_\-set\-\_\-ready(), twi\-\_\-receive\-\_\-buffer, twi\-\_\-receive\-\_\-data(), twi\-\_\-send\-\_\-buffer, twi\-\_\-send\-\_\-data(), acceleration\-\_\-t\-::x, acceleration\-\_\-t\-::y, and acceleration\-\_\-t\-::z.
+
+\hypertarget{bma020_8h_a996664698b38ebcbdc5f35277c86271f}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-reset\-\_\-hg\-\_\-latched@{bma020\-\_\-reset\-\_\-hg\-\_\-latched}}
+\index{bma020\-\_\-reset\-\_\-hg\-\_\-latched@{bma020\-\_\-reset\-\_\-hg\-\_\-latched}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-reset\-\_\-hg\-\_\-latched}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-reset\-\_\-hg\-\_\-latched (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_a996664698b38ebcbdc5f35277c86271f}
+Resets the H\-G Criteria Bit. 
+
+Definition at line 305 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-H\-G\-\_\-\-L\-A\-T\-C\-H\-E\-D, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-S\-T\-A\-T\-U\-S.
+
+\hypertarget{bma020_8h_ac523767751ba8462faae363f828af936}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-reset\-\_\-interrupt@{bma020\-\_\-reset\-\_\-interrupt}}
+\index{bma020\-\_\-reset\-\_\-interrupt@{bma020\-\_\-reset\-\_\-interrupt}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-reset\-\_\-interrupt}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-reset\-\_\-interrupt (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_ac523767751ba8462faae363f828af936}
+This interrupt (address 0\-Ah, bit 6) is reset (interrupt pad goes to low) each time this bit is written to 1. 
+
+Definition at line 485 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-R\-E\-S\-E\-T\-\_\-\-I\-N\-T, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-T\-E\-S\-T\-S\-\_\-\-R\-E\-S\-E\-T\-\_\-\-S\-L\-E\-E\-P.
+
+\hypertarget{bma020_8h_aa591678c9c225c04379f31f443da516f}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-reset\-\_\-lg\-\_\-latched@{bma020\-\_\-reset\-\_\-lg\-\_\-latched}}
+\index{bma020\-\_\-reset\-\_\-lg\-\_\-latched@{bma020\-\_\-reset\-\_\-lg\-\_\-latched}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-reset\-\_\-lg\-\_\-latched}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-reset\-\_\-lg\-\_\-latched (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_aa591678c9c225c04379f31f443da516f}
+Resets the L\-G Criteria Bit. 
+
+Definition at line 282 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-G\-\_\-\-L\-A\-T\-C\-H\-E\-D, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-S\-T\-A\-T\-U\-S.
+
+\hypertarget{bma020_8h_a2fa0d7fb2232f63015927a4411b6936f}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-set\-\_\-any\-\_\-motion\-\_\-duration@{bma020\-\_\-set\-\_\-any\-\_\-motion\-\_\-duration}}
+\index{bma020\-\_\-set\-\_\-any\-\_\-motion\-\_\-duration@{bma020\-\_\-set\-\_\-any\-\_\-motion\-\_\-duration}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-set\-\_\-any\-\_\-motion\-\_\-duration}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-set\-\_\-any\-\_\-motion\-\_\-duration (
+\begin{DoxyParamCaption}
+\item[{uint8\-\_\-t}]{duration}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_a2fa0d7fb2232f63015927a4411b6936f}
+Any\-\_\-motion\-\_\-dur is used to filter the motion profile and also to define a minimum interrupt duration because the reset condition is also filtered. Valid values for duration\-: 1, 3, 5, 7 
+\begin{DoxyParams}{Parameters}
+{\em duration} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 1050 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N\-\_\-0, B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N\-\_\-1, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-M\-D\-U\-R\-\_\-\-H\-G\-H\-Y\-S\-\_\-\-L\-G\-H\-Y\-S.
+
+\hypertarget{bma020_8h_a2fb9ce02a8f8f96bea6822dacb3dbdda}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-set\-\_\-any\-\_\-motion\-\_\-threshold@{bma020\-\_\-set\-\_\-any\-\_\-motion\-\_\-threshold}}
+\index{bma020\-\_\-set\-\_\-any\-\_\-motion\-\_\-threshold@{bma020\-\_\-set\-\_\-any\-\_\-motion\-\_\-threshold}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-set\-\_\-any\-\_\-motion\-\_\-threshold}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-set\-\_\-any\-\_\-motion\-\_\-threshold (
+\begin{DoxyParamCaption}
+\item[{uint8\-\_\-t}]{threshold}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_a2fb9ce02a8f8f96bea6822dacb3dbdda}
+For the evaluation using “any motion” criterion successive acceleration data from digital filter output are stored and moving differences for all axes are built. To calculate the difference the acceleration values of all axes at time t0 are compared to values at t0+3/(2$\ast$bandwidth). The difference of both values is equal to the difference of two successive moving averages (from three data points). The differential value is compared to a global critical threshold any\-\_\-motion\-\_\-thres (address 10h, bits 7-\/0). Interrupt can be generated when the absolute value of measured difference is higher than the programmed threshold for long enough duration defined by any\-\_\-motion\-\_\-dur (address 11h, bits 7 and 6). Any\-\_\-motion\-\_\-thres and any\-\_\-motion\-\_\-dur data are unsigned integer. Any\-\_\-motion\-\_\-thres L\-S\-B size corresponds to 15.\-6mg for +/-\/ 2g range and scales with range selection (section 3.\-1.\-2). 
+\begin{DoxyParams}{Parameters}
+{\em threshold} & \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 1028 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-N\-Y\-\_\-\-M\-O\-T\-I\-O\-N\-\_\-\-T\-H\-R\-E\-S\-H\-O\-L\-D.
+
+\hypertarget{bma020_8h_a9bd3b24299e9db9b1444ec92790b3e68}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-set\-\_\-bandwidth@{bma020\-\_\-set\-\_\-bandwidth}}
+\index{bma020\-\_\-set\-\_\-bandwidth@{bma020\-\_\-set\-\_\-bandwidth}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-set\-\_\-bandwidth}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-set\-\_\-bandwidth (
+\begin{DoxyParamCaption}
+\item[{uint16\-\_\-t}]{bandwidth}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_a9bd3b24299e9db9b1444ec92790b3e68}
+These three bits (address 14h, bits 2-\/0) are used to setup the digital filtering of A\-D\-C output data to obtain the desired bandwidth. A second order analogue filter defines the max. bandwidth to 1.\-5k\-Hz. Digital filters can be activated to reduce the bandwidth down to 25\-Hz in order to reduce signal noise. The digital filters are moving average filters of various length with a refresh rate of 3k\-Hz. Since the bandwidth is reduced by a digital filter for the factor 1/2 , 1/4, ... of the analogue filter frequency of 1.\-5k\-Hz the mean values of the bandwidth are slightly deviating from the rounded nominal values. Table 4 shows the corresponding data\-:
+
+bandwidth$<$2\-:0$>$ Mean bandwidth\mbox{[}Hz\mbox{]} 000 25 001 50 010 100 011 190 100 375 101 750 110 1500 111 Not authorised code
+
+
+\begin{DoxyParams}{Parameters}
+{\em bandwidth} & \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 1250 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-B\-A\-N\-D\-W\-I\-D\-T\-H\-\_\-0, B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-B\-A\-N\-D\-W\-I\-D\-T\-H\-\_\-1, B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-B\-A\-N\-D\-W\-I\-D\-T\-H\-\_\-2, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-R\-A\-N\-G\-E\-\_\-\-B\-A\-N\-D\-W\-I\-D\-T\-H.
+
+\hypertarget{bma020_8h_acc8c5b0f1114ea09cd6653d2d7e3fb38}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-set\-\_\-counter\-\_\-hg@{bma020\-\_\-set\-\_\-counter\-\_\-hg}}
+\index{bma020\-\_\-set\-\_\-counter\-\_\-hg@{bma020\-\_\-set\-\_\-counter\-\_\-hg}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-set\-\_\-counter\-\_\-hg}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-set\-\_\-counter\-\_\-hg (
+\begin{DoxyParamCaption}
+\item[{uint8\-\_\-t}]{counter}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_acc8c5b0f1114ea09cd6653d2d7e3fb38}
+sets counter lg valid params\-: 0, 1, 2, 3 
+\begin{DoxyParams}{Parameters}
+{\em counter} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 926 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-H\-G\-\_\-0, B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-H\-G\-\_\-1, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-L\-E\-R\-T\-\_\-\-E\-N\-A\-N\-Y\-M\-O\-T\-I\-O\-N\-\_\-\-C\-N\-T\-H\-G\-\_\-\-C\-N\-T\-L\-G\-\_\-\-E\-N\-H\-G\-\_\-\-E\-N\-L\-G.
+
+\hypertarget{bma020_8h_a0925a60b0799b1f000b04d026027e626}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-set\-\_\-counter\-\_\-lg@{bma020\-\_\-set\-\_\-counter\-\_\-lg}}
+\index{bma020\-\_\-set\-\_\-counter\-\_\-lg@{bma020\-\_\-set\-\_\-counter\-\_\-lg}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-set\-\_\-counter\-\_\-lg}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-set\-\_\-counter\-\_\-lg (
+\begin{DoxyParamCaption}
+\item[{uint8\-\_\-t}]{counter}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_a0925a60b0799b1f000b04d026027e626}
+sets counter lg valid params\-: 0, 1, 2, 3 
+\begin{DoxyParams}{Parameters}
+{\em counter} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 764 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-L\-G\-\_\-0, B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-C\-O\-U\-N\-T\-E\-R\-\_\-\-L\-G\-\_\-1, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-L\-E\-R\-T\-\_\-\-E\-N\-A\-N\-Y\-M\-O\-T\-I\-O\-N\-\_\-\-C\-N\-T\-H\-G\-\_\-\-C\-N\-T\-L\-G\-\_\-\-E\-N\-H\-G\-\_\-\-E\-N\-L\-G.
+
+\hypertarget{bma020_8h_af0a438e715f02efa689bc251ccbb8050}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-set\-\_\-customer\-\_\-reserved\-\_\-1@{bma020\-\_\-set\-\_\-customer\-\_\-reserved\-\_\-1}}
+\index{bma020\-\_\-set\-\_\-customer\-\_\-reserved\-\_\-1@{bma020\-\_\-set\-\_\-customer\-\_\-reserved\-\_\-1}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-set\-\_\-customer\-\_\-reserved\-\_\-1}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-set\-\_\-customer\-\_\-reserved\-\_\-1 (
+\begin{DoxyParamCaption}
+\item[{uint8\-\_\-t}]{value}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_af0a438e715f02efa689bc251ccbb8050}
+Both bytes (address 12h, bit 7-\/0 and address 13h, bit 7-\/0) can be used by customer. Writing or reading of these registers has no effect on the sensor I\-C functionality. 
+
+Definition at line 1414 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-U\-S\-T\-O\-M\-E\-R\-\_\-1.
+
+\hypertarget{bma020_8h_aff774b72ecf7cfae5dd7855cac989953}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-set\-\_\-customer\-\_\-reserved\-\_\-2@{bma020\-\_\-set\-\_\-customer\-\_\-reserved\-\_\-2}}
+\index{bma020\-\_\-set\-\_\-customer\-\_\-reserved\-\_\-2@{bma020\-\_\-set\-\_\-customer\-\_\-reserved\-\_\-2}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-set\-\_\-customer\-\_\-reserved\-\_\-2}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-set\-\_\-customer\-\_\-reserved\-\_\-2 (
+\begin{DoxyParamCaption}
+\item[{uint8\-\_\-t}]{value}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_aff774b72ecf7cfae5dd7855cac989953}
+
+
+Definition at line 1425 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-U\-S\-T\-O\-M\-E\-R\-\_\-2.
+
+\hypertarget{bma020_8h_aa7bb61399c444a272182bcb266d36b35}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-set\-\_\-hg\-\_\-duration@{bma020\-\_\-set\-\_\-hg\-\_\-duration}}
+\index{bma020\-\_\-set\-\_\-hg\-\_\-duration@{bma020\-\_\-set\-\_\-hg\-\_\-duration}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-set\-\_\-hg\-\_\-duration}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-set\-\_\-hg\-\_\-duration (
+\begin{DoxyParamCaption}
+\item[{uint8\-\_\-t}]{duration}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_aa7bb61399c444a272182bcb266d36b35}
+Sets the hg\-\_\-duration 
+\begin{DoxyParams}{Parameters}
+{\em duration} & \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 903 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-H\-G\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N.
+
+\hypertarget{bma020_8h_a24882f81d49e4db67665fb7d74bed976}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-set\-\_\-hg\-\_\-hysterese@{bma020\-\_\-set\-\_\-hg\-\_\-hysterese}}
+\index{bma020\-\_\-set\-\_\-hg\-\_\-hysterese@{bma020\-\_\-set\-\_\-hg\-\_\-hysterese}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-set\-\_\-hg\-\_\-hysterese}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-set\-\_\-hg\-\_\-hysterese (
+\begin{DoxyParamCaption}
+\item[{uint8\-\_\-t}]{hysterese}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_a24882f81d49e4db67665fb7d74bed976}
+sets the hg\-\_\-hysterese 
+\begin{DoxyParams}{Parameters}
+{\em hysterese} & \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 972 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-H\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-0, B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-H\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-1, B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-H\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-2, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-M\-D\-U\-R\-\_\-\-H\-G\-H\-Y\-S\-\_\-\-L\-G\-H\-Y\-S.
+
+\hypertarget{bma020_8h_ab9b82b4d29bd5c0d921903469a1ceae3}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-set\-\_\-hg\-\_\-threshold@{bma020\-\_\-set\-\_\-hg\-\_\-threshold}}
+\index{bma020\-\_\-set\-\_\-hg\-\_\-threshold@{bma020\-\_\-set\-\_\-hg\-\_\-threshold}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-set\-\_\-hg\-\_\-threshold}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-set\-\_\-hg\-\_\-threshold (
+\begin{DoxyParamCaption}
+\item[{uint8\-\_\-t}]{threshold}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_ab9b82b4d29bd5c0d921903469a1ceae3}
+H\-G\-\_\-thres (address 0\-Eh, bits 7-\/0 / high-\/g threshold) and H\-G\-\_\-hyst (address 11h, bits 5-\/3 / high-\/g threshold hysteresis) define the high-\/\-G level and its associated hysteresis. H\-G\-\_\-dur (high-\/g threshold qualification duration) and counter\-\_\-\-H\-G (address 0\-Bh, bits 5 and 4 / high-\/g counter down register) are used for debouncing the high-\/g criteria. Threshold and duration codes define a criterion for interrupt generation when absolute value of acceleration is high for long enough duration.
+
+Data format is unsigned integer.
+
+\begin{TabularC}{2}
+\hline
+\rowcolor{lightgray}\PBS\centering {\bf Condition }&\PBS\centering {\bf Result  }\\\cline{1-2}
+\PBS\centering H\-G\-\_\-threshold criterion\-\_\-x is true if &\PBS\centering $ |acc_x | ≥ HG_thres / 255 * range$ \\\cline{1-2}
+\PBS\centering H\-G\-\_\-threshold interrupt is set if &\PBS\centering $ (HG_thres criterion_x OR HG_thres criterion_y OR HG_thres criterion_z) AND interrupt counter = (HG_dur+1)$ \\\cline{1-2}
+\PBS\centering H\-G\-\_\-threshold criterion\-\_\-x is false if &\PBS\centering $ |acc_x | < (HG_thres - 32*HG_hyst) / 255 * range$ \\\cline{1-2}
+\PBS\centering H\-G\-\_\-threshold interrupt is reset if &\PBS\centering $ NOT(HG_thres criterion_x OR HG_thres criterion_y OR HG_thres criterion_z)$ \\\cline{1-2}
+\end{TabularC}
+H\-G\-\_\-thres and H\-G\-\_\-hyst codes must be chosen to have (H\-G\-\_\-thres -\/ 32$\ast$\-H\-G\-\_\-hyst) $>$ 0.
+
+When H\-G\-\_\-thres criterion becomes active, a counter is incremented by 1 L\-S\-B/ms. When the high-\/g acceleration interrupt counter value equals (H\-G\-\_\-dur+1), an interrupt is generated. Depending on counter\-\_\-\-H\-G register value, the counter could also be reset or count down when H\-G\-\_\-thres criterion is false.
+
+If latch\-\_\-\-I\-N\-T=0, the interrupt is not a latched interrupt and then it is reset as soon as H\-G\-\_\-thres criteria becomes false. When interrupt occurs, the interrupt counter is reset.
+
+
+\begin{DoxyParams}{Parameters}
+{\em threshold} & \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 881 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-H\-G\-\_\-\-T\-H\-R\-E\-S\-H\-O\-L\-D.
+
+\hypertarget{bma020_8h_a9c88ac2767f5099da4bceb35d5185247}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-set\-\_\-lg\-\_\-duration@{bma020\-\_\-set\-\_\-lg\-\_\-duration}}
+\index{bma020\-\_\-set\-\_\-lg\-\_\-duration@{bma020\-\_\-set\-\_\-lg\-\_\-duration}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-set\-\_\-lg\-\_\-duration}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-set\-\_\-lg\-\_\-duration (
+\begin{DoxyParamCaption}
+\item[{uint8\-\_\-t}]{duration}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_a9c88ac2767f5099da4bceb35d5185247}
+sets lg\-\_\-duration 
+\begin{DoxyParams}{Parameters}
+{\em duration} & \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 740 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-L\-G\-\_\-\-D\-U\-R\-A\-T\-I\-O\-N.
+
+\hypertarget{bma020_8h_acf15f8f2a17ea937719f4f49af0c019f}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-set\-\_\-lg\-\_\-hysterese@{bma020\-\_\-set\-\_\-lg\-\_\-hysterese}}
+\index{bma020\-\_\-set\-\_\-lg\-\_\-hysterese@{bma020\-\_\-set\-\_\-lg\-\_\-hysterese}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-set\-\_\-lg\-\_\-hysterese}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-set\-\_\-lg\-\_\-hysterese (
+\begin{DoxyParamCaption}
+\item[{uint8\-\_\-t}]{hysterese}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_acf15f8f2a17ea937719f4f49af0c019f}
+Sets the hysterese 
+\begin{DoxyParams}{Parameters}
+{\em hysterese} & \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 811 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-0, B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-1, B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-L\-G\-\_\-\-H\-Y\-S\-T\-E\-R\-E\-S\-I\-S\-\_\-2, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-A\-M\-D\-U\-R\-\_\-\-H\-G\-H\-Y\-S\-\_\-\-L\-G\-H\-Y\-S.
+
+\hypertarget{bma020_8h_ab3fa54af803bedc74927f8f2cf00aedc}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-set\-\_\-lg\-\_\-threshold@{bma020\-\_\-set\-\_\-lg\-\_\-threshold}}
+\index{bma020\-\_\-set\-\_\-lg\-\_\-threshold@{bma020\-\_\-set\-\_\-lg\-\_\-threshold}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-set\-\_\-lg\-\_\-threshold}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-set\-\_\-lg\-\_\-threshold (
+\begin{DoxyParamCaption}
+\item[{uint8\-\_\-t}]{threshold}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_ab3fa54af803bedc74927f8f2cf00aedc}
+L\-G\-\_\-thres (address 0\-C, bits 7-\/0 / low-\/g threshold) and L\-G\-\_\-hyst (address 11h, bits 2-\/0 / low-\/g threshold hysteresis) can basically (although not recommended with B\-M\-A020) be used to detect a free fall. The threshold and duration codes define one criterion for interrupt generation when absolute value of acceleration is low for long enough duration.
+
+Data format is unsigned integer.
+
+\begin{TabularC}{2}
+\hline
+\rowcolor{lightgray}\PBS\centering {\bf Condition }&\PBS\centering {\bf Result  }\\\cline{1-2}
+\PBS\centering L\-G\-\_\-thres criterion\-\_\-x is true if &\PBS\centering $ |acc_x | <= LG_thres / 255 * range$ \\\cline{1-2}
+\PBS\centering L\-G\-\_\-thres interrupt is set if &\PBS\centering $ (LG_thres criterion_x AND LG_thres criterion_y AND LG_thres criterion_z) AND interrupt counter = (LG_dur+1)$ \\\cline{1-2}
+\PBS\centering L\-G\-\_\-thres criterion\-\_\-x is false if &\PBS\centering $ |acc_x | > (LG_thres + 32*LG_hyst) / 255 * range$ \\\cline{1-2}
+\PBS\centering L\-G\-\_\-thres interrupt is reset if &\PBS\centering $ NOT(LG_thres criterion_x AND LG_thres criterion_y AND LG_thres criterion_z)$ \\\cline{1-2}
+\end{TabularC}
+L\-G\-\_\-thres and L\-G\-\_\-hyst codes must be chosen to have (L\-G\-\_\-thres + 32$\ast$\-L\-G\-\_\-hyst) $<$ 511.
+
+When L\-G\-\_\-thres criterion becomes active, an interrupt counter is incremented by 1 L\-S\-B/ms. When the low-\/g interrupt counter value equals (L\-G\-\_\-dur+1), an interrupt is generated. Depending on counter\-\_\-\-L\-G (address 0\-Bh, bit 3 and 2) register, the counter could also be reset or count down when L\-G\-\_\-thres criterion is false.
+
+If latch\-\_\-\-I\-N\-T=0, the interrupt is not a latched interrupt and then it is reset as soon as L\-G\-\_\-thres criteria becomes false. When interrupt occurs, the interrupt counter is reset.
+
+Remark\-: The L\-G\-\_\-thres criteria is set with an A\-N\-D condition on all three axes to be used for free fall detection. However, please note due to the relatively wide sensitivity tolerance of the B\-M\-A020 the absolute threshold values for low-\/g and high-\/g interrupt can only provide a rough estimation of the motion profile.
+
+
+\begin{DoxyParams}{Parameters}
+{\em threshold} & \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 719 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-L\-G\-\_\-\-T\-H\-R\-E\-S\-H\-O\-L\-D.
+
+\hypertarget{bma020_8h_ac7f7e61919fd9f19b2620e2009fad92c}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-set\-\_\-range@{bma020\-\_\-set\-\_\-range}}
+\index{bma020\-\_\-set\-\_\-range@{bma020\-\_\-set\-\_\-range}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-set\-\_\-range}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-set\-\_\-range (
+\begin{DoxyParamCaption}
+\item[{uint8\-\_\-t}]{range}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_ac7f7e61919fd9f19b2620e2009fad92c}
+These two bits (address 14h, bits 4 and 3) are used to select the full scale acceleration range. Directly after changing the full scale range it takes $ \frac{1}{2 \cdot bandwidth} $ to overwrite the data registers with filtered data according to the selected bandwidth.
+
+Valid values for range (uint8\-\_\-t)\-:
+
+\begin{TabularC}{2}
+\hline
+\rowcolor{lightgray}\PBS\centering {\bf range (uint8\-\_\-t) }&\PBS\centering {\bf Full scale acceleration range  }\\\cline{1-2}
+\PBS\centering 2 &\PBS\centering +/-\/ 2g \\\cline{1-2}
+\PBS\centering 4 &\PBS\centering +/-\/ 4g \\\cline{1-2}
+\PBS\centering 8 &\PBS\centering +/-\/ 8g \\\cline{1-2}
+\end{TabularC}
+
+\begin{DoxyParams}{Parameters}
+{\em range} & -\/ New range value \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+boolean -\/ return true, if param is valid and write sequence to the sensor is completed. return false, if param is invalid. Then no write sqquence was performed. so 
+\end{DoxyReturn}
+
+
+Definition at line 1354 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-R\-A\-N\-G\-E\-\_\-0, B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-R\-A\-N\-G\-E\-\_\-1, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-R\-A\-N\-G\-E\-\_\-\-B\-A\-N\-D\-W\-I\-D\-T\-H.
+
+\hypertarget{bma020_8h_ae73261ee46188952993f69970854e386}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-set\-\_\-wake\-\_\-up\-\_\-pause@{bma020\-\_\-set\-\_\-wake\-\_\-up\-\_\-pause}}
+\index{bma020\-\_\-set\-\_\-wake\-\_\-up\-\_\-pause@{bma020\-\_\-set\-\_\-wake\-\_\-up\-\_\-pause}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-set\-\_\-wake\-\_\-up\-\_\-pause}]{\setlength{\rightskip}{0pt plus 5cm}bool bma020\-\_\-set\-\_\-wake\-\_\-up\-\_\-pause (
+\begin{DoxyParamCaption}
+\item[{uint16\-\_\-t}]{wake\-\_\-up\-\_\-time}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_ae73261ee46188952993f69970854e386}
+These bits (address 15h, bit 2 and 1) define the sleep phase duration between each automatic wake-\/up. wake\-\_\-up\-\_\-pause$<$1\-:0$>$ Sleep phase duration 00 20 ms 01 80 ms 10 320 ms 11 2560 ms
+
+
+\begin{DoxyParams}{Parameters}
+{\em wake\-\_\-up\-\_\-time} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 1165 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-W\-A\-K\-E\-\_\-\-U\-P\-\_\-\-P\-A\-U\-S\-E\-\_\-0, B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-W\-A\-K\-E\-\_\-\-U\-P\-\_\-\-P\-A\-U\-S\-E\-\_\-1, B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-R\-A\-N\-G\-E\-\_\-\-B\-A\-N\-D\-W\-I\-D\-T\-H, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-S\-P\-I4\-\_\-\-I\-N\-T\-E\-R\-R\-U\-P\-T\-\_\-\-W\-A\-K\-E\-U\-P.
+
+\hypertarget{bma020_8h_ae46fb2b7063713e26d4f939a01c410b4}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-sleep@{bma020\-\_\-sleep}}
+\index{bma020\-\_\-sleep@{bma020\-\_\-sleep}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-sleep}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-sleep (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_ae46fb2b7063713e26d4f939a01c410b4}
+This function turns the sensor I\-C in sleep mode. Control and image registers are not cleared. When B\-M\-A020 is in sleep mode no operation can be performed but wake-\/up the sensor I\-C by setting sleep=0 or soft\-\_\-reset. As a consequence all write and read operations are forbidden when the sensor I\-C is in sleep mode except command used to wake up the device or soft\-\_\-reset command. After sleep mode removal, it takes 1ms to obtain stable acceleration values ($>$99\% data integrity). 
+
+Definition at line 362 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-L\-E\-E\-P, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-T\-E\-S\-T\-S\-\_\-\-R\-E\-S\-E\-T\-\_\-\-S\-L\-E\-E\-P.
+
+\hypertarget{bma020_8h_aee5899ae2a2762d1f20c4f2895298e34}{\index{bma020.\-h@{bma020.\-h}!bma020\-\_\-soft\-\_\-reset@{bma020\-\_\-soft\-\_\-reset}}
+\index{bma020\-\_\-soft\-\_\-reset@{bma020\-\_\-soft\-\_\-reset}!bma020.h@{bma020.\-h}}
+\subsubsection[{bma020\-\_\-soft\-\_\-reset}]{\setlength{\rightskip}{0pt plus 5cm}void bma020\-\_\-soft\-\_\-reset (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bma020_8h_aee5899ae2a2762d1f20c4f2895298e34}
+B\-M\-A020 is reset each time this bit (address 0\-Ah, bit 1) is written to 1. The effect is identical to power-\/on reset. Control, status and image registers are reset to values stored in the default setting registers (see also memory map). After soft\-\_\-reset or power-\/on reset B\-M\-A020 comes up in normal mode or wake-\/up mode. It is not possible to boot B\-M\-A020 to sleep mode. No serial transaction should occur within 10 microsec. after soft\-\_\-reset cmd.. The soft\-\_\-reset procedure may overwrite the S\-P\-I4 setting (section 3.\-1.\-1). Thus the correct interface configuration may have to be updated. 
+
+Definition at line 380 of file bma020.\-c.
+
+
+
+References B\-M\-A020\-\_\-\-B\-I\-T\-\_\-\-S\-O\-F\-T\-\_\-\-R\-E\-S\-E\-T, and B\-M\-A020\-\_\-\-R\-E\-G\-I\-S\-T\-E\-R\-\_\-\-C\-O\-N\-T\-R\-O\-L\-\_\-\-T\-E\-S\-T\-S\-\_\-\-R\-E\-S\-E\-T\-\_\-\-S\-L\-E\-E\-P.
+

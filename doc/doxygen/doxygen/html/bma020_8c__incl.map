@@ -1,0 +1,5 @@
+<map id="bma020.c" name="bma020.c">
+<area shape="rect" id="node2" href="$bma020_8h.html" title="This modul implements a low level driver for the bma020 acceleration sensor. All registers and flags ..." alt="" coords="142,83,223,111"/>
+<area shape="rect" id="node6" href="$twi__master_8h.html" title="lib/twi_master.h" alt="" coords="279,83,392,111"/>
+<area shape="rect" id="node4" href="$acceleration__t_8h.html" title="acceleration_t.h" alt="" coords="5,161,120,189"/>
+</map>
