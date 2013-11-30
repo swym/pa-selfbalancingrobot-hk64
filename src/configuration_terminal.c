@@ -15,6 +15,8 @@
 #include <stdbool.h>
 #include <ctype.h>
 
+#include "pid.h"
+
 /* *** DECLARATIONS ********************************************************** */
 
 //-------------------Defines--------------------//
@@ -22,6 +24,7 @@
 #define INPUT_BUFFER_SIZE		24
 
 #define ASCII_ESC		  		(char)(27)
+#define ASCII_LF				(char)(10)
 
 #define STATE_WAITING_TIMEOUT	5			//Seconds for Timeout
 #define STATE_WAITING_PARTS   	4
@@ -45,6 +48,8 @@ typedef enum {
 
 static configuration_terminal_state_t current_state = STATE_WAITING;
 static configuration_terminal_state_t next_state = STATE_NULL;
+
+static pidData_t current_pid_settings;
 
 static char input_buffer[INPUT_BUFFER_SIZE];
 
@@ -76,7 +81,16 @@ void configuration_terminal_state_accelerationsensor_set_scalingfactor(void);
 void configuration_terminal_state_machine(void)
 {
 
+	//TODO: should moved to a better place
 	configuration_terminal_clear_screen();
+
+	current_pid_settings.P_Factor = 10;
+	current_pid_settings.I_Factor = 10;
+	current_pid_settings.D_Factor = 10;
+	current_pid_settings.lastProcessValue = 0;
+	current_pid_settings.maxError = 0;
+	current_pid_settings.maxSumError = 0;
+	current_pid_settings.sumError = 0;
 
  	while(current_state != STATE_FINAL) {
 		switch(current_state) {
@@ -145,7 +159,6 @@ void configuration_terminal_state_waiting(void)
 	bool user_irq_received = false;
 	double delay = 1000.0/(STATE_WAITING_PARTS + 1);
 
-
 	uint8_t parts_of_seconds_counter = 0;
 
 
@@ -196,7 +209,10 @@ void configuration_terminal_state_main_menu(void)
 
 	//Greeting
 	printf("   === MAIN MENU ===\n\n");
-	printf("Current PID parameters:\n  P: -na-\n  I: -na-\n  D: -na-\n\n");
+	printf("Current PID Parameters:\n  P: %u\n  I: %u\n  D: %u\n\n",
+									current_pid_settings.P_Factor,
+									current_pid_settings.I_Factor,
+									current_pid_settings.D_Factor);
 	printf("Select a option by pressing the correspondending key\n\n");
 	printf(" [P] Configure PID-controller\n");
 	printf(" [A] Configure accelerationsensor\n\n");
@@ -234,7 +250,10 @@ void configuration_terminal_state_PID_menu(void)
 
 	//Greeting
 	printf("   === PID CONTROLLER MENU ===\n\n");
-	printf("Current PID Parameters:\n  P: -na-\n  I: -na-\n  D: -na-\n\n");
+	printf("Current PID Parameters:\n  P: %u\n  I: %u\n  D: %u\n\n",
+									current_pid_settings.P_Factor,
+									current_pid_settings.I_Factor,
+									current_pid_settings.D_Factor);
 	printf("Select a option by pressing the correspondending key\n\n");
 	printf(" [P] change proportional parameter\n");
 	printf(" [I] change integral parameter\n");
@@ -272,40 +291,50 @@ void configuration_terminal_state_PID_set_P(void)
 {
 	uint16_t new_value = 0;
 	bool read_value = true;
-	int ret;
 
 	// ENTRY
 	configuration_terminal_clear_all();
 
 	printf("=== CHANGE PROPORTIONAL PARAMETER ===\n\n");
-	printf("Current value: -na-\n\n");
+	printf("Current value: %u\n\n", current_pid_settings.P_Factor);
 	printf("Please enter a uint16_t:\n");
 
-
-	printf("%d\n", sizeof(unsigned int));
 
 	// DO
 	do {
 		//read user input
+		configuration_terminal_clear_input_buffer();
 		fgets(input_buffer, INPUT_BUFFER_SIZE, stdin);
 
-		//try to convert to uint16_t;
-		if(sscanf(input_buffer, "%u",&new_value)) {
-			//if convertation is successful; break and set new_value
+		//check if nothing is entered. so don't change the old value
+		if(input_buffer[0] != ASCII_LF) {
+			//if strlen > nothing
 
-			//TODO: SET NEW VALUE
+			//try to convert to uint16_t;
+			//check should be positive (here: == 1) if successful
+			if(sscanf(input_buffer, "%u",&new_value)) {
 
-			read_value = false;
-
+				//check, if new value is in range
+				//and is not negative (input string begins with a '-')
+				if(new_value <= UINT16_MAX && input_buffer[0] != '-') {
+					//if conversion is successful; break loop by setting
+					//false to read_value and set new_value
+					current_pid_settings.P_Factor = new_value;
+					read_value = false;
+				} else {
+					printf("New value is out of range! Please retry:\n");
+				}
+			} else {
+				printf("Input is not valid! Please retry:\n");
+			}
 		} else {
-			printf("Invalid Input! Please retry:\n");
+			printf("Nothing entered! Old value will be used!\n");
+			read_value = false;
 		}
 
+
+
 	} while(read_value);
-
-	printf("new_value: %d\n", new_value);
-
-	_delay_ms(2000.0);
 
 	next_state = STATE_PID_MENU;
 
@@ -537,6 +566,8 @@ void configuration_terminal_clear_all(void)
 
 void configuration_terminal_clear_input_buffer(void)
 {
+	//TODO: fflush() verwenden
+
 	//den eventuell noch gefüllten Sendebuffer des PC lesen und verwerfen
 	while(strlen(input_buffer) >= INPUT_BUFFER_SIZE - 1) {
 		fgets(input_buffer, INPUT_BUFFER_SIZE, stdin);
