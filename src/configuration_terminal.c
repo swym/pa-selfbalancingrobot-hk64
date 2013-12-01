@@ -455,60 +455,6 @@ void configuration_terminal_state_accelerationsensor_set_scalingfactor(void)
 }
 
 
-/*
-void configuration_terminal_state_main_menu(void)
-{
-
-
-	//ENTRY
-	configuration_terminal_clear_screen();
-	configuration_terminal_set_cursor_top_left();
-	configuration_terminal_clear_input_buffer();
-
-	printf("MAIN MENU\n\n[H]odensack:\n[I]n kalte\n[K]acke");
-
-	//DO
-
-
-	while(!UART_char_received()) {
-		printf(".");
-		_delay_ms(1000.0);
-	}
-	UART_clr_rx_buf();
-
-	printf("\nLoop interrupted\nPlease type char:\n");
-
-	printf("input: %c\n", configuration_terminal_get_choice());
-
-
-	//EXIT
-	current_state = STATE_SETPID;
-}
-
-void configuration_terminal_state_setPID(void)
-{
-	configuration_terminal_clear_screen();
-
-	printf("MENU SET PID\n");
-
-	current_state = STATE_TARA_ACCEL;
-}
-
-void configuration_terminal_state_tata_acceleration(void)
-{
-	configuration_terminal_clear_screen();
-	configuration_terminal_set_cursor_on_position(10, 5);
-
-	printf("MENU TARA ACCELERATIONSENSOR\n");
-
-	_delay_ms(3000.0);
-
-	current_state = STATE_MAIN_MENU;
-
-}
-
-*/
-
 /* *** HELPERFUNCTIONS *** */
 
 char configuration_terminal_get_choice(void)
