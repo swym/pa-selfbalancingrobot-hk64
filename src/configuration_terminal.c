@@ -58,6 +58,9 @@ static char input_buffer[INPUT_BUFFER_SIZE];
 void configuration_terminal_clear_screen(void);
 void configuration_terminal_set_cursor_top_left(void);
 char configuration_terminal_get_choice(void);
+uint16_t configuration_terminal_get_integer(const uint16_t current_value,
+											const uint16_t min_range,
+											const uint16_t max_range);
 void configuration_terminal_clear_all(void);
 void configuration_terminal_set_cursor_on_position(uint8_t, uint8_t); /* uint8_t x, uint8_t y */
 void configuration_terminal_clear_input_buffer(void);
@@ -83,7 +86,7 @@ void configuration_terminal_state_machine(void)
 
 	//TODO: should moved to a better place
 	configuration_terminal_clear_screen();
-
+/*
 	current_pid_settings.P_Factor = 10;
 	current_pid_settings.I_Factor = 10;
 	current_pid_settings.D_Factor = 10;
@@ -91,7 +94,7 @@ void configuration_terminal_state_machine(void)
 	current_pid_settings.maxError = 0;
 	current_pid_settings.maxSumError = 0;
 	current_pid_settings.sumError = 0;
-
+*/
  	while(current_state != STATE_FINAL) {
 		switch(current_state) {
 
@@ -289,53 +292,18 @@ void configuration_terminal_state_PID_menu(void)
 
 void configuration_terminal_state_PID_set_P(void)
 {
-	uint16_t new_value = 0;
-	bool read_value = true;
-
 	// ENTRY
 	configuration_terminal_clear_all();
 
 	printf("=== CHANGE PROPORTIONAL PARAMETER ===\n\n");
 	printf("Current value: %u\n\n", current_pid_settings.P_Factor);
-	printf("Please enter a uint16_t:\n");
 
 
 	// DO
-	do {
-		//read user input
-		configuration_terminal_clear_input_buffer();
-		fgets(input_buffer, INPUT_BUFFER_SIZE, stdin);
-
-		//check if nothing is entered. so don't change the old value
-		if(input_buffer[0] != ASCII_LF) {
-			//if strlen > nothing
-
-			//try to convert to uint16_t;
-			//check should be positive (here: == 1) if successful
-			if(sscanf(input_buffer, "%u",&new_value)) {
-
-				//check, if new value is in range
-				//and is not negative (input string begins with a '-')
-				if(new_value <= UINT16_MAX && input_buffer[0] != '-') {
-					//if conversion is successful; break loop by setting
-					//false to read_value and set new_value
-					current_pid_settings.P_Factor = new_value;
-					read_value = false;
-				} else {
-					printf("New value is out of range! Please retry:\n");
-				}
-			} else {
-				printf("Input is not valid! Please retry:\n");
-			}
-		} else {
-			printf("Nothing entered! Old value will be used!\n");
-			read_value = false;
-		}
-
-
-
-	} while(read_value);
-
+	current_pid_settings.P_Factor = configuration_terminal_get_integer(
+										current_pid_settings.P_Factor,
+										0,
+										UINT16_MAX);
 	next_state = STATE_PID_MENU;
 
 	// EXIT
@@ -348,12 +316,15 @@ void configuration_terminal_state_PID_set_I(void)
 	// ENTRY
 	configuration_terminal_clear_all();
 
-	printf("I MENU");
-
+	printf("=== CHANGE INGETRAL PARAMETER ===\n\n");
+	printf("Current value: %u\n\n", current_pid_settings.I_Factor);
 
 	// DO
-
-
+	current_pid_settings.I_Factor = configuration_terminal_get_integer(
+										current_pid_settings.I_Factor,
+										0,
+										UINT16_MAX);
+	next_state = STATE_PID_MENU;
 	// EXIT
 
 }
@@ -364,10 +335,16 @@ void configuration_terminal_state_PID_set_D(void)
 	// ENTRY
 	configuration_terminal_clear_all();
 
-	printf("D MENU");
+	printf("=== CHANGE PROPORTIONAL PARAMETER ===\n\n");
+	printf("Current value: %u\n\n", current_pid_settings.D_Factor);
 
 
 	// DO
+	current_pid_settings.D_Factor = configuration_terminal_get_integer(
+										current_pid_settings.D_Factor,
+										0,
+										UINT16_MAX);
+	next_state = STATE_PID_MENU;
 
 
 	// EXIT
@@ -555,6 +532,57 @@ char configuration_terminal_get_choice(void)
 	configuration_terminal_clear_input_buffer();
 
 	return choice;
+}
+
+
+uint16_t configuration_terminal_get_integer(const uint16_t current_value,
+											const uint16_t min_range,
+											const uint16_t max_range)
+{
+	bool successful = false;
+	uint16_t new_value = 0;
+
+	do {
+		printf("Please enter a integer between %u and %u:\n", min_range, max_range);
+
+		//read user input
+		configuration_terminal_clear_input_buffer();
+		fgets(input_buffer, INPUT_BUFFER_SIZE, stdin);
+
+		//check if nothing is entered. so don't change the old value
+		if(input_buffer[0] != ASCII_LF) {
+			//if strlen > nothing
+			//try to convert to uint16_t;
+			//check should be positive (here: == 1) if successful
+			if(sscanf(input_buffer, "%u",&new_value)) {
+
+				//check, if new value is in range
+				//and is not negative (uint!!) (input string begins with a '-')
+				if(new_value >= min_range &&
+				   new_value <= max_range &&
+				   input_buffer[0] != '-')
+				{
+					//if conversion is successful; break loop
+					successful = true;
+				} else {
+					//loop again
+					printf("New value is out of range! Please retry:\n");
+					successful = false;
+				}
+			} else {
+				//loop adain
+				printf("Input is not valid! Please retry:\n");
+				successful = false;
+			}
+		} else {
+			//break loop but return current value
+			printf("Nothing entered! Old value will be used!\n");
+			new_value = current_value;
+			successful = true;
+		}
+	} while(!successful);
+
+	return new_value;
 }
 
 void configuration_terminal_clear_all(void)
