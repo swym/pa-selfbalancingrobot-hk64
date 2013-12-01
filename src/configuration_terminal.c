@@ -16,6 +16,7 @@
 #include <ctype.h>
 
 #include "pid.h"
+#include "acceleration_t.h"
 
 /* *** DECLARATIONS ********************************************************** */
 
@@ -50,6 +51,10 @@ static configuration_terminal_state_t current_state = STATE_WAITING;
 static configuration_terminal_state_t next_state = STATE_NULL;
 
 static pidData_t current_pid_settings;
+static uint8_t pid_scaling_factor;			//TODO: only for dev; put in pidData struct
+static uint16_t accel_pos_scaling_factor;   //TODO: only for dev; put in fitting struct
+static acceleration_t acceleration_offset;	//TODO: only for dev;
+
 
 static char input_buffer[INPUT_BUFFER_SIZE];
 
@@ -357,10 +362,14 @@ void configuration_terminal_state_PID_set_scalingfactor(void)
 	// ENTRY
 	configuration_terminal_clear_all();
 
-	printf("SCALINGFACTOR PID MENU");
-
+	printf("=== PID SCALING FACTOR ===\n\n");
+	printf("Current value: %u\n\n", pid_scaling_factor);
 
 	// DO
+	pid_scaling_factor = configuration_terminal_get_integer(
+							pid_scaling_factor, 1, UINT8_MAX);
+
+	next_state = STATE_PID_MENU;
 
 
 	// EXIT
@@ -412,10 +421,19 @@ void configuration_terminal_state_accelerationsensor_show(void)
 	// ENTRY
 	configuration_terminal_clear_all();
 
-	printf("ACCEL SHOW MENU");
+	printf("ACCEL SHOW MENU\n\n");
 
+
+	printf("X:%d\nY:%d\nZ:%d\n",	acceleration_offset.x,
+									acceleration_offset.y,
+									acceleration_offset.z);
 
 	// DO
+
+	_delay_ms(2000.0);
+
+
+	next_state = STATE_ACCELERATIONSENSOR_MENU;
 
 
 	// EXIT
@@ -428,12 +446,20 @@ void configuration_terminal_state_accelerationsensor_set_zero(void)
 	// ENTRY
 	configuration_terminal_clear_all();
 
-	printf("ACCEL TARA MENU");
+	printf("ACCEL SET ZERO MENU");
 
 
 	// DO
+	//TODO: dummy implementation for dev
+	acceleration_offset.x += 100;
+	acceleration_offset.y += 100;
+	acceleration_offset.z += 100;
 
 
+	printf("Current Position is now new zero!");
+	_delay_ms(2000.0);
+
+	next_state = STATE_ACCELERATIONSENSOR_MENU;
 	// EXIT
 
 }
@@ -444,11 +470,14 @@ void configuration_terminal_state_accelerationsensor_set_scalingfactor(void)
 	// ENTRY
 	configuration_terminal_clear_all();
 
-	printf("ACCEL SCALINGFACTOR MENU");
-
+	printf("=== ACCELERATIONSENSOR SCALING FACTOR ===\n\n");
+	printf("Current value: %u\n\n", accel_pos_scaling_factor);
 
 	// DO
+	accel_pos_scaling_factor = configuration_terminal_get_integer(
+									accel_pos_scaling_factor, 1, UINT16_MAX);
 
+	next_state = STATE_ACCELERATIONSENSOR_MENU;
 
 	// EXIT
 
