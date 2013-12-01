@@ -10,6 +10,7 @@
 #include "lib/uart.h"
 
 #include <util/delay.h>
+#include <avr/eeprom.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
@@ -221,12 +222,33 @@ void configuration_terminal_state_waiting(void)
 
 void configuration_terminal_state_load_settings(void)
 {
+	//ENTRY
+	configuration_terminal_clear_all();
 
+	//DO
+	printf("Loading settings from eeprom....\n");
+
+	eeprom_read_block(&current_pid_settings,0,sizeof(pidData_t));
+
+	_delay_ms(1000.0);
+	//EXIT
+
+	next_state = STATE_MAIN_MENU;
 }
 
 void configuration_terminal_state_save_settings(void)
 {
+	//ENTRY
+	configuration_terminal_clear_all();
 
+	//DO
+	printf("Saveing settings to eeprom....\n");
+
+	eeprom_write_block(&current_pid_settings,0,sizeof(pidData_t));
+
+	_delay_ms(1000.0);
+	//EXIT
+	next_state = STATE_MAIN_MENU;
 }
 
 void configuration_terminal_state_main_menu(void)
@@ -246,6 +268,8 @@ void configuration_terminal_state_main_menu(void)
 	printf(" [P] Configure PID-controller\n");
 	printf(" [A] Configure accelerationsensor\n\n");
 	printf(" [X] Start PID controller with current parameters\n\n");
+	printf(" [S] Save settings to EEPROM\n");
+	printf(" [L] Load settings from EEPROM\n");
 
 	// DO
 	//Waiting for users choice
@@ -258,6 +282,10 @@ void configuration_terminal_state_main_menu(void)
 			next_state = STATE_ACCELERATIONSENSOR_MENU;
 		} else if(choice == 'X') {
 			next_state = STATE_FINAL;
+		} else if(choice == 'S') {
+			next_state = STATE_SAVE_SETTINGS;
+		} else if(choice == 'L') {
+			next_state = STATE_LOAD_SETTINGS;
 		} else {
 			printf("Invalid choice! Please retry:\n");
 			choice = 0;
