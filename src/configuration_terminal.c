@@ -33,6 +33,8 @@
 /* local type and constants     */
 typedef enum {
 	STATE_WAITING,
+	STATE_LOAD_SETTINGS,
+	STATE_SAVE_SETTINGS,
 	STATE_MAIN_MENU,
 	STATE_PID_MENU,
 	STATE_PID_SET_P,
@@ -73,6 +75,8 @@ void configuration_terminal_clear_input_buffer(void);
 /* states */
 void configuration_terminal_state_waiting(void);
 void configuration_terminal_state_main_menu(void);
+void configuration_terminal_state_load_settings(void);
+void configuration_terminal_state_save_settings(void);
 void configuration_terminal_state_PID_menu(void);
 void configuration_terminal_state_PID_set_P(void);
 void configuration_terminal_state_PID_set_I(void);
@@ -105,6 +109,14 @@ void configuration_terminal_state_machine(void)
 
 			case STATE_WAITING:
 				configuration_terminal_state_waiting();
+			break;
+
+			case STATE_LOAD_SETTINGS:
+				configuration_terminal_state_load_settings();
+			break;
+
+			case STATE_SAVE_SETTINGS:
+				configuration_terminal_state_save_settings();
 			break;
 
 			case STATE_MAIN_MENU:
@@ -205,6 +217,15 @@ void configuration_terminal_state_waiting(void)
 	}
 
 	// EXIT
+}
+
+void configuration_terminal_state_load_settings(void)
+{
+
+}
+
+void configuration_terminal_state_save_settings(void)
+{
 
 }
 
