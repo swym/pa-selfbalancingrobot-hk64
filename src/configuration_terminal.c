@@ -32,13 +32,14 @@
 #define STATE_WAITING_PARTS   	4
 
 #define EEPROM_ADDRESS_CURRENT_SETTING_INDEX      4
-#define EEPROM_SETTINGS_COUNT                     4
+#define EEPROM_SETTINGS_COUNT                     6
 #define EEPROM_BASEADDRESS_SETTINGS               8
 
 
 
 /* local type and constants     */
 typedef enum {
+	STATE_LOADING_EEPROM,
 	STATE_WAITING,
 	STATE_LOAD_SETTINGS,
 	STATE_SAVE_SETTINGS,
@@ -60,7 +61,7 @@ typedef struct {
 	uint8_t position_multiplier;
 } configuration_setting_t;
 
-static configuration_terminal_state_t current_state = STATE_WAITING;
+static configuration_terminal_state_t current_state = STATE_LOADING_EEPROM;
 static configuration_terminal_state_t next_state = STATE_NULL;
 
 static configuration_setting_t settings[EEPROM_SETTINGS_COUNT];
@@ -81,6 +82,7 @@ void configuration_terminal_set_cursor_on_position(uint8_t, uint8_t); /* uint8_t
 void configuration_terminal_clear_input_buffer(void);
 
 /* states */
+void configuration_terminal_state_loading_eeprom(void);
 void configuration_terminal_state_waiting(void);
 void configuration_terminal_state_load_settings(void);
 void configuration_terminal_state_save_settings(void);
@@ -104,6 +106,10 @@ void configuration_terminal_state_machine(void)
 
  	while(current_state != STATE_FINAL) {
 		switch(current_state) {
+
+			case STATE_LOADING_EEPROM:
+				configuration_terminal_state_loading_eeprom();
+			break;
 
 			case STATE_WAITING:
 				configuration_terminal_state_waiting();
@@ -162,6 +168,20 @@ void configuration_terminal_state_machine(void)
 	}
  	configuration_terminal_clear_all();
  	printf("FINAL");
+}
+
+void configuration_terminal_state_loading_eeprom(void)
+{
+	uint8_t i;
+
+	for(i = 0;i < EEPROM_SETTINGS_COUNT;i++) {
+
+		eeprom_read_block(&settings[i],
+						  (void *)(EEPROM_BASEADDRESS_SETTINGS + sizeof(configuration_setting_t)),
+						  sizeof(configuration_setting_t));
+	}
+
+	next_state = STATE_WAITING;
 }
 
 
@@ -248,6 +268,8 @@ void configuration_terminal_state_save_settings(void)
 
 void configuration_terminal_state_export_settings(void)
 {
+	uint8_t i = 0;
+
 	//ENTRY
 	configuration_terminal_clear_all();
 
@@ -255,8 +277,25 @@ void configuration_terminal_state_export_settings(void)
 	//TODO: to be implement
 	printf("TODO! Export settings to eeprom\n");
 
+	printf("           P      I      D      F      M     Ox     Oy     Oz\n\n");
 
-	_delay_ms(1000.0);
+
+	for(i = 0;i < EEPROM_SETTINGS_COUNT;i++) {
+		printf(" [%u] - \"irgendein irrwitziger Kommentar\"\n", i);
+		printf("       %5u  %5u  %5u  %5u  %5u  %5u  %5u  %5u\n\n",
+				settings[i].pid_setting.P_Factor,
+				settings[i].pid_setting.I_Factor,
+				settings[i].pid_setting.D_Factor,
+				0,
+				settings[i].position_multiplier,
+				settings[i].acceleration_offset.x,
+				settings[i].acceleration_offset.y,
+				settings[i].acceleration_offset.z);
+	}
+
+	printf("Index of current setting is: %u\n", current_setting);
+
+	_delay_ms(10000.0);
 	//EXIT
 	next_state = STATE_MAIN_MENU;
 }
