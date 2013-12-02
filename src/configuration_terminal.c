@@ -36,14 +36,12 @@ typedef enum {
 	STATE_WAITING,
 	STATE_LOAD_SETTINGS,
 	STATE_SAVE_SETTINGS,
+	STATE_EXPORT_SETTINGS,
 	STATE_MAIN_MENU,
-	STATE_PID_MENU,
 	STATE_PID_SET_P,
 	STATE_PID_SET_I,
 	STATE_PID_SET_D,
 	STATE_PID_SET_SCALINGFACTOR,
-	STATE_ACCELERATIONSENSOR_MENU,
-	STATE_ACCELERATIONSENSOR_SHOW,
 	STATE_ACCELERATIONSENSOR_SET_ZERO,
 	STATE_ACCELERATIONSENSOR_SET_SCALINGFACTOR,
 	STATE_FINAL,
@@ -75,16 +73,14 @@ void configuration_terminal_clear_input_buffer(void);
 
 /* states */
 void configuration_terminal_state_waiting(void);
-void configuration_terminal_state_main_menu(void);
 void configuration_terminal_state_load_settings(void);
 void configuration_terminal_state_save_settings(void);
-void configuration_terminal_state_PID_menu(void);
+void configuration_terminal_state_export_settings(void);
+void configuration_terminal_state_main_menu(void);
 void configuration_terminal_state_PID_set_P(void);
 void configuration_terminal_state_PID_set_I(void);
 void configuration_terminal_state_PID_set_D(void);
 void configuration_terminal_state_PID_set_scalingfactor(void);
-void configuration_terminal_state_accelerationsensor_menu(void);
-void configuration_terminal_state_accelerationsensor_show(void);
 void configuration_terminal_state_accelerationsensor_set_zero(void);
 void configuration_terminal_state_accelerationsensor_set_scalingfactor(void);
 
@@ -96,15 +92,7 @@ void configuration_terminal_state_machine(void)
 
 	//TODO: should moved to a better place
 	configuration_terminal_clear_screen();
-/*
-	current_pid_settings.P_Factor = 10;
-	current_pid_settings.I_Factor = 10;
-	current_pid_settings.D_Factor = 10;
-	current_pid_settings.lastProcessValue = 0;
-	current_pid_settings.maxError = 0;
-	current_pid_settings.maxSumError = 0;
-	current_pid_settings.sumError = 0;
-*/
+
  	while(current_state != STATE_FINAL) {
 		switch(current_state) {
 
@@ -120,12 +108,12 @@ void configuration_terminal_state_machine(void)
 				configuration_terminal_state_save_settings();
 			break;
 
-			case STATE_MAIN_MENU:
-				configuration_terminal_state_main_menu();
+			case STATE_EXPORT_SETTINGS:
+				configuration_terminal_state_export_settings();
 			break;
 
-			case STATE_PID_MENU:
-				configuration_terminal_state_PID_menu();
+			case STATE_MAIN_MENU:
+				configuration_terminal_state_main_menu();
 			break;
 
 			case STATE_PID_SET_P:
@@ -144,14 +132,6 @@ void configuration_terminal_state_machine(void)
 				configuration_terminal_state_PID_set_scalingfactor();
 			break;
 
-			case STATE_ACCELERATIONSENSOR_MENU:
-				configuration_terminal_state_accelerationsensor_menu();
-			break;
-
-			case STATE_ACCELERATIONSENSOR_SHOW:
-				configuration_terminal_state_accelerationsensor_show();
-			break;
-
 			case STATE_ACCELERATIONSENSOR_SET_ZERO:
 				configuration_terminal_state_accelerationsensor_set_zero();
 			break;
@@ -161,8 +141,10 @@ void configuration_terminal_state_machine(void)
 			break;
 
 			case STATE_FINAL:
+				//TODO: run system with current settings
 			break;
 			case STATE_NULL:
+				//TODO: Implement Null state
 			break;
 		}
 
@@ -251,6 +233,21 @@ void configuration_terminal_state_save_settings(void)
 	next_state = STATE_MAIN_MENU;
 }
 
+void configuration_terminal_state_export_settings(void)
+{
+	//ENTRY
+	configuration_terminal_clear_all();
+
+	//DO
+	//TODO: to be implement
+	printf("TODO! Export settings to eeprom\n");
+
+
+	_delay_ms(1000.0);
+	//EXIT
+	next_state = STATE_MAIN_MENU;
+}
+
 void configuration_terminal_state_main_menu(void)
 {
 	char choice;
@@ -259,66 +256,27 @@ void configuration_terminal_state_main_menu(void)
 	configuration_terminal_clear_all();
 
 	//Greeting
-	printf("   === MAIN MENU ===\n\n");
-	printf("Current PID Parameters:\n  P: %u\n  I: %u\n  D: %u\n\n",
-									current_pid_settings.P_Factor,
-									current_pid_settings.I_Factor,
-									current_pid_settings.D_Factor);
-	printf("Select a option by pressing the correspondending key\n\n");
-	printf(" [P] Configure PID-controller\n");
-	printf(" [A] Configure accelerationsensor\n\n");
-	printf(" [X] Start PID controller with current parameters\n\n");
-	printf(" [S] Save settings to EEPROM\n");
-	printf(" [L] Load settings from EEPROM\n");
+	printf("              [Configuration]\n\n    PID Controller\n");
+	printf("[P] - Proportional Parameter : %u\n", 0);
+	printf("[I] - Integral Parameter     : %u\n", 0);
+	printf("[D] - Derivative Parameter   : %u\n", 0);
+	printf("[F] - Factor                 : %u\n", 0);
+
+	printf("\n    Accelerationsensor\n");
+	printf("[M] - Position Multiplier    : %u\n", 0);
+	printf("[O] - Set Offset            X: %u\n", 0);
+	printf("                            Y: %u\n", 0);
+	printf("                            Z: %u\n", 0);
+
+	printf("\n    Current Position\n");
+	printf("rad : %.3f               deg: %.3f\n", 0.0, 0.0);
+
+	printf("\n    Settings\n[L] - Load   [S] - Save   [E] - Export\n");
+
+	printf("\n    Run\n[R] - Run System with current Configuration\n");
 
 	// DO
 	//Waiting for users choice
-	do {
-		choice = configuration_terminal_get_choice();
-
-		if(choice == 'P') {
-			next_state = STATE_PID_MENU;
-		} else if(choice == 'A') {
-			next_state = STATE_ACCELERATIONSENSOR_MENU;
-		} else if(choice == 'X') {
-			next_state = STATE_FINAL;
-		} else if(choice == 'S') {
-			next_state = STATE_SAVE_SETTINGS;
-		} else if(choice == 'L') {
-			next_state = STATE_LOAD_SETTINGS;
-		} else {
-			printf("Invalid choice! Please retry:\n");
-			choice = 0;
-		}
-
-	} while(choice == 0);
-
-	// EXIT
-
-}
-
-
-void configuration_terminal_state_PID_menu(void)
-{
-	char choice;
-
-	// ENTRY
-	configuration_terminal_clear_all();
-
-	//Greeting
-	printf("   === PID CONTROLLER MENU ===\n\n");
-	printf("Current PID Parameters:\n  P: %u\n  I: %u\n  D: %u\n\n",
-									current_pid_settings.P_Factor,
-									current_pid_settings.I_Factor,
-									current_pid_settings.D_Factor);
-	printf("Select a option by pressing the correspondending key\n\n");
-	printf(" [P] change proportional parameter\n");
-	printf(" [I] change integral parameter\n");
-	printf(" [D] change derivative parameter\n\n");
-	printf(" [F] change scaling factor\n\n");
-	printf(" [X] Back to Main Menu\n");
-
-	// DO
 	do {
 		choice = configuration_terminal_get_choice();
 
@@ -330,8 +288,18 @@ void configuration_terminal_state_PID_menu(void)
 			next_state = STATE_PID_SET_D;
 		} else if(choice == 'F') {
 			next_state = STATE_PID_SET_SCALINGFACTOR;
-		} else if(choice == 'X') {
-			next_state = STATE_MAIN_MENU;
+		} else if(choice == 'M') {
+			next_state = STATE_ACCELERATIONSENSOR_SET_SCALINGFACTOR;
+		} else if(choice == 'O') {
+			next_state = STATE_ACCELERATIONSENSOR_SET_ZERO;
+		} else if(choice == 'L') {
+			next_state = STATE_LOAD_SETTINGS;
+		} else if(choice == 'S') {
+			next_state = STATE_SAVE_SETTINGS;
+		} else if(choice == 'E') {
+			next_state = STATE_EXPORT_SETTINGS;
+		} else if(choice == 'R') {
+			next_state = STATE_FINAL;
 		} else {
 			printf("Invalid choice! Please retry:\n");
 			choice = 0;
@@ -358,7 +326,7 @@ void configuration_terminal_state_PID_set_P(void)
 										current_pid_settings.P_Factor,
 										0,
 										UINT16_MAX);
-	next_state = STATE_PID_MENU;
+	next_state = STATE_MAIN_MENU;
 
 	// EXIT
 
@@ -378,7 +346,7 @@ void configuration_terminal_state_PID_set_I(void)
 										current_pid_settings.I_Factor,
 										0,
 										UINT16_MAX);
-	next_state = STATE_PID_MENU;
+	next_state = STATE_MAIN_MENU;
 	// EXIT
 
 }
@@ -398,7 +366,7 @@ void configuration_terminal_state_PID_set_D(void)
 										current_pid_settings.D_Factor,
 										0,
 										UINT16_MAX);
-	next_state = STATE_PID_MENU;
+	next_state = STATE_MAIN_MENU;
 
 
 	// EXIT
@@ -418,71 +386,7 @@ void configuration_terminal_state_PID_set_scalingfactor(void)
 	pid_scaling_factor = (uint8_t)configuration_terminal_get_integer(
 								  pid_scaling_factor, 1, UINT8_MAX);
 
-	next_state = STATE_PID_MENU;
-
-
-	// EXIT
-
-}
-
-void configuration_terminal_state_accelerationsensor_menu(void)
-{
-	char choice;
-
-	// ENTRY
-	configuration_terminal_clear_all();
-
-	//Greeting
-	printf("   === ACCELERATIONSENSOR MENU ===\n\n");
-	printf("Select a option by pressing the correspondending key\n\n");
-	printf(" [Z] Set zero\n");
-	printf(" [S] Show acceleration and position\n");
-	printf(" [F] Change scaling factor\n\n");
-	printf(" [X] Back to Main Menu\n");
-
-	// DO
-	do {
-		choice = configuration_terminal_get_choice();
-
-		if(choice == 'Z') {
-			next_state = STATE_ACCELERATIONSENSOR_SET_ZERO;
-		} else if(choice == 'S') {
-			next_state = STATE_ACCELERATIONSENSOR_SHOW;
-		} else if(choice == 'F') {
-			next_state = STATE_ACCELERATIONSENSOR_SET_SCALINGFACTOR;
-		} else if(choice == 'X') {
-			next_state = STATE_MAIN_MENU;
-		} else {
-			printf("Invalid choice! Please retry:\n");
-			choice = 0;
-		}
-
-	} while(choice == 0);
-
-
-	// EXIT
-
-}
-
-
-void configuration_terminal_state_accelerationsensor_show(void)
-{
-	// ENTRY
-	configuration_terminal_clear_all();
-
-	printf("ACCEL SHOW MENU\n\n");
-
-
-	printf("X:%d\nY:%d\nZ:%d\n",	acceleration_offset.x,
-									acceleration_offset.y,
-									acceleration_offset.z);
-
-	// DO
-
-	_delay_ms(2000.0);
-
-
-	next_state = STATE_ACCELERATIONSENSOR_MENU;
+	next_state = STATE_MAIN_MENU;
 
 
 	// EXIT
@@ -508,7 +412,7 @@ void configuration_terminal_state_accelerationsensor_set_zero(void)
 	printf("Current Position is now new zero!");
 	_delay_ms(2000.0);
 
-	next_state = STATE_ACCELERATIONSENSOR_MENU;
+	next_state = STATE_MAIN_MENU;
 	// EXIT
 
 }
@@ -526,11 +430,11 @@ void configuration_terminal_state_accelerationsensor_set_scalingfactor(void)
 	accel_pos_scaling_factor = configuration_terminal_get_integer(
 									accel_pos_scaling_factor, 1, UINT16_MAX);
 
-	next_state = STATE_ACCELERATIONSENSOR_MENU;
+	next_state = STATE_MAIN_MENU;
 
 	// EXIT
-
 }
+
 
 
 /* *** HELPERFUNCTIONS *** */
