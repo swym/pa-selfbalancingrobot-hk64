@@ -177,7 +177,7 @@ void configuration_terminal_state_loading_eeprom(void)
 	for(i = 0;i < EEPROM_SETTINGS_COUNT;i++) {
 
 		eeprom_read_block(&settings[i],
-						  (void *)(EEPROM_BASEADDRESS_SETTINGS + sizeof(configuration_setting_t)),
+						  (void *)(EEPROM_BASEADDRESS_SETTINGS + (sizeof(configuration_setting_t) * i)),
 						  sizeof(configuration_setting_t));
 	}
 
