@@ -23,7 +23,7 @@
 
 //-------------------Defines--------------------//
 
-#define INPUT_BUFFER_SIZE		24
+#define INPUT_BUFFER_SIZE		80
 
 #define ASCII_ESC		  		(char)(27)
 #define ASCII_LF				(char)(10)
@@ -415,8 +415,8 @@ void configuration_terminal_state_PID_set_scalingfactor(void)
 	printf("Current value: %u\n\n", pid_scaling_factor);
 
 	// DO
-	pid_scaling_factor = configuration_terminal_get_integer(
-							pid_scaling_factor, 1, UINT8_MAX);
+	pid_scaling_factor = (uint8_t)configuration_terminal_get_integer(
+								  pid_scaling_factor, 1, UINT8_MAX);
 
 	next_state = STATE_PID_MENU;
 
