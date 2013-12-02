@@ -31,6 +31,12 @@
 #define STATE_WAITING_TIMEOUT	5			//Seconds for Timeout
 #define STATE_WAITING_PARTS   	4
 
+#define EEPROM_ADDRESS_CURRENT_SETTING_INDEX      4
+#define EEPROM_SETTINGS_COUNT                     4
+#define EEPROM_BASEADDRESS_SETTINGS               8
+
+
+
 /* local type and constants     */
 typedef enum {
 	STATE_WAITING,
@@ -48,14 +54,17 @@ typedef enum {
 	STATE_NULL
 } configuration_terminal_state_t;
 
+typedef struct {
+	pidData_t pid_setting;
+	acceleration_t acceleration_offset;
+	uint8_t position_multiplier;
+} configuration_setting_t;
+
 static configuration_terminal_state_t current_state = STATE_WAITING;
 static configuration_terminal_state_t next_state = STATE_NULL;
 
-static pidData_t current_pid_settings;
-static uint8_t pid_scaling_factor;			//TODO: only for dev; put in pidData struct
-static uint16_t accel_pos_scaling_factor;   //TODO: only for dev; put in fitting struct
-static acceleration_t acceleration_offset;	//TODO: only for dev;
-
+static configuration_setting_t settings[EEPROM_SETTINGS_COUNT];
+static uint8_t current_setting = 0;
 
 static char input_buffer[INPUT_BUFFER_SIZE];
 
@@ -210,7 +219,9 @@ void configuration_terminal_state_load_settings(void)
 	//DO
 	printf("Loading settings from eeprom....\n");
 
-	eeprom_read_block(&current_pid_settings,0,sizeof(pidData_t));
+	eeprom_read_block(&settings[0],
+					  (void *) EEPROM_BASEADDRESS_SETTINGS,
+					  sizeof(configuration_setting_t));
 
 	_delay_ms(1000.0);
 	//EXIT
@@ -226,7 +237,9 @@ void configuration_terminal_state_save_settings(void)
 	//DO
 	printf("Saveing settings to eeprom....\n");
 
-	eeprom_write_block(&current_pid_settings,0,sizeof(pidData_t));
+	eeprom_write_block(&settings[0],
+					   (void *) EEPROM_BASEADDRESS_SETTINGS,
+					   sizeof(configuration_setting_t));
 
 	_delay_ms(1000.0);
 	//EXIT
@@ -257,16 +270,16 @@ void configuration_terminal_state_main_menu(void)
 
 	//Greeting
 	printf("              [Configuration]\n\n    PID Controller\n");
-	printf("[P] - Proportional Parameter : %u\n", 0);
-	printf("[I] - Integral Parameter     : %u\n", 0);
-	printf("[D] - Derivative Parameter   : %u\n", 0);
+	printf("[P] - Proportional Parameter : %u\n", settings[current_setting].pid_setting.P_Factor);
+	printf("[I] - Integral Parameter     : %u\n", settings[current_setting].pid_setting.I_Factor);
+	printf("[D] - Derivative Parameter   : %u\n", settings[current_setting].pid_setting.D_Factor);
 	printf("[F] - Factor                 : %u\n", 0);
 
 	printf("\n    Accelerationsensor\n");
-	printf("[M] - Position Multiplier    : %u\n", 0);
-	printf("[O] - Set Offset            X: %u\n", 0);
-	printf("                            Y: %u\n", 0);
-	printf("                            Z: %u\n", 0);
+	printf("[M] - Position Multiplier    : %u\n", settings[current_setting].position_multiplier);
+	printf("[O] - Set Offset            X: %u\n", settings[current_setting].acceleration_offset.x);
+	printf("                            Y: %u\n", settings[current_setting].acceleration_offset.y);
+	printf("                            Z: %u\n", settings[current_setting].acceleration_offset.z);
 
 	printf("\n    Current Position\n");
 	printf("rad : %.3f               deg: %.3f\n", 0.0, 0.0);
@@ -274,6 +287,8 @@ void configuration_terminal_state_main_menu(void)
 	printf("\n    Settings\n[L] - Load   [S] - Save   [E] - Export\n");
 
 	printf("\n    Run\n[R] - Run System with current Configuration\n");
+
+	printf("sizeof(conf): %d",sizeof(configuration_setting_t));
 
 	// DO
 	//Waiting for users choice
@@ -318,14 +333,14 @@ void configuration_terminal_state_PID_set_P(void)
 	configuration_terminal_clear_all();
 
 	printf("=== CHANGE PROPORTIONAL PARAMETER ===\n\n");
-	printf("Current value: %u\n\n", current_pid_settings.P_Factor);
+	printf("Current value: %u\n\n", settings[current_setting].pid_setting.P_Factor);
 
 
 	// DO
-	current_pid_settings.P_Factor = configuration_terminal_get_integer(
-										current_pid_settings.P_Factor,
-										0,
-										UINT16_MAX);
+	settings[current_setting].pid_setting.P_Factor =
+			configuration_terminal_get_integer(settings[current_setting].pid_setting.P_Factor,
+											   0,
+											   UINT16_MAX);
 	next_state = STATE_MAIN_MENU;
 
 	// EXIT
@@ -339,13 +354,14 @@ void configuration_terminal_state_PID_set_I(void)
 	configuration_terminal_clear_all();
 
 	printf("=== CHANGE INGETRAL PARAMETER ===\n\n");
-	printf("Current value: %u\n\n", current_pid_settings.I_Factor);
+	printf("Current value: %u\n\n", settings[current_setting].pid_setting.I_Factor);
+
 
 	// DO
-	current_pid_settings.I_Factor = configuration_terminal_get_integer(
-										current_pid_settings.I_Factor,
-										0,
-										UINT16_MAX);
+	settings[current_setting].pid_setting.I_Factor =
+			configuration_terminal_get_integer(settings[current_setting].pid_setting.I_Factor,
+											   0,
+											   UINT16_MAX);
 	next_state = STATE_MAIN_MENU;
 	// EXIT
 
@@ -357,15 +373,15 @@ void configuration_terminal_state_PID_set_D(void)
 	// ENTRY
 	configuration_terminal_clear_all();
 
-	printf("=== CHANGE PROPORTIONAL PARAMETER ===\n\n");
-	printf("Current value: %u\n\n", current_pid_settings.D_Factor);
+	printf("=== CHANGE DERIVATIVE PARAMETER ===\n\n");
+	printf("Current value: %u\n\n", settings[current_setting].pid_setting.D_Factor);
 
 
 	// DO
-	current_pid_settings.D_Factor = configuration_terminal_get_integer(
-										current_pid_settings.D_Factor,
-										0,
-										UINT16_MAX);
+	settings[current_setting].pid_setting.D_Factor =
+			configuration_terminal_get_integer(settings[current_setting].pid_setting.D_Factor,
+											   0,
+											   UINT16_MAX);
 	next_state = STATE_MAIN_MENU;
 
 
@@ -380,11 +396,13 @@ void configuration_terminal_state_PID_set_scalingfactor(void)
 	configuration_terminal_clear_all();
 
 	printf("=== PID SCALING FACTOR ===\n\n");
-	printf("Current value: %u\n\n", pid_scaling_factor);
+//	printf("Current value: %u\n\n", pid_scaling_factor);
 
 	// DO
-	pid_scaling_factor = (uint8_t)configuration_terminal_get_integer(
-								  pid_scaling_factor, 1, UINT8_MAX);
+//	pid_scaling_factor = (uint8_t)configuration_terminal_get_integer(
+//								  pid_scaling_factor, 1, UINT8_MAX);
+
+
 
 	next_state = STATE_MAIN_MENU;
 
@@ -399,14 +417,14 @@ void configuration_terminal_state_accelerationsensor_set_zero(void)
 	// ENTRY
 	configuration_terminal_clear_all();
 
-	printf("ACCEL SET ZERO MENU");
+	printf("ACCEL SET ZERO MENU\n");
 
 
 	// DO
 	//TODO: dummy implementation for dev
-	acceleration_offset.x += 100;
-	acceleration_offset.y += 100;
-	acceleration_offset.z += 100;
+	settings[current_setting].acceleration_offset.x += 100;
+	settings[current_setting].acceleration_offset.y += 100;
+	settings[current_setting].acceleration_offset.z += 100;
 
 
 	printf("Current Position is now new zero!");
@@ -424,11 +442,11 @@ void configuration_terminal_state_accelerationsensor_set_scalingfactor(void)
 	configuration_terminal_clear_all();
 
 	printf("=== ACCELERATIONSENSOR SCALING FACTOR ===\n\n");
-	printf("Current value: %u\n\n", accel_pos_scaling_factor);
+	printf("Current value: %u\n\n", settings[current_setting].position_multiplier);
 
 	// DO
-	accel_pos_scaling_factor = configuration_terminal_get_integer(
-									accel_pos_scaling_factor, 1, UINT16_MAX);
+	settings[current_setting].position_multiplier = configuration_terminal_get_integer(
+			settings[current_setting].position_multiplier, 1, UINT16_MAX);
 
 	next_state = STATE_MAIN_MENU;
 
