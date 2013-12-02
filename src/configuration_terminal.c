@@ -31,11 +31,11 @@
 #define STATE_WAITING_TIMEOUT	5			//Seconds for Timeout
 #define STATE_WAITING_PARTS   	4
 
-#define EEPROM_ADDRESS_CURRENT_SETTING_INDEX      4
 #define EEPROM_SETTINGS_COUNT                     6
+#define EEPROM_ADDRESS_CURRENT_SETTING_INDEX      4
 #define EEPROM_BASEADDRESS_SETTINGS               8
 
-
+#define CONFIGURATION_SETTING_COMMENT_LENGTH	 40
 
 /* local type and constants     */
 typedef enum {
@@ -57,13 +57,18 @@ typedef enum {
 
 typedef struct {
 	pidData_t pid_setting;
+	uint8_t pid_setting_version;
 	acceleration_t acceleration_offset;
+	uint8_t acceleration_offset_version;
 	uint8_t position_multiplier;
+	uint8_t pid_factor;
+	char comment[CONFIGURATION_SETTING_COMMENT_LENGTH];
 } configuration_setting_t;
 
 static configuration_terminal_state_t current_state = STATE_LOADING_EEPROM;
 static configuration_terminal_state_t next_state = STATE_NULL;
 
+static configuration_setting_t default_setting;
 static configuration_setting_t settings[EEPROM_SETTINGS_COUNT];
 static uint8_t current_setting = 0;
 
@@ -100,6 +105,9 @@ void configuration_terminal_state_accelerationsensor_set_scalingfactor(void);
 
 void configuration_terminal_state_machine(void)
 {
+	default_setting.pid_factor = 1;				//TODO: #define defaultsettings somewhere
+	default_setting.position_multiplier = 1;
+	strcpy(default_setting.comment, "- empty -");
 
 	//TODO: should moved to a better place
 	configuration_terminal_clear_screen();
@@ -173,15 +181,38 @@ void configuration_terminal_state_machine(void)
 void configuration_terminal_state_loading_eeprom(void)
 {
 	uint8_t i;
+	uint8_t valid_settings;
+
+	uint8_t temp_byte;
+	configuration_setting_t temp_conf;
+
+	temp_byte = eeprom_read_byte((uint8_t *)(EEPROM_ADDRESS_CURRENT_SETTING_INDEX));
+
+	if(temp_byte < EEPROM_SETTINGS_COUNT) {
+		current_setting = temp_byte;
+	} else {
+		current_setting = 0;
+	}
 
 	for(i = 0;i < EEPROM_SETTINGS_COUNT;i++) {
 
-		eeprom_read_block(&settings[i],
-						  (void *)(EEPROM_BASEADDRESS_SETTINGS + (sizeof(configuration_setting_t) * i)),
+		//read setting from eeprom into temp variable
+		eeprom_read_block(&temp_conf,
+						  (void *)(EEPROM_BASEADDRESS_SETTINGS + (i * sizeof(configuration_setting_t))),
 						  sizeof(configuration_setting_t));
+
+		//validate; if read setting is valid; write into array
+		//TODO: implemnt a more spohisticated validation against the real versionnumber
+		if(temp_conf.acceleration_offset_version == 0 &&
+		   temp_conf.pid_setting_version == 0) {
+			valid_settings++;
+		} else {
+			//Copy default
+			memcpy(&settings[i], &default_setting, sizeof(configuration_setting_t));
+		}
 	}
 
-	next_state = STATE_WAITING;
+//	next_state = STATE_WAITING;
 }
 
 
@@ -281,12 +312,12 @@ void configuration_terminal_state_export_settings(void)
 
 
 	for(i = 0;i < EEPROM_SETTINGS_COUNT;i++) {
-		printf(" [%u] - \"irgendein irrwitziger Kommentar\"\n", i);
+		printf(" [%u] - \"%s\"\n", i, settings[i].comment);
 		printf("       %5u  %5u  %5u  %5u  %5u  %5u  %5u  %5u\n\n",
 				settings[i].pid_setting.P_Factor,
 				settings[i].pid_setting.I_Factor,
 				settings[i].pid_setting.D_Factor,
-				0,
+				settings[i].pid_factor,
 				settings[i].position_multiplier,
 				settings[i].acceleration_offset.x,
 				settings[i].acceleration_offset.y,
@@ -312,13 +343,13 @@ void configuration_terminal_state_main_menu(void)
 	printf("[P] - Proportional Parameter : %u\n", settings[current_setting].pid_setting.P_Factor);
 	printf("[I] - Integral Parameter     : %u\n", settings[current_setting].pid_setting.I_Factor);
 	printf("[D] - Derivative Parameter   : %u\n", settings[current_setting].pid_setting.D_Factor);
-	printf("[F] - Factor                 : %u\n", 0);
+	printf("[F] - Factor                 : %u\n", settings[current_setting].pid_factor);
 
 	printf("\n    Accelerationsensor\n");
 	printf("[M] - Position Multiplier    : %u\n", settings[current_setting].position_multiplier);
-	printf("[O] - Set Offset            X: %u\n", settings[current_setting].acceleration_offset.x);
-	printf("                            Y: %u\n", settings[current_setting].acceleration_offset.y);
-	printf("                            Z: %u\n", settings[current_setting].acceleration_offset.z);
+	printf("[O] - Set Offset           X : %u\n", settings[current_setting].acceleration_offset.x);
+	printf("                           Y : %u\n", settings[current_setting].acceleration_offset.y);
+	printf("                           Z : %u\n", settings[current_setting].acceleration_offset.z);
 
 	printf("\n    Current Position\n");
 	printf("rad : %.3f               deg: %.3f\n", 0.0, 0.0);
@@ -326,8 +357,6 @@ void configuration_terminal_state_main_menu(void)
 	printf("\n    Settings\n[L] - Load   [S] - Save   [E] - Export\n");
 
 	printf("\n    Run\n[R] - Run System with current Configuration\n");
-
-	printf("sizeof(conf): %d",sizeof(configuration_setting_t));
 
 	// DO
 	//Waiting for users choice
