@@ -113,7 +113,7 @@ void configuration_terminal_state_machine(void)
 	default_setting.position_multiplier = 1;
 	default_setting.acceleration_offset_version = SETTING_VERSION_ACCELERATION_OFFSET;
 	default_setting.pid_setting_version = SETTING_VERSION_PID;
-	strcpy(default_setting.comment, "- empty -");
+	strcpy(default_setting.comment, "- new -");
 
 	//TODO: should moved to a better place
 	configuration_terminal_clear_screen();
@@ -368,24 +368,30 @@ void configuration_terminal_state_main_menu(void)
 	configuration_terminal_clear_all();
 
 	//Greeting
-	printf("              [Configuration]\n\n    PID Controller\n");
-	printf("[P] - Proportional Parameter : %u\n", settings[current_setting].pid_setting.P_Factor);
-	printf("[I] - Integral Parameter     : %u\n", settings[current_setting].pid_setting.I_Factor);
-	printf("[D] - Derivative Parameter   : %u\n", settings[current_setting].pid_setting.D_Factor);
-	printf("[F] - Factor                 : %u\n", settings[current_setting].pid_factor);
 
-	printf("\n    Accelerationsensor\n");
-	printf("[M] - Position Multiplier    : %u\n", settings[current_setting].position_multiplier);
-	printf("[O] - Set Offset           X : %u\n", settings[current_setting].acceleration_offset.x);
-	printf("                           Y : %u\n", settings[current_setting].acceleration_offset.y);
-	printf("                           Z : %u\n", settings[current_setting].acceleration_offset.z);
+	printf("                          [Current Configuration]\n\n");
+	printf("[C] - \"%s\"\n\n", settings[current_setting].comment);
 
-	printf("\n    Current Position\n");
-	printf("rad : %.3f               deg: %.3f\n", 0.0, 0.0);
 
-	printf("\n    Settings\n[S] - Select  [W] - Write  [E] - Export\n");
+	printf("    PID Controller                          Accelerationsensor\n\n");
+	printf("[P] - Proportional Parameter : %5u    [M] - Position Multiplier    : %5u\n",
+					settings[current_setting].pid_setting.P_Factor,
+					settings[current_setting].position_multiplier);
 
-	printf("\n    Run\n[R] - Run System with current Configuration\n");
+	printf("[I] - Integral Parameter     : %5u    [O] - Set Offset           X : %5u\n",
+					settings[current_setting].pid_setting.I_Factor,
+					settings[current_setting].acceleration_offset.x);
+
+	printf("[D] - Derivative Parameter   : %5u                               Y : %5u\n",
+					settings[current_setting].pid_setting.D_Factor,
+					settings[current_setting].acceleration_offset.y);
+
+	printf("[F] - Factor                 : %5u                               Z : %5u\n",
+					settings[current_setting].pid_factor,
+					settings[current_setting].acceleration_offset.z);
+
+	printf("\n\n    Settings\n\n[S] - Select current setting\n[W] - Write settings to EEPROM\n[E] - Export to csv\n");
+	printf("\n\n    Run\n\n[R] - Run system with current configuration\n");
 
 	// DO
 	//Waiting for users choice
