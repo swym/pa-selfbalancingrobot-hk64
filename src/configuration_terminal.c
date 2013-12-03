@@ -31,9 +31,7 @@
 #define STATE_WAITING_TIMEOUT	5			//Seconds for Timeout
 #define STATE_WAITING_PARTS   	4
 
-#define EEPROM_SETTINGS_COUNT                     6
-#define EEPROM_ADDRESS_CURRENT_SETTING_INDEX      4
-#define EEPROM_BASEADDRESS_SETTINGS               8
+#define SETTINGS_COUNT                     6
 
 #define CONFIGURATION_SETTING_COMMENT_LENGTH	 40
 
@@ -69,8 +67,11 @@ static configuration_terminal_state_t current_state = STATE_LOADING_SETTINGS;
 static configuration_terminal_state_t next_state = STATE_NULL;
 
 static configuration_setting_t default_setting;
-static configuration_setting_t settings[EEPROM_SETTINGS_COUNT];
+static configuration_setting_t settings[SETTINGS_COUNT];
 static uint8_t current_setting = 0;
+
+configuration_setting_t ee_settings[SETTINGS_COUNT] __attribute__ ((section (".eeprom")));
+uint8_t ee_current_setting __attribute__ ((section (".eeprom")));
 
 static char input_buffer[INPUT_BUFFER_SIZE];
 
@@ -183,28 +184,26 @@ void configuration_terminal_state_loading_settings(void)
 	uint8_t i;
 	uint8_t valid_settings;
 
-	uint8_t temp_byte;
-	configuration_setting_t temp_conf;
+	//read index of current setting
+	current_setting = eeprom_read_byte(&ee_current_setting);
 
-	temp_byte = eeprom_read_byte((uint8_t *)(EEPROM_ADDRESS_CURRENT_SETTING_INDEX));
-
-	if(temp_byte < EEPROM_SETTINGS_COUNT) {
-		current_setting = temp_byte;
-	} else {
+	//and validate
+	if(current_setting >= SETTINGS_COUNT) {
 		current_setting = 0;
 	}
 
-	for(i = 0;i < EEPROM_SETTINGS_COUNT;i++) {
+	//read settings from eeprom
+	for(i = 0;i < SETTINGS_COUNT;i++) {
 
 		//read setting from eeprom into temp variable
-		eeprom_read_block(&temp_conf,
-						  (void *)(EEPROM_BASEADDRESS_SETTINGS + (i * sizeof(configuration_setting_t))),
+		eeprom_read_block(&settings[i],
+						  &ee_settings[i],
 						  sizeof(configuration_setting_t));
 
 		//validate; if read setting is valid; write into array
 		//TODO: implemnt a more spohisticated validation against the real versionnumber
-		if(temp_conf.acceleration_offset_version == 0 &&
-		   temp_conf.pid_setting_version == 0) {
+		if(settings[i].acceleration_offset_version == 0 &&
+		   settings[i].pid_setting_version == 0) {
 			valid_settings++;
 		} else {
 			//Copy default
@@ -273,7 +272,7 @@ void configuration_terminal_state_select_settings(void)
 	printf("           P      I      D      F      M     Ox     Oy     Oz\n\n");
 
 
-	for(i = 0;i < EEPROM_SETTINGS_COUNT;i++) {
+	for(i = 0;i < SETTINGS_COUNT;i++) {
 		printf(" [%u] - \"%s\"\n", i, settings[i].comment);
 		printf("       %5u  %5u  %5u  %5u  %5u  %5u  %5u  %5u\n\n",
 				settings[i].pid_setting.P_Factor,
@@ -293,7 +292,7 @@ void configuration_terminal_state_select_settings(void)
 	current_setting = configuration_terminal_get_integer(
 						current_setting,
 						0,
-						EEPROM_SETTINGS_COUNT);
+						SETTINGS_COUNT);
 
 
 	//EXIT
@@ -303,32 +302,55 @@ void configuration_terminal_state_select_settings(void)
 
 void configuration_terminal_state_write_settings(void)
 {
+	uint8_t i;
+
+
 	//ENTRY
 	configuration_terminal_clear_all();
 
 	//DO
-	printf("Saveing settings to eeprom....\n");
+	printf("Writing settings to eeprom....\n");
 
-	eeprom_write_block(&settings[0],
-					   (void *)(EEPROM_BASEADDRESS_SETTINGS),
-					   sizeof(configuration_setting_t));
+	for(i = 0;i < SETTINGS_COUNT;i++) {
 
-	_delay_ms(1000.0);
+		eeprom_write_block(&settings[i],
+						   &ee_settings[i],
+						   sizeof(configuration_setting_t));
+	}
+
+	eeprom_write_byte(&ee_current_setting, current_setting);
+
 	//EXIT
 	next_state = STATE_MAIN_MENU;
 }
 
 void configuration_terminal_state_export_settings(void)
 {
+	uint8_t i;
 
 	//ENTRY
 	configuration_terminal_clear_all();
 
 	//DO
-	//TODO: to be implement
-	printf("TODO! Export settings to eeprom\n");
+	for(i = 0;i < SETTINGS_COUNT;i++) {
+		printf("%u,%u,%u,%u,%u,%u,%u,%u,%u,\"%s\"\n",
+				i,
+				settings[i].pid_setting.P_Factor,
+				settings[i].pid_setting.I_Factor,
+				settings[i].pid_setting.D_Factor,
+				settings[i].pid_factor,
+				settings[i].position_multiplier,
+				settings[i].acceleration_offset.x,
+				settings[i].acceleration_offset.y,
+				settings[i].acceleration_offset.z,
+				settings[i].comment);
+	}
 
-	_delay_ms(10000.0);
+	printf("\n\nPress any key to go back to main menu.\n");
+
+	//wait for user input; but don't use it
+	configuration_terminal_get_choice();
+
 	//EXIT
 	next_state = STATE_MAIN_MENU;
 }
@@ -469,8 +491,8 @@ void configuration_terminal_state_PID_set_scalingfactor(void)
 //	printf("Current value: %u\n\n", pid_scaling_factor);
 
 	// DO
-//	pid_scaling_factor = (uint8_t)configuration_terminal_get_integer(
-//								  pid_scaling_factor, 1, UINT8_MAX);
+	settings[current_setting].pid_factor = (uint8_t)configuration_terminal_get_integer(
+			settings[current_setting].pid_factor, 1, UINT8_MAX);
 
 
 
