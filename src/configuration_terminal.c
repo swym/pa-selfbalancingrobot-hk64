@@ -40,18 +40,19 @@
 
 /* local type and constants     */
 typedef enum {
+	STATE_MAIN_MENU,
 	STATE_WAITING,
 	STATE_LOADING_SETTINGS,
 	STATE_SELECT_SETTINGS,
 	STATE_WRITE_SETTINGS,
 	STATE_EXPORT_SETTINGS,
-	STATE_MAIN_MENU,
 	STATE_PID_SET_P,
 	STATE_PID_SET_I,
 	STATE_PID_SET_D,
 	STATE_PID_SET_SCALINGFACTOR,
 	STATE_ACCELERATIONSENSOR_SET_ZERO,
 	STATE_ACCELERATIONSENSOR_SET_SCALINGFACTOR,
+	STATE_EDIT_COMMENT,
 	STATE_FINAL,
 	STATE_NULL
 } configuration_terminal_state_t;
@@ -89,6 +90,7 @@ uint16_t configuration_terminal_get_integer(const uint16_t current_value,
 void configuration_terminal_clear_all(void);
 void configuration_terminal_set_cursor_on_position(uint8_t, uint8_t); /* uint8_t x, uint8_t y */
 void configuration_terminal_clear_input_buffer(void);
+void configuration_terminal_get_string(char *str, uint8_t max_len);
 
 /* states */
 void configuration_terminal_state_loading_settings(void);
@@ -101,6 +103,7 @@ void configuration_terminal_state_PID_set_P(void);
 void configuration_terminal_state_PID_set_I(void);
 void configuration_terminal_state_PID_set_D(void);
 void configuration_terminal_state_PID_set_scalingfactor(void);
+void configuration_terminal_state_edit_comment(void);
 void configuration_terminal_state_accelerationsensor_set_zero(void);
 void configuration_terminal_state_accelerationsensor_set_scalingfactor(void);
 
@@ -167,6 +170,10 @@ void configuration_terminal_state_machine(void)
 
 			case STATE_ACCELERATIONSENSOR_SET_SCALINGFACTOR:
 				configuration_terminal_state_accelerationsensor_set_scalingfactor();
+			break;
+
+			case STATE_EDIT_COMMENT:
+				configuration_terminal_state_edit_comment();
 			break;
 
 			case STATE_FINAL:
@@ -410,6 +417,8 @@ void configuration_terminal_state_main_menu(void)
 			next_state = STATE_ACCELERATIONSENSOR_SET_SCALINGFACTOR;
 		} else if(choice == 'O') {
 			next_state = STATE_ACCELERATIONSENSOR_SET_ZERO;
+		} else if(choice == 'C') {
+			next_state = STATE_EDIT_COMMENT;
 		} else if(choice == 'S') {
 			next_state = STATE_SELECT_SETTINGS;
 		} else if(choice == 'W') {
@@ -511,7 +520,6 @@ void configuration_terminal_state_PID_set_scalingfactor(void)
 
 
 	// EXIT
-
 }
 
 
@@ -557,6 +565,28 @@ void configuration_terminal_state_accelerationsensor_set_scalingfactor(void)
 }
 
 
+void configuration_terminal_state_edit_comment(void)
+{
+	// ENTRY
+	configuration_terminal_clear_all();
+
+	printf("===EDIT COMMENT ===\n\n");
+
+	printf("Current value: \"%s\"\n\n", settings[current_setting].comment);
+
+	// DO
+	configuration_terminal_get_string(settings[current_setting].comment,
+		CONFIGURATION_SETTING_COMMENT_LENGTH);
+
+
+
+	next_state = STATE_MAIN_MENU;
+
+
+	// EXIT
+}
+
+
 
 /* *** HELPERFUNCTIONS *** */
 
@@ -581,6 +611,23 @@ char configuration_terminal_get_choice(void)
 	configuration_terminal_clear_input_buffer();
 
 	return choice;
+}
+
+void configuration_terminal_get_string(char *str, uint8_t max_len)
+{
+	char *c_ptr;
+
+	configuration_terminal_clear_input_buffer();
+	fgets(input_buffer, max_len, stdin);
+
+	if(strlen(input_buffer) > 0) {
+		strcpy(str, input_buffer);
+		c_ptr = strchr(str,'\n');
+
+		if(c_ptr != NULL) {
+			*c_ptr = '\0';
+		}
+	}
 }
 
 
