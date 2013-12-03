@@ -31,9 +31,12 @@
 #define STATE_WAITING_TIMEOUT	5			//Seconds for Timeout
 #define STATE_WAITING_PARTS   	4
 
-#define SETTINGS_COUNT                     6
+#define SETTINGS_COUNT							6
 
-#define CONFIGURATION_SETTING_COMMENT_LENGTH	 40
+
+#define SETTING_VERSION_PID						1
+#define SETTING_VERSION_ACCELERATION_OFFSET		1
+#define CONFIGURATION_SETTING_COMMENT_LENGTH	40
 
 /* local type and constants     */
 typedef enum {
@@ -108,6 +111,8 @@ void configuration_terminal_state_machine(void)
 {
 	default_setting.pid_factor = 1;				//TODO: #define defaultsettings somewhere
 	default_setting.position_multiplier = 1;
+	default_setting.acceleration_offset_version = SETTING_VERSION_ACCELERATION_OFFSET;
+	default_setting.pid_setting_version = SETTING_VERSION_PID;
 	strcpy(default_setting.comment, "- empty -");
 
 	//TODO: should moved to a better place
@@ -202,8 +207,8 @@ void configuration_terminal_state_loading_settings(void)
 
 		//validate; if read setting is valid; write into array
 		//TODO: implemnt a more spohisticated validation against the real versionnumber
-		if(settings[i].acceleration_offset_version == 0 &&
-		   settings[i].pid_setting_version == 0) {
+		if(settings[i].acceleration_offset_version == SETTING_VERSION_ACCELERATION_OFFSET &&
+		   settings[i].pid_setting_version == SETTING_VERSION_PID) {
 			valid_settings++;
 		} else {
 			//Copy default
@@ -487,7 +492,7 @@ void configuration_terminal_state_PID_set_scalingfactor(void)
 	// ENTRY
 	configuration_terminal_clear_all();
 
-	printf("=== PID SCALING FACTOR ===\n\n");
+	printf("===CHANGE PID SCALING FACTOR ===\n\n");
 //	printf("Current value: %u\n\n", pid_scaling_factor);
 
 	// DO
