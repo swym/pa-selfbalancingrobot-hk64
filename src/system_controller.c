@@ -9,6 +9,8 @@
 /* *** INCLUDES ************************************************************** */
 #include "system_controller.h"
 
+
+#include <stdbool.h>
 /* *** DECLARATIONS ********************************************************** */
 
 /* local type and constants     */
@@ -27,6 +29,7 @@ typedef enum {
 } system_controller_state_t;
 
 
+static bool state_machine_running = true;
 static system_controller_state_t current_state = STATE_INIT_COMMUNICATION_INTERFACES;
 static system_controller_state_t next_state = STATE_NULL;
 
@@ -34,6 +37,8 @@ static system_controller_state_t next_state = STATE_NULL;
 
 
 // states
+void system_controller_state_init(void);
+void system_controller_state_final(void);
 void system_controller_state_init_communicastion_interfaces(void);
 void system_controller_state_load_settings(void);
 void system_controller_state_waiting_for_user_interrupt(void);
@@ -48,36 +53,52 @@ void system_controller_state_null(void);
 void system_controller_state_state_machine(void)
 {
 
-	while(current_state != STATE_FINAL) {
+	while(state_machine_running) {
 		switch(current_state) {
 
 			case STATE_INIT_COMMUNICATION_INTERFACES:
+				system_controller_state_init_communicastion_interfaces();
 			break;
 
 			case STATE_LOAD_SETTINGS:
+				system_controller_state_load_settings();
 			break;
 
 			case STATE_WAITING_FOR_USER_INTERRUPT:
+				system_controller_state_waiting_for_user_interrupt();
 			break;
 
 			case STATE_RUN_CONFIGURATION_TERMINAL:
+				system_controller_state_run_configuration_terminal();
 			break;
 
 			case STATE_INIT_PID_CONTROLLER:
+				system_controller_state_init_pid_controller();
 			break;
 
 			case STATE_INIT_TIMER:
+				system_controller_state_init_timer();
+			break;
+
+			case STATE_RUN_PID_CONTROLLER:
+				system_controller_state_run_pid_controller();
 			break;
 
 			case STATE_INIT:
+				system_controller_state_init();
 			break;
 
 			case STATE_FINAL:
+				system_controller_state_final();
 			break;
 
 			case STATE_NULL:
+				system_controller_state_null();
 			break;
 		}
+
+		//change state
+		current_state = next_state;
 	}
 }
 
@@ -88,4 +109,6 @@ void system_controller_state_null(void)
 	/* **** DO ***** */
 
 	/* *** EXIT **** */
+
+	next_state = STATE_NULL;
 }
