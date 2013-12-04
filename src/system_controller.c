@@ -112,3 +112,111 @@ void system_controller_state_null(void)
 
 	next_state = STATE_NULL;
 }
+
+
+void system_controller_state_init(void)
+{
+	/* *** ENTRY *** */
+
+	/* **** DO ***** */
+
+	/* *** EXIT **** */
+
+	next_state = STATE_NULL;
+}
+
+
+void system_controller_state_final(void)
+{
+	/* *** ENTRY *** */
+
+	/* **** DO ***** */
+
+	/* *** EXIT **** */
+
+	next_state = STATE_NULL;
+}
+
+
+void system_controller_state_init_communicastion_interfaces(void)
+{
+	/* *** ENTRY *** */
+
+	/* **** DO ***** */
+
+	/* *** EXIT **** */
+
+	next_state = STATE_NULL;
+}
+
+
+void system_controller_state_load_settings(void)
+{
+	/* *** ENTRY *** */
+
+	/* **** DO ***** */
+
+	/* *** EXIT **** */
+
+	next_state = STATE_NULL;
+}
+
+
+void system_controller_state_waiting_for_user_interrupt(void)
+{
+	/* *** ENTRY *** */
+
+	/* **** DO ***** */
+
+	/* *** EXIT **** */
+
+	next_state = STATE_NULL;
+}
+
+
+void system_controller_state_run_configuration_terminal(void)
+{
+	/* *** ENTRY *** */
+
+	/* **** DO ***** */
+
+	/* *** EXIT **** */
+
+	next_state = STATE_NULL;
+}
+
+
+void system_controller_state_init_pid_controller(void)
+{
+	/* *** ENTRY *** */
+
+	/* **** DO ***** */
+
+	/* *** EXIT **** */
+
+	next_state = STATE_NULL;
+}
+
+
+void system_controller_state_init_timer(void)
+{
+	/* *** ENTRY *** */
+
+	/* **** DO ***** */
+
+	/* *** EXIT **** */
+
+	next_state = STATE_NULL;
+}
+
+
+void system_controller_state_run_pid_controller(void)
+{
+	/* *** ENTRY *** */
+
+	/* **** DO ***** */
+
+	/* *** EXIT **** */
+
+	next_state = STATE_NULL;
+}
