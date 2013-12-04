@@ -9,8 +9,9 @@
 /* *** INCLUDES ************************************************************** */
 #include "system_controller.h"
 
-
 #include <stdbool.h>
+
+#include "configuration_setting.h"
 /* *** DECLARATIONS ********************************************************** */
 
 /* local type and constants     */
@@ -143,10 +144,12 @@ void system_controller_state_init_communicastion_interfaces(void)
 	/* *** ENTRY *** */
 
 	/* **** DO ***** */
+	UART_init(38400);	/* Init UART mit 9600 baud */
+	twi_master_init();	/* Init TWI/I2C Schnittstelle */
 
 	/* *** EXIT **** */
 
-	next_state = STATE_NULL;
+	next_state = STATE_LOAD_SETTINGS;
 }
 
 
