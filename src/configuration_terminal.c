@@ -60,7 +60,7 @@ typedef struct {
 	int16_t pid_p_factor;
 	int16_t pid_i_factor;
 	int16_t pid_d_factor;
-	uint16_t pid_factor;
+	uint16_t pid_scalingfactor;
 	acceleration_t acceleration_offset;
 	uint16_t position_multiplier;
 	uint8_t setting_version;
@@ -75,10 +75,9 @@ static configuration_setting_t settings[SETTINGS_COUNT];
 static uint8_t current_setting = 0;
 
 configuration_setting_t ee_settings[SETTINGS_COUNT] __attribute__ ((section (".eeprom")));
-uint8_t ee_current_setting __attribute__ ((section (".eeprom")));
+uint8_t ee_current_setting 							__attribute__ ((section (".eeprom")));
 
 static char input_buffer[INPUT_BUFFER_SIZE];
-
 
 /* local function declarations  */
 void configuration_terminal_clear_screen(void);
@@ -112,7 +111,7 @@ void configuration_terminal_state_accelerationsensor_set_scalingfactor(void);
 
 void configuration_terminal_state_machine(void)
 {
-	default_setting.pid_factor = 1;				//TODO: #define defaultsettings somewhere
+	default_setting.pid_scalingfactor = 1;				//TODO: #define defaultsettings somewhere
 	default_setting.position_multiplier = 1;
 	default_setting.setting_version = SETTING_VERSION;
 	strcpy(default_setting.comment, "- new -");
@@ -288,7 +287,7 @@ void configuration_terminal_state_select_settings(void)
 				settings[i].pid_p_factor,
 				settings[i].pid_i_factor,
 				settings[i].pid_d_factor,
-				settings[i].pid_factor,
+				settings[i].pid_scalingfactor,
 				settings[i].position_multiplier,
 				settings[i].acceleration_offset.x,
 				settings[i].acceleration_offset.y,
@@ -348,7 +347,7 @@ void configuration_terminal_state_export_settings(void)
 				settings[i].pid_p_factor,
 				settings[i].pid_i_factor,
 				settings[i].pid_d_factor,
-				settings[i].pid_factor,
+				settings[i].pid_scalingfactor,
 				settings[i].position_multiplier,
 				settings[i].acceleration_offset.x,
 				settings[i].acceleration_offset.y,
@@ -392,7 +391,7 @@ void configuration_terminal_state_main_menu(void)
 					settings[current_setting].acceleration_offset.y);
 
 	printf("[F] - Factor                 : %5u                               Z : %5u\n",
-					settings[current_setting].pid_factor,
+					settings[current_setting].pid_scalingfactor,
 					settings[current_setting].acceleration_offset.z);
 
 	printf("\n\n    Settings\n\n[S] - Select current setting\n[W] - Write settings to EEPROM\n[E] - Export to csv\n");
@@ -509,8 +508,8 @@ void configuration_terminal_state_PID_set_scalingfactor(void)
 //	printf("Current value: %u\n\n", pid_scaling_factor);
 
 	// DO
-	settings[current_setting].pid_factor = configuration_terminal_get_integer(
-			settings[current_setting].pid_factor, 1, UINT16_MAX);
+	settings[current_setting].pid_scalingfactor = configuration_terminal_get_integer(
+			settings[current_setting].pid_scalingfactor, 1, UINT16_MAX);
 
 
 
@@ -690,7 +689,7 @@ void configuration_terminal_clear_all(void)
 
 void configuration_terminal_clear_input_buffer(void)
 {
-	//TODO: fflush() verwenden
+	fflush(stdin);
 
 	//den eventuell noch gefüllten Sendebuffer des PC lesen und verwerfen
 	while(strlen(input_buffer) >= INPUT_BUFFER_SIZE - 1) {
