@@ -5,3 +5,4 @@ doc/doxygen/doxygen
 doc/doxygen/mathjax-2.2
 doxygen - index.html alias
 .project
+.settings
