@@ -10,41 +10,72 @@
 #include "lib/uart.h"
 
 #include <util/delay.h>
+#include <avr/eeprom.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
 
+#include "pid.h"
+#include "acceleration_t.h"
+
 /* *** DECLARATIONS ********************************************************** */
 
 //-------------------Defines--------------------//
 
-#define INPUT_BUFFER_SIZE		24
+#define INPUT_BUFFER_SIZE		80
 
 #define ASCII_ESC		  		(char)(27)
+#define ASCII_LF				(char)(10)
 
 #define STATE_WAITING_TIMEOUT	5			//Seconds for Timeout
 #define STATE_WAITING_PARTS   	4
 
+#define SETTINGS_COUNT							6
+
+
+#define SETTING_VERSION_PID						1
+#define SETTING_VERSION_ACCELERATION_OFFSET		1
+#define CONFIGURATION_SETTING_COMMENT_LENGTH	40
+
 /* local type and constants     */
 typedef enum {
-	STATE_WAITING,
 	STATE_MAIN_MENU,
-	STATE_PID_MENU,
+	STATE_WAITING,
+	STATE_LOADING_SETTINGS,
+	STATE_SELECT_SETTINGS,
+	STATE_WRITE_SETTINGS,
+	STATE_EXPORT_SETTINGS,
 	STATE_PID_SET_P,
 	STATE_PID_SET_I,
 	STATE_PID_SET_D,
 	STATE_PID_SET_SCALINGFACTOR,
-	STATE_ACCELERATIONSENSOR_MENU,
-	STATE_ACCELERATIONSENSOR_SHOW,
 	STATE_ACCELERATIONSENSOR_SET_ZERO,
 	STATE_ACCELERATIONSENSOR_SET_SCALINGFACTOR,
+	STATE_EDIT_COMMENT,
 	STATE_FINAL,
 	STATE_NULL
 } configuration_terminal_state_t;
 
-static configuration_terminal_state_t current_state = STATE_WAITING;
+typedef struct {
+	pidData_t pid_setting;
+	uint8_t pid_setting_version;
+	acceleration_t acceleration_offset;
+	uint8_t acceleration_offset_version;
+	uint8_t position_multiplier;
+	uint8_t pid_factor;
+	char comment[CONFIGURATION_SETTING_COMMENT_LENGTH];
+} configuration_setting_t;
+
+static configuration_terminal_state_t current_state = STATE_LOADING_SETTINGS;
 static configuration_terminal_state_t next_state = STATE_NULL;
+
+static configuration_setting_t default_setting;
+static configuration_setting_t settings[SETTINGS_COUNT];
+static uint8_t current_setting = 0;
+
+configuration_setting_t ee_settings[SETTINGS_COUNT] __attribute__ ((section (".eeprom")));
+uint8_t ee_current_setting __attribute__ ((section (".eeprom")));
 
 static char input_buffer[INPUT_BUFFER_SIZE];
 
@@ -53,20 +84,26 @@ static char input_buffer[INPUT_BUFFER_SIZE];
 void configuration_terminal_clear_screen(void);
 void configuration_terminal_set_cursor_top_left(void);
 char configuration_terminal_get_choice(void);
+uint16_t configuration_terminal_get_integer(const uint16_t current_value,
+											const uint16_t min_range,
+											const uint16_t max_range);
 void configuration_terminal_clear_all(void);
 void configuration_terminal_set_cursor_on_position(uint8_t, uint8_t); /* uint8_t x, uint8_t y */
 void configuration_terminal_clear_input_buffer(void);
+void configuration_terminal_get_string(char *str, uint8_t max_len);
 
 /* states */
+void configuration_terminal_state_loading_settings(void);
 void configuration_terminal_state_waiting(void);
+void configuration_terminal_state_select_settings(void);
+void configuration_terminal_state_write_settings(void);
+void configuration_terminal_state_export_settings(void);
 void configuration_terminal_state_main_menu(void);
-void configuration_terminal_state_PID_menu(void);
 void configuration_terminal_state_PID_set_P(void);
 void configuration_terminal_state_PID_set_I(void);
 void configuration_terminal_state_PID_set_D(void);
 void configuration_terminal_state_PID_set_scalingfactor(void);
-void configuration_terminal_state_accelerationsensor_menu(void);
-void configuration_terminal_state_accelerationsensor_show(void);
+void configuration_terminal_state_edit_comment(void);
 void configuration_terminal_state_accelerationsensor_set_zero(void);
 void configuration_terminal_state_accelerationsensor_set_scalingfactor(void);
 
@@ -75,22 +112,40 @@ void configuration_terminal_state_accelerationsensor_set_scalingfactor(void);
 
 void configuration_terminal_state_machine(void)
 {
+	default_setting.pid_factor = 1;				//TODO: #define defaultsettings somewhere
+	default_setting.position_multiplier = 1;
+	default_setting.acceleration_offset_version = SETTING_VERSION_ACCELERATION_OFFSET;
+	default_setting.pid_setting_version = SETTING_VERSION_PID;
+	strcpy(default_setting.comment, "- new -");
 
+	//TODO: should moved to a better place
 	configuration_terminal_clear_screen();
 
  	while(current_state != STATE_FINAL) {
 		switch(current_state) {
 
+			case STATE_LOADING_SETTINGS:
+				configuration_terminal_state_loading_settings();
+			break;
+
 			case STATE_WAITING:
 				configuration_terminal_state_waiting();
 			break;
 
-			case STATE_MAIN_MENU:
-				configuration_terminal_state_main_menu();
+			case STATE_SELECT_SETTINGS:
+				configuration_terminal_state_select_settings();
 			break;
 
-			case STATE_PID_MENU:
-				configuration_terminal_state_PID_menu();
+			case STATE_WRITE_SETTINGS:
+				configuration_terminal_state_write_settings();
+			break;
+
+			case STATE_EXPORT_SETTINGS:
+				configuration_terminal_state_export_settings();
+			break;
+
+			case STATE_MAIN_MENU:
+				configuration_terminal_state_main_menu();
 			break;
 
 			case STATE_PID_SET_P:
@@ -109,14 +164,6 @@ void configuration_terminal_state_machine(void)
 				configuration_terminal_state_PID_set_scalingfactor();
 			break;
 
-			case STATE_ACCELERATIONSENSOR_MENU:
-				configuration_terminal_state_accelerationsensor_menu();
-			break;
-
-			case STATE_ACCELERATIONSENSOR_SHOW:
-				configuration_terminal_state_accelerationsensor_show();
-			break;
-
 			case STATE_ACCELERATIONSENSOR_SET_ZERO:
 				configuration_terminal_state_accelerationsensor_set_zero();
 			break;
@@ -125,9 +172,15 @@ void configuration_terminal_state_machine(void)
 				configuration_terminal_state_accelerationsensor_set_scalingfactor();
 			break;
 
+			case STATE_EDIT_COMMENT:
+				configuration_terminal_state_edit_comment();
+			break;
+
 			case STATE_FINAL:
+				//TODO: run system with current settings
 			break;
 			case STATE_NULL:
+				//TODO: Implement Null state
 			break;
 		}
 
@@ -138,13 +191,47 @@ void configuration_terminal_state_machine(void)
  	printf("FINAL");
 }
 
+void configuration_terminal_state_loading_settings(void)
+{
+	uint8_t i;
+	uint8_t valid_settings;
+
+	//read index of current setting
+	current_setting = eeprom_read_byte(&ee_current_setting);
+
+	//and validate
+	if(current_setting >= SETTINGS_COUNT) {
+		current_setting = 0;
+	}
+
+	//read settings from eeprom
+	for(i = 0;i < SETTINGS_COUNT;i++) {
+
+		//read setting from eeprom into temp variable
+		eeprom_read_block(&settings[i],
+						  &ee_settings[i],
+						  sizeof(configuration_setting_t));
+
+		//validate; if read setting is valid; write into array
+		//TODO: implemnt a more spohisticated validation against the real versionnumber
+		if(settings[i].acceleration_offset_version == SETTING_VERSION_ACCELERATION_OFFSET &&
+		   settings[i].pid_setting_version == SETTING_VERSION_PID) {
+			valid_settings++;
+		} else {
+			//Copy default
+			memcpy(&settings[i], &default_setting, sizeof(configuration_setting_t));
+		}
+	}
+
+	next_state = STATE_WAITING;
+}
+
 
 void configuration_terminal_state_waiting(void)
 {
 	uint8_t waiting_time = STATE_WAITING_TIMEOUT;
 	bool user_irq_received = false;
 	double delay = 1000.0/(STATE_WAITING_PARTS + 1);
-
 
 	uint8_t parts_of_seconds_counter = 0;
 
@@ -184,7 +271,100 @@ void configuration_terminal_state_waiting(void)
 	}
 
 	// EXIT
+}
 
+void configuration_terminal_state_select_settings(void)
+{
+	//ENTRY
+	uint8_t i = 0;
+
+	configuration_terminal_clear_all();
+
+
+	printf("           P      I      D      F      M     Ox     Oy     Oz\n\n");
+
+
+	for(i = 0;i < SETTINGS_COUNT;i++) {
+		printf(" [%u] - \"%s\"\n", i, settings[i].comment);
+		printf("       %5u  %5u  %5u  %5u  %5u  %5u  %5u  %5u\n\n",
+				settings[i].pid_setting.P_Factor,
+				settings[i].pid_setting.I_Factor,
+				settings[i].pid_setting.D_Factor,
+				settings[i].pid_factor,
+				settings[i].position_multiplier,
+				settings[i].acceleration_offset.x,
+				settings[i].acceleration_offset.y,
+				settings[i].acceleration_offset.z);
+	}
+
+	printf("Index of current setting is: %u\n", current_setting);
+
+	//DO
+
+	current_setting = configuration_terminal_get_integer(
+						current_setting,
+						0,
+						SETTINGS_COUNT);
+
+
+	//EXIT
+
+	next_state = STATE_MAIN_MENU;
+}
+
+void configuration_terminal_state_write_settings(void)
+{
+	uint8_t i;
+
+
+	//ENTRY
+	configuration_terminal_clear_all();
+
+	//DO
+	printf("Writing settings to eeprom....\n");
+
+	for(i = 0;i < SETTINGS_COUNT;i++) {
+
+		eeprom_write_block(&settings[i],
+						   &ee_settings[i],
+						   sizeof(configuration_setting_t));
+	}
+
+	eeprom_write_byte(&ee_current_setting, current_setting);
+
+	//EXIT
+	next_state = STATE_MAIN_MENU;
+}
+
+void configuration_terminal_state_export_settings(void)
+{
+	uint8_t i;
+
+	//ENTRY
+	configuration_terminal_clear_all();
+
+	//DO
+	for(i = 0;i < SETTINGS_COUNT;i++) {
+		printf("%u,%u,%u,%u,%u,%u,%u,%u,%u,\"%s\"\n",
+				i,
+				settings[i].pid_setting.P_Factor,
+				settings[i].pid_setting.I_Factor,
+				settings[i].pid_setting.D_Factor,
+				settings[i].pid_factor,
+				settings[i].position_multiplier,
+				settings[i].acceleration_offset.x,
+				settings[i].acceleration_offset.y,
+				settings[i].acceleration_offset.z,
+				settings[i].comment);
+	}
+
+	printf("\n\nPress any key to go back to main menu.\n");
+
+	//wait for user input; but don't use it
+	configuration_terminal_get_choice();
+
+	//EXIT
+	next_state = STATE_MAIN_MENU;
 }
 
 void configuration_terminal_state_main_menu(void)
@@ -195,54 +375,33 @@ void configuration_terminal_state_main_menu(void)
 	configuration_terminal_clear_all();
 
 	//Greeting
-	printf("   === MAIN MENU ===\n\n");
-	printf("Current PID parameters:\n  P: -na-\n  I: -na-\n  D: -na-\n\n");
-	printf("Select a option by pressing the correspondending key\n\n");
-	printf(" [P] Configure PID-controller\n");
-	printf(" [A] Configure accelerationsensor\n\n");
-	printf(" [X] Start PID controller with current parameters\n\n");
+
+	printf("                          [Current Configuration]\n\n");
+	printf("[C] - \"%s\"\n\n", settings[current_setting].comment);
+
+
+	printf("    PID Controller                          Accelerationsensor\n\n");
+	printf("[P] - Proportional Parameter : %5u    [M] - Position Multiplier    : %5u\n",
+					settings[current_setting].pid_setting.P_Factor,
+					settings[current_setting].position_multiplier);
+
+	printf("[I] - Integral Parameter     : %5u    [O] - Set Offset           X : %5u\n",
+					settings[current_setting].pid_setting.I_Factor,
+					settings[current_setting].acceleration_offset.x);
+
+	printf("[D] - Derivative Parameter   : %5u                               Y : %5u\n",
+					settings[current_setting].pid_setting.D_Factor,
+					settings[current_setting].acceleration_offset.y);
+
+	printf("[F] - Factor                 : %5u                               Z : %5u\n",
+					settings[current_setting].pid_factor,
+					settings[current_setting].acceleration_offset.z);
+
+	printf("\n\n    Settings\n\n[S] - Select current setting\n[W] - Write settings to EEPROM\n[E] - Export to csv\n");
+	printf("\n\n    Run\n\n[R] - Run system with current configuration\n");
 
 	// DO
 	//Waiting for users choice
-	do {
-		choice = configuration_terminal_get_choice();
-
-		if(choice == 'P') {
-			next_state = STATE_PID_MENU;
-		} else if(choice == 'A') {
-			next_state = STATE_ACCELERATIONSENSOR_MENU;
-		} else if(choice == 'X') {
-			next_state = STATE_FINAL;
-		} else {
-			printf("Invalid choice! Please retry:\n");
-			choice = 0;
-		}
-
-	} while(choice == 0);
-
-	// EXIT
-
-}
-
-
-void configuration_terminal_state_PID_menu(void)
-{
-	char choice;
-
-	// ENTRY
-	configuration_terminal_clear_all();
-
-	//Greeting
-	printf("   === PID CONTROLLER MENU ===\n\n");
-	printf("Current PID Parameters:\n  P: -na-\n  I: -na-\n  D: -na-\n\n");
-	printf("Select a option by pressing the correspondending key\n\n");
-	printf(" [P] change proportional parameter\n");
-	printf(" [I] change integral parameter\n");
-	printf(" [D] change derivative parameter\n\n");
-	printf(" [F] change scaling factor\n\n");
-	printf(" [X] Back to Main Menu\n");
-
-	// DO
 	do {
 		choice = configuration_terminal_get_choice();
 
@@ -254,8 +413,20 @@ void configuration_terminal_state_PID_menu(void)
 			next_state = STATE_PID_SET_D;
 		} else if(choice == 'F') {
 			next_state = STATE_PID_SET_SCALINGFACTOR;
-		} else if(choice == 'X') {
-			next_state = STATE_MAIN_MENU;
+		} else if(choice == 'M') {
+			next_state = STATE_ACCELERATIONSENSOR_SET_SCALINGFACTOR;
+		} else if(choice == 'O') {
+			next_state = STATE_ACCELERATIONSENSOR_SET_ZERO;
+		} else if(choice == 'C') {
+			next_state = STATE_EDIT_COMMENT;
+		} else if(choice == 'S') {
+			next_state = STATE_SELECT_SETTINGS;
+		} else if(choice == 'W') {
+			next_state = STATE_WRITE_SETTINGS;
+		} else if(choice == 'E') {
+			next_state = STATE_EXPORT_SETTINGS;
+		} else if(choice == 'R') {
+			next_state = STATE_FINAL;
 		} else {
 			printf("Invalid choice! Please retry:\n");
 			choice = 0;
@@ -270,44 +441,19 @@ void configuration_terminal_state_PID_menu(void)
 
 void configuration_terminal_state_PID_set_P(void)
 {
-	uint16_t new_value = 0;
-	bool read_value = true;
-	int ret;
-
 	// ENTRY
 	configuration_terminal_clear_all();
 
 	printf("=== CHANGE PROPORTIONAL PARAMETER ===\n\n");
-	printf("Current value: -na-\n\n");
-	printf("Please enter a uint16_t:\n");
+	printf("Current value: %u\n\n", settings[current_setting].pid_setting.P_Factor);
 
-
-	printf("%d\n", sizeof(unsigned int));
 
 	// DO
-	do {
-		//read user input
-		fgets(input_buffer, INPUT_BUFFER_SIZE, stdin);
-
-		//try to convert to uint16_t;
-		if(sscanf(input_buffer, "%u",&new_value)) {
-			//if convertation is successful; break and set new_value
-
-			//TODO: SET NEW VALUE
-
-			read_value = false;
-
-		} else {
-			printf("Invalid Input! Please retry:\n");
-		}
-
-	} while(read_value);
-
-	printf("new_value: %d\n", new_value);
-
-	_delay_ms(2000.0);
-
-	next_state = STATE_PID_MENU;
+	settings[current_setting].pid_setting.P_Factor =
+			configuration_terminal_get_integer(settings[current_setting].pid_setting.P_Factor,
+											   0,
+											   UINT16_MAX);
+	next_state = STATE_MAIN_MENU;
 
 	// EXIT
 
@@ -319,12 +465,16 @@ void configuration_terminal_state_PID_set_I(void)
 	// ENTRY
 	configuration_terminal_clear_all();
 
-	printf("I MENU");
+	printf("=== CHANGE INGETRAL PARAMETER ===\n\n");
+	printf("Current value: %u\n\n", settings[current_setting].pid_setting.I_Factor);
 
 
 	// DO
-
-
+	settings[current_setting].pid_setting.I_Factor =
+			configuration_terminal_get_integer(settings[current_setting].pid_setting.I_Factor,
+											   0,
+											   UINT16_MAX);
+	next_state = STATE_MAIN_MENU;
 	// EXIT
 
 }
@@ -335,10 +485,16 @@ void configuration_terminal_state_PID_set_D(void)
 	// ENTRY
 	configuration_terminal_clear_all();
 
-	printf("D MENU");
+	printf("=== CHANGE DERIVATIVE PARAMETER ===\n\n");
+	printf("Current value: %u\n\n", settings[current_setting].pid_setting.D_Factor);
 
 
 	// DO
+	settings[current_setting].pid_setting.D_Factor =
+			configuration_terminal_get_integer(settings[current_setting].pid_setting.D_Factor,
+											   0,
+											   UINT16_MAX);
+	next_state = STATE_MAIN_MENU;
 
 
 	// EXIT
@@ -351,69 +507,19 @@ void configuration_terminal_state_PID_set_scalingfactor(void)
 	// ENTRY
 	configuration_terminal_clear_all();
 
-	printf("SCALINGFACTOR PID MENU");
-
+	printf("===CHANGE PID SCALING FACTOR ===\n\n");
+//	printf("Current value: %u\n\n", pid_scaling_factor);
 
 	// DO
+	settings[current_setting].pid_factor = (uint8_t)configuration_terminal_get_integer(
+			settings[current_setting].pid_factor, 1, UINT8_MAX);
+
+
+
+	next_state = STATE_MAIN_MENU;
 
 
 	// EXIT
-
-}
-
-void configuration_terminal_state_accelerationsensor_menu(void)
-{
-	char choice;
-
-	// ENTRY
-	configuration_terminal_clear_all();
-
-	//Greeting
-	printf("   === ACCELERATIONSENSOR MENU ===\n\n");
-	printf("Select a option by pressing the correspondending key\n\n");
-	printf(" [Z] Set zero\n");
-	printf(" [S] Show acceleration and position\n");
-	printf(" [F] Change scaling factor\n\n");
-	printf(" [X] Back to Main Menu\n");
-
-	// DO
-	do {
-		choice = configuration_terminal_get_choice();
-
-		if(choice == 'Z') {
-			next_state = STATE_ACCELERATIONSENSOR_SET_ZERO;
-		} else if(choice == 'S') {
-			next_state = STATE_ACCELERATIONSENSOR_SHOW;
-		} else if(choice == 'F') {
-			next_state = STATE_ACCELERATIONSENSOR_SET_SCALINGFACTOR;
-		} else if(choice == 'X') {
-			next_state = STATE_MAIN_MENU;
-		} else {
-			printf("Invalid choice! Please retry:\n");
-			choice = 0;
-		}
-
-	} while(choice == 0);
-
-
-	// EXIT
-
-}
-
-
-void configuration_terminal_state_accelerationsensor_show(void)
-{
-	// ENTRY
-	configuration_terminal_clear_all();
-
-	printf("ACCEL SHOW MENU");
-
-
-	// DO
-
-
-	// EXIT
-
 }
 
 
@@ -422,12 +528,20 @@ void configuration_terminal_state_accelerationsensor_set_zero(void)
 	// ENTRY
 	configuration_terminal_clear_all();
 
-	printf("ACCEL TARA MENU");
+	printf("ACCEL SET ZERO MENU\n");
 
 
 	// DO
+	//TODO: dummy implementation for dev
+	settings[current_setting].acceleration_offset.x += 100;
+	settings[current_setting].acceleration_offset.y += 100;
+	settings[current_setting].acceleration_offset.z += 100;
 
 
+	printf("Current Position is now new zero!");
+	_delay_ms(2000.0);
+
+	next_state = STATE_MAIN_MENU;
 	// EXIT
 
 }
@@ -438,70 +552,41 @@ void configuration_terminal_state_accelerationsensor_set_scalingfactor(void)
 	// ENTRY
 	configuration_terminal_clear_all();
 
-	printf("ACCEL SCALINGFACTOR MENU");
-
+	printf("=== ACCELERATIONSENSOR SCALING FACTOR ===\n\n");
+	printf("Current value: %u\n\n", settings[current_setting].position_multiplier);
 
 	// DO
+	settings[current_setting].position_multiplier = configuration_terminal_get_integer(
+			settings[current_setting].position_multiplier, 1, UINT16_MAX);
+
+	next_state = STATE_MAIN_MENU;
+
+	// EXIT
+}
+
+
+void configuration_terminal_state_edit_comment(void)
+{
+	// ENTRY
+	configuration_terminal_clear_all();
+
+	printf("===EDIT COMMENT ===\n\n");
+
+	printf("Current value: \"%s\"\n\n", settings[current_setting].comment);
+
+	// DO
+	configuration_terminal_get_string(settings[current_setting].comment,
+		CONFIGURATION_SETTING_COMMENT_LENGTH);
+
+
+
+	next_state = STATE_MAIN_MENU;
 
 
 	// EXIT
-
 }
 
 
-/*
-void configuration_terminal_state_main_menu(void)
-{
-
-
-	//ENTRY
-	configuration_terminal_clear_screen();
-	configuration_terminal_set_cursor_top_left();
-	configuration_terminal_clear_input_buffer();
-
-	printf("MAIN MENU\n\n[H]odensack:\n[I]n kalte\n[K]acke");
-
-	//DO
-
-
-	while(!UART_char_received()) {
-		printf(".");
-		_delay_ms(1000.0);
-	}
-	UART_clr_rx_buf();
-
-	printf("\nLoop interrupted\nPlease type char:\n");
-
-	printf("input: %c\n", configuration_terminal_get_choice());
-
-
-	//EXIT
-	current_state = STATE_SETPID;
-}
-
-void configuration_terminal_state_setPID(void)
-{
-	configuration_terminal_clear_screen();
-
-	printf("MENU SET PID\n");
-
-	current_state = STATE_TARA_ACCEL;
-}
-
-void configuration_terminal_state_tata_acceleration(void)
-{
-	configuration_terminal_clear_screen();
-	configuration_terminal_set_cursor_on_position(10, 5);
-
-	printf("MENU TARA ACCELERATIONSENSOR\n");
-
-	_delay_ms(3000.0);
-
-	current_state = STATE_MAIN_MENU;
-
-}
-
-*/
 
 /* *** HELPERFUNCTIONS *** */
 
@@ -528,6 +613,74 @@ char configuration_terminal_get_choice(void)
 	return choice;
 }
 
+void configuration_terminal_get_string(char *str, uint8_t max_len)
+{
+	char *c_ptr;
+
+	configuration_terminal_clear_input_buffer();
+	fgets(input_buffer, max_len, stdin);
+
+	if(strlen(input_buffer) > 0) {
+		strcpy(str, input_buffer);
+		c_ptr = strchr(str,'\n');
+
+		if(c_ptr != NULL) {
+			*c_ptr = '\0';
+		}
+	}
+}
+
+
+uint16_t configuration_terminal_get_integer(const uint16_t current_value,
+											const uint16_t min_range,
+											const uint16_t max_range)
+{
+	bool successful = false;
+	uint16_t new_value = 0;
+
+	do {
+		printf("Please enter a integer between %u and %u:\n", min_range, max_range);
+
+		//read user input
+		configuration_terminal_clear_input_buffer();
+		fgets(input_buffer, INPUT_BUFFER_SIZE, stdin);
+
+		//check if nothing is entered. so don't change the old value
+		if(input_buffer[0] != ASCII_LF) {
+			//if strlen > nothing
+			//try to convert to uint16_t;
+			//check should be positive (here: == 1) if successful
+			if(sscanf(input_buffer, "%u",&new_value)) {
+
+				//check, if new value is in range
+				//and is not negative (uint!!) (input string begins with a '-')
+				if(new_value >= min_range &&
+				   new_value <= max_range &&
+				   input_buffer[0] != '-')
+				{
+					//if conversion is successful; break loop
+					successful = true;
+				} else {
+					//loop again
+					printf("New value is out of range! Please retry:\n");
+					successful = false;
+				}
+			} else {
+				//loop adain
+				printf("Input is not valid! Please retry:\n");
+				successful = false;
+			}
+		} else {
+			//break loop but return current value
+			printf("Nothing entered! Old value will be used!\n");
+			new_value = current_value;
+			successful = true;
+		}
+	} while(!successful);
+
+	return new_value;
+}
+
 void configuration_terminal_clear_all(void)
 {
 	configuration_terminal_clear_screen();
@@ -537,6 +690,8 @@ void configuration_terminal_clear_all(void)
 
 void configuration_terminal_clear_input_buffer(void)
 {
+	//TODO: fflush() verwenden
+
 	//den eventuell noch gefüllten Sendebuffer des PC lesen und verwerfen
 	while(strlen(input_buffer) >= INPUT_BUFFER_SIZE - 1) {
 		fgets(input_buffer, INPUT_BUFFER_SIZE, stdin);
