@@ -345,9 +345,9 @@ void system_controller_state_run_configuration_terminal(void)
 
 	configuration_setting_data[0].pid_scalingfactor = 128;
 
-	configuration_setting_data[0].acceleration_offset.x = 0;
-	configuration_setting_data[0].acceleration_offset.y = 0;
-	configuration_setting_data[0].acceleration_offset.z = 0;
+	configuration_setting_data[0].acceleration_offset.x = -2752;
+	configuration_setting_data[0].acceleration_offset.y = 256;
+	configuration_setting_data[0].acceleration_offset.z = 1663;
 
 	configuration_setting_data[0].position_multiplier = 1000;
 
@@ -369,6 +369,8 @@ void system_controller_state_init_pid_controller(void)
 			 configuration_setting_data[0].pid_i_factor,
 			 configuration_setting_data[0].pid_d_factor,
 			 &pid_data);
+
+	acceleration_set_offset(&configuration_setting_data[0].acceleration_offset);
 
 	cli();
 
