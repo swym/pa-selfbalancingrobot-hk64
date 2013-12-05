@@ -192,6 +192,12 @@ void system_controller_state_load_settings(void)
 
 	/* **** DO ***** */
 
+	//Init default-setting
+	configuration_setting_default.pid_scalingfactor = 1;				//TODO: #define defaultsettings somewhere
+	configuration_setting_default.position_multiplier = 1;
+	configuration_setting_default.setting_version = CONFIGURATION_SETTING_VERSION;
+	strcpy(configuration_setting_default.comment, "- new -");
+
 	//read index of current setting
 	configuration_setting_current_index = eeprom_read_byte(&configuration_setting_current_index_eeprom);
 
@@ -215,13 +221,14 @@ void system_controller_state_load_settings(void)
 		} else {
 			//Copy default
 			memcpy(&configuration_setting_data[i],
-				   &configuration_setting_data,
+				   &configuration_setting_default,
 				   sizeof(configuration_setting_t));
 		}
 	}
 
 	/* *** EXIT **** */
 
+	//if no valid configuration found, then run config terminal directly
 	if(valid_settings > 0) {
 		next_state = STATE_WAITING_FOR_USER_INTERRUPT;
 	} else {
