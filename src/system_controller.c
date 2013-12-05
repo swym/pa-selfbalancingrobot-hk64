@@ -25,6 +25,7 @@
 #include "vt100.h"
 
 #include "acceleration_t.h"
+#include "motor_control.h"
 #include "pid.h"
 #include "timer.h"
 
@@ -51,7 +52,8 @@ typedef enum {
 	STATE_LOAD_SETTINGS,
 	STATE_WAITING_FOR_USER_INTERRUPT,
 	STATE_RUN_CONFIGURATION_TERMINAL,
-	STATE_INIT_PID_CONTROLLER_HARDWARE,
+	STATE_INIT_SYSTEM_HARDWARE,
+	STATE_INIT_PID_CONTROLLER,
 	STATE_RUN_PID_CONTROLLER,
 	STATE_INIT,
 	STATE_FINAL,
@@ -72,16 +74,17 @@ static pidData_t pid_data;
 void system_controller_state_init(void);
 void system_controller_state_final(void);
 void system_controller_state_init_communication_interfaces(void);
+void system_controller_state_init_system_hardware(void);
 void system_controller_state_load_settings(void);
 void system_controller_state_waiting_for_user_interrupt(void);
 void system_controller_state_run_configuration_terminal(void);
-void system_controller_state_init_pid_controller_hardware(void);
+void system_controller_state_init_pid_controller(void);
 void system_controller_state_run_pid_controller(void);
 void system_controller_state_null(void);
 
 
 /* *** FUNCTION DEFINITIONS ************************************************** */
-void system_controller_state_state_machine(void)
+void system_controller_state_machine(void)
 {
 
 	while(state_machine_running) {
@@ -89,6 +92,10 @@ void system_controller_state_state_machine(void)
 
 			case STATE_INIT_COMMUNICATION_INTERFACES:
 				system_controller_state_init_communication_interfaces();
+			break;
+
+			case STATE_INIT_SYSTEM_HARDWARE:
+				system_controller_state_init_system_hardware();
 			break;
 
 			case STATE_LOAD_SETTINGS:
@@ -103,8 +110,8 @@ void system_controller_state_state_machine(void)
 				system_controller_state_run_configuration_terminal();
 			break;
 
-			case STATE_INIT_PID_CONTROLLER_HARDWARE:
-				system_controller_state_init_pid_controller_hardware();
+			case STATE_INIT_PID_CONTROLLER:
+				system_controller_state_init_pid_controller();
 			break;
 
 			case STATE_RUN_PID_CONTROLLER:
@@ -180,12 +187,29 @@ void system_controller_state_init_communication_interfaces(void)
 
 	/* *** EXIT **** */
 
-	next_state = STATE_LOAD_SETTINGS;
+	next_state = STATE_INIT_SYSTEM_HARDWARE;
 
 	vt100_clear_all();
-	printf("system_controller_state_init_communicastion_interfaces(void)\n");
+	printf("system_controller_state_init_communication_interfaces(void)\n");
 }
 
+
+void system_controller_state_init_system_hardware(void)
+{
+	/* *** ENTRY *** */
+	printf("system_controller_state_init_system_hardware(void)\n");
+
+
+	/* **** DO ***** */
+
+//	motor_control_init();
+
+//	acceleration_init();
+
+	/* *** EXIT **** */
+
+	next_state = STATE_LOAD_SETTINGS;
+}
 
 void system_controller_state_load_settings(void)
 {
@@ -292,7 +316,7 @@ void system_controller_state_waiting_for_user_interrupt(void)
 	if(user_irq_received) {
 		next_state = STATE_RUN_CONFIGURATION_TERMINAL;
 	} else {
-		next_state = STATE_INIT_PID_CONTROLLER_HARDWARE;
+		next_state = STATE_INIT_PID_CONTROLLER;
 	}
 }
 
@@ -323,11 +347,11 @@ void system_controller_state_run_configuration_terminal(void)
 
 	/* *** EXIT **** */
 
-	next_state = STATE_INIT_PID_CONTROLLER_HARDWARE;
+	next_state = STATE_INIT_PID_CONTROLLER;
 }
 
 
-void system_controller_state_init_pid_controller_hardware(void)
+void system_controller_state_init_pid_controller(void)
 {
 	/* *** ENTRY *** */
 
@@ -340,12 +364,12 @@ void system_controller_state_init_pid_controller_hardware(void)
 			 configuration_setting_data[0].pid_d_factor,
 			 &pid_data);
 
-
-	acceleration_init();
-
-	motor_control_init();
+	cli();
 
 	timer_init();
+
+	sei();
+
 
 	/* *** EXIT **** */
 

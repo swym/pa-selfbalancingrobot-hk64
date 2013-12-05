@@ -24,7 +24,7 @@
 /* external objects            */
 
 /* external functions          */
-extern void system_controller_state_state_machine(void);
+extern void system_controller_state_machine(void);
 
 #endif /* SYSTEM_CONTROLLER_H_ */
 
