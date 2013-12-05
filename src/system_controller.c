@@ -33,6 +33,8 @@
 /* *** DECLARATIONS ********************************************************** */
 
 /* import global variables */
+
+//Settings
 configuration_setting_t configuration_setting_data_eeprom[CONFIGURATION_SETTING_COUNT]	__attribute__ ((section (".eeprom")));
 uint8_t configuration_setting_current_index_eeprom										__attribute__ ((section (".eeprom")));
 
@@ -40,6 +42,10 @@ configuration_setting_t configuration_setting_default;
 configuration_setting_t configuration_setting_data[CONFIGURATION_SETTING_COUNT];
 uint8_t configuration_setting_current_index;
 
+
+// Timer
+volatile bool timer_compare_reached;
+volatile uint8_t timer_slot_counter;
 
 
 /* local type and constants     */
@@ -202,9 +208,9 @@ void system_controller_state_init_system_hardware(void)
 
 	/* **** DO ***** */
 
-//	motor_control_init();
-
-//	acceleration_init();
+	sei();
+	acceleration_init();
+	motor_control_init();
 
 	/* *** EXIT **** */
 
@@ -380,10 +386,71 @@ void system_controller_state_init_pid_controller(void)
 void system_controller_state_run_pid_controller(void)
 {
 	/* *** ENTRY *** */
-
 	printf("system_controller_state_run_pid_controller(void)\n");
 
+	uint16_t speed = 0;
+	acceleration_t current_accel;
+	motor_contol_speed_t new_speed;
+
+	double x, z, position;
+
 	/* **** DO ***** */
+
+	for(;;) {
+
+		if(timer_compare_reached) {
+
+			timer_compare_reached = false;
+			//led_value ^= LED3;
+
+			/* Erster Zeitslot am Anfang des Intervalls; t = 0 ms */
+			if(timer_slot_counter == 0) {
+				/*
+				 * Beschleunigungswerte lesen
+				 * Beschleunigungswerte in Position umrechnen
+				 * als IST-Wert in den PID-Regler geben
+				 * Stellgr��e an Motorsteuerung weitergeben, ABER noch nicht setzen
+				 */
+//				PORTC ^= (LED1 | LED2);				//LED1 an.
+
+				//Beschleunigungswerte lesen
+				acceleration_get_current_acceleration(&current_accel);
+
+				//Beschleunigungswerte in Position umrechnen
+				x = (double)(current_accel.x);
+				z = (double)(current_accel.z);
+
+				position = atan2(x, z) * 100;
+
+				/* TODO: als IST-Wert in den PID-Regler geben
+				 * Stellgr��e an Motorsteuerung weitergeben, ABER noch nicht setzen
+				 */
+
+
+				speed = pid_Controller(0, (int16_t)(position), &pid_data);
+
+				new_speed.motor_1 = speed >> 8;
+				new_speed.motor_2 = speed >> 8;
+
+				motor_control_prepare_new_speed(&new_speed);
+//				PORTC ^= LED2;
+			}
+
+			/* Zweiter Zeitslot des Intervalls; t = 12 ms */
+			if(timer_slot_counter == 3) {
+//				PORTC ^= LED2;
+				/*
+				 * Neue Stellgr��e des Motors setzen
+				 */
+				motor_control_set_new_speed();
+//				PORTC ^= LED2;
+			}
+
+//			if(timer_slot_counter >= TIMER_SLOT_COUNTER_MAX) {
+//				led_value &= ~(LED1 | LED2);	//Wieder beide LEDs l�schen
+//			}
+		}
+	}
 
 	/* *** EXIT **** */
 
