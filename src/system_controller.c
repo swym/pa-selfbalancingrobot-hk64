@@ -10,11 +10,35 @@
 #include "system_controller.h"
 
 #include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
+
+#include <avr/eeprom.h>
+#include <util/delay.h>
+
+#include "lib/uart.h"
+#include "lib/twi_master.h"
 
 #include "configuration_setting.h"
+
+
 /* *** DECLARATIONS ********************************************************** */
 
+/* import global variables */
+configuration_setting_t configuration_setting_data_eeprom[CONFIGURATION_SETTING_COUNT]	__attribute__ ((section (".eeprom")));
+uint8_t configuration_setting_current_index_eeprom										__attribute__ ((section (".eeprom")));
+
+configuration_setting_t configuration_setting_default;
+configuration_setting_t configuration_setting_data[CONFIGURATION_SETTING_COUNT];
+uint8_t configuration_setting_current_index;
+
+
+
 /* local type and constants     */
+#define STATE_WAITING_FOR_USER_INTERRUPT_TIMEOUT	5			//Timeout in seconds
+#define STATE_WAITING_FOR_USER_INTERRUPT_PARTS   	4
+
 
 typedef enum {
 	STATE_INIT_COMMUNICATION_INTERFACES,
@@ -105,6 +129,8 @@ void system_controller_state_state_machine(void)
 
 void system_controller_state_null(void)
 {
+	printf("system_controller_state_null(void)\n");
+
 	/* *** ENTRY *** */
 
 	/* **** DO ***** */
@@ -150,15 +176,19 @@ void system_controller_state_init_communicastion_interfaces(void)
 	/* *** EXIT **** */
 
 	next_state = STATE_LOAD_SETTINGS;
+
+	printf("system_controller_state_init_communicastion_interfaces(void)\n");
 }
 
 
 void system_controller_state_load_settings(void)
 {
+	printf("system_controller_state_load_settings(void)\n");
+
 	/* *** ENTRY *** */
 
 	uint8_t i;
-	uint8_t valid_settings;
+	uint8_t valid_settings = 0;
 
 	/* **** DO ***** */
 
@@ -202,19 +232,59 @@ void system_controller_state_load_settings(void)
 
 void system_controller_state_waiting_for_user_interrupt(void)
 {
+	printf("system_controller_state_waiting_for_user_interrupt(void)\n");
+
 	/* *** ENTRY *** */
+	bool user_irq_received = false;
+
+	uint8_t waiting_time = STATE_WAITING_FOR_USER_INTERRUPT_TIMEOUT;
+	double delay = 1000.0/(STATE_WAITING_FOR_USER_INTERRUPT_PARTS + 1);
+
+	uint8_t parts_of_seconds_counter = 0;
+
+
+	//configuration_terminal_clear_all();
+
+	printf("Press any key for entering configuration menu...\n");
 
 	/* **** DO ***** */
 
-	/* *** EXIT **** */
+	while(waiting_time > 0 && !user_irq_received) {
 
-	next_state = STATE_NULL;
+		//if user send any byte over usart then show configuration main menu
+		if(UART_char_received()) {
+			user_irq_received = true;
+			UART_clr_rx_buf();
+			break;
+		}
+
+		//Display Counter and decreae timeout
+		if(parts_of_seconds_counter == 0) {
+			printf("%d", waiting_time);
+			waiting_time--;
+			parts_of_seconds_counter = STATE_WAITING_FOR_USER_INTERRUPT_PARTS;
+		} else {
+			printf(".");
+			parts_of_seconds_counter--;
+		}
+
+		_delay_ms(delay);
+	}
+
+	/* *** EXIT **** */
+	if(user_irq_received) {
+		next_state = STATE_RUN_CONFIGURATION_TERMINAL;
+	} else {
+		next_state = STATE_INIT_PID_CONTROLLER;
+	}
 }
 
 
 void system_controller_state_run_configuration_terminal(void)
 {
 	/* *** ENTRY *** */
+
+	printf("system_controller_state_run_configuration_terminal(void)\n");
 
 	/* **** DO ***** */
 
@@ -227,6 +297,8 @@ void system_controller_state_run_configuration_terminal(void)
 void system_controller_state_init_pid_controller(void)
 {
 	/* *** ENTRY *** */
+
+	printf("system_controller_state_init_pid_controller(void)\n");
 
 	/* **** DO ***** */
 
