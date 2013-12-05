@@ -106,5 +106,7 @@ void acceleration_init(void)
 	offset.x = 0;
 	offset.y = 0;
 	offset.z = 0;
+
+	bma020_init();
 }
 
