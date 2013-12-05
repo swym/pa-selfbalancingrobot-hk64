@@ -16,6 +16,7 @@
 #define CONFIGURATION_SETTING_VERSION					2
 #define CONFIGURATION_SETTING_COMMENT_LENGTH			40
 
+/*
 typedef struct {
 	int16_t pid_p_factor;
 	int16_t pid_i_factor;
@@ -26,6 +27,19 @@ typedef struct {
 	uint8_t setting_version;
 	char comment[CONFIGURATION_SETTING_COMMENT_LENGTH];
 } configuration_setting_t;
+*/
+
+typedef struct {
+	int16_t pid_p_factor;
+	int16_t pid_i_factor;
+	int16_t pid_d_factor;
+	uint16_t pid_scalingfactor;
+	acceleration_t acceleration_offset;
+	uint16_t position_multiplier;
+	uint8_t setting_version;
+	char comment[CONFIGURATION_SETTING_COMMENT_LENGTH];
+} configuration_setting_t;
+
 
 /* external objects            */
 extern configuration_setting_t configuration_setting_data_eeprom[CONFIGURATION_SETTING_COUNT]	__attribute__ ((section (".eeprom")));

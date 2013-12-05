@@ -21,7 +21,12 @@
 #include "lib/twi_master.h"
 
 #include "configuration_setting.h"
+#include "configuration_terminal.h"
 #include "vt100.h"
+
+#include "acceleration_t.h"
+#include "pid.h"
+#include "timer.h"
 
 
 /* *** DECLARATIONS ********************************************************** */
@@ -46,8 +51,7 @@ typedef enum {
 	STATE_LOAD_SETTINGS,
 	STATE_WAITING_FOR_USER_INTERRUPT,
 	STATE_RUN_CONFIGURATION_TERMINAL,
-	STATE_INIT_PID_CONTROLLER,
-	STATE_INIT_TIMER,
+	STATE_INIT_PID_CONTROLLER_HARDWARE,
 	STATE_RUN_PID_CONTROLLER,
 	STATE_INIT,
 	STATE_FINAL,
@@ -59,18 +63,19 @@ static bool state_machine_running = true;
 static system_controller_state_t current_state = STATE_INIT_COMMUNICATION_INTERFACES;
 static system_controller_state_t next_state = STATE_NULL;
 
+static pidData_t pid_data;
+
 /* local function declarations  */
 
 
 // states
 void system_controller_state_init(void);
 void system_controller_state_final(void);
-void system_controller_state_init_communicastion_interfaces(void);
+void system_controller_state_init_communication_interfaces(void);
 void system_controller_state_load_settings(void);
 void system_controller_state_waiting_for_user_interrupt(void);
 void system_controller_state_run_configuration_terminal(void);
-void system_controller_state_init_pid_controller(void);
-void system_controller_state_init_timer(void);
+void system_controller_state_init_pid_controller_hardware(void);
 void system_controller_state_run_pid_controller(void);
 void system_controller_state_null(void);
 
@@ -83,7 +88,7 @@ void system_controller_state_state_machine(void)
 		switch(current_state) {
 
 			case STATE_INIT_COMMUNICATION_INTERFACES:
-				system_controller_state_init_communicastion_interfaces();
+				system_controller_state_init_communication_interfaces();
 			break;
 
 			case STATE_LOAD_SETTINGS:
@@ -98,12 +103,8 @@ void system_controller_state_state_machine(void)
 				system_controller_state_run_configuration_terminal();
 			break;
 
-			case STATE_INIT_PID_CONTROLLER:
-				system_controller_state_init_pid_controller();
-			break;
-
-			case STATE_INIT_TIMER:
-				system_controller_state_init_timer();
+			case STATE_INIT_PID_CONTROLLER_HARDWARE:
+				system_controller_state_init_pid_controller_hardware();
 			break;
 
 			case STATE_RUN_PID_CONTROLLER:
@@ -168,7 +169,7 @@ void system_controller_state_final(void)
 }
 
 
-void system_controller_state_init_communicastion_interfaces(void)
+void system_controller_state_init_communication_interfaces(void)
 {
 	/* *** ENTRY *** */
 
@@ -199,8 +200,6 @@ void system_controller_state_load_settings(void)
 
 
 	//Init default-setting
-
-
 	configuration_setting_default.pid_scalingfactor = 1;				//TODO: #define defaultsettings somewhere
 	configuration_setting_default.position_multiplier = 1;
 	configuration_setting_default.setting_version = CONFIGURATION_SETTING_VERSION;
@@ -242,6 +241,9 @@ void system_controller_state_load_settings(void)
 	} else {
 		next_state = STATE_RUN_CONFIGURATION_TERMINAL;
 	}
+
+	//DEBUG; remove in productive env
+	next_state = STATE_WAITING_FOR_USER_INTERRUPT;
 }
 
 
@@ -290,7 +292,7 @@ void system_controller_state_waiting_for_user_interrupt(void)
 	if(user_irq_received) {
 		next_state = STATE_RUN_CONFIGURATION_TERMINAL;
 	} else {
-		next_state = STATE_INIT_PID_CONTROLLER;
+		next_state = STATE_INIT_PID_CONTROLLER_HARDWARE;
 	}
 }
 
@@ -302,14 +304,30 @@ void system_controller_state_run_configuration_terminal(void)
 	printf("system_controller_state_run_configuration_terminal(void)\n");
 
 	/* **** DO ***** */
+	//start sub state machine "configuration terminal"
+	//configuration_terminal_state_machine();
+
+	configuration_setting_current_index = 0;
+
+	configuration_setting_data[0].pid_p_factor = 0;
+	configuration_setting_data[0].pid_i_factor = 0;
+	configuration_setting_data[0].pid_d_factor = 0;
+
+	configuration_setting_data[0].pid_scalingfactor = 128;
+
+	configuration_setting_data[0].acceleration_offset.x = 0;
+	configuration_setting_data[0].acceleration_offset.y = 0;
+	configuration_setting_data[0].acceleration_offset.z = 0;
+
+	configuration_setting_data[0].position_multiplier = 1000;
 
 	/* *** EXIT **** */
 
-	next_state = STATE_INIT_PID_CONTROLLER;
+	next_state = STATE_INIT_PID_CONTROLLER_HARDWARE;
 }
 
 
-void system_controller_state_init_pid_controller(void)
+void system_controller_state_init_pid_controller_hardware(void)
 {
 	/* *** ENTRY *** */
 
@@ -317,19 +335,17 @@ void system_controller_state_init_pid_controller(void)
 
 	/* **** DO ***** */
 
-	/* *** EXIT **** */
+	pid_Init(configuration_setting_data[0].pid_p_factor,
+			 configuration_setting_data[0].pid_i_factor,
+			 configuration_setting_data[0].pid_d_factor,
+			 &pid_data);
 
-	next_state = STATE_INIT_TIMER;
-}
 
+	acceleration_init();
 
-void system_controller_state_init_timer(void)
-{
-	/* *** ENTRY *** */
+	motor_control_init();
 
-	printf("system_controller_state_init_timer(void)\n");
-
-	/* **** DO ***** */
+	timer_init();
 
 	/* *** EXIT **** */
 
