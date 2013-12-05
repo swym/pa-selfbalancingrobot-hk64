@@ -21,6 +21,7 @@
 #include "lib/twi_master.h"
 
 #include "configuration_setting.h"
+#include "vt100.h"
 
 
 /* *** DECLARATIONS ********************************************************** */
@@ -135,6 +136,8 @@ void system_controller_state_null(void)
 
 	/* **** DO ***** */
 
+	state_machine_running = false;
+
 	/* *** EXIT **** */
 
 	next_state = STATE_NULL;
@@ -169,6 +172,7 @@ void system_controller_state_init_communicastion_interfaces(void)
 {
 	/* *** ENTRY *** */
 
+
 	/* **** DO ***** */
 	UART_init(38400);	/* Init UART mit 9600 baud */
 	twi_master_init();	/* Init TWI/I2C Schnittstelle */
@@ -177,6 +181,7 @@ void system_controller_state_init_communicastion_interfaces(void)
 
 	next_state = STATE_LOAD_SETTINGS;
 
+	vt100_clear_all();
 	printf("system_controller_state_init_communicastion_interfaces(void)\n");
 }
 
@@ -192,7 +197,10 @@ void system_controller_state_load_settings(void)
 
 	/* **** DO ***** */
 
+
 	//Init default-setting
+
+
 	configuration_setting_default.pid_scalingfactor = 1;				//TODO: #define defaultsettings somewhere
 	configuration_setting_default.position_multiplier = 1;
 	configuration_setting_default.setting_version = CONFIGURATION_SETTING_VERSION;
@@ -297,7 +305,7 @@ void system_controller_state_run_configuration_terminal(void)
 
 	/* *** EXIT **** */
 
-	next_state = STATE_NULL;
+	next_state = STATE_INIT_PID_CONTROLLER;
 }
 
 
@@ -311,7 +319,7 @@ void system_controller_state_init_pid_controller(void)
 
 	/* *** EXIT **** */
 
-	next_state = STATE_NULL;
+	next_state = STATE_INIT_TIMER;
 }
 
 
@@ -319,17 +327,21 @@ void system_controller_state_init_timer(void)
 {
 	/* *** ENTRY *** */
 
+	printf("system_controller_state_init_timer(void)\n");
+
 	/* **** DO ***** */
 
 	/* *** EXIT **** */
 
-	next_state = STATE_NULL;
+	next_state = STATE_RUN_PID_CONTROLLER;
 }
 
 
 void system_controller_state_run_pid_controller(void)
 {
 	/* *** ENTRY *** */
+
+	printf("system_controller_state_run_pid_controller(void)\n");
 
 	/* **** DO ***** */
 
