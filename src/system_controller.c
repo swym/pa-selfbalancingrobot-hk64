@@ -333,21 +333,7 @@ void system_controller_state_run_configuration_terminal(void)
 	/* **** DO ***** */
 	//start sub state machine "configuration terminal"
 	configuration_terminal_state_machine();
-/*
-	configuration_setting_current_index = 0;
 
-	configuration_setting_data[0].pid_p_factor = 10486;
-	configuration_setting_data[0].pid_i_factor = 0;
-	configuration_setting_data[0].pid_d_factor = 0;
-
-	configuration_setting_data[0].pid_scalingfactor = 128;
-
-	configuration_setting_data[0].acceleration_offset.x = -2752;
-	configuration_setting_data[0].acceleration_offset.y = 256;
-	configuration_setting_data[0].acceleration_offset.z = 1663;
-
-	configuration_setting_data[0].position_multiplier = 1000;
-*/
 	/* *** EXIT **** */
 
 	next_state = STATE_INIT_PID_CONTROLLER;
@@ -362,12 +348,12 @@ void system_controller_state_init_pid_controller(void)
 
 	/* **** DO ***** */
 
-	pid_Init(configuration_setting_data[0].pid_p_factor,
-			 configuration_setting_data[0].pid_i_factor,
-			 configuration_setting_data[0].pid_d_factor,
+	pid_Init(configuration_setting_data[configuration_setting_current_index].pid_p_factor,
+			 configuration_setting_data[configuration_setting_current_index].pid_i_factor,
+			 configuration_setting_data[configuration_setting_current_index].pid_d_factor,
 			 &pid_data);
 
-	acceleration_set_offset(&configuration_setting_data[0].acceleration_offset);
+	acceleration_set_offset(&configuration_setting_data[configuration_setting_current_index].acceleration_offset);
 
 	cli();
 
