@@ -8,6 +8,11 @@
 
 /* *** INCLUDES ************************************************************** */
 #include "configuration_terminal.h"
+
+#include <stdio.h>
+#include <stdint.h>
+#include <avr/eeprom.h>
+
 #include "configuration_setting.h"
 #include "vt100.h"
 
@@ -143,7 +148,7 @@ void configuration_terminal_state_select_settings(void)
 
 	//DO
 
-	configuration_setting_current_index = configuration_terminal_get_integer(
+	configuration_setting_current_index = vt100_get_integer(
 						configuration_setting_current_index,
 						0,
 						CONFIGURATION_SETTING_COUNT);
@@ -161,7 +166,7 @@ void configuration_terminal_state_write_settings(void)
 
 
 	//ENTRY
-	configuration_terminal_clear_all();
+	vt100_clear_all();
 
 	//DO
 	printf("Writing settings to eeprom....\n");
@@ -173,7 +178,8 @@ void configuration_terminal_state_write_settings(void)
 						   sizeof(configuration_setting_t));
 	}
 
-	eeprom_write_byte(&configuration_setting_data_eeprom, configuration_setting_data);
+	eeprom_write_byte(&configuration_setting_current_index_eeprom,
+			configuration_setting_current_index);
 
 	//EXIT
 	next_state = STATE_MAIN_MENU;
@@ -184,7 +190,7 @@ void configuration_terminal_state_export_settings(void)
 	uint8_t i;
 
 	//ENTRY
-	configuration_terminal_clear_all();
+	vt100_clear_all();
 
 	//DO
 	for(i = 0;i < CONFIGURATION_SETTING_COUNT;i++) {
@@ -204,7 +210,7 @@ void configuration_terminal_state_export_settings(void)
 	printf("\n\nPress any key to go back to main menu.\n");
 
 	//wait for user input; but don't use it
-	configuration_terminal_get_choice();
+	vt100_get_choice();
 
 	//EXIT
 	next_state = STATE_MAIN_MENU;
@@ -216,7 +222,7 @@ void configuration_terminal_state_main_menu(void)
 	char choice;
 
 	// ENTRY
-	configuration_terminal_clear_all();
+	vt100_clear_all();
 
 	//Greeting
 
@@ -247,7 +253,7 @@ void configuration_terminal_state_main_menu(void)
 	// DO
 	//Waiting for users choice
 	do {
-		choice = configuration_terminal_get_choice();
+		choice = vt100_get_choice();
 
 		if(choice == 'P') {
 			next_state = STATE_PID_SET_P;
@@ -287,17 +293,17 @@ void configuration_terminal_state_main_menu(void)
 void configuration_terminal_state_PID_set_P(void)
 {
 	// ENTRY
-	configuration_terminal_clear_all();
+	vt100_clear_all();
 
 	printf("=== CHANGE PROPORTIONAL PARAMETER ===\n\n");
 	printf("Current value: %u\n\n", configuration_setting_data[configuration_setting_current_index].pid_p_factor);
 
 
 	// DO
-	configuration_setting_data[configuration_setting_current_index] =
-			configuration_terminal_get_integer(configuration_setting_data[configuration_setting_current_index],
-											   0,
-											   UINT16_MAX);
+	configuration_setting_data[configuration_setting_current_index].pid_p_factor =
+			vt100_get_integer(configuration_setting_data[configuration_setting_current_index].pid_p_factor,
+							  0,
+							  UINT16_MAX);
 	next_state = STATE_MAIN_MENU;
 
 	// EXIT
@@ -308,7 +314,7 @@ void configuration_terminal_state_PID_set_P(void)
 void configuration_terminal_state_PID_set_I(void)
 {
 	// ENTRY
-	configuration_terminal_clear_all();
+	vt100_clear_all();
 
 	printf("=== CHANGE INGETRAL PARAMETER ===\n\n");
 	printf("Current value: %u\n\n", configuration_setting_data[configuration_setting_current_index].pid_i_factor);
@@ -316,9 +322,9 @@ void configuration_terminal_state_PID_set_I(void)
 
 	// DO
 	configuration_setting_data[configuration_setting_current_index].pid_i_factor =
-			configuration_terminal_get_integer(configuration_setting_data[configuration_setting_current_index].pid_i_factor,
-											   0,
-											   UINT16_MAX);
+			vt100_get_integer(configuration_setting_data[configuration_setting_current_index].pid_i_factor,
+							  0,
+							  UINT16_MAX);
 	next_state = STATE_MAIN_MENU;
 	// EXIT
 
@@ -328,7 +334,7 @@ void configuration_terminal_state_PID_set_I(void)
 void configuration_terminal_state_PID_set_D(void)
 {
 	// ENTRY
-	configuration_terminal_clear_all();
+	vt100_clear_all();
 
 	printf("=== CHANGE DERIVATIVE PARAMETER ===\n\n");
 	printf("Current value: %u\n\n", configuration_setting_data[configuration_setting_current_index].pid_d_factor);
@@ -336,9 +342,9 @@ void configuration_terminal_state_PID_set_D(void)
 
 	// DO
 	configuration_setting_data[configuration_setting_current_index].pid_d_factor =
-			configuration_terminal_get_integer(configuration_setting_data[configuration_setting_current_index].pid_d_factor,
-											   0,
-											   UINT16_MAX);
+			vt100_get_integer(configuration_setting_data[configuration_setting_current_index].pid_d_factor,
+							  0,
+							  UINT16_MAX);
 	next_state = STATE_MAIN_MENU;
 
 
@@ -351,13 +357,13 @@ void configuration_terminal_state_PID_set_D(void)
 void configuration_terminal_state_PID_set_scalingfactor(void)
 {
 	// ENTRY
-	configuration_terminal_clear_all();
+	vt100_clear_all();
 
 	printf("=== CHANGE PID SCALING FACTOR ===\n\n");
 //	printf("Current value: %u\n\n", pid_scaling_factor);
 
 	// DO
-	configuration_setting_data[configuration_setting_current_index].pid_scalingfactor = configuration_terminal_get_integer(
+	configuration_setting_data[configuration_setting_current_index].pid_scalingfactor = vt100_get_integer(
 			configuration_setting_data[configuration_setting_current_index].pid_scalingfactor, 1, UINT16_MAX);
 
 
@@ -372,25 +378,25 @@ void configuration_terminal_state_PID_set_scalingfactor(void)
 void configuration_terminal_state_accelerationsensor_set_zero(void)
 {
 	// ENTRY
-	configuration_terminal_clear_all();
+	vt100_clear_all();
 
 	printf("=== ACCEL SET ZERO MENU ===\n");
 
-	printf("Current Position is now new zero!");
+	printf("Current position is new zero!");
 
 	acceleration_t accel;
 
 	// DO
 
+	//Perform calibration
 	acceleration_calibrate_offset();
+
+	//Read and save the offset from the sensor
 	acceleration_get_offset(&accel);
 
 	configuration_setting_data[configuration_setting_current_index].acceleration_offset.x = accel.x;
 	configuration_setting_data[configuration_setting_current_index].acceleration_offset.y = accel.y;
 	configuration_setting_data[configuration_setting_current_index].acceleration_offset.z = accel.z;
-
-
-	_delay_ms(2000.0);
 
 	next_state = STATE_MAIN_MENU;
 	// EXIT
@@ -401,14 +407,17 @@ void configuration_terminal_state_accelerationsensor_set_zero(void)
 void configuration_terminal_state_accelerationsensor_set_scalingfactor(void)
 {
 	// ENTRY
-	configuration_terminal_clear_all();
+	vt100_clear_all();
 
 	printf("=== ACCELERATIONSENSOR SCALING FACTOR ===\n\n");
 	printf("Current value: %u\n\n", configuration_setting_data[configuration_setting_current_index].position_multiplier);
 
 	// DO
-	configuration_setting_data[configuration_setting_current_index].position_multiplier = configuration_terminal_get_integer(
-			configuration_setting_data[configuration_setting_current_index].position_multiplier, 1, UINT16_MAX);
+	configuration_setting_data[configuration_setting_current_index].position_multiplier =
+			vt100_get_integer(
+						configuration_setting_data[configuration_setting_current_index].position_multiplier,
+						1,
+						UINT16_MAX);
 
 	next_state = STATE_MAIN_MENU;
 
@@ -419,14 +428,14 @@ void configuration_terminal_state_accelerationsensor_set_scalingfactor(void)
 void configuration_terminal_state_edit_comment(void)
 {
 	// ENTRY
-	configuration_terminal_clear_all();
+	vt100_clear_all();
 
 	printf("=== EDIT COMMENT ===\n\n");
 
 	printf("Current value: \"%s\"\n\n", configuration_setting_data[configuration_setting_current_index].comment);
 
 	// DO
-	configuration_terminal_get_string(configuration_setting_data[configuration_setting_current_index].comment,
+	vt100_get_string(configuration_setting_data[configuration_setting_current_index].comment,
 		CONFIGURATION_SETTING_COMMENT_LENGTH);
 
 
