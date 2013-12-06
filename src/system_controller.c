@@ -271,9 +271,6 @@ void system_controller_state_load_settings(void)
 	} else {
 		next_state = STATE_RUN_CONFIGURATION_TERMINAL;
 	}
-
-	//DEBUG; remove in productive env
-	next_state = STATE_WAITING_FOR_USER_INTERRUPT;
 }
 
 
