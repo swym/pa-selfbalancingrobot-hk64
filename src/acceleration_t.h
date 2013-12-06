@@ -33,6 +33,7 @@ extern void acceleration_init(void);
 
 extern void acceleration_calibrate_offset(void);
 extern void acceleration_get_offset(acceleration_t *);
+extern void acceleration_set_offset(acceleration_t *);
 
 
 #endif /* ACCELERATION_T_H_ */
