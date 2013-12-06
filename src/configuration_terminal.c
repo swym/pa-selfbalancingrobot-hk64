@@ -133,7 +133,7 @@ void configuration_terminal_state_select_settings(void)
 
 	for(i = 0;i < CONFIGURATION_SETTING_COUNT;i++) {
 		printf(" [%u] - \"%s\"\n", i, configuration_setting_data[i].comment);
-		printf("       %5u  %5u  %5u  %5u  %5u  %5u  %5u  %5u\n\n",
+		printf("       %5u  %5u  %5u  %5u  %5u  %5i  %5i  %5i\n\n",
 				configuration_setting_data[i].pid_p_factor,
 				configuration_setting_data[i].pid_i_factor,
 				configuration_setting_data[i].pid_d_factor,
@@ -194,7 +194,7 @@ void configuration_terminal_state_export_settings(void)
 
 	//DO
 	for(i = 0;i < CONFIGURATION_SETTING_COUNT;i++) {
-		printf("%u,%u,%u,%u,%u,%u,%u,%u,%u,\"%s\"\n",
+		printf("%u,%u,%u,%u,%u,%u,%i,%i,%i,\"%s\"\n",
 				i,
 				configuration_setting_data[i].pid_p_factor,
 				configuration_setting_data[i].pid_i_factor,
@@ -235,15 +235,15 @@ void configuration_terminal_state_main_menu(void)
 			configuration_setting_data[configuration_setting_current_index].pid_p_factor,
 			configuration_setting_data[configuration_setting_current_index].position_multiplier);
 
-	printf("[I] - Integral Parameter     : %5u    [O] - Set Offset           X : %5u\n",
+	printf("[I] - Integral Parameter     : %5u    [O] - Set Offset           X : %5i\n",
 			configuration_setting_data[configuration_setting_current_index].pid_i_factor,
 			configuration_setting_data[configuration_setting_current_index].acceleration_offset.x);
 
-	printf("[D] - Derivative Parameter   : %5u                               Y : %5u\n",
+	printf("[D] - Derivative Parameter   : %5u                               Y : %5i\n",
 			configuration_setting_data[configuration_setting_current_index].pid_d_factor,
 			configuration_setting_data[configuration_setting_current_index].acceleration_offset.y);
 
-	printf("[F] - Factor                 : %5u                               Z : %5u\n",
+	printf("[F] - Factor                 : %5u                               Z : %5i\n",
 			configuration_setting_data[configuration_setting_current_index].pid_scalingfactor,
 			configuration_setting_data[configuration_setting_current_index].acceleration_offset.z);
 
@@ -378,11 +378,6 @@ void configuration_terminal_state_PID_set_scalingfactor(void)
 void configuration_terminal_state_accelerationsensor_set_zero(void)
 {
 	// ENTRY
-	vt100_clear_all();
-
-	printf("=== ACCEL SET ZERO MENU ===\n");
-
-	printf("Current position is new zero!");
 
 	acceleration_t accel;
 
@@ -398,8 +393,9 @@ void configuration_terminal_state_accelerationsensor_set_zero(void)
 	configuration_setting_data[configuration_setting_current_index].acceleration_offset.y = accel.y;
 	configuration_setting_data[configuration_setting_current_index].acceleration_offset.z = accel.z;
 
-	next_state = STATE_MAIN_MENU;
 	// EXIT
+
+	next_state = STATE_MAIN_MENU;
 
 }
 
