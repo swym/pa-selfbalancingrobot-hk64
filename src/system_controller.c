@@ -339,7 +339,7 @@ void system_controller_state_run_configuration_terminal(void)
 
 	configuration_setting_current_index = 0;
 
-	configuration_setting_data[0].pid_p_factor = 0;
+	configuration_setting_data[0].pid_p_factor = 10486;
 	configuration_setting_data[0].pid_i_factor = 0;
 	configuration_setting_data[0].pid_d_factor = 0;
 
