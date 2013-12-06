@@ -1509,7 +1509,7 @@ uint8_t bma020_get_customer_reserved_2()
  */
 void bma020_init(void)
 {
-
+	bma020_set_range(2);
 }
 
 

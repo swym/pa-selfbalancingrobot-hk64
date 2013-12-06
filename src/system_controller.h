@@ -1,18 +1,21 @@
 /*
- * configuration_terminal.h
+ * system_controller.h
  *
- *  Created on: 28.11.2013
+ *  Created on: Dec 4, 2013
  *      Author: alexandermertens
  */
 
-#ifndef CONFIGURATION_TERMINAL_H_
-#define CONFIGURATION_TERMINAL_H_
+
+#ifndef SYSTEM_CONTROLLER_H_
+#define SYSTEM_CONTROLLER_H_
 
 /* *** INCLUDES ************************************************************** */
 
-/* system headers              */
+/* system headers              */ 
 
 /* local headers               */
+
+
 
 /* *** DECLARATIONS ********************************************************** */
 
@@ -21,6 +24,9 @@
 /* external objects            */
 
 /* external functions          */
-extern void configuration_terminal_state_machine(void);
+extern void system_controller_state_machine(void);
 
-#endif /* CONFIGURATION_TERMINAL_H_ */
+#endif /* SYSTEM_CONTROLLER_H_ */
+
+
+

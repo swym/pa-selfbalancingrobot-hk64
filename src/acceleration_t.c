@@ -97,6 +97,17 @@ void acceleration_get_offset(acceleration_t *accel)
 
 
 /**
+ * sets the offset with a given acceleration vector
+ * @param accel
+ */
+void acceleration_set_offset(acceleration_t *accel)
+{
+	offset.x = accel->x;
+	offset.y = accel->y;
+	offset.z = accel->z;
+}
+
+/**
  * Initialized the acceleration module.
  *
  * Sets offset to zero.
@@ -106,5 +117,7 @@ void acceleration_init(void)
 	offset.x = 0;
 	offset.y = 0;
 	offset.z = 0;
+
+	bma020_init();
 }
 
