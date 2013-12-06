@@ -335,8 +335,8 @@ void system_controller_state_run_configuration_terminal(void)
 
 	/* **** DO ***** */
 	//start sub state machine "configuration terminal"
-	//configuration_terminal_state_machine();
-
+	configuration_terminal_state_machine();
+/*
 	configuration_setting_current_index = 0;
 
 	configuration_setting_data[0].pid_p_factor = 10486;
@@ -350,7 +350,7 @@ void system_controller_state_run_configuration_terminal(void)
 	configuration_setting_data[0].acceleration_offset.z = 1663;
 
 	configuration_setting_data[0].position_multiplier = 1000;
-
+*/
 	/* *** EXIT **** */
 
 	next_state = STATE_INIT_PID_CONTROLLER;
