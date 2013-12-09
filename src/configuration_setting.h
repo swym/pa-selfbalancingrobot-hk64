@@ -10,7 +10,7 @@
 #define CONFIGURATION_SETTING_H_
 
 #include <stdint.h>
-#include "acceleration_t.h"
+#include "accelerationsensor.h"
 
 #define CONFIGURATION_SETTING_COUNT						6
 #define CONFIGURATION_SETTING_VERSION					2

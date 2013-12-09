@@ -5,8 +5,8 @@
  *      Author: alexandermertens
  */
 
-#ifndef ACCELERATION_T_H_
-#define ACCELERATION_T_H_
+#ifndef ACCELERATIONSENSOR_H_
+#define ACCELERATIONSENSOR_H_
 
 /* *** INCLUDES ************************************************************** */
 
@@ -28,12 +28,12 @@ typedef struct {
 /* external objects            */
 
 /* external functions          */
-extern void acceleration_get_current_acceleration(acceleration_t *);
-extern void acceleration_init(void);
+extern void accelerationsensor_get_current_acceleration(acceleration_t *);
+extern void accelerationsensor_init(void);
 
-extern void acceleration_calibrate_offset(void);
-extern void acceleration_get_offset(acceleration_t *);
-extern void acceleration_set_offset(acceleration_t *);
+extern void accelerationsensor_calibrate_offset(void);
+extern void accelerationsensor_get_offset(acceleration_t *);
+extern void accelerationsensor_set_offset(acceleration_t *);
 
 
-#endif /* ACCELERATION_T_H_ */
+#endif /* ACCELERATIONSENSOR_H_ */

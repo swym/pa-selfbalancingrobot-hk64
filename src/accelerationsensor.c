@@ -6,7 +6,7 @@
  */
 
 /* *** INCLUDES ************************************************************** */
-#include "acceleration_t.h"
+#include "accelerationsensor.h"
 
 #include "bma020.h"
 #include "moving_average.h"
@@ -40,7 +40,7 @@ static moving_average_t average_acceleration_z;
  *
  * @param acceleration
  */
-void acceleration_get_current_acceleration(acceleration_t *acceleration)
+void accelerationsensor_get_current_acceleration(acceleration_t *acceleration)
 {
 	acceleration_t new_accel;
 
@@ -72,7 +72,7 @@ void acceleration_get_current_acceleration(acceleration_t *acceleration)
  * Reads the current acceleration value and sets them as an offset for further
  * messaurements. offset.z is set to 1 G.
  */
-void acceleration_calibrate_offset(void)
+void accelerationsensor_calibrate_offset(void)
 {
 	acceleration_t temp_accel;
 
@@ -88,7 +88,7 @@ void acceleration_calibrate_offset(void)
  * returns as call by reference the current offset.
  * @param accel
  */
-void acceleration_get_offset(acceleration_t *accel)
+void accelerationsensor_get_offset(acceleration_t *accel)
 {
 	accel->x = offset.x;
 	accel->y = offset.y;
@@ -100,7 +100,7 @@ void acceleration_get_offset(acceleration_t *accel)
  * sets the offset with a given acceleration vector
  * @param accel
  */
-void acceleration_set_offset(acceleration_t *accel)
+void accelerationsensor_set_offset(acceleration_t *accel)
 {
 	offset.x = accel->x;
 	offset.y = accel->y;
@@ -112,7 +112,7 @@ void acceleration_set_offset(acceleration_t *accel)
  *
  * Sets offset to zero.
  */
-void acceleration_init(void)
+void accelerationsensor_init(void)
 {
 	offset.x = 0;
 	offset.y = 0;
