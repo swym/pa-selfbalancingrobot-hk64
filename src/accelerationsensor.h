@@ -28,8 +28,10 @@ typedef struct {
 /* external objects            */
 
 /* external functions          */
-extern void accelerationsensor_get_current_acceleration(acceleration_t *);
 extern void accelerationsensor_init(void);
+
+extern void accelerationsensor_get_current_acceleration(acceleration_t *);
+extern double accelerationsensor_get_current_position(void);
 
 extern void accelerationsensor_calibrate_offset(void);
 extern void accelerationsensor_get_offset(acceleration_t *);

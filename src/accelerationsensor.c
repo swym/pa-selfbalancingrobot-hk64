@@ -8,6 +8,8 @@
 /* *** INCLUDES ************************************************************** */
 #include "accelerationsensor.h"
 
+#include <math.h>
+
 #include "bma020.h"
 #include "moving_average.h"
 /* *** TODO BMA020
@@ -66,6 +68,19 @@ void accelerationsensor_get_current_acceleration(acceleration_t *acceleration)
 	acceleration->x = average_acceleration_x.mean;
 	acceleration->y = average_acceleration_y.mean;
 	acceleration->z = average_acceleration_z.mean;
+}
+
+double accelerationsensor_get_current_position()
+{
+	acceleration_t temp_accel;
+
+	//read current acceleration vectors
+	accelerationsensor_get_current_acceleration(&temp_accel);
+
+	//convert to position
+	return atan2(temp_accel.x,temp_accel.z);
+
+	//convert to int
 }
 
 /**
