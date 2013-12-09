@@ -81,3 +81,26 @@ double test_acceleration_print_accel_and_position(void)
 
 	//printf("accel: x: %d y: %d z:%d - q: %f pos: %f \n", accel.x, accel.y, accel.z, quotient, z);
 }
+
+void test_acceleration_configure_convertion(void)
+{
+	acceleration_t offset = {-3456, 2048, 1919};
+
+	accelerationsensor_init();
+	accelerationsensor_set_offset(&offset);
+
+	double pos, pos_dbl;
+	int16_t pos_int;
+
+
+	for(;;) {
+
+		pos = accelerationsensor_get_current_position();
+		pos_dbl = pos * 100000;
+		pos_int = (int16_t)(pos_dbl);
+
+		printf("pos: %10f pos_dbl: %10f   pos_int: %10i\n", pos, pos_dbl, pos_int);
+
+		_delay_ms(20.0);
+	}
+}
