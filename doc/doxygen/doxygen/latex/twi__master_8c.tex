@@ -1,0 +1,355 @@
+\hypertarget{twi__master_8c}{\section{lib/twi\-\_\-master.c File Reference}
+\label{twi__master_8c}\index{lib/twi\-\_\-master.\-c@{lib/twi\-\_\-master.\-c}}
+}
+{\ttfamily \#include \char`\"{}twi\-\_\-master.\-h\char`\"{}}\\*
+Include dependency graph for twi\-\_\-master.\-c\-:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{twi__master_8c__incl}
+\end{center}
+\end{figure}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{twi__master_8c_ab8b47eb0b53e13c4b34647c2c97388fd}{twi\-\_\-master\-\_\-init} ()
+\begin{DoxyCompactList}\small\item\em Setup the twi module. \end{DoxyCompactList}\item 
+void \hyperlink{twi__master_8c_a38ff1db93a888454fab7847af2a0f5c7}{twi\-\_\-send\-\_\-data} (uint8\-\_\-t slave, uint8\-\_\-t anz\-\_\-bytes)
+\begin{DoxyCompactList}\small\item\em Method to send data to a slave. \end{DoxyCompactList}\item 
+void \hyperlink{twi__master_8c_a095a100e547815faf66df46a87968988}{twi\-\_\-receive\-\_\-data} (uint8\-\_\-t slave, uint8\-\_\-t anz\-\_\-bytes)
+\begin{DoxyCompactList}\small\item\em Corresponding to send\-\_\-data this method receives data the same way. \end{DoxyCompactList}\item 
+void \hyperlink{twi__master_8c_a89bdf8dea79a9e017c3821b6e270c093}{twi\-\_\-master\-\_\-set\-\_\-ready} ()
+\item 
+\hyperlink{twi__master_8c_a474f42eedbdc093683fdb4b88be3c48f}{I\-S\-R} (T\-W\-I\-\_\-vect)
+\begin{DoxyCompactList}\small\item\em This Interrupt Service Routine handles all possible status conditions of the T\-W\-I hardware. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+volatile uint8\-\_\-t \hyperlink{twi__master_8c_ae178071b85b716b65d0b856e85534c3b}{twi\-\_\-receive\-\_\-buffer} \mbox{[}\hyperlink{twi__master_8h_a6b20d41d6252e9871430c242cb1a56e7}{B\-U\-F\-F\-E\-R\-\_\-\-S\-I\-Z\-E}\mbox{]}
+\item 
+volatile uint8\-\_\-t \hyperlink{twi__master_8c_a0ebfdf89c2595f09b88e3fa8d5f3ec3b}{twi\-\_\-send\-\_\-buffer} \mbox{[}\hyperlink{twi__master_8h_a6b20d41d6252e9871430c242cb1a56e7}{B\-U\-F\-F\-E\-R\-\_\-\-S\-I\-Z\-E}\mbox{]}
+\item 
+volatile uint8\-\_\-t \hyperlink{twi__master_8c_a926e6e50d6c5aca7f59eba912f869ebe}{transmitter}
+\item 
+volatile uint8\-\_\-t \hyperlink{twi__master_8c_ae92e79ba1068f524ceedbdf8049ef43e}{rindx}
+\item 
+volatile uint8\-\_\-t \hyperlink{twi__master_8c_ac2f9e24d25da5bfdbeb188d3f09e7619}{sindx}
+\item 
+volatile uint8\-\_\-t \hyperlink{twi__master_8c_a72a28732edd60c3bdb789466923678a1}{number\-\_\-of\-\_\-bytes}
+\item 
+volatile uint8\-\_\-t \hyperlink{twi__master_8c_a3dec6baf6b8e19f87fb59089679d3094}{ready}
+\item 
+volatile uint8\-\_\-t \hyperlink{twi__master_8c_a2611e342f148c60ff2a7a02415541917}{sla}
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\hypertarget{twi__master_8c_a474f42eedbdc093683fdb4b88be3c48f}{\index{twi\-\_\-master.\-c@{twi\-\_\-master.\-c}!I\-S\-R@{I\-S\-R}}
+\index{I\-S\-R@{I\-S\-R}!twi_master.c@{twi\-\_\-master.\-c}}
+\subsubsection[{I\-S\-R}]{\setlength{\rightskip}{0pt plus 5cm}I\-S\-R (
+\begin{DoxyParamCaption}
+\item[{T\-W\-I\-\_\-vect}]{}
+\end{DoxyParamCaption}
+)}}\label{twi__master_8c_a474f42eedbdc093683fdb4b88be3c48f}
+
+
+This Interrupt Service Routine handles all possible status conditions of the T\-W\-I hardware. 
+
+Everytime a bus operation has finished, the T\-W\-I modules triggers a T\-W\-I interrupt. In this case the \hyperlink{twi__master_8c_a474f42eedbdc093683fdb4b88be3c48f}{I\-S\-R(\-T\-W\-I\-\_\-vect)} is executed. By determing the twi status by reading the T\-W\-S\-R code, we can see in which state of communication we are and take proper actions to continue the transmission.
+
+A more detailed description can be found here\-: isr\-\_\-master 
+
+Definition at line 176 of file twi\-\_\-master.\-c.
+
+
+
+References number\-\_\-of\-\_\-bytes, ready, rindx, sindx, sla, transmitter, twi\-\_\-receive\-\_\-buffer, and twi\-\_\-send\-\_\-buffer.
+
+\hypertarget{twi__master_8c_ab8b47eb0b53e13c4b34647c2c97388fd}{\index{twi\-\_\-master.\-c@{twi\-\_\-master.\-c}!twi\-\_\-master\-\_\-init@{twi\-\_\-master\-\_\-init}}
+\index{twi\-\_\-master\-\_\-init@{twi\-\_\-master\-\_\-init}!twi_master.c@{twi\-\_\-master.\-c}}
+\subsubsection[{twi\-\_\-master\-\_\-init}]{\setlength{\rightskip}{0pt plus 5cm}void twi\-\_\-master\-\_\-init (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{twi__master_8c_ab8b47eb0b53e13c4b34647c2c97388fd}
+
+
+Setup the twi module. 
+
+This function sets up the twi module for master operation. Therefore we have to write proper values to the following registers\-:
+
+
+\begin{DoxyItemize}
+\item T\-W\-B\-R Two Wire Bitrate Register
+\item T\-W\-S\-R Two Wire Status Register
+\item T\-W\-C\-R Two Wire Control Register 
+\end{DoxyItemize}
+
+T\-W\-B\-R and T\-W\-S\-R are used to configure the bus clock speed. The T\-W\-I specifications allows us to choose between two different clock speed modes\-: one below 100k\-Hz and one up to 400k\-Hz.\par
+ The following equation shows how to set up the clock speed\-:
+
+S\-C\-L frequency = C\-P\-U clock / 16 + 2 $\ast$ T\-W\-B\-R $\ast$ (4 $^\wedge$ T\-W\-P\-S)
+
+According to the equation we choosed T\-W\-B\-R = 18 and T\-W\-S\-R = 1 for 100k\-Hz operations.\par
+ 
+\begin{DoxyCode}
+TWBR = \hyperlink{twi__master_8h_abcb6be311da26987e2942ef57aaf3fb8}{TWI\_TWBR\_VALUE\_100};
+TWSR &= 0b11111100;
+TWSR |= 0x01;
+\end{DoxyCode}
+\par
+ As we can see in this tiny code fragment, the T\-W\-P\-S value is encoded by the two last bits of the T\-W\-S\-R register. 
+
+Definition at line 36 of file twi\-\_\-master.\-c.
+
+
+
+References T\-W\-I\-\_\-\-T\-W\-B\-R\-\_\-\-V\-A\-L\-U\-E\-\_\-100.
+
+\hypertarget{twi__master_8c_a89bdf8dea79a9e017c3821b6e270c093}{\index{twi\-\_\-master.\-c@{twi\-\_\-master.\-c}!twi\-\_\-master\-\_\-set\-\_\-ready@{twi\-\_\-master\-\_\-set\-\_\-ready}}
+\index{twi\-\_\-master\-\_\-set\-\_\-ready@{twi\-\_\-master\-\_\-set\-\_\-ready}!twi_master.c@{twi\-\_\-master.\-c}}
+\subsubsection[{twi\-\_\-master\-\_\-set\-\_\-ready}]{\setlength{\rightskip}{0pt plus 5cm}void twi\-\_\-master\-\_\-set\-\_\-ready (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{twi__master_8c_a89bdf8dea79a9e017c3821b6e270c093}
+
+
+Definition at line 162 of file twi\-\_\-master.\-c.
+
+
+
+References ready.
+
+
+
+Referenced by bma020\-\_\-read\-\_\-raw\-\_\-acceleration().
+
+\hypertarget{twi__master_8c_a095a100e547815faf66df46a87968988}{\index{twi\-\_\-master.\-c@{twi\-\_\-master.\-c}!twi\-\_\-receive\-\_\-data@{twi\-\_\-receive\-\_\-data}}
+\index{twi\-\_\-receive\-\_\-data@{twi\-\_\-receive\-\_\-data}!twi_master.c@{twi\-\_\-master.\-c}}
+\subsubsection[{twi\-\_\-receive\-\_\-data}]{\setlength{\rightskip}{0pt plus 5cm}void twi\-\_\-receive\-\_\-data (
+\begin{DoxyParamCaption}
+\item[{uint8\-\_\-t}]{slave, }
+\item[{uint8\-\_\-t}]{anz\-\_\-bytes}
+\end{DoxyParamCaption}
+)}}\label{twi__master_8c_a095a100e547815faf66df46a87968988}
+
+
+Corresponding to send\-\_\-data this method receives data the same way. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em slave} & contains the slave adress \\
+\hline
+{\em anz\-\_\-bytes} & contains the amount of bytes that have to be transmitted\\
+\hline
+\end{DoxyParams}
+A global receive\-\_\-buffer is used to store data that is received by T\-W\-I. 
+\begin{DoxyCode}
+\textcolor{keyword}{extern} \textcolor{keywordtype}{void} receive\_data(uint8\_t slave, uint8\_t anz\_bytes)
+\{
+    \hyperlink{twi__master_8c_a3dec6baf6b8e19f87fb59089679d3094}{ready} = FALSE;
+    \hyperlink{twi__master_8c_a926e6e50d6c5aca7f59eba912f869ebe}{transmitter} = FALSE;
+    \hyperlink{twi__master_8c_a2611e342f148c60ff2a7a02415541917}{sla} = slave;
+    \hyperlink{twi__master_8c_a72a28732edd60c3bdb789466923678a1}{number\_of\_bytes} = anz\_bytes;
+    \hyperlink{twi__master_8c_ae92e79ba1068f524ceedbdf8049ef43e}{rindx} = 0;
+    TWCR = (1<<TWINT) | (1<<TWSTA) | (1<<TWEN) | (1<<TWIE);
+    \textcolor{keywordflow}{while}(!\hyperlink{twi__master_8c_a3dec6baf6b8e19f87fb59089679d3094}{ready})\{\}
+\}
+\end{DoxyCode}
+ The only differences\-: \par
+{\bfseries transmitter} is set to F\-A\-L\-S\-E \par
+Instead of sindex we set rindex to zero. 
+
+Definition at line 151 of file twi\-\_\-master.\-c.
+
+
+
+References number\-\_\-of\-\_\-bytes, ready, rindx, sla, and transmitter.
+
+
+
+Referenced by bma020\-\_\-read\-\_\-raw\-\_\-acceleration().
+
+\hypertarget{twi__master_8c_a38ff1db93a888454fab7847af2a0f5c7}{\index{twi\-\_\-master.\-c@{twi\-\_\-master.\-c}!twi\-\_\-send\-\_\-data@{twi\-\_\-send\-\_\-data}}
+\index{twi\-\_\-send\-\_\-data@{twi\-\_\-send\-\_\-data}!twi_master.c@{twi\-\_\-master.\-c}}
+\subsubsection[{twi\-\_\-send\-\_\-data}]{\setlength{\rightskip}{0pt plus 5cm}void twi\-\_\-send\-\_\-data (
+\begin{DoxyParamCaption}
+\item[{uint8\-\_\-t}]{slave, }
+\item[{uint8\-\_\-t}]{anz\-\_\-bytes}
+\end{DoxyParamCaption}
+)}}\label{twi__master_8c_a38ff1db93a888454fab7847af2a0f5c7}
+
+
+Method to send data to a slave. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em slave} & contains the slave adress \\
+\hline
+{\em anz\-\_\-bytes} & contains the amount of bytes that have to be transmitted\\
+\hline
+\end{DoxyParams}
+The data to be transmitted is stored in the global variable send\-\_\-buffer. send\-\_\-buffer\mbox{[}\mbox{]} is an array of uint8\-\_\-t types. It's size is defined by the constant B\-U\-F\-\_\-\-S\-I\-Z\-E. The declaration of send\-\_\-buffer is located in the \hyperlink{twi__master_8h}{twi\-\_\-master.\-h} file. 
+
+If one wants to transmit data to a slave, he has to write the data to the send\-\_\-buffer. After calling the send\-\_\-data() method, all bytes from send\-\_\-buffer\mbox{[}0\mbox{]} to send\-\_\-buffer\mbox{[}anz\-\_\-bytes -\/ 1\mbox{]} will be transmitted to the slave without interruption.
+
+
+\begin{DoxyCode}
+\textcolor{keyword}{extern} \textcolor{keywordtype}{void} send\_data(uint8\_t slave, uint8\_t anz\_bytes)
+\{
+    \hyperlink{twi__master_8c_a3dec6baf6b8e19f87fb59089679d3094}{ready} = \textcolor{keyword}{false};
+    \hyperlink{twi__master_8c_a926e6e50d6c5aca7f59eba912f869ebe}{transmitter} = \textcolor{keyword}{true};
+    \hyperlink{twi__master_8c_a2611e342f148c60ff2a7a02415541917}{sla} = slave;
+    \hyperlink{twi__master_8c_a72a28732edd60c3bdb789466923678a1}{number\_of\_bytes} = anz\_bytes;
+    \hyperlink{twi__master_8c_ac2f9e24d25da5bfdbeb188d3f09e7619}{sindx} = 0;
+    TWCR = (1<<TWINT) | (1<<TWSTA) | (1<<TWEN) | (1<<TWIE);
+    \textcolor{keywordflow}{while}(!\hyperlink{twi__master_8c_a3dec6baf6b8e19f87fb59089679d3094}{ready})\{\}
+\}
+\end{DoxyCode}
+ Code explanation in detail\-: 
+
+
+\begin{DoxyCode}
+\hyperlink{twi__master_8c_a3dec6baf6b8e19f87fb59089679d3094}{ready} = \textcolor{keyword}{false};
+\end{DoxyCode}
+ The {\bfseries ready} variable is used to guarantee, that the whole transmission of every bytes is done without interruption. The program flow within the main method of this master controller is halted until all bytes have been transmitted. 
+
+
+\begin{DoxyCode}
+\hyperlink{twi__master_8c_a926e6e50d6c5aca7f59eba912f869ebe}{transmitter} = \textcolor{keyword}{true};
+\end{DoxyCode}
+ By setting the variable {\bfseries transmitter} to {\itshape T\-R\-U\-E}, the I\-S\-R of the master controller can determine wether Master Transmitter or Master Receiver mode is active. 
+
+
+\begin{DoxyCode}
+\hyperlink{twi__master_8c_a2611e342f148c60ff2a7a02415541917}{sla} = slave;
+\end{DoxyCode}
+ Store the slave adress in the global variable sla to make it visible for the I\-S\-R. Same with anz\-\_\-bytes. 
+
+
+\begin{DoxyCode}
+\hyperlink{twi__master_8c_ac2f9e24d25da5bfdbeb188d3f09e7619}{sindx} = 0;
+\end{DoxyCode}
+ Set the send\-\_\-buffer index to zero. 
+
+
+\begin{DoxyCode}
+TWCR = (1<<TWINT) | (1<<TWSTA) | (1<<TWEN) | (1<<TWIE);
+\end{DoxyCode}
+ Here we can see how to manipulate the Two Wire Control Register. \par
+T\-W\-I\-N\-T causes the T\-W\-I to trigger an interrupt so that the I\-S\-R executes. \par
+T\-W\-S\-T\-A cause the T\-W\-I to put a {\itshape  start signal } on the T\-W\-I bus. All attached slave will recognize the start signal. \par
+T\-W\-E\-N enables the T\-W\-I. \par
+T\-W\-I\-E Two Wire Interrupt Enable allows the T\-W\-I to trigger interrupts. 
+
+
+\begin{DoxyCode}
+\textcolor{keywordflow}{while}(!\hyperlink{twi__master_8c_a3dec6baf6b8e19f87fb59089679d3094}{ready})\{\}
+The \hyperlink{twi__master_8c_a3dec6baf6b8e19f87fb59089679d3094}{ready} flag is set within the \hyperlink{twi__master_8c_a474f42eedbdc093683fdb4b88be3c48f}{ISR} when the TWI reaches an end state that indicates that the 
+      transmission
+has finished.
+\end{DoxyCode}
+ 
+
+Definition at line 115 of file twi\-\_\-master.\-c.
+
+
+
+References number\-\_\-of\-\_\-bytes, ready, sindx, sla, and transmitter.
+
+
+
+Referenced by bma020\-\_\-read\-\_\-raw\-\_\-acceleration().
+
+
+
+\subsection{Variable Documentation}
+\hypertarget{twi__master_8c_a72a28732edd60c3bdb789466923678a1}{\index{twi\-\_\-master.\-c@{twi\-\_\-master.\-c}!number\-\_\-of\-\_\-bytes@{number\-\_\-of\-\_\-bytes}}
+\index{number\-\_\-of\-\_\-bytes@{number\-\_\-of\-\_\-bytes}!twi_master.c@{twi\-\_\-master.\-c}}
+\subsubsection[{number\-\_\-of\-\_\-bytes}]{\setlength{\rightskip}{0pt plus 5cm}volatile uint8\-\_\-t number\-\_\-of\-\_\-bytes}}\label{twi__master_8c_a72a28732edd60c3bdb789466923678a1}
+
+
+Definition at line 12 of file twi\-\_\-master.\-c.
+
+
+
+Referenced by I\-S\-R(), twi\-\_\-receive\-\_\-data(), and twi\-\_\-send\-\_\-data().
+
+\hypertarget{twi__master_8c_a3dec6baf6b8e19f87fb59089679d3094}{\index{twi\-\_\-master.\-c@{twi\-\_\-master.\-c}!ready@{ready}}
+\index{ready@{ready}!twi_master.c@{twi\-\_\-master.\-c}}
+\subsubsection[{ready}]{\setlength{\rightskip}{0pt plus 5cm}volatile uint8\-\_\-t ready}}\label{twi__master_8c_a3dec6baf6b8e19f87fb59089679d3094}
+
+
+Definition at line 13 of file twi\-\_\-master.\-c.
+
+
+
+Referenced by I\-S\-R(), twi\-\_\-master\-\_\-set\-\_\-ready(), twi\-\_\-receive\-\_\-data(), and twi\-\_\-send\-\_\-data().
+
+\hypertarget{twi__master_8c_ae92e79ba1068f524ceedbdf8049ef43e}{\index{twi\-\_\-master.\-c@{twi\-\_\-master.\-c}!rindx@{rindx}}
+\index{rindx@{rindx}!twi_master.c@{twi\-\_\-master.\-c}}
+\subsubsection[{rindx}]{\setlength{\rightskip}{0pt plus 5cm}volatile uint8\-\_\-t rindx}}\label{twi__master_8c_ae92e79ba1068f524ceedbdf8049ef43e}
+
+
+Definition at line 10 of file twi\-\_\-master.\-c.
+
+
+
+Referenced by I\-S\-R(), and twi\-\_\-receive\-\_\-data().
+
+\hypertarget{twi__master_8c_ac2f9e24d25da5bfdbeb188d3f09e7619}{\index{twi\-\_\-master.\-c@{twi\-\_\-master.\-c}!sindx@{sindx}}
+\index{sindx@{sindx}!twi_master.c@{twi\-\_\-master.\-c}}
+\subsubsection[{sindx}]{\setlength{\rightskip}{0pt plus 5cm}volatile uint8\-\_\-t sindx}}\label{twi__master_8c_ac2f9e24d25da5bfdbeb188d3f09e7619}
+
+
+Definition at line 11 of file twi\-\_\-master.\-c.
+
+
+
+Referenced by I\-S\-R(), and twi\-\_\-send\-\_\-data().
+
+\hypertarget{twi__master_8c_a2611e342f148c60ff2a7a02415541917}{\index{twi\-\_\-master.\-c@{twi\-\_\-master.\-c}!sla@{sla}}
+\index{sla@{sla}!twi_master.c@{twi\-\_\-master.\-c}}
+\subsubsection[{sla}]{\setlength{\rightskip}{0pt plus 5cm}volatile uint8\-\_\-t sla}}\label{twi__master_8c_a2611e342f148c60ff2a7a02415541917}
+
+
+Definition at line 14 of file twi\-\_\-master.\-c.
+
+
+
+Referenced by I\-S\-R(), twi\-\_\-receive\-\_\-data(), and twi\-\_\-send\-\_\-data().
+
+\hypertarget{twi__master_8c_a926e6e50d6c5aca7f59eba912f869ebe}{\index{twi\-\_\-master.\-c@{twi\-\_\-master.\-c}!transmitter@{transmitter}}
+\index{transmitter@{transmitter}!twi_master.c@{twi\-\_\-master.\-c}}
+\subsubsection[{transmitter}]{\setlength{\rightskip}{0pt plus 5cm}volatile uint8\-\_\-t transmitter}}\label{twi__master_8c_a926e6e50d6c5aca7f59eba912f869ebe}
+
+
+Definition at line 9 of file twi\-\_\-master.\-c.
+
+
+
+Referenced by I\-S\-R(), twi\-\_\-receive\-\_\-data(), and twi\-\_\-send\-\_\-data().
+
+\hypertarget{twi__master_8c_ae178071b85b716b65d0b856e85534c3b}{\index{twi\-\_\-master.\-c@{twi\-\_\-master.\-c}!twi\-\_\-receive\-\_\-buffer@{twi\-\_\-receive\-\_\-buffer}}
+\index{twi\-\_\-receive\-\_\-buffer@{twi\-\_\-receive\-\_\-buffer}!twi_master.c@{twi\-\_\-master.\-c}}
+\subsubsection[{twi\-\_\-receive\-\_\-buffer}]{\setlength{\rightskip}{0pt plus 5cm}volatile uint8\-\_\-t twi\-\_\-receive\-\_\-buffer\mbox{[}{\bf B\-U\-F\-F\-E\-R\-\_\-\-S\-I\-Z\-E}\mbox{]}}}\label{twi__master_8c_ae178071b85b716b65d0b856e85534c3b}
+
+
+Definition at line 5 of file twi\-\_\-master.\-c.
+
+
+
+Referenced by bma020\-\_\-read\-\_\-raw\-\_\-acceleration(), and I\-S\-R().
+
+\hypertarget{twi__master_8c_a0ebfdf89c2595f09b88e3fa8d5f3ec3b}{\index{twi\-\_\-master.\-c@{twi\-\_\-master.\-c}!twi\-\_\-send\-\_\-buffer@{twi\-\_\-send\-\_\-buffer}}
+\index{twi\-\_\-send\-\_\-buffer@{twi\-\_\-send\-\_\-buffer}!twi_master.c@{twi\-\_\-master.\-c}}
+\subsubsection[{twi\-\_\-send\-\_\-buffer}]{\setlength{\rightskip}{0pt plus 5cm}volatile uint8\-\_\-t twi\-\_\-send\-\_\-buffer\mbox{[}{\bf B\-U\-F\-F\-E\-R\-\_\-\-S\-I\-Z\-E}\mbox{]}}}\label{twi__master_8c_a0ebfdf89c2595f09b88e3fa8d5f3ec3b}
+
+
+Definition at line 6 of file twi\-\_\-master.\-c.
+
+
+
+Referenced by bma020\-\_\-read\-\_\-raw\-\_\-acceleration(), and I\-S\-R().
+
