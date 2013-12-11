@@ -209,7 +209,10 @@ void system_controller_state_init_system_hardware(void)
 	/* **** DO ***** */
 
 	sei();
-	accelerationsensor_init();
+
+	bma020_init();
+	accelerationsensor_init(1, NULL);
+
 	motor_control_init();
 
 	/* *** EXIT **** */
@@ -374,10 +377,9 @@ void system_controller_state_run_pid_controller(void)
 	printf("system_controller_state_run_pid_controller(void)\n");
 
 	uint16_t speed = 0;
-	acceleration_t current_accel;
 	motor_contol_speed_t new_speed;
 
-	double x, z, position;
+	double position;
 
 	/* **** DO ***** */
 
@@ -398,25 +400,16 @@ void system_controller_state_run_pid_controller(void)
 				 */
 //				PORTC ^= (LED1 | LED2);				//LED1 an.
 
-				//Beschleunigungswerte lesen
-				accelerationsensor_get_current_acceleration(&current_accel);
+				//Beschleunigungswerte lesen und in Position umrechnen
+				position = accelerationsensor_get_current_position();
 
-				//Beschleunigungswerte in Position umrechnen
-				x = (double)(current_accel.x);
-				z = (double)(current_accel.z);
-
-				position = atan2(x, z) * 100;
-
-				/* TODO: als IST-Wert in den PID-Regler geben
-				 * Stellgrï¿½ï¿½e an Motorsteuerung weitergeben, ABER noch nicht setzen
-				 */
-
-
+				//Aktuelle Position an den PID Regler geben und neue Stellgrš§e berechnen
 				speed = pid_Controller(0, (int16_t)(position), &pid_data);
 
 				new_speed.motor_1 = speed >> 8;
 				new_speed.motor_2 = speed >> 8;
 
+				// Neue Stellgrï¿½ï¿½e an Motorsteuerung weitergeben, ABER noch nicht setzen
 				motor_control_prepare_new_speed(&new_speed);
 //				PORTC ^= LED2;
 			}
