@@ -9,6 +9,7 @@
 #include "accelerationsensor.h"
 
 #include <math.h>
+#include <stdlib.h>
 
 #include "bma020.h"
 #include "moving_average.h"
@@ -20,12 +21,12 @@
  *
  * */
 
-
-
 /* *** DECLARATIONS ********************************************************** */
 
 /* local type and constants     */
 static acceleration_t offset;
+static uint16_t pos_multiplier;
+
 
 static moving_average_t average_acceleration_x;
 static moving_average_t average_acceleration_y;
@@ -70,6 +71,12 @@ void accelerationsensor_get_current_acceleration(acceleration_t *acceleration)
 	acceleration->z = average_acceleration_z.mean;
 }
 
+/**
+ *	Calculates the current position with atan2() and the current acceleration
+ *	vector.
+ *
+ * @return current position
+ */
 double accelerationsensor_get_current_position()
 {
 	acceleration_t temp_accel;
@@ -78,9 +85,7 @@ double accelerationsensor_get_current_position()
 	accelerationsensor_get_current_acceleration(&temp_accel);
 
 	//convert to position
-	return atan2(temp_accel.x,temp_accel.z);
-
-	//convert to int
+	return (atan2(temp_accel.x, temp_accel.z) * pos_multiplier);
 }
 
 /**
@@ -117,22 +122,60 @@ void accelerationsensor_get_offset(acceleration_t *accel)
  */
 void accelerationsensor_set_offset(acceleration_t *accel)
 {
-	offset.x = accel->x;
-	offset.y = accel->y;
-	offset.z = accel->z;
+	if(accel != NULL) {
+		offset.x = accel->x;
+		offset.y = accel->y;
+		offset.z = accel->z;
+	} else {
+		offset.x = 0;
+		offset.y = 0;
+		offset.z = 0;
+	}
 }
 
 /**
- * Initialized the acceleration module.
- *
- * Sets offset to zero.
+ * Return the current posiition multiplier
+ * @return current position multiplier
  */
-void accelerationsensor_init(void)
+uint16_t accelerationsensor_get_position_multiplier(void)
 {
-	offset.x = 0;
-	offset.y = 0;
-	offset.z = 0;
+	return pos_multiplier;
+}
 
-	bma020_init();
+
+/**
+ * Sets the position multiplier. Range is 1 to 2^16.
+ * @param position_multiplier
+ */
+void accelerationsensor_set_position_multiplier(uint16_t position_multiplier)
+{
+	if(position_multiplier > 1) {
+		pos_multiplier = position_multiplier;
+	} else {
+		pos_multiplier = 1;
+	}
+}
+
+/**
+ * Initialize the acceleration module.
+ *
+ *  - Sets offset to given offset vector or to zero
+ *  - Sets position_multiplier to given value or to 1
+ *  - reads so long positions till the average mean buffers a filled
+ */
+void accelerationsensor_init(uint16_t position_multiplier, acceleration_t *accel)
+{
+	uint8_t i;
+
+	//set position_multiplier
+	accelerationsensor_set_position_multiplier(position_multiplier);
+
+	//set offset
+	accelerationsensor_set_offset(accel);
+
+	//fill buffer of the average with values
+	for(i = 0;i < MOVING_AVERAGE_ELEMENT_COUNT;i++) {
+		accelerationsensor_get_current_position();
+	}
 }
 
