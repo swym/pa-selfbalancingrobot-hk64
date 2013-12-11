@@ -33,7 +33,7 @@ void test_acceleration_init_and_calibration(void)
 	acceleration_t temp_accel;
 	uint8_t i;
 
-	accelerationsensor_init();
+	accelerationsensor_init(1, NULL);
 	bma020_set_range(2);
 /*
 	for(i = 0;i < 255;i++) {
@@ -86,7 +86,7 @@ void test_acceleration_configure_convertion(void)
 {
 	acceleration_t offset = {-3456, 2048, 1919};
 
-	accelerationsensor_init();
+	accelerationsensor_init(1, NULL);
 	accelerationsensor_set_offset(&offset);
 
 	double pos, pos_dbl;
