@@ -24,6 +24,7 @@
 #include "configuration_terminal.h"
 #include "vt100.h"
 
+#include "bma020.h"
 #include "accelerationsensor.h"
 #include "motor_control.h"
 #include "pid.h"
@@ -210,7 +211,10 @@ void system_controller_state_init_system_hardware(void)
 
 	sei();
 
+
+	//init hw-accel sensor
 	bma020_init();
+
 	accelerationsensor_init(1, NULL);
 
 	motor_control_init();
@@ -357,6 +361,7 @@ void system_controller_state_init_pid_controller(void)
 			 &pid_data);
 
 	accelerationsensor_set_offset(&configuration_setting_data[configuration_setting_current_index].acceleration_offset);
+	accelerationsensor_get_position_multiplier(&configuration_setting_data[configuration_setting_current_index].position_multiplier);
 
 	cli();
 
