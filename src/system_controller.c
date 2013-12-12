@@ -361,7 +361,7 @@ void system_controller_state_init_pid_controller(void)
 			 &pid_data);
 
 	accelerationsensor_set_offset(&configuration_setting_data[configuration_setting_current_index].acceleration_offset);
-	accelerationsensor_get_position_multiplier(&configuration_setting_data[configuration_setting_current_index].position_multiplier);
+	accelerationsensor_set_position_multiplier(configuration_setting_data[configuration_setting_current_index].position_multiplier);
 
 	cli();
 
