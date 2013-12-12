@@ -18,7 +18,7 @@
 #include "stdbool.h"
 
 /* local headers               */
-#include "acceleration_t.h"
+#include "accelerationsensor.h"
 
 
 /* *** DECLARATIONS ********************************************************** */
