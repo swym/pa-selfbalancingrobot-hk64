@@ -23,7 +23,6 @@ typedef struct {
 	uint8_t config_version;
 	char comment[CONFIGURATION_MANAGER_CONFIG_COMMENT_LENGTH];
 	bool has_changed;
-
 } configuration_t;
 
 typedef struct {
@@ -38,5 +37,27 @@ typedef struct {
 	uint16_t position_multiplier;
 } accelerationsensor_config_t;
 
+/* extern functions */
+extern int16_t configuration_manager_current_config_get_p_factor(void);
+extern void configuration_manager_current_config_set_p_factor(int16_t);
+
+extern int16_t configuration_manager_current_config_get_i_factor(void);
+extern void configuration_manager_current_config_set_i_factor(int16_t);
+
+extern int16_t configuration_manager_current_config_get_d_factor(void);
+extern void configuration_manager_current_config_set_d_factor(int16_t);
+
+extern uint16_t configuration_manager_current_config_get_scalingfactor(void);
+extern void configuration_manager_current_config_set_scalingfactor(uint16_t);
+
+extern void configuration_manager_current_config_get_acceleration_offset(acceleration_t *); /* acceleration_t *accel */
+extern void configuration_manager_current_config_set_acceleration_offset(acceleration_t *); /* acceleration_t *accel */
+
+extern uint16_t configuration_manager_current_config_get_position_multiplier(void);
+extern void configuration_manager_current_config_set_position_multiplier(uint16_t);
+
+extern void configuration_manager_init(void);
+
+extern void configuration_manager_write_config(void);
 
 #endif /* CONFIGURATION_MANAGER_H_ */
