@@ -65,3 +65,98 @@ bool configuration_manager_init(void)
 
 	return current_config_valid;
 }
+
+int16_t configuration_manager_current_config_get_p_factor(void)
+{
+	return current_configuration.pid.p_factor;
+}
+
+void configuration_manager_current_config_set_p_factor(int16_t p_factor)
+{
+	current_configuration.pid.p_factor =  p_factor;
+	current_configuration.has_changed = true;
+}
+
+
+
+int16_t configuration_manager_current_config_get_i_factor(void)
+{
+	return current_configuration.pid.i_factor;
+}
+
+void configuration_manager_current_config_set_i_factor(int16_t i_factor)
+{
+	current_configuration.pid.i_factor =  i_factor;
+	current_configuration.has_changed = true;
+}
+
+
+
+int16_t configuration_manager_current_config_get_d_factor(void)
+{
+	return current_configuration.pid.d_factor;
+}
+
+void configuration_manager_current_config_set_d_factor(int16_t d_factor)
+{
+	current_configuration.pid.d_factor =  d_factor;
+	current_configuration.has_changed = true;
+}
+
+
+uint16_t configuration_manager_current_config_get_gscalingfactor(void)
+{
+	return current_configuration.pid.scalingfactor;
+}
+
+void configuration_manager_current_config_set_scalingfactor(uint16_t scalingfactor)
+{
+	current_configuration.pid.scalingfactor =  scalingfactor;
+	current_configuration.has_changed = true;
+}
+
+
+void configuration_manager_current_config_get_acceleration_offset(acceleration_t *accel)
+{
+	memcpy(accel,
+			&current_configuration.accelerationsensor.acceleration_offset,
+			sizeof(acceleration_t));
+}
+
+
+void configuration_manager_current_config_set_acceleration_offset(acceleration_t *accel)
+{
+
+	memcpy(&current_configuration.accelerationsensor.acceleration_offset,
+			accel,
+			sizeof(acceleration_t));
+
+	current_configuration.has_changed = true;
+}
+
+
+uint16_t configuration_manager_current_config_get_position_multiplier(void)
+{
+	return current_configuration.accelerationsensor.position_multiplier;
+}
+
+void configuration_manager_current_config_set_position_multiplier(uint16_t multiplier)
+{
+	current_configuration.accelerationsensor.position_multiplier = multiplier;
+	current_configuration.has_changed = true;
+}
+
+
+void configuration_manager_write_config(void)
+{
+	if(current_configuration.has_changed) {
+		eeprom_write_block(&current_configuration,
+				&configurations_eeprom[current_configuration_index],
+				sizeof(configuration_t));
+
+		eeprom_write_byte(&current_configuration_index_eeprom,
+				current_configuration_index);
+
+		current_configuration.has_changed = false;
+	}
+}
