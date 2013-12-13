@@ -14,14 +14,13 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <avr/eeprom.h>
 #include <util/delay.h>
 
 #include "lib/uart.h"
 #include "lib/twi_master.h"
 
-#include "configuration_setting.h"
 #include "configuration_terminal.h"
+#include "configuration_manager.h"
 #include "vt100.h"
 
 #include "bma020.h"
@@ -32,17 +31,6 @@
 
 
 /* *** DECLARATIONS ********************************************************** */
-
-/* import global variables */
-
-//Settings
-configuration_setting_t configuration_setting_data_eeprom[CONFIGURATION_SETTING_COUNT]	__attribute__ ((section (".eeprom")));
-uint8_t configuration_setting_current_index_eeprom										__attribute__ ((section (".eeprom")));
-
-configuration_setting_t configuration_setting_default;
-configuration_setting_t configuration_setting_data[CONFIGURATION_SETTING_COUNT];
-uint8_t configuration_setting_current_index;
-
 
 // Timer
 volatile bool timer_compare_reached;
@@ -230,54 +218,15 @@ void system_controller_state_load_settings(void)
 
 	/* *** ENTRY *** */
 
-	uint8_t i;
-	uint8_t valid_settings = 0;
-
 	/* **** DO ***** */
-
-
-	//Init default-setting
-	configuration_setting_default.pid_scalingfactor = 1;				//TODO: #define defaultsettings somewhere
-	configuration_setting_default.position_multiplier = 1;
-	configuration_setting_default.setting_version = CONFIGURATION_SETTING_VERSION;
-	strcpy(configuration_setting_default.comment, "- new -");
-
-	//read index of current setting
-	configuration_setting_current_index = eeprom_read_byte(&configuration_setting_current_index_eeprom);
-
-	//and validate
-	if(configuration_setting_current_index >= CONFIGURATION_SETTING_COUNT) {
-		configuration_setting_current_index = 0;
-	}
-
-	//read settings from eeprom
-	for(i = 0;i < CONFIGURATION_SETTING_COUNT;i++) {
-
-		//read setting from eeprom into temp variable
-		eeprom_read_block(&configuration_setting_data[i],
-						  &configuration_setting_data_eeprom[i],
-						  sizeof(configuration_setting_t));
-
-		//validate; if read setting is valid; write into array
-		//TODO: implemnt a more spohisticated validation against the real versionnumber
-		if(configuration_setting_data[i].setting_version == CONFIGURATION_SETTING_VERSION) {
-			valid_settings++;
-		} else {
-			//Copy default
-			memcpy(&configuration_setting_data[i],
-				   &configuration_setting_default,
-				   sizeof(configuration_setting_t));
-		}
-	}
-
-	/* *** EXIT **** */
-
 	//if no valid configuration found, then run config terminal directly
-	if(valid_settings > 0) {
+	if(configuration_manager_init()) {
 		next_state = STATE_WAITING_FOR_USER_INTERRUPT;
 	} else {
 		next_state = STATE_RUN_CONFIGURATION_TERMINAL;
 	}
+
+	/* *** EXIT **** */
 }
 
 
@@ -351,17 +300,22 @@ void system_controller_state_init_pid_controller(void)
 {
 	/* *** ENTRY *** */
 
+	acceleration_t accel;
+
+
 	printf("system_controller_state_init_pid_controller(void)\n");
 
 	/* **** DO ***** */
 
-	pid_Init(configuration_setting_data[configuration_setting_current_index].pid_p_factor,
-			 configuration_setting_data[configuration_setting_current_index].pid_i_factor,
-			 configuration_setting_data[configuration_setting_current_index].pid_d_factor,
+	pid_Init(configuration_manager_current_config_get_p_factor(),
+			 configuration_manager_current_config_get_i_factor(),
+			 configuration_manager_current_config_get_d_factor(),
 			 &pid_data);
 
-	accelerationsensor_set_offset(&configuration_setting_data[configuration_setting_current_index].acceleration_offset);
-	accelerationsensor_set_position_multiplier(configuration_setting_data[configuration_setting_current_index].position_multiplier);
+	configuration_manager_current_config_get_acceleration_offset(&accel);
+
+	accelerationsensor_set_offset(&accel);
+	accelerationsensor_set_position_multiplier(configuration_manager_current_config_get_position_multiplier());
 
 	cli();
 
