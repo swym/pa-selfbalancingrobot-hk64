@@ -56,7 +56,15 @@ bool configuration_manager_init(void)
 	if(current_config_valid == false &&
 			current_configuration.version != CONFIGURATION_MANAGER_CONFIG_VERSION) {
 
+		current_configuration.pid.p_factor = 0;
+		current_configuration.pid.i_factor = 0;
+		current_configuration.pid.d_factor = 0;
 		current_configuration.pid.scalingfactor = 1;
+
+		current_configuration.accelerationsensor.acceleration_offset.x = 0;
+		current_configuration.accelerationsensor.acceleration_offset.y = 0;
+		current_configuration.accelerationsensor.acceleration_offset.z = 0;
+
 		current_configuration.accelerationsensor.position_multiplier = 1;
 		current_configuration.version = CONFIGURATION_MANAGER_CONFIG_VERSION;
 		strcpy(current_configuration.comment, "- new -");
