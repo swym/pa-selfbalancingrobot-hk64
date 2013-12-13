@@ -29,7 +29,7 @@ uint8_t current_configuration_index_eeprom											__attribute__ ((section (".
 
 /**
  * return true, if current configuration is valid
- * return false, if current configuration is invalid and was initialised with default values
+ * return false, if current configuration is invalid and was initialized with default values
  * @return
  */
 bool configuration_manager_init(void)
@@ -56,10 +56,18 @@ bool configuration_manager_init(void)
 	if(current_config_valid == false &&
 			current_configuration.version != CONFIGURATION_MANAGER_CONFIG_VERSION) {
 
+		current_configuration.pid.p_factor = 0;
+		current_configuration.pid.i_factor = 0;
+		current_configuration.pid.d_factor = 0;
 		current_configuration.pid.scalingfactor = 1;
+
+		current_configuration.accelerationsensor.acceleration_offset.x = 0;
+		current_configuration.accelerationsensor.acceleration_offset.y = 0;
+		current_configuration.accelerationsensor.acceleration_offset.z = 0;
+
 		current_configuration.accelerationsensor.position_multiplier = 1;
 		current_configuration.version = CONFIGURATION_MANAGER_CONFIG_VERSION;
-		strcpy(current_configuration.comment, "- new -");
+		strncpy(current_configuration.comment, "- new -", CONFIGURATION_MANAGER_CONFIG_COMMENT_LENGTH);
 	}
 
 
@@ -104,32 +112,30 @@ void configuration_manager_current_config_set_d_factor(int16_t d_factor)
 }
 
 
-uint16_t configuration_manager_current_config_get_gscalingfactor(void)
+uint16_t configuration_manager_current_config_get_scalingfactor(void)
 {
 	return current_configuration.pid.scalingfactor;
 }
 
 void configuration_manager_current_config_set_scalingfactor(uint16_t scalingfactor)
 {
-	current_configuration.pid.scalingfactor =  scalingfactor;
+	current_configuration.pid.scalingfactor = scalingfactor;
 	current_configuration.has_changed = true;
 }
 
 
-void configuration_manager_current_config_get_acceleration_offset(acceleration_t *accel)
+acceleration_t * configuration_manager_current_config_get_acceleration_offset()
 {
-	memcpy(accel,
-			&current_configuration.accelerationsensor.acceleration_offset,
-			sizeof(acceleration_t));
+	return &current_configuration.accelerationsensor.acceleration_offset;
 }
 
 
 void configuration_manager_current_config_set_acceleration_offset(acceleration_t *accel)
 {
 
-	memcpy(&current_configuration.accelerationsensor.acceleration_offset,
-			accel,
-			sizeof(acceleration_t));
+	current_configuration.accelerationsensor.acceleration_offset.x = accel->x;
+	current_configuration.accelerationsensor.acceleration_offset.y = accel->y;
+	current_configuration.accelerationsensor.acceleration_offset.z = accel->z;
 
 	current_configuration.has_changed = true;
 }
@@ -144,6 +150,26 @@ void configuration_manager_current_config_set_position_multiplier(uint16_t multi
 {
 	current_configuration.accelerationsensor.position_multiplier = multiplier;
 	current_configuration.has_changed = true;
+}
+
+char * configuration_manager_current_config_get_comment(void)
+{
+	return current_configuration.comment;
+}
+
+void configuration_manager_current_config_set_comment(char *new_comment)
+{
+	strncpy(current_configuration.comment,
+			new_comment,
+			CONFIGURATION_MANAGER_CONFIG_COMMENT_LENGTH);
+
+	current_configuration.has_changed = true;
+}
+
+
+bool configuration_manager_current_config_has_changed(void)
+{
+	return current_configuration.has_changed;
 }
 
 

@@ -52,11 +52,16 @@ extern void configuration_manager_current_config_set_d_factor(int16_t);
 extern uint16_t configuration_manager_current_config_get_scalingfactor(void);
 extern void configuration_manager_current_config_set_scalingfactor(uint16_t);
 
-extern void configuration_manager_current_config_get_acceleration_offset(acceleration_t *); /* acceleration_t *accel */
+extern acceleration_t * configuration_manager_current_config_get_acceleration_offset(void); /* acceleration_t *accel */
 extern void configuration_manager_current_config_set_acceleration_offset(acceleration_t *); /* acceleration_t *accel */
 
 extern uint16_t configuration_manager_current_config_get_position_multiplier(void);
 extern void configuration_manager_current_config_set_position_multiplier(uint16_t);
+
+extern char * configuration_manager_current_config_get_comment(void);
+extern void   configuration_manager_current_config_set_comment(char *);
+
+extern bool configuration_manager_current_config_has_changed(void);
 
 extern bool configuration_manager_init(void);
 
