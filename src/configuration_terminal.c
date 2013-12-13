@@ -221,7 +221,7 @@ void configuration_terminal_state_main_menu(void)
 	//Greeting
 
 	printf("                          [Current Configuration]\n\n");
-//	printf("[C] - \"%s\"\n\n", configuration_setting_data[configuration_setting_current_index].comment);
+	printf("[C] - \"%s\"\n\n", configuration_manager_current_config_get_comment());
 
 
 	printf("    PID Controller                          Accelerationsensor\n\n");
@@ -231,15 +231,15 @@ void configuration_terminal_state_main_menu(void)
 
 	printf("[I] - Integral Parameter     : %5i    [O] - Set Offset           X : %5i\n",
 			configuration_manager_current_config_get_i_factor(),
-			-1); //TODO
+			configuration_manager_current_config_get_acceleration_offset()->x);
 
 	printf("[D] - Derivative Parameter   : %5u                               Y : %5i\n",
 			configuration_manager_current_config_get_d_factor(),
-			-1); //TODO
+			configuration_manager_current_config_get_acceleration_offset()->y);
 
 	printf("[F] - Factor                 : %5u                               Z : %5i\n",
 			configuration_manager_current_config_get_scalingfactor(),
-			-1); //TODO
+			configuration_manager_current_config_get_acceleration_offset()->z);
 
 	printf("\n\n    Settings\n\n[S] - Select current setting\n[W] - Write settings to EEPROM\n[E] - Export to csv\n");
 	printf("\n\n    Run\n\n[R] - Run system with current configuration\n");
@@ -422,16 +422,16 @@ void configuration_terminal_state_edit_comment(void)
 	// ENTRY
 	vt100_clear_all();
 
+	char new_comment[CONFIGURATION_MANAGER_CONFIG_COMMENT_LENGTH];
+
 	printf("=== EDIT COMMENT ===\n\n");
 
-	printf("Current value: \"%s\"\n\n", "tba");
+	printf("Current value: \"%s\"\n\n", configuration_manager_current_config_get_comment());
 
 	// DO
-	//TODO
-	//vt100_get_string(configuration_setting_data[configuration_setting_current_index].comment,
-	//	CONFIGURATION_SETTING_COMMENT_LENGTH);
 
-
+	vt100_get_string(new_comment, CONFIGURATION_MANAGER_CONFIG_COMMENT_LENGTH);
+	configuration_manager_current_config_set_comment(&new_comment);
 
 	next_state = STATE_MAIN_MENU;
 
