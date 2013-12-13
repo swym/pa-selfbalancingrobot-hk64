@@ -12,18 +12,11 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#include "accelerationsensor.h"
+
 #define CONFIGURATION_MANAGER_CONFIG_COUNT					6
 #define CONFIGURATION_MANAGER_CONFIG_VERSION				3
 #define CONFIGURATION_MANAGER_CONFIG_COMMENT_LENGTH			60
-
-typedef struct {
-	pid_configuration_t pid;
-	accelerationsensor_config_t accelerationsensor;
-
-	uint8_t config_version;
-	char comment[CONFIGURATION_MANAGER_CONFIG_COMMENT_LENGTH];
-	bool has_changed;
-} configuration_t;
 
 typedef struct {
 	int16_t p_factor;
@@ -36,6 +29,15 @@ typedef struct {
 	acceleration_t acceleration_offset;
 	uint16_t position_multiplier;
 } accelerationsensor_config_t;
+
+typedef struct {
+	pid_configuration_t pid;
+	accelerationsensor_config_t accelerationsensor;
+
+	char comment[CONFIGURATION_MANAGER_CONFIG_COMMENT_LENGTH];
+	uint8_t version;
+	bool has_changed;
+} configuration_t;
 
 /* extern functions */
 extern int16_t configuration_manager_current_config_get_p_factor(void);
@@ -56,7 +58,7 @@ extern void configuration_manager_current_config_set_acceleration_offset(acceler
 extern uint16_t configuration_manager_current_config_get_position_multiplier(void);
 extern void configuration_manager_current_config_set_position_multiplier(uint16_t);
 
-extern void configuration_manager_init(void);
+extern bool configuration_manager_init(void);
 
 extern void configuration_manager_write_config(void);
 
