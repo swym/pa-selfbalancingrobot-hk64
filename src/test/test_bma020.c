@@ -16,7 +16,7 @@
 #include <util/delay.h>
 
 /* LOCAL INCLUDES */
-#include "../acceleration_t.h"
+#include "../accelerationsensor.h"
 /* *** DECLARATIONS ********************************************************** */
 
 /* local type and constants     */

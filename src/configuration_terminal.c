@@ -384,10 +384,10 @@ void configuration_terminal_state_accelerationsensor_set_zero(void)
 	// DO
 
 	//Perform calibration
-	acceleration_calibrate_offset();
+	accelerationsensor_calibrate_offset();
 
 	//Read and save the offset from the sensor
-	acceleration_get_offset(&accel);
+	accelerationsensor_get_offset(&accel);
 
 	configuration_setting_data[configuration_setting_current_index].acceleration_offset.x = accel.x;
 	configuration_setting_data[configuration_setting_current_index].acceleration_offset.y = accel.y;
