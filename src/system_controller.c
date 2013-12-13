@@ -300,9 +300,6 @@ void system_controller_state_init_pid_controller(void)
 {
 	/* *** ENTRY *** */
 
-	acceleration_t accel;
-
-
 	printf("system_controller_state_init_pid_controller(void)\n");
 
 	/* **** DO ***** */
@@ -312,9 +309,9 @@ void system_controller_state_init_pid_controller(void)
 			 configuration_manager_current_config_get_d_factor(),
 			 &pid_data);
 
-	configuration_manager_current_config_get_acceleration_offset(&accel);
 
-	accelerationsensor_set_offset(&accel);
+
+	accelerationsensor_set_offset(configuration_manager_current_config_get_acceleration_offset());
 	accelerationsensor_set_position_multiplier(configuration_manager_current_config_get_position_multiplier());
 
 	cli();
