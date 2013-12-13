@@ -104,7 +104,7 @@ void configuration_manager_current_config_set_d_factor(int16_t d_factor)
 }
 
 
-uint16_t configuration_manager_current_config_get_gscalingfactor(void)
+uint16_t configuration_manager_current_config_get_scalingfactor(void)
 {
 	return current_configuration.pid.scalingfactor;
 }
