@@ -431,7 +431,7 @@ void configuration_terminal_state_edit_comment(void)
 	// DO
 
 	vt100_get_string(new_comment, CONFIGURATION_MANAGER_CONFIG_COMMENT_LENGTH);
-	configuration_manager_current_config_set_comment(&new_comment);
+	configuration_manager_current_config_set_comment(new_comment);
 
 	next_state = STATE_MAIN_MENU;
 
