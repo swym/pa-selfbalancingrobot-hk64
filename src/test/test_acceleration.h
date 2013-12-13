@@ -26,6 +26,7 @@
 /* external functions          */
 extern double test_acceleration_print_accel_and_position(void);
 extern void test_acceleration_init_and_calibration(void);
+extern void test_acceleration_configure_convertion(void);
 
 #endif /* TEST_ACCELERATION_H_ */
 
