@@ -53,6 +53,7 @@ void configuration_terminal_state_PID_set_scalingfactor(void);
 void configuration_terminal_state_edit_comment(void);
 void configuration_terminal_state_accelerationsensor_set_zero(void);
 void configuration_terminal_state_accelerationsensor_set_scalingfactor(void);
+void configuration_terminal_state_final(void);
 
 
 /* *** FUNCTION DEFINITIONS ************************************************** */
@@ -60,7 +61,9 @@ void configuration_terminal_state_accelerationsensor_set_scalingfactor(void);
 
 void configuration_terminal_state_machine(void)
 {
- 	while(current_state != STATE_FINAL) {
+
+
+ 	while(current_state != STATE_NULL) {
 		switch(current_state) {
 
 			case STATE_SELECT_SETTINGS:
@@ -108,7 +111,7 @@ void configuration_terminal_state_machine(void)
 			break;
 
 			case STATE_FINAL:
-				//TODO: run system with current settings
+				configuration_terminal_state_final();
 			break;
 			case STATE_NULL:
 				//TODO: Implement Null state
@@ -123,38 +126,20 @@ void configuration_terminal_state_machine(void)
 void configuration_terminal_state_select_settings(void)
 {
 	//ENTRY
-	uint8_t i = 0;
+//	uint8_t i = 0;
+
+	uint8_t new_index;
 
 	vt100_clear_all();
 
 
-	printf("           P      I      D      F      M     Ox     Oy     Oz\n\n");
+	configuration_manager_print_all_configs();
 
+	new_index = vt100_get_integer(configuration_manager_get_current_config_index(),
+			0,
+			CONFIGURATION_MANAGER_CONFIG_COUNT - 1);
 
-	for(i = 0;i < CONFIGURATION_MANAGER_CONFIG_COUNT;i++) {
-//		printf(" [%u] - \"%s\"\n", i, configuration_setting_data[i].comment);
-/*		printf("       %5u  %5u  %5u  %5u  %5u  %5i  %5i  %5i\n\n",
-				configuration_setting_data[i].pid_p_factor,
-				configuration_setting_data[i].pid_i_factor,
-				configuration_setting_data[i].pid_d_factor,
-				configuration_setting_data[i].pid_scalingfactor,
-				configuration_setting_data[i].position_multiplier,
-				configuration_setting_data[i].acceleration_offset.x,
-				configuration_setting_data[i].acceleration_offset.y,
-				configuration_setting_data[i].acceleration_offset.z);
-				*/
-		printf("tba\n");
-	}
-
-	//printf("Index of current setting is: %u\n", configuration_setting_current_index);
-
-	//DO
-
-/*	configuration_setting_current_index = vt100_get_integer(
-						configuration_setting_current_index,
-						0,
-						CONFIGURATION_SETTING_COUNT);
-*/
+	configuration_manager_select_config(new_index);
 
 	//EXIT
 
@@ -164,7 +149,8 @@ void configuration_terminal_state_select_settings(void)
 
 void configuration_terminal_state_write_settings(void)
 {
-	//ENTRY
+	//TODO
+/*	//ENTRY
 	vt100_clear_all();
 
 	//DO
@@ -173,11 +159,13 @@ void configuration_terminal_state_write_settings(void)
 	configuration_manager_write_config();
 
 	//EXIT
+	 *
+	 */
 	next_state = STATE_MAIN_MENU;
 }
 
 void configuration_terminal_state_export_settings(void)
-{
+{/*
 	uint8_t i;
 
 	//ENTRY
@@ -186,7 +174,7 @@ void configuration_terminal_state_export_settings(void)
 	//DO
 	for(i = 0;i < CONFIGURATION_MANAGER_CONFIG_COUNT;i++) {
 
-/*		printf("%u,%u,%u,%u,%u,%u,%i,%i,%i,\"%s\"\n",
+		printf("%u,%u,%u,%u,%u,%u,%i,%i,%i,\"%s\"\n",
 				i,
 				configuration_setting_data[i].pid_p_factor,
 				configuration_setting_data[i].pid_i_factor,
@@ -197,14 +185,16 @@ void configuration_terminal_state_export_settings(void)
 				configuration_setting_data[i].acceleration_offset.y,
 				configuration_setting_data[i].acceleration_offset.z,
 				configuration_setting_data[i].comment);
-*/
+
 		printf("tba\n");
 	}
 
 	printf("\n\nPress any key to go back to main menu.\n");
 
 	//wait for user input; but don't use it
+
 	vt100_get_choice();
+	*/
 
 	//EXIT
 	next_state = STATE_MAIN_MENU;
@@ -241,8 +231,8 @@ void configuration_terminal_state_main_menu(void)
 			configuration_manager_current_config_get_scalingfactor(),
 			configuration_manager_current_config_get_acceleration_offset()->z);
 
-	printf("\n\n    Settings\n\n[S] - Select current setting\n[W] - Write settings to EEPROM\n[E] - Export to csv\n");
-	printf("\n\n    Run\n\n[R] - Run system with current configuration\n");
+	printf("\n\n    Settings\n\n[S] - Select Configuration\n");
+	printf("\n\n    Run\n\n[R] - Save current configuration and run system\n");
 
 	// DO
 	//Waiting for users choice
@@ -265,10 +255,10 @@ void configuration_terminal_state_main_menu(void)
 			next_state = STATE_EDIT_COMMENT;
 		} else if(choice == 'S') {
 			next_state = STATE_SELECT_SETTINGS;
-		} else if(choice == 'W') {
-			next_state = STATE_WRITE_SETTINGS;
-		} else if(choice == 'E') {
-			next_state = STATE_EXPORT_SETTINGS;
+//		} else if(choice == 'W') {
+//			next_state = STATE_WRITE_SETTINGS;
+//		} else if(choice == 'E') {
+//			next_state = STATE_EXPORT_SETTINGS;
 		} else if(choice == 'R') {
 			next_state = STATE_FINAL;
 		} else {
@@ -438,5 +428,37 @@ void configuration_terminal_state_edit_comment(void)
 
 	// EXIT
 }
+
+void configuration_terminal_state_final(void)
+{
+	//ENTRY
+	vt100_clear_all();
+
+	//DO
+	if(configuration_manager_current_config_has_changed()) {
+
+		char new_comment[CONFIGURATION_MANAGER_CONFIG_COMMENT_LENGTH];
+
+		printf("=== EDIT COMMENT ===\n\n");
+
+		printf("Configuration has changed. Please alter comment if necessary\n\n");
+		printf("Current comment: \"%s\"\n\n", configuration_manager_current_config_get_comment());
+
+		vt100_get_string(new_comment, CONFIGURATION_MANAGER_CONFIG_COMMENT_LENGTH);
+
+		if(new_comment[0] != '\0') {
+			configuration_manager_current_config_set_comment(new_comment);
+		}
+
+		vt100_clear_all();
+		printf("Writing settings to eeprom....\n");
+		configuration_manager_write_config();
+	}
+
+	//EXIT
+	vt100_clear_all();
+	next_state = STATE_NULL;
+}
+
 
 

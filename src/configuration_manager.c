@@ -11,6 +11,8 @@
 #include <avr/eeprom.h>
 #include <string.h>
 
+#include <stdio.h>
+
 
 
 /* *** DECLARATIONS ********************************************************** */
@@ -19,6 +21,7 @@
 /* local type and constants     */
 static configuration_t current_configuration;
 static uint8_t current_configuration_index;
+static uint8_t configuration_write_index;
 
 configuration_t configurations_eeprom[CONFIGURATION_MANAGER_CONFIG_COUNT]			__attribute__ ((section (".eeprom")));
 uint8_t current_configuration_index_eeprom											__attribute__ ((section (".eeprom")));
@@ -46,6 +49,10 @@ bool configuration_manager_init(void)
 		current_config_valid = false;
 	}
 
+	//init configuration_write_index
+	configuration_write_index = (current_configuration_index + 1) %
+			CONFIGURATION_MANAGER_CONFIG_COUNT;
+
 	//read current configuration from eeprom
 	eeprom_read_block(&current_configuration,
 			&configurations_eeprom[current_configuration_index],
@@ -68,6 +75,12 @@ bool configuration_manager_init(void)
 		current_configuration.accelerationsensor.position_multiplier = 1;
 		current_configuration.version = CONFIGURATION_MANAGER_CONFIG_VERSION;
 		strncpy(current_configuration.comment, "- new -", CONFIGURATION_MANAGER_CONFIG_COMMENT_LENGTH);
+
+		current_configuration.has_changed = true;
+
+	} else {
+
+		current_configuration.has_changed = false;
 	}
 
 
@@ -172,17 +185,108 @@ bool configuration_manager_current_config_has_changed(void)
 	return current_configuration.has_changed;
 }
 
+uint8_t configuration_manager_get_current_config_index(void) {
+	return current_configuration_index;
+}
+
 
 void configuration_manager_write_config(void)
 {
 	if(current_configuration.has_changed) {
+		current_configuration.has_changed = false;
+
 		eeprom_write_block(&current_configuration,
-				&configurations_eeprom[current_configuration_index],
+				&configurations_eeprom[configuration_write_index],
 				sizeof(configuration_t));
 
 		eeprom_write_byte(&current_configuration_index_eeprom,
-				current_configuration_index);
-
-		current_configuration.has_changed = false;
+				configuration_write_index);
 	}
+}
+
+//DEBUG Funktion
+void configuration_manager_print_all_configs(void)
+{
+	int8_t i;
+	uint8_t confs_to_print = CONFIGURATION_MANAGER_CONFIG_COUNT;
+	configuration_t temp_conf;
+
+
+
+	printf("C:%u W:%u changed:%u\n\n", current_configuration_index, configuration_write_index, current_configuration.has_changed);
+
+
+	if(configuration_write_index > 0) {
+		i = configuration_write_index - 1;
+	} else {
+		i = CONFIGURATION_MANAGER_CONFIG_COUNT - 1;
+	}
+
+
+    printf("           P      I      D      F      M     Ox     Oy     Oz\n\n");
+	while(confs_to_print--) {
+
+		//read current configuration from eeprom
+		eeprom_read_block(&temp_conf,
+				&configurations_eeprom[i],
+				sizeof(configuration_t));
+
+
+		if(temp_conf.version == CONFIGURATION_MANAGER_CONFIG_VERSION) {
+			printf(" [%u] - \"%s\"\n", i, temp_conf.comment);
+
+
+			printf("       %5i  %5i  %5i  %5u  %5u  %5i  %5i  %5i\n\n",
+					temp_conf.pid.p_factor,
+					temp_conf.pid.i_factor,
+					temp_conf.pid.d_factor,
+					temp_conf.pid.scalingfactor,
+					temp_conf.accelerationsensor.position_multiplier,
+					temp_conf.accelerationsensor.acceleration_offset.x,
+					temp_conf.accelerationsensor.acceleration_offset.y,
+					temp_conf.accelerationsensor.acceleration_offset.z);
+
+		} else {
+			printf(" [%u] - \"empty\"\n\n", i);
+		}
+
+		if( i > 0) {
+			i--;
+		} else {
+			i = CONFIGURATION_MANAGER_CONFIG_COUNT - 1;
+		}
+	}
+}
+
+
+bool configuration_manager_select_config(uint8_t index)
+{
+	bool config_valid;
+
+	configuration_t temp_conf;
+
+	if(index <= CONFIGURATION_MANAGER_CONFIG_COUNT) {
+
+		//read configuration from eeprom
+		eeprom_read_block(&temp_conf,
+				&configurations_eeprom[index],
+				sizeof(configuration_t));
+
+		//Validate before set to current config;
+		if(temp_conf.version == CONFIGURATION_MANAGER_CONFIG_VERSION) {
+
+			current_configuration_index = index;
+			current_configuration = temp_conf;
+
+			current_configuration.has_changed = true;
+
+			config_valid = true;
+		} else {
+			config_valid = false;
+		}
+	} else {
+	config_valid = false;
+	}
+
+	return config_valid;
 }

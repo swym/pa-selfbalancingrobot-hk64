@@ -38,7 +38,7 @@ volatile uint8_t timer_slot_counter;
 
 
 /* local type and constants     */
-#define STATE_WAITING_FOR_USER_INTERRUPT_TIMEOUT	5			//Timeout in seconds
+#define STATE_WAITING_FOR_USER_INTERRUPT_TIMEOUT	3			//Timeout in seconds
 #define STATE_WAITING_FOR_USER_INTERRUPT_PARTS   	4
 
 
@@ -201,11 +201,11 @@ void system_controller_state_init_system_hardware(void)
 
 
 	//init hw-accel sensor
-	bma020_init();
+//	bma020_init();
 
-	accelerationsensor_init(1, NULL);
+//	accelerationsensor_init(1, NULL);
 
-	motor_control_init();
+//	motor_control_init();
 
 	/* *** EXIT **** */
 
@@ -291,6 +291,31 @@ void system_controller_state_run_configuration_terminal(void)
 	configuration_terminal_state_machine();
 
 	/* *** EXIT **** */
+
+	printf("Starting PID-Controller\n\n");
+
+	uint8_t parts_of_seconds_counter = 0;
+
+	uint8_t waiting_time = STATE_WAITING_FOR_USER_INTERRUPT_TIMEOUT;
+	double delay = 1000.0/(STATE_WAITING_FOR_USER_INTERRUPT_PARTS + 1);
+
+	while(waiting_time > 0) {
+
+		//Display Counter and decreae timeout
+		if(parts_of_seconds_counter == 0) {
+			printf("%d", waiting_time);
+			waiting_time--;
+			parts_of_seconds_counter = STATE_WAITING_FOR_USER_INTERRUPT_PARTS;
+		} else {
+			printf(".");
+			parts_of_seconds_counter--;
+		}
+
+		_delay_ms(delay);
+
+	}
+
+	vt100_clear_all();
 
 	next_state = STATE_INIT_PID_CONTROLLER;
 }
