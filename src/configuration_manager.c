@@ -66,7 +66,7 @@ bool configuration_manager_init(void)
 		current_configuration.pid.p_factor = 0;
 		current_configuration.pid.i_factor = 0;
 		current_configuration.pid.d_factor = 0;
-		current_configuration.pid.scalingfactor = 1;
+		current_configuration.pid.scalingfactor = 128;
 
 		current_configuration.accelerationsensor.acceleration_offset.x = 0;
 		current_configuration.accelerationsensor.acceleration_offset.y = 0;
