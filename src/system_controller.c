@@ -332,6 +332,7 @@ void system_controller_state_init_pid_controller(void)
 	pid_Init(configuration_manager_current_config_get_p_factor(),
 			 configuration_manager_current_config_get_i_factor(),
 			 configuration_manager_current_config_get_d_factor(),
+			 configuration_manager_current_config_get_scalingfactor(),
 			 &pid_data);
 
 
