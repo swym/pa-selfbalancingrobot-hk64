@@ -22,7 +22,7 @@
 
 #include "stdint.h"
 
-#define SCALING_FACTOR  128
+//#define SCALING_FACTOR  128
 
 /*! \brief PID Status
  *
@@ -39,6 +39,8 @@ typedef struct PID_DATA{
   int16_t I_Factor;
   //! The Derivative tuning constant, multiplied with SCALING_FACTOR
   int16_t D_Factor;
+  //! Scaling Factor of the returing value
+  uint16_t scalingfactor;
   //! Maximum allowed error, avoid overflow
   int16_t maxError;
   //! Maximum allowed sumerror, avoid overflow
@@ -58,7 +60,7 @@ typedef struct PID_DATA{
 #define FALSE           0
 #define TRUE            1
 
-void pid_Init(int16_t p_factor, int16_t i_factor, int16_t d_factor, struct PID_DATA *pid);
+void pid_Init(int16_t p_factor, int16_t i_factor, int16_t d_factor, uint16_t scalingfactor, struct PID_DATA *pid);
 int16_t pid_Controller(int16_t setPoint, int16_t processValue, struct PID_DATA *pid_st);
 void pid_Reset_Integrator(pidData_t *pid_st);
 
