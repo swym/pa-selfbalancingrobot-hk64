@@ -37,7 +37,7 @@ void twi_master_init()
 {
 
 
-	TWBR = TWI_TWBR_VALUE_100;
+	TWBR = TWI_TWBR_VALUE_25;
 	TWSR &= 0b11111100;
 	TWSR |= 0x01;
 	TWCR = (1<<TWEN) | (1<<TWEA) | (1<<TWIE);

@@ -41,9 +41,11 @@ void test_twi_master_get_bytes(void)
 void test_twi_master_write_and_read_bytes(void)
 {
 
-	uint8_t slave_address = (0x70 >> 1);
+	//uint8_t slave_address = 0x68;
+	uint8_t slave_address = 0x38;
 
 	uint8_t registers = 2;
+	//uint8_t register_addresses[2] = {0x1D, 0x1E};
 	uint8_t register_addresses[2] = {0x12, 0x13};
 	uint8_t register_values[2] = {0xAA, 0x55}; //0b1010 1010 und 0b0101 0101
 

@@ -16,6 +16,7 @@
 #include <stdbool.h>
 
 /* * local headers               * */
+#include "accelerationsensor.h"
 
 /* *** DECLARATIONS ********************************************************** */
 
@@ -24,8 +25,10 @@
 /* * external objects            * */
 
 /* * external functions          * */
-extern uint8_t mpu9150_get_who_am_i();
 
-extern uint16_t mpu9150_read_raw_position();
+extern void     mpu9150_init();
+extern void     mpu9150_read_acceleration(acceleration_t*);
+extern void     mpu9150_read_rotation(rotation_t *);
+extern uint8_t  mpu9150_get_who_am_i(void);
 
 #endif /* MPU9150_H_ */
