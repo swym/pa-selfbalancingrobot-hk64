@@ -15,7 +15,7 @@
 
 /* *** INCLUDES ************************************************************** */
 /* system headers              */ 
-#include "stdbool.h"
+#include <stdbool.h>
 
 /* local headers               */
 #include "accelerationsensor.h"

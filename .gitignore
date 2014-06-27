@@ -10,3 +10,5 @@ doc/uml/.vpprefdata/
 .lock
 *.vpp.working
 *.vpp~*
+src/lib/rfm12lib/doc
+src/lib/rfm12lib/examples
