@@ -62,7 +62,7 @@
 						<entry excluding="lib|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry excluding="test|lib|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
 						<entry excluding="rfm12lib/" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/lib"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/test"/>
+						<entry excluding="test_acceleration.c|test_acceleration.h|test_bma020.c|test_bma020.h|test_configuration_terminal.c|test_configuration_terminal.h|test_md25.c|test_md25.h|test_motor_control.c|test_motor_control.h|test_twi_master.c|test_twi_master.h" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/test"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

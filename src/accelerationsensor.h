@@ -14,11 +14,12 @@
 #include <stdint.h>
 
 /* local headers               */
+#include "motionsensor.h"
 
 /* *** DECLARATIONS ********************************************************** */
 
 /* external type and constants */
-
+/*
 typedef struct {
 	uint16_t x;
 	uint16_t y;
@@ -30,7 +31,7 @@ typedef struct {
 	uint16_t y;
 	uint16_t z;
 } acceleration_t;
-
+*/
 
 /* external objects            */
 

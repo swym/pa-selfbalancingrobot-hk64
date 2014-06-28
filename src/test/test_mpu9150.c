@@ -54,18 +54,17 @@
 
 /* * local function declarations * */
 static void test_mpu9150_init();
-
-/* * local function declarations * */
-static void test_mpu9150_init();
-static void test_mpu9150_read_rotation(rotation_t *);
-static void test_mpu9150_read_acceleration(acceleration_t*);
+static void test_mpu9150_with_rfm12();
+static void test_mpu9150_with_uart();
 
 /* *** FUNCTION DEFINITIONS ************************************************* */
-void test_mpu9150_run(void)
+static void test_mpu9150_with_rfm12(void)
 {
-	test_mpu9150_init();
+	simplex_protocol_init();
+	rfm12_init();
 
-	printf("test_mpu9150_inited\n");
+	_delay_ms(500);  //little delay for the rfm12 to initialize properly
+	printf("rfm12 inited.\n");
 
 	PORTC |= _BV(1);
 
@@ -79,14 +78,9 @@ void test_mpu9150_run(void)
 
 	while(true) {
 
+		mpu9150_read_rotation(&rot_vector);
+		mpu9150_read_acceleration(&accel_vector);
 
-
-		test_mpu9150_read_rotation(&rot_vector);
-		test_mpu9150_read_acceleration(&accel_vector);
-//		printf("%d:%d:%d:%d:%d:%d:\n",
-//				accel_vector.x, accel_vector.y, accel_vector.z,
-//				rot_vector.x,rot_vector.y, rot_vector.z);
-		PORTC|= _BV(7);
 		data[0]  = (uint8_t)(accel_vector.x >> 8);
 		data[1]  = (uint8_t)(accel_vector.x & 0x00FF);
 
@@ -102,73 +96,39 @@ void test_mpu9150_run(void)
 
 		simplex_protocol_tick();
 
-		simplex_protocol_send(SIMPLEX_PROTOCOL_FRAME_TYPE_DATA,
-							 data_len,
-							 data);
-
-		simplex_protocol_tick();
-
-		simplex_protocol_send(SIMPLEX_PROTOCOL_FRAME_TYPE_DATA,
-							 data_len,
-							 data);
-
-		simplex_protocol_tick();
-
-		PORTC &= ~_BV(7);
 		_delay_ms(20);
 	}
 }
 
-static void test_mpu9150_read_rotation(rotation_t* rotation_vector)
+static void test_mpu9150_with_uart()
 {
-	uint8_t temp_data;
+	printf("test_mpu9150_with_uart()\n");
 
-	twi_send_buffer[0] = MPU9150_REGISTER_GYRO_XOUT_H;
+	rotation_t rot_vector;
+	acceleration_t accel_vector;
 
-	twi_master_set_ready();
-	twi_send_data(MPU9150_TWI_ADDRESS, 1);
-	twi_receive_data(MPU9150_TWI_ADDRESS, 6);
+	while(true) {
 
-	temp_data = twi_receive_buffer[0];
-	rotation_vector->x = (uint16_t)(temp_data << 8);
-	temp_data = twi_receive_buffer[1];
-	rotation_vector->x = (uint16_t)(rotation_vector->x | temp_data);
+		PORTC ^= _BV(PC7);
 
-	temp_data = twi_receive_buffer[2];
-	rotation_vector->y = (uint16_t)(temp_data << 8);
-	temp_data = twi_receive_buffer[3];
-	rotation_vector->y = (uint16_t)(rotation_vector->y | temp_data);
+		mpu9150_read_acceleration(&accel_vector);
+		mpu9150_read_rotation(&rot_vector);
 
-	temp_data = twi_receive_buffer[4];
-	rotation_vector->z = (uint16_t)(temp_data << 8);
-	temp_data = twi_receive_buffer[5];
-	rotation_vector->z = (uint16_t)(rotation_vector->z | temp_data);
+		printf("%d:%d:%d:%d:%d:%d:\n",
+				accel_vector.x, accel_vector.y, accel_vector.z,
+				rot_vector.x,rot_vector.y, rot_vector.z);
+
+		_delay_ms(100);
+	}
 }
 
-static void test_mpu9150_read_acceleration(acceleration_t* acceleration_vector)
+void test_mpu9150_run()
 {
-	uint8_t temp_data;
+	test_mpu9150_init();
+	printf("test_mpu9150_inited\n");
 
-	twi_send_buffer[0] = MPU9150_REGISTER_ACCEL_XOUT_H;
-
-	twi_master_set_ready();
-	twi_send_data(MPU9150_TWI_ADDRESS, 1);
-	twi_receive_data(MPU9150_TWI_ADDRESS, 6);
-
-	temp_data = twi_receive_buffer[0];
-	acceleration_vector->x = (uint16_t)(temp_data << 8);
-	temp_data = twi_receive_buffer[1];
-	acceleration_vector->x = (uint16_t)(acceleration_vector->x | temp_data);
-
-	temp_data = twi_receive_buffer[2];
-	acceleration_vector->y = (uint16_t)(temp_data << 8);
-	temp_data = twi_receive_buffer[3];
-	acceleration_vector->y = (uint16_t)(acceleration_vector->y | temp_data);
-
-	temp_data = twi_receive_buffer[4];
-	acceleration_vector->z = (uint16_t)(temp_data << 8);
-	temp_data = twi_receive_buffer[5];
-	acceleration_vector->z = (uint16_t)(acceleration_vector->z | temp_data);
+	//test_mpu9150_with_rfm12();
+	test_mpu9150_with_uart();
 }
 
 void test_mpu9150_init()
@@ -181,34 +141,6 @@ void test_mpu9150_init()
 	PORTC |= _BV(0);
 
 	sei();
-	simplex_protocol_init();
-	rfm12_init();
 
-	_delay_ms(500);  //little delay for the rfm12 to initialize properly
-	printf("rfm12 inited.\n");
-
-	sei();
-
-
-	//set clocksource to x gyro as discripted in manual
-	printf("c%c", twi_master_read_register(MPU9150_TWI_ADDRESS,MPU9150_REGISTER_PWR_MGMT_1));
-	twi_master_write_register(MPU9150_TWI_ADDRESS, MPU9150_REGISTER_PWR_MGMT_1, 0x41);
-	printf("c%c", twi_master_read_register(MPU9150_TWI_ADDRESS,MPU9150_REGISTER_PWR_MGMT_1));
-
-	//GYRO resolution
-	printf("g%c", twi_master_read_register(MPU9150_TWI_ADDRESS,MPU9150_REGISTER_GYRO_CONFIG));
-	twi_master_write_register(MPU9150_TWI_ADDRESS, MPU9150_REGISTER_GYRO_CONFIG, 0x18);
-	printf("g%c", twi_master_read_register(MPU9150_TWI_ADDRESS,MPU9150_REGISTER_GYRO_CONFIG));
-
-	//ACCEL resolution
-	printf("a%c", twi_master_read_register(MPU9150_TWI_ADDRESS,MPU9150_REGISTER_ACCEL_CONFIG));
-	twi_master_write_register(MPU9150_TWI_ADDRESS, MPU9150_REGISTER_GYRO_CONFIG, 0x18);
-	printf("a%c", twi_master_read_register(MPU9150_TWI_ADDRESS,MPU9150_REGISTER_ACCEL_CONFIG));
-
-	//wake up (disable sleep)
-	PORTC ^= _BV(6);
-	printf("s%c", twi_master_read_register(MPU9150_TWI_ADDRESS,MPU9150_REGISTER_PWR_MGMT_1));
-	twi_master_write_register(MPU9150_TWI_ADDRESS, MPU9150_REGISTER_PWR_MGMT_1, 0x01);
-	printf("s%c", twi_master_read_register(MPU9150_TWI_ADDRESS,MPU9150_REGISTER_PWR_MGMT_1));
-
+	mpu9150_init();
 }

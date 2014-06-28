@@ -14,6 +14,7 @@
 
 /* SYSTEM INCLUDES */
 #include <util/delay.h>
+#include <stdbool.h>
 
 /* LOCAL INCLUDES */
 #include "../accelerationsensor.h"

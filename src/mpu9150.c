@@ -147,7 +147,7 @@ uint8_t mpu9150_get_who_am_i(void)
 //	return return_value;
 //}
 
-extern void test_mpu9150_read_rotation(rotation_t* rotation_vector)
+extern void mpu9150_read_rotation(rotation_t* rotation_vector)
 {
 	uint8_t temp_data;
 
@@ -173,7 +173,7 @@ extern void test_mpu9150_read_rotation(rotation_t* rotation_vector)
 	rotation_vector->z = (uint16_t)(rotation_vector->z | temp_data);
 }
 
-extern void test_mpu9150_read_acceleration(acceleration_t* acceleration_vector)
+extern void mpu9150_read_acceleration(acceleration_t* acceleration_vector)
 {
 	uint8_t temp_data;
 
@@ -208,7 +208,7 @@ void mpu9150_init()
 	//twi_master_write_register(MPU9150_TWI_ADDRESS, MPU9150_REGISTER_GYRO_CONFIG, 0x18);
 
 	//ACCEL resolution
-	twi_master_write_register(MPU9150_TWI_ADDRESS, MPU9150_REGISTER_GYRO_CONFIG, 0x18);
+	//twi_master_write_register(MPU9150_TWI_ADDRESS, MPU9150_REGISTER_GYRO_CONFIG, 0x18);
 
 	//wake up (disable sleep)
 	twi_master_write_register(MPU9150_TWI_ADDRESS, MPU9150_REGISTER_PWR_MGMT_1, 0x01);
