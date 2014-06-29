@@ -20,19 +20,24 @@
 
 /* * external type and constants * */
 typedef struct {
-	uint16_t x;
-	uint16_t y;
-	uint16_t z;
+	int16_t x;
+	int16_t y;
+	int16_t z;
 } rotation_t;
 
 typedef struct {
-	uint16_t x;
-	uint16_t y;
-	uint16_t z;
+	int16_t x;
+	int16_t y;
+	int16_t z;
 } acceleration_t;
 
+typedef struct {
+	rotation_t rotation;
+	acceleration_t acceleration;
+} motion_t;
+
 /* * external objects            * */
-extern void motionsensor_init();
+extern void motionsensor_init(void);
 extern void motionsensor_set_zero_point();
 
 extern double motionsensor_get_position();
