@@ -25,6 +25,9 @@
 //#include "test/test_acceleration.h"
 //#include "test/test_configuration_terminal.h"
 
+//#include "test/test_mpu9150.h"
+#include "test/test_motionsensor.h"
+
 
 /* *** DECLARATIONS ********************************************************** */
 
@@ -64,6 +67,9 @@ void main_run(void)
 void main_run_tests(void)
 {
 
+	//test_mpu9150_run();
+	test_motionsensor_run();
+
 //	test_acceleration_init_and_calibration();
 //	test_motor_control_set_different_speeds();
 	//test_twi_master_get_bytes();
@@ -98,9 +104,9 @@ int main(void)
 {
 	main_init();
 
-//	main_run_tests();
+	main_run_tests();
 
-	main_run();
+//	main_run();
 
 	return 0;
 }
