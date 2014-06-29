@@ -201,11 +201,11 @@ void system_controller_state_init_system_hardware(void)
 
 
 	//init hw-accel sensor
-//	bma020_init();
+	bma020_init();
 
-//	accelerationsensor_init(1, NULL);
+	accelerationsensor_init(1, NULL);
 
-//	motor_control_init();
+	motor_control_init();
 
 	/* *** EXIT **** */
 
@@ -332,6 +332,7 @@ void system_controller_state_init_pid_controller(void)
 	pid_Init(configuration_manager_current_config_get_p_factor(),
 			 configuration_manager_current_config_get_i_factor(),
 			 configuration_manager_current_config_get_d_factor(),
+			 configuration_manager_current_config_get_scalingfactor(),
 			 &pid_data);
 
 
@@ -384,7 +385,7 @@ void system_controller_state_run_pid_controller(void)
 				//Beschleunigungswerte lesen und in Position umrechnen
 				position = accelerationsensor_get_current_position();
 
-				//Aktuelle Position an den PID Regler geben und neue Stellgrš§e berechnen
+				//Aktuelle Position an den PID Regler geben und neue Stellgrï¿½ï¿½e berechnen
 				speed = pid_Controller(0, (int16_t)(position), &pid_data);
 
 				new_speed.motor_1 = speed >> 8;

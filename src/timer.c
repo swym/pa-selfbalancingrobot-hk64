@@ -46,7 +46,7 @@ void timer_init()
 	TCCR0 |= (1 << CS02 | 1 << CS01);	//Prescaler = 256
 
 	//Interruptverhalten definieren
-	TIMSK |= (1 << OCIE0);				//OCIE1A: Timer/Counter0,
+	TIMSK |= (1 << OCIE0);				//OCIE0: Timer/Counter0,
 										//Output Compare Match Interrupt Enable
 
 	//Timer0 OCR-Register vorladen
