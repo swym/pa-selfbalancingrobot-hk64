@@ -10,7 +10,7 @@
 #include "motionsensor.h"
 
 /* * system headers              * */
-
+#include <math.h>
 
 /* * local headers               * */
 //#include "bma020.h"
@@ -44,7 +44,9 @@ static moving_average_t average_acceleration_z;
 /* *** FUNCTION DEFINITIONS ************************************************* */
 double motionsensor_get_position()
 {
-	double returnvalue = 0.0;
+	double RAD2DEG = 57.295;
+
+	double position;
 
 	rotation_t tmp_rotation;
 	acceleration_t tmp_acceleration;
@@ -52,8 +54,9 @@ double motionsensor_get_position()
 	motionsensor_get_current_rotation(&tmp_rotation);
 	motionsensor_get_current_acceleration(&tmp_acceleration);
 
+	position = atan2(tmp_acceleration.x, tmp_acceleration.z);
 
-	return returnvalue;
+	return (position * RAD2DEG);
 }
 
 void motionsensor_get_current_rotation(rotation_t *rotation)
@@ -80,7 +83,7 @@ void motionsensor_get_current_acceleration(acceleration_t *acceleration)
 
 	mpu9150_read_acceleration(&new_acceleration);
 
-	//do offset calculation?
+	//TODO: replace with real offset
 
 	moving_average_simple_put_element(&average_acceleration_x, new_acceleration.x);
 	moving_average_simple_put_element(&average_acceleration_y, new_acceleration.y);
