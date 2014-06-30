@@ -30,7 +30,6 @@
 
 /* * local type and constants    * */
 typedef enum {
-	STATE_INIT,
 	STATE_READ_INPUT,
 	STATE_PRINT_HELP,
 	STATE_PRINT_CONFIG,
@@ -42,13 +41,12 @@ typedef enum {
 } configuration_terminal_state_t;
 
 /* * local objects               * */
-static configuration_terminal_state_t current_state = STATE_INIT;
-static configuration_terminal_state_t next_state = STATE_NULL;
+static configuration_terminal_state_t current_state;
+static configuration_terminal_state_t next_state;
 
 static char input_buffer[INPUT_BUFFER_MAX];
 
 /* * local function declarations * */
-static void configuration_terminal_state_init(void);
 static void configuration_terminal_state_read_input(void);
 static void configuration_terminal_state_print_help(void);
 static void configuration_terminal_state_print_config(void);
@@ -60,13 +58,11 @@ static void configuration_terminal_state_save_configuration(void);
 
 void configuration_terminal_state_machine(void)
 {
-
+	current_state = STATE_PRINT_CONFIG;
+	next_state = STATE_NULL;
 
  	while(current_state != STATE_FINAL) {
 		switch(current_state) {
-			case STATE_INIT:
-				configuration_terminal_state_init();
-			break;
 
 			case STATE_READ_INPUT:
 				configuration_terminal_state_read_input();
@@ -145,8 +141,6 @@ void configuration_terminal_state_read_input(void)
 	vt100_get_string(input_buffer,INPUT_BUFFER_MAX);
 
 	printf("%s\n",input_buffer);
-
-	configuration_storage_set_d_factor(124);
 
 	if(input_buffer[0] == 'c') {
 		next_state = STATE_PRINT_CONFIG;
@@ -238,20 +232,4 @@ void configuration_terminal_state_save_configuration(void)
 {
 	configuration_storage_save_configuration();
 	next_state = STATE_FINAL;
-}
-
-void configuration_terminal_state_init(void)
-{
-	//ENTRY
-	//DO
-	UART_init(38400);	/* Init UART mit 38400 baud */
-	twi_master_init();
-	sei();
-
-	motionsensor_init();
-
-	printf("configuration_terminal_state_init()\n");
-	configuration_storage_init();
-	//EXIT
-	next_state = STATE_READ_INPUT;
 }
