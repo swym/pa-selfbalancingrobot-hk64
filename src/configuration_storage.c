@@ -33,7 +33,7 @@ static configuration_t configuration;
 
 
 /* *** FUNCTION DEFINITIONS ************************************************* */
-bool configuration_storage_get_init()
+bool configuration_storage_init()
 {
 	bool returnvalue = true;
 
@@ -68,9 +68,6 @@ bool configuration_storage_get_init()
 
 void configuration_storage_save_configuration()
 {
-	printf("try to save data\n");
-	printf("accel.x: %d\n", configuration.motionsensor.acceleration_offset.x);
-
 	if(configuration.has_changed) {
 		eeprom_write_block(&configuration,
 				&configuration_eeprom,
@@ -111,6 +108,10 @@ void configuration_storage_set_d_factor(int16_t d_factor)
 	configuration.has_changed = true;
 }
 
+uint16_t configuration_storage_get_scalingfactor(void)
+{
+	return configuration.pid.scalingfactor;
+}
 
 void configuration_storage_set_scalingfactor(uint16_t scalingfactor)
 {
@@ -119,9 +120,11 @@ void configuration_storage_set_scalingfactor(uint16_t scalingfactor)
 }
 
 
-acceleration_t * configuration_storage_get_acceleration_offset()
+void configuration_storage_get_acceleration_offset(acceleration_t * accel)
 {
-	return &configuration.motionsensor.acceleration_offset;
+	accel->x = configuration.motionsensor.acceleration_offset.x;
+	accel->y = configuration.motionsensor.acceleration_offset.y;
+	accel->z = configuration.motionsensor.acceleration_offset.z;
 }
 
 

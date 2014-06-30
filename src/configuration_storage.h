@@ -64,8 +64,8 @@ extern void configuration_storage_set_d_factor(int16_t);
 extern uint16_t configuration_storage_get_scalingfactor(void);
 extern void configuration_storage_set_scalingfactor(uint16_t);
 
-extern acceleration_t * configuration_storage_get_acceleration_offset(void); /* acceleration_t *accel */
-extern void configurationstorage_set_acceleration_offset(acceleration_t *); /* acceleration_t *accel */
+extern void configuration_storage_get_acceleration_offset(acceleration_t *); /* acceleration_t *accel */
+extern void configuration_storage_set_acceleration_offset(acceleration_t *); /* acceleration_t *accel */
 
 extern uint16_t configuration_storage_get_position_multiplier(void);
 extern void configuration_storage_set_position_multiplier(uint16_t);
