@@ -67,4 +67,9 @@ extern bool configuration_manager_init(void);
 
 extern void configuration_manager_write_config(void);
 
+
+extern void configuration_manager_print_all_configs(void);
+extern uint8_t configuration_manager_get_current_config_index(void);
+extern bool configuration_manager_select_config(uint8_t index);
+
 #endif /* CONFIGURATION_MANAGER_H_ */

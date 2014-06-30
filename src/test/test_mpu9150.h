@@ -1,17 +1,17 @@
 /*
- * configuration_terminal.h
+ * test_mpu9150.h
  *
- *  Created on: Jun 29, 2014
+ *  Created on: Jun 20, 2014
  *      Author: alexandermertens
  */
 
 
-#ifndef CONFIGURATION_TERMINAL_H_
-#define CONFIGURATION_TERMINAL_H_
+#ifndef TEST_MPU9150_H_
+#define TEST_MPU9150_H_
 
 /* *** INCLUDES ************************************************************** */
 
-/* * system headers              * */
+/* * system headers              * */ 
 
 /* * local headers               * */
 
@@ -22,6 +22,6 @@
 /* * external objects            * */
 
 /* * external functions          * */
-extern void configuration_terminal_state_machine(void);
+extern void test_mpu9150_run(void);
 
-#endif /* CONFIGURATION_TERMINAL_H_ */
+#endif /* TEST_MPU9150_H_ */

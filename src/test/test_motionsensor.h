@@ -1,13 +1,13 @@
 /*
- * configuration_terminal.h
+ * test_motionsensor.h
  *
- *  Created on: Jun 29, 2014
+ *  Created on: Jun 28, 2014
  *      Author: alexandermertens
  */
 
 
-#ifndef CONFIGURATION_TERMINAL_H_
-#define CONFIGURATION_TERMINAL_H_
+#ifndef TEST_MOTIONSENSOR_H_
+#define TEST_MOTIONSENSOR_H_
 
 /* *** INCLUDES ************************************************************** */
 
@@ -22,6 +22,6 @@
 /* * external objects            * */
 
 /* * external functions          * */
-extern void configuration_terminal_state_machine(void);
+extern void test_motionsensor_run(void);
 
-#endif /* CONFIGURATION_TERMINAL_H_ */
+#endif /* TEST_MOTIONSENSOR_H_ */

@@ -1,13 +1,13 @@
 /*
- * configuration_terminal.h
+ * test_configuration_storage.h
  *
  *  Created on: Jun 29, 2014
  *      Author: alexandermertens
  */
 
 
-#ifndef CONFIGURATION_TERMINAL_H_
-#define CONFIGURATION_TERMINAL_H_
+#ifndef TEST_CONFIGURATION_STORAGE_H_
+#define TEST_CONFIGURATION_STORAGE_H_
 
 /* *** INCLUDES ************************************************************** */
 
@@ -22,6 +22,6 @@
 /* * external objects            * */
 
 /* * external functions          * */
-extern void configuration_terminal_state_machine(void);
+extern void test_configuration_storage_run(void);
 
-#endif /* CONFIGURATION_TERMINAL_H_ */
+#endif /* TEST_CONFIGURATION_STORAGE_H_ */

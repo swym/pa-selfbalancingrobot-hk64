@@ -16,9 +16,6 @@ RM := rm -rf
 -include objects.mk
 
 ifneq ($(MAKECMDGOALS),clean)
-ifneq ($(strip $(C_DEPS)),)
--include $(C_DEPS)
-endif
 ifneq ($(strip $(ASM_DEPS)),)
 -include $(ASM_DEPS)
 endif
@@ -27,6 +24,9 @@ ifneq ($(strip $(S_DEPS)),)
 endif
 ifneq ($(strip $(S_UPPER_DEPS)),)
 -include $(S_UPPER_DEPS)
+endif
+ifneq ($(strip $(C_DEPS)),)
+-include $(C_DEPS)
 endif
 endif
 
@@ -65,7 +65,7 @@ pa-einpersonentransportmittel-hk64.lss: pa-einpersonentransportmittel-hk64.elf
 
 pa-einpersonentransportmittel-hk64.hex: pa-einpersonentransportmittel-hk64.elf
 	@echo 'Create Flash image (ihex format)'
-	-avr-objcopy -R .eeprom -O ihex pa-einpersonentransportmittel-hk64.elf  "pa-einpersonentransportmittel-hk64.hex"
+	-avr-objcopy -R .eeprom -R .fuse -R .lock -R .signature -O ihex pa-einpersonentransportmittel-hk64.elf  "pa-einpersonentransportmittel-hk64.hex"
 	@echo 'Finished building: $@'
 	@echo ' '
 
@@ -83,7 +83,7 @@ sizedummy: pa-einpersonentransportmittel-hk64.elf
 
 # Other Targets
 clean:
-	-$(RM) $(OBJS)$(C_DEPS)$(ASM_DEPS)$(EEPROM_IMAGE)$(FLASH_IMAGE)$(ELFS)$(LSS)$(S_DEPS)$(SIZEDUMMY)$(S_UPPER_DEPS) pa-einpersonentransportmittel-hk64.elf
+	-$(RM) $(FLASH_IMAGE)$(ELFS)$(OBJS)$(ASM_DEPS)$(EEPROM_IMAGE)$(S_DEPS)$(SIZEDUMMY)$(S_UPPER_DEPS)$(LSS)$(C_DEPS) pa-einpersonentransportmittel-hk64.elf
 	-@echo ' '
 
 secondary-outputs: $(LSS) $(FLASH_IMAGE) $(EEPROM_IMAGE) $(SIZEDUMMY)

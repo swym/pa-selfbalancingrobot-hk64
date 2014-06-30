@@ -11,7 +11,7 @@
 
 /* *** INCLUDES ************************************************************** */
 
-/* system headers              */ 
+/* system headers              */
 #include <stdint.h>
 
 /* local headers               */

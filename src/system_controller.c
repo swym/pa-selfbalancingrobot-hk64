@@ -38,7 +38,7 @@ volatile uint8_t timer_slot_counter;
 
 
 /* local type and constants     */
-#define STATE_WAITING_FOR_USER_INTERRUPT_TIMEOUT	5			//Timeout in seconds
+#define STATE_WAITING_FOR_USER_INTERRUPT_TIMEOUT	3			//Timeout in seconds
 #define STATE_WAITING_FOR_USER_INTERRUPT_PARTS   	4
 
 
@@ -292,6 +292,31 @@ void system_controller_state_run_configuration_terminal(void)
 
 	/* *** EXIT **** */
 
+	printf("Starting PID-Controller\n\n");
+
+	uint8_t parts_of_seconds_counter = 0;
+
+	uint8_t waiting_time = STATE_WAITING_FOR_USER_INTERRUPT_TIMEOUT;
+	double delay = 1000.0/(STATE_WAITING_FOR_USER_INTERRUPT_PARTS + 1);
+
+	while(waiting_time > 0) {
+
+		//Display Counter and decreae timeout
+		if(parts_of_seconds_counter == 0) {
+			printf("%d", waiting_time);
+			waiting_time--;
+			parts_of_seconds_counter = STATE_WAITING_FOR_USER_INTERRUPT_PARTS;
+		} else {
+			printf(".");
+			parts_of_seconds_counter--;
+		}
+
+		_delay_ms(delay);
+
+	}
+
+	vt100_clear_all();
+
 	next_state = STATE_INIT_PID_CONTROLLER;
 }
 
@@ -307,6 +332,7 @@ void system_controller_state_init_pid_controller(void)
 	pid_Init(configuration_manager_current_config_get_p_factor(),
 			 configuration_manager_current_config_get_i_factor(),
 			 configuration_manager_current_config_get_d_factor(),
+			 configuration_manager_current_config_get_scalingfactor(),
 			 &pid_data);
 
 
@@ -359,7 +385,7 @@ void system_controller_state_run_pid_controller(void)
 				//Beschleunigungswerte lesen und in Position umrechnen
 				position = accelerationsensor_get_current_position();
 
-				//Aktuelle Position an den PID Regler geben und neue Stellgrš§e berechnen
+				//Aktuelle Position an den PID Regler geben und neue Stellgrï¿½ï¿½e berechnen
 				speed = pid_Controller(0, (int16_t)(position), &pid_data);
 
 				new_speed.motor_1 = speed >> 8;
