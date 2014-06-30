@@ -16,9 +16,8 @@
 #include <stdbool.h>
 
 /* local headers               */
-//#include "system_controller.h"
+#include "system_controller.h"
 
-#include "configuration_terminal.h"
 
 /* Tests */
 //#include "test/test_twi_master.h"
@@ -44,7 +43,7 @@ static void main_run_tests(void);
 
 void main_run(void)
 {
-//	system_controller_state_machine();
+	system_controller_state_machine();
 }
 
 
@@ -89,9 +88,9 @@ void main_run_tests(void)
  */
 int main(void)
 {
-	main_run_tests();
+//	main_run_tests();
 
-//	main_run();
+	main_run();
 
 	return 0;
 }
