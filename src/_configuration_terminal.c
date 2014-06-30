@@ -11,8 +11,7 @@
 
 #include <stdio.h>
 #include <stdint.h>
-//#include <avr/eeprom.h>
-//#include "configuration_setting.h"
+
 #include "configuration_manager.h"
 #include "vt100.h"
 
