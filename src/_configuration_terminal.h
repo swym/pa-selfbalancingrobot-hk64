@@ -1,7 +1,7 @@
 /*
  * configuration_terminal.h
  *
- *  Created on: Jun 29, 2014
+ *  Created on: Dec 5, 2013
  *      Author: alexandermertens
  */
 
@@ -11,17 +11,22 @@
 
 /* *** INCLUDES ************************************************************** */
 
-/* * system headers              * */
+/* system headers              */ 
 
-/* * local headers               * */
+/* local headers               */
+
+
 
 /* *** DECLARATIONS ********************************************************** */
 
-/* * external type and constants * */
+/* external type and constants */
 
-/* * external objects            * */
+/* external objects            */
 
-/* * external functions          * */
+/* external functions          */
 extern void configuration_terminal_state_machine(void);
 
 #endif /* CONFIGURATION_TERMINAL_H_ */
+
+
+

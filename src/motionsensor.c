@@ -107,7 +107,7 @@ void motionsensor_get_current_acceleration(acceleration_t *acceleration)
  * returns as call by reference the current offset.
  * @param accel
  */
-void motionsensor_get_offset(acceleration_t *acceleration)
+void motionsensor_get_acceleration_offset(acceleration_t *acceleration)
 {
 	acceleration->x = acceleration_offset.x;
 	acceleration->y = acceleration_offset.y;
@@ -118,7 +118,7 @@ void motionsensor_get_offset(acceleration_t *acceleration)
  * sets the offset with a given acceleration vector
  * @param accel
  */
-void motionsensor_set_offset(acceleration_t *acceleration)
+void motionsensor_set_acceleration_offset(acceleration_t *acceleration)
 {
 	if(acceleration != NULL) {
 		acceleration_offset.x = acceleration->x;
