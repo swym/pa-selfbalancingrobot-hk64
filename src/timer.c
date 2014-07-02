@@ -12,8 +12,8 @@
 
 
 //global Data
-volatile bool timer_compare_reached;
-volatile uint8_t timer_slot_counter;
+static volatile uint8_t timer_slot_counter;
+
 
 
 /*
@@ -33,7 +33,9 @@ volatile uint8_t timer_slot_counter;
 */
 void timer_init()
 {
-	timer_compare_reached = false;
+	timer_slot_1 = false;
+	timer_slot_2 = false;
+	timer_slot_3 = false;
 	timer_slot_counter = 0;
 
 
@@ -50,18 +52,29 @@ void timer_init()
 										//Output Compare Match Interrupt Enable
 
 	//Timer0 OCR-Register vorladen
-	OCR0 = 249;						//OCR0: Output Compare Register
-
+	OCR0 = 249;							//OCR0: Output Compare Register
 
 }
 
 
 ISR(TIMER0_COMP_vect)
 {
-	if(timer_slot_counter >= TIMER_SLOT_COUNTER_MAX) {
-		timer_slot_counter = 0;
-	} else {
-		timer_slot_counter++;
+
+	if(timer_slot_counter == 0) {
+		timer_slot_1 = true;
 	}
-	timer_compare_reached = true;
+
+	if(timer_slot_counter == 2) {
+		timer_slot_2 = true;
+	}
+
+	if(timer_slot_counter == 3) {
+		timer_slot_3 = true;
+	}
+
+	if(timer_slot_counter < TIMER_SLOT_COUNTER_MAX) {
+		timer_slot_counter++;
+	} else {
+		timer_slot_counter = 0;
+	}
 }

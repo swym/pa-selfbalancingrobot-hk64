@@ -19,6 +19,7 @@
 
 #include "lib/uart.h"
 #include "lib/twi_master.h"
+#include "lib/rfm12.h"
 
 #include "configuration_terminal.h"
 #include "configuration_storage.h"
@@ -34,15 +35,29 @@
 
 /* *** DECLARATIONS ********************************************************** */
 
+
+
+
+/* global types and constants */
 // Timer
-volatile bool timer_compare_reached;
-volatile uint8_t timer_slot_counter;
+volatile bool timer_slot_1;
+volatile bool timer_slot_2;
+volatile bool timer_slot_3;
 
 
 /* local type and constants     */
 #define STATE_WAITING_FOR_USER_INTERRUPT_TIMEOUT	5			//Timeout in seconds
 #define STATE_WAITING_FOR_USER_INTERRUPT_PARTS   	4
 
+//Datatypes iterate higher nibble - lower nibble for sec-number
+#define WIRELESS_TYPE_DATA_PID				0x80
+#define WIRELESS_TYPE_DATA_ACCELERATION		0x90
+#define WIRELESS_TYPE_DATA_ANGULARVELOCITY	0xA0
+
+#define WIRELESS_SEND_BUFFER_MAX_LEN		10
+
+#define DDR_LED	 	DDRC
+#define PORT_LED	PORTC
 
 typedef enum {
 	STATE_INIT_HARDWARE,
@@ -55,9 +70,17 @@ typedef enum {
 	STATE_NULL
 } system_controller_state_t;
 
-
+/* * local objects               * */
 static system_controller_state_t current_state;
 static system_controller_state_t next_state;
+
+static uint8_t wireless_send_buffer[WIRELESS_SEND_BUFFER_MAX_LEN];
+static uint8_t wireless_send_buffer_len = 0;
+
+static int16_t current_position;
+static int16_t current_speed;
+static acceleration_t current_acceleration;
+static acceleration_t current_angularvelocity;
 
 static pidData_t pid_data;
 
@@ -71,6 +94,12 @@ static void system_controller_state_waiting_for_user_interrupt(void);
 static void system_controller_state_run_configuration_terminal(void);
 static void system_controller_state_init_pid_controller(void);
 static void system_controller_state_run_pid_controller(void);
+
+
+//inline helper functions for sending data
+static inline void wireless_send_acceleration(void);
+static inline void wireless_send_angularvelocity(void);
+static inline void wireless_send_pid(void);
 
 /* *** FUNCTION DEFINITIONS ************************************************** */
 void system_controller_state_machine(void)
@@ -128,6 +157,8 @@ void system_controller_state_init_hardware(void)
 	twi_master_init();	/* Init TWI/I2C Schnittstelle */
 	timer_init();		/* Init Timer */
 
+	DDR_LED = 0xFF;		/* Setze LED Port als Ausgang */
+
 	sei();
 
 	vt100_clear_all();
@@ -135,13 +166,16 @@ void system_controller_state_init_hardware(void)
 	printf("system_controller_state_init_hardware(void)\n");
 
 	//init rfm12 interface
+	rfm12_init();
+
+	//init simplex_protocol
 	simplex_protocol_init();
 
 	//init motionsensor
 	motionsensor_init();
 
 	//init motor controller
-//	motor_control_init();
+	motor_control_init();
 
 
 	/* *** EXIT **** */
@@ -275,70 +309,150 @@ void system_controller_state_run_pid_controller(void)
 	/* *** ENTRY *** */
 	printf("system_controller_state_run_pid_controller(void)\n");
 
-	uint16_t speed = 0;
+	//uint16_t speed = 0;
 	motor_contol_speed_t new_speed;
 
-	double position;
-
-	acceleration_t accel_tmp;
+	//double position = 1337;
 
 	/* **** DO ***** */
 
+	PORT_LED = 0xFF;
+
 	for(;;) {
-		if(timer_compare_reached) {
+		if(timer_slot_1) {
+			timer_slot_1 = false;
+			PORT_LED ^= _BV(0);
 
-			timer_compare_reached = false;
-			//led_value ^= LED3;
+			/*
+			 * Sensorwerte lesen und in Position umrechnen
+			 * als IST-Wert in den PID-Regler geben
+			 * Stellgr��e an Motorsteuerung weitergeben, ABER noch nicht setzen
+			 */
+			current_position = (int16_t)(motionsensor_get_position());
+			current_speed = pid_Controller(0, current_position, &pid_data);
 
-			if(timer_slot_counter == 0) {
+			new_speed.motor_1 = current_speed;
+			new_speed.motor_2 = current_speed;
 
-				motionsensor_get_current_acceleration(&accel_tmp);
+			motor_control_prepare_new_speed(&new_speed);
 
-				printf("%d,%d;%d\n", accel_tmp.x, accel_tmp.y, accel_tmp.z);
-
-			}
-
-			/* Erster Zeitslot am Anfang des Intervalls; t = 0 ms */
-			if(timer_slot_counter == 0) {
-				/*
-				 * Beschleunigungswerte lesen
-				 * Beschleunigungswerte in Position umrechnen
-				 * als IST-Wert in den PID-Regler geben
-				 * Stellgr��e an Motorsteuerung weitergeben, ABER noch nicht setzen
-				 */
-//				PORTC ^= (LED1 | LED2);				//LED1 an.
-
-				//Beschleunigungswerte lesen und in Position umrechnen
-//				position = motionsensor_get_position();
-
-				//Aktuelle Position an den PID Regler geben und neue Stellgr��e berechnen
-//				speed = pid_Controller(0, (int16_t)(position), &pid_data);
-
-//				new_speed.motor_1 = speed >> 8;
-//				new_speed.motor_2 = speed >> 8;
-
-				// Neue Stellgr��e an Motorsteuerung weitergeben, ABER noch nicht setzen
-//				motor_control_prepare_new_speed(&new_speed);
-//				PORTC ^= LED2;
-			}
-
-			/* Zweiter Zeitslot des Intervalls; t = 12 ms */
-			if(timer_slot_counter == 3) {
-//				PORTC ^= LED2;
-				/*
-				 * Neue Stellgr��e des Motors setzen
-				 */
-//				motor_control_set_new_speed();
-//				PORTC ^= LED2;
-			}
-
-//			if(timer_slot_counter >= TIMER_SLOT_COUNTER_MAX) {
-//				led_value &= ~(LED1 | LED2);	//Wieder beide LEDs l�schen
-//			}
+//			wireless_send_acceleration();
 		}
-	}
+
+		if(timer_slot_2) {
+			timer_slot_2 = false;
+			PORT_LED ^= _BV(1);
+
+			/*
+			 * Neue Stellgröße des Motors setzen
+			 */
+			motor_control_set_new_speed();
+
+//			wireless_send_angularvelocity();
+		}
+
+		if(timer_slot_3) {
+			timer_slot_3 = false;
+			PORT_LED ^= _BV(2);
+
+			wireless_send_pid();
+		}
+
+		simplex_protocol_tick();
+	} // end for(;;)
+
 
 	/* *** EXIT **** */
 
 	next_state = STATE_NULL;
+}
+
+static inline void wireless_send_acceleration(void)
+{
+	wireless_send_buffer[0] = WIRELESS_TYPE_DATA_ACCELERATION;
+
+	current_acceleration.x = 1000;
+	current_acceleration.y = 2000;
+	current_acceleration.z = 3000;
+
+	wireless_send_buffer[1] = (uint8_t)(current_acceleration.x >> 8);
+	wireless_send_buffer[2] = (uint8_t)(current_acceleration.x & 0x00FF);
+
+	//acceleration_y
+	wireless_send_buffer[3] = (uint8_t)((current_acceleration.y) >> 8);
+	wireless_send_buffer[4] = (uint8_t)((current_acceleration.y) & 0x00FF);
+
+	//acceleration_z
+	wireless_send_buffer[5] = (uint8_t)((current_acceleration.z) >> 8);
+	wireless_send_buffer[6] = (uint8_t)((current_acceleration.z) & 0x00FF);
+
+	wireless_send_buffer_len = 7;
+
+
+	simplex_protocol_send(SIMPLEX_PROTOCOL_FRAME_TYPE_DATA,
+			wireless_send_buffer_len,
+			wireless_send_buffer);
+}
+
+static inline void wireless_send_angularvelocity(void)
+{
+	wireless_send_buffer[0] = WIRELESS_TYPE_DATA_ANGULARVELOCITY;
+
+	wireless_send_buffer[1] = (uint8_t)(current_angularvelocity.x >> 8);
+	wireless_send_buffer[2] = (uint8_t)(current_angularvelocity.x & 0x00FF);
+
+	//acceleration_y
+	wireless_send_buffer[3] = (uint8_t)((current_angularvelocity.y) >> 8);
+	wireless_send_buffer[4] = (uint8_t)((current_angularvelocity.y) & 0x00FF);
+
+	//acceleration_z
+	wireless_send_buffer[5] = (uint8_t)((current_angularvelocity.z) >> 8);
+	wireless_send_buffer[6] = (uint8_t)((current_angularvelocity.z) & 0x00FF);
+
+
+	wireless_send_buffer_len = 7;
+
+
+	simplex_protocol_send(SIMPLEX_PROTOCOL_FRAME_TYPE_DATA,
+			wireless_send_buffer_len,
+			wireless_send_buffer);
+}
+
+static inline void wireless_send_pid(void)
+{
+	wireless_send_buffer[0] = WIRELESS_TYPE_DATA_ACCELERATION;
+
+	uint32_t temp;
+
+	//header
+	wireless_send_buffer[0] = WIRELESS_TYPE_DATA_PID;
+/*
+	//position
+	temp = (uint32_t)(current_position);
+	wireless_send_buffer[1] = (uint8_t)(temp >> 24);
+
+	temp = (uint32_t)(current_position);
+	temp = temp & 0x00FF0000;
+	wireless_send_buffer[2] = (uint8_t)(temp >> 16);
+
+	temp = (uint32_t)(current_position);
+	temp = temp & 0x0000FF00;
+	wireless_send_buffer[3] = (uint8_t)(temp >> 8);
+
+	temp = (uint32_t)(current_position);
+	wireless_send_buffer[4] = (uint8_t)((temp) & 0x000000FF);
+*/
+	//position
+	wireless_send_buffer[1] = (uint8_t)(current_position >> 8);
+	wireless_send_buffer[2] = (uint8_t)(current_position & 0x00FF);
+
+	//speed
+	wireless_send_buffer[3] = (uint8_t)((current_speed) >> 8);
+	wireless_send_buffer[4] = (uint8_t)((current_speed) & 0x00FF);
+
+	wireless_send_buffer_len = 5;
+
+	simplex_protocol_send(SIMPLEX_PROTOCOL_FRAME_TYPE_DATA,
+			wireless_send_buffer_len,
+			wireless_send_buffer);
 }
