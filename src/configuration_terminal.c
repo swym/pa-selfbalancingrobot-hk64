@@ -1,464 +1,235 @@
 /*
  * configuration_terminal.c
  *
- *  Created on: Dec 5, 2013
+ *  Created on: Jun 29, 2014
  *      Author: alexandermertens
  */
 
 
-/* *** INCLUDES ************************************************************** */
+/* *** INCLUDES ************************************************************* */
 #include "configuration_terminal.h"
 
+/* * system headers              * */
 #include <stdio.h>
 #include <stdint.h>
-//#include <avr/eeprom.h>
-//#include "configuration_setting.h"
-#include "configuration_manager.h"
+#include <string.h>
+
+/* * local headers               * */
+#include "lib/uart.h"
+
+#include "lib/twi_master.h"
+
+#include "configuration_storage.h"
+#include "motionsensor.h"
 #include "vt100.h"
 
+/* *** DEFINES ************************************************************** */
+#define INPUT_BUFFER_MAX	40
 
-/* *** DECLARATIONS ********************************************************** */
+/* *** DECLARATIONS ********************************************************* */
 
-/* local type and constants     */
+/* * local type and constants    * */
 typedef enum {
-	STATE_MAIN_MENU,
-	STATE_SELECT_SETTINGS,
-	STATE_WRITE_SETTINGS,
-	STATE_EXPORT_SETTINGS,
-	STATE_PID_SET_P,
-	STATE_PID_SET_I,
-	STATE_PID_SET_D,
-	STATE_PID_SET_SCALINGFACTOR,
-	STATE_ACCELERATIONSENSOR_SET_ZERO,
-	STATE_ACCELERATIONSENSOR_SET_SCALINGFACTOR,
-	STATE_EDIT_COMMENT,
+	STATE_READ_INPUT,
+	STATE_PRINT_HELP,
+	STATE_PRINT_CONFIG,
+	STATE_SET_PARAMETER,
+	STATE_SET_ZERO_POINT,
+	STATE_SAVE_CONFIG,
 	STATE_FINAL,
 	STATE_NULL
 } configuration_terminal_state_t;
 
-static configuration_terminal_state_t current_state = STATE_MAIN_MENU;
-static configuration_terminal_state_t next_state = STATE_NULL;
+/* * local objects               * */
+static configuration_terminal_state_t current_state;
+static configuration_terminal_state_t next_state;
 
-/* local function declarations  */
+static char input_buffer[INPUT_BUFFER_MAX];
 
-/* states */
-void configuration_terminal_state_select_settings(void);
-void configuration_terminal_state_write_settings(void);
-void configuration_terminal_state_export_settings(void);
-void configuration_terminal_state_main_menu(void);
-void configuration_terminal_state_PID_set_P(void);
-void configuration_terminal_state_PID_set_I(void);
-void configuration_terminal_state_PID_set_D(void);
-void configuration_terminal_state_PID_set_scalingfactor(void);
-void configuration_terminal_state_edit_comment(void);
-void configuration_terminal_state_accelerationsensor_set_zero(void);
-void configuration_terminal_state_accelerationsensor_set_scalingfactor(void);
-void configuration_terminal_state_final(void);
+/* * local function declarations * */
+static void configuration_terminal_state_read_input(void);
+static void configuration_terminal_state_print_help(void);
+static void configuration_terminal_state_print_config(void);
+static void configuration_terminal_state_set_parameter(void);
+static void configuration_terminal_state_set_zero_point(void);
+static void configuration_terminal_state_save_configuration(void);
 
-
-/* *** FUNCTION DEFINITIONS ************************************************** */
-
+/* *** FUNCTION DEFINITIONS ************************************************* */
 
 void configuration_terminal_state_machine(void)
 {
+	current_state = STATE_PRINT_CONFIG;
+	next_state = STATE_NULL;
 
-
- 	while(current_state != STATE_NULL) {
+ 	while(current_state != STATE_FINAL) {
 		switch(current_state) {
 
-			case STATE_SELECT_SETTINGS:
-				configuration_terminal_state_select_settings();
+			case STATE_READ_INPUT:
+				configuration_terminal_state_read_input();
 			break;
 
-			case STATE_WRITE_SETTINGS:
-				configuration_terminal_state_write_settings();
+			case STATE_PRINT_HELP:
+				configuration_terminal_state_print_help();
 			break;
 
-			case STATE_EXPORT_SETTINGS:
-				configuration_terminal_state_export_settings();
+			case STATE_PRINT_CONFIG:
+				configuration_terminal_state_print_config();
 			break;
 
-			case STATE_MAIN_MENU:
-				configuration_terminal_state_main_menu();
+			case STATE_SET_PARAMETER:
+				configuration_terminal_state_set_parameter();
 			break;
 
-			case STATE_PID_SET_P:
-				configuration_terminal_state_PID_set_P();
+			case STATE_SET_ZERO_POINT:
+				configuration_terminal_state_set_zero_point();
 			break;
 
-			case STATE_PID_SET_I:
-				configuration_terminal_state_PID_set_I();
+			case STATE_SAVE_CONFIG:
+				configuration_terminal_state_save_configuration();
 			break;
 
-			case STATE_PID_SET_D:
-				configuration_terminal_state_PID_set_D();
-			break;
-
-			case STATE_PID_SET_SCALINGFACTOR:
-				configuration_terminal_state_PID_set_scalingfactor();
-			break;
-
-			case STATE_ACCELERATIONSENSOR_SET_ZERO:
-				configuration_terminal_state_accelerationsensor_set_zero();
-			break;
-
-			case STATE_ACCELERATIONSENSOR_SET_SCALINGFACTOR:
-				configuration_terminal_state_accelerationsensor_set_scalingfactor();
-			break;
-
-			case STATE_EDIT_COMMENT:
-				configuration_terminal_state_edit_comment();
-			break;
-
-			case STATE_FINAL:
-				configuration_terminal_state_final();
-			break;
-			case STATE_NULL:
-				//TODO: Implement Null state
+			default:
 			break;
 		}
 
 		current_state = next_state;
 		next_state = STATE_NULL;
-	}
+ 	}
 }
 
-void configuration_terminal_state_select_settings(void)
+void configuration_terminal_state_print_help(void)
+{
+	printf("valid commands:\n");
+	printf("s[value],[integer] - set selected parameter to integer\n");
+	printf("    [value]   = 'p', 'i', 'd', 's', 'm'\n");
+	printf("    [integer] = > 0 and < INT16_MAX'\n");
+	printf("z - set new zero point for acceleration\n");
+	printf("? - show this help\n");
+	printf("c - show current configuration\n");
+	printf("q - quit terminal and write changes to eeprom\n");
+
+
+	next_state = STATE_READ_INPUT;
+}
+void configuration_terminal_state_print_config(void)
+{
+	acceleration_t accel_offset;
+	configuration_storage_get_acceleration_offset(&accel_offset);
+
+	printf("pid.p: %i\n",configuration_storage_get_p_factor());
+	printf("pid.i: %i\n",configuration_storage_get_i_factor());
+	printf("pid.d: %i\n",configuration_storage_get_d_factor());
+	printf("pid.scaling: %u\n",configuration_storage_get_scalingfactor());
+	printf("position_multiplier: %u\n",configuration_storage_get_position_multiplier());
+	printf("accel_offset.x: %i\n",accel_offset.x);
+	printf("accel_offset.y: %i\n",accel_offset.y);
+	printf("accel_offset.z: %i\n",accel_offset.z);
+	printf("gyroscope.bias: 0.0\n");
+
+	next_state = STATE_READ_INPUT;
+}
+
+
+void configuration_terminal_state_read_input(void)
 {
 	//ENTRY
-//	uint8_t i = 0;
-
-	uint8_t new_index;
-
-	vt100_clear_all();
-
-
-	configuration_manager_print_all_configs();
-
-	new_index = vt100_get_integer(configuration_manager_get_current_config_index(),
-			0,
-			CONFIGURATION_MANAGER_CONFIG_COUNT - 1);
-
-	configuration_manager_select_config(new_index);
-
-	//EXIT
-
-	next_state = STATE_MAIN_MENU;
-}
-
-
-void configuration_terminal_state_write_settings(void)
-{
-	//TODO
-/*	//ENTRY
-	vt100_clear_all();
-
 	//DO
-	printf("Writing settings to eeprom....\n");
 
-	configuration_manager_write_config();
+	printf(" > ");
 
-	//EXIT
-	 *
-	 */
-	next_state = STATE_MAIN_MENU;
-}
+	vt100_clear_input_buffer();
+	vt100_get_string(input_buffer,INPUT_BUFFER_MAX);
 
-void configuration_terminal_state_export_settings(void)
-{/*
-	uint8_t i;
+	printf("%s\n",input_buffer);
 
-	//ENTRY
-	vt100_clear_all();
-
-	//DO
-	for(i = 0;i < CONFIGURATION_MANAGER_CONFIG_COUNT;i++) {
-
-		printf("%u,%u,%u,%u,%u,%u,%i,%i,%i,\"%s\"\n",
-				i,
-				configuration_setting_data[i].pid_p_factor,
-				configuration_setting_data[i].pid_i_factor,
-				configuration_setting_data[i].pid_d_factor,
-				configuration_setting_data[i].pid_scalingfactor,
-				configuration_setting_data[i].position_multiplier,
-				configuration_setting_data[i].acceleration_offset.x,
-				configuration_setting_data[i].acceleration_offset.y,
-				configuration_setting_data[i].acceleration_offset.z,
-				configuration_setting_data[i].comment);
-
-		printf("tba\n");
+	if(input_buffer[0] == 'c') {
+		next_state = STATE_PRINT_CONFIG;
+	} else if (input_buffer[0] == '?') {
+		next_state = STATE_PRINT_HELP;
+	} else if (input_buffer[0] == 's') {
+		next_state = STATE_SET_PARAMETER;
+	} else if (input_buffer[0] == 'z') {
+		next_state = STATE_SET_ZERO_POINT;
+	} else if (input_buffer[0] == 'q') {
+		next_state = STATE_SAVE_CONFIG;
+	} else {
+		next_state = STATE_READ_INPUT;
 	}
-
-	printf("\n\nPress any key to go back to main menu.\n");
-
-	//wait for user input; but don't use it
-
-	vt100_get_choice();
-	*/
-
-	//EXIT
-	next_state = STATE_MAIN_MENU;
+	vt100_clear_input_buffer();
 }
 
-
-void configuration_terminal_state_main_menu(void)
+void configuration_terminal_state_set_parameter(void)
 {
-	char choice;
+	char value_string[10];
+	char *c = input_buffer;
 
-	// ENTRY
-	vt100_clear_all();
-
-	//Greeting
-
-	printf("                          [Current Configuration]\n\n");
-	printf("[C] - \"%s\"\n\n", configuration_manager_current_config_get_comment());
+	char command = input_buffer[1];
+	char seperator = input_buffer[2];
 
 
-	printf("    PID Controller                          Accelerationsensor\n\n");
-	printf("[P] - Proportional Parameter : %5i    [M] - Position Multiplier    : %5u\n",
-			configuration_manager_current_config_get_p_factor(),
-			configuration_manager_current_config_get_position_multiplier());
+	uint16_t value_uint16 = 0;
 
-	printf("[I] - Integral Parameter     : %5i    [O] - Set Offset           X : %5i\n",
-			configuration_manager_current_config_get_i_factor(),
-			configuration_manager_current_config_get_acceleration_offset()->x);
+	uint8_t i = 0;
 
-	printf("[D] - Derivative Parameter   : %5u                               Y : %5i\n",
-			configuration_manager_current_config_get_d_factor(),
-			configuration_manager_current_config_get_acceleration_offset()->y);
+	//parsing string to integer
+	if(strlen(input_buffer) > 3 && seperator == ',') {
+		c += 3;
 
-	printf("[F] - Factor                 : %5u                               Z : %5i\n",
-			configuration_manager_current_config_get_scalingfactor(),
-			configuration_manager_current_config_get_acceleration_offset()->z);
+		while(*c != '\0') {
+			value_string[i] = *c;
+			c++;
+			i++;
+		}
+		value_string[i] = '\0';
 
-	printf("\n\n    Settings\n\n[S] - Select Configuration\n");
-	printf("\n\n    Run\n\n[R] - Save current configuration and run system\n");
+		sscanf(value_string, "%u", &value_uint16);
 
-	// DO
-	//Waiting for users choice
-	do {
-		choice = vt100_get_choice();
-
-		if(choice == 'P') {
-			next_state = STATE_PID_SET_P;
-		} else if(choice == 'I') {
-			next_state = STATE_PID_SET_I;
-		} else if(choice == 'D') {
-			next_state = STATE_PID_SET_D;
-		} else if(choice == 'F') {
-			next_state = STATE_PID_SET_SCALINGFACTOR;
-		} else if(choice == 'M') {
-			next_state = STATE_ACCELERATIONSENSOR_SET_SCALINGFACTOR;
-		} else if(choice == 'O') {
-			next_state = STATE_ACCELERATIONSENSOR_SET_ZERO;
-		} else if(choice == 'C') {
-			next_state = STATE_EDIT_COMMENT;
-		} else if(choice == 'S') {
-			next_state = STATE_SELECT_SETTINGS;
-//		} else if(choice == 'W') {
-//			next_state = STATE_WRITE_SETTINGS;
-//		} else if(choice == 'E') {
-//			next_state = STATE_EXPORT_SETTINGS;
-		} else if(choice == 'R') {
-			next_state = STATE_FINAL;
-		} else {
-			printf("Invalid choice! Please retry:\n");
-			choice = 0;
+		//should always non negative ...
+		if(value_uint16 < 0) {
+			value_uint16 = 0;
 		}
 
-	} while(choice == 0);
+		//and never greater INT16_MAX
+		if(value_uint16 > INT16_MAX) {
+			value_uint16 = INT16_MAX;
+		}
 
-	// EXIT
+		if(command == 'p') {
+			configuration_storage_set_p_factor(value_uint16);
+		} else if(command == 'i') {
+			configuration_storage_set_i_factor(value_uint16);
+		} else if(command == 'd') {
+			configuration_storage_set_d_factor(value_uint16);
+		} else if(command == 's') {
+			configuration_storage_set_scalingfactor(value_uint16);
+		} else if(command == 'm') {
+			configuration_storage_set_position_multiplier(value_uint16);
+		}
 
+		printf("OK\n");
+	} else {
+		printf("invalid input\n");
+	}
+
+	next_state = STATE_READ_INPUT;
 }
 
-
-
-void configuration_terminal_state_PID_set_P(void)
+void configuration_terminal_state_set_zero_point(void)
 {
-	// ENTRY
-	vt100_clear_all();
-
-
-	printf("=== CHANGE PROPORTIONAL PARAMETER ===\n\n");
-	printf("Current value: %u\n\n", configuration_manager_current_config_get_p_factor());
-
-
-	// DO
-	configuration_manager_current_config_set_p_factor(vt100_get_integer(
-			configuration_manager_current_config_get_p_factor(),
-			0,
-			UINT16_MAX));
-
-	next_state = STATE_MAIN_MENU;
-
-	// EXIT
-
-}
-
-
-void configuration_terminal_state_PID_set_I(void)
-{
-	// ENTRY
-	vt100_clear_all();
-
-	printf("=== CHANGE INGETRAL PARAMETER ===\n\n");
-	printf("Current value: %u\n\n", configuration_manager_current_config_get_i_factor());
-
-
-	// DO
-	configuration_manager_current_config_set_i_factor(vt100_get_integer(
-			configuration_manager_current_config_get_i_factor(),
-			0,
-			UINT16_MAX));
-
-	next_state = STATE_MAIN_MENU;
-	// EXIT
-
-}
-
-
-void configuration_terminal_state_PID_set_D(void)
-{
-	// ENTRY
-	vt100_clear_all();
-
-	printf("=== CHANGE DERIVATIVE PARAMETER ===\n\n");
-	printf("Current value: %u\n\n", configuration_manager_current_config_get_d_factor());
-
-
-	// DO
-	configuration_manager_current_config_set_d_factor(vt100_get_integer(
-			configuration_manager_current_config_get_d_factor(),
-			0,
-			UINT16_MAX));
-
-	next_state = STATE_MAIN_MENU;
-
-
-	// EXIT
-
-}
-
-
-
-void configuration_terminal_state_PID_set_scalingfactor(void)
-{
-	// ENTRY
-	vt100_clear_all();
-
-	printf("=== CHANGE PID SCALING FACTOR ===\n\n");
-	printf("Current value: %u\n\n", configuration_manager_current_config_get_scalingfactor());
-
-	// DO
-	configuration_manager_current_config_set_scalingfactor(vt100_get_integer(
-			configuration_manager_current_config_get_scalingfactor(),
-			1,
-			UINT16_MAX));//TODO
-
-	next_state = STATE_MAIN_MENU;
-
-
-	// EXIT
-}
-
-
-void configuration_terminal_state_accelerationsensor_set_zero(void)
-{
-	// ENTRY
-
-	acceleration_t accel;
-
-	// DO
+	acceleration_t acceleration;
 
 	//Perform calibration
-	accelerationsensor_calibrate_offset();
+	motionsensor_set_zero_point();
 
 	//Read and save the offset from the sensor
-	accelerationsensor_get_offset(&accel);
-	configuration_manager_current_config_set_acceleration_offset(&accel);
+	motionsensor_get_acceleration_offset(&acceleration);
+	configuration_storage_set_acceleration_offset(&acceleration);
 
-	// EXIT
-
-	next_state = STATE_MAIN_MENU;
-
+	next_state = STATE_READ_INPUT;
 }
 
-
-void configuration_terminal_state_accelerationsensor_set_scalingfactor(void)
+void configuration_terminal_state_save_configuration(void)
 {
-	//TODO Naming STATE/FUNCTION/CONFIG MANAGER
-
-	// ENTRY
-	vt100_clear_all();
-
-	printf("=== ACCELERATIONSENSOR SCALING FACTOR ===\n\n");
-	printf("Current value: %u\n\n", configuration_manager_current_config_get_position_multiplier());
-
-	// DO
-	configuration_manager_current_config_set_position_multiplier(vt100_get_integer(
-			configuration_manager_current_config_get_position_multiplier(),
-			1,
-			UINT16_MAX));
-
-	next_state = STATE_MAIN_MENU;
-
-	// EXIT
+	configuration_storage_save_configuration();
+	next_state = STATE_FINAL;
 }
-
-
-void configuration_terminal_state_edit_comment(void)
-{
-	// ENTRY
-	vt100_clear_all();
-
-	char new_comment[CONFIGURATION_MANAGER_CONFIG_COMMENT_LENGTH];
-
-	printf("=== EDIT COMMENT ===\n\n");
-
-	printf("Current value: \"%s\"\n\n", configuration_manager_current_config_get_comment());
-
-	// DO
-
-	vt100_get_string(new_comment, CONFIGURATION_MANAGER_CONFIG_COMMENT_LENGTH);
-	configuration_manager_current_config_set_comment(new_comment);
-
-	next_state = STATE_MAIN_MENU;
-
-
-	// EXIT
-}
-
-void configuration_terminal_state_final(void)
-{
-	//ENTRY
-	vt100_clear_all();
-
-	//DO
-	if(configuration_manager_current_config_has_changed()) {
-
-		char new_comment[CONFIGURATION_MANAGER_CONFIG_COMMENT_LENGTH];
-
-		printf("=== EDIT COMMENT ===\n\n");
-
-		printf("Configuration has changed. Please alter comment if necessary\n\n");
-		printf("Current comment: \"%s\"\n\n", configuration_manager_current_config_get_comment());
-
-		vt100_get_string(new_comment, CONFIGURATION_MANAGER_CONFIG_COMMENT_LENGTH);
-
-		if(new_comment[0] != '\0') {
-			configuration_manager_current_config_set_comment(new_comment);
-		}
-
-		vt100_clear_all();
-		printf("Writing settings to eeprom....\n");
-		configuration_manager_write_config();
-	}
-
-	//EXIT
-	vt100_clear_all();
-	next_state = STATE_NULL;
-}
-
-
-

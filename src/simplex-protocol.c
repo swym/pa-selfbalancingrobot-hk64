@@ -30,17 +30,6 @@
 #define FRAME_BUFFER_STATUS_NOT_SEND   0
 #define FRAME_BUFFER_STATUS_SEND       1
 
-
-#define DDR_LED	 		DDRC
-#define PORT_LED		PORTC
-
-#define LED_UART 		7
-#define LED_RFM12 		6
-#define LED_MODE_TX		5
-#define LED_MODE_RX		4
-#define LED_DATA_TX		1
-#define LED_DATA_RX		0
-
 //Frame Buffer = 2 * (Data + Header (5)) (2 mal wegen FEC)
 #define SIMPLEX_PROTOCOL_FRAME_BUFFER_SIZE (2*(SIMPLEX_PROTOCOL_MAX_FRAME_SIZE+5))
 
@@ -210,8 +199,6 @@ void simplex_protocol_send_frame()
 		42,
 		send_buffer.byte_array);
 
-		PORT_LED ^= _BV(LED_DATA_TX);
-
 		send_buffer.status = FRAME_BUFFER_STATUS_SEND;
 	}
 }
@@ -261,7 +248,6 @@ void simplex_linklayer_receive_frame()
 		//check crc and set status
 		if(simplex_protocol_crc(&receive_buffer.frame) == receive_buffer.frame.crc) {
 			receive_buffer.status = SIMPLEX_PROTOCOL_BUFFER_ARRIVAL;
-			PORT_LED ^= _BV(LED_DATA_RX);
 		} else {
 			receive_buffer.status = SIMPLEX_PROTOCOL_BUFFER_CRCERROR;
 		}
