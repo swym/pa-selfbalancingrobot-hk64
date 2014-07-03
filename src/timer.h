@@ -11,13 +11,14 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define TIMER_SLOT_COUNTER_MAX 4 // (Intervalll�nge = 20 ms / IRQ-Zeit = 4 ms)-1 -> 5-1
+#define TIMER_SLOT_COUNTER_MAX 4 // (Intervalll�nge = 20 ms / IRQ-Zeit = 4 ms)
 
 
 
 //External Data
-extern volatile bool timer_compare_reached;
-extern volatile uint8_t timer_slot_counter;
+extern volatile bool timer_slot_1;
+extern volatile bool timer_slot_2;
+extern volatile bool timer_slot_3;
 
 //External Functions
 extern void timer_init(void);

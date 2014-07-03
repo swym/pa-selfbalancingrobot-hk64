@@ -16,9 +16,8 @@
 #include <stdbool.h>
 
 /* local headers               */
-//#include "system_controller.h"
+#include "system_controller.h"
 
-#include "configuration_terminal.h"
 
 /* Tests */
 //#include "test/test_twi_master.h"
@@ -38,19 +37,19 @@
 
 /* local function declarations  */
 static void main_run(void);
-static void main_run_tests(void);
+//static void main_run_tests(void);
 
 /* *** FUNCTION DEFINITIONS ************************************************** */
 
 void main_run(void)
 {
-//	system_controller_state_machine();
+	system_controller_state_machine();
 }
 
 
-void main_run_tests(void)
-{
-	configuration_terminal_state_machine();
+//void main_run_tests(void)
+//{
+//	configuration_terminal_state_machine();
 
 	//test_mpu9150_run();
 	//test_motionsensor_run();
@@ -80,7 +79,7 @@ void main_run_tests(void)
 	//test_motor_control_set_different_speeds();
 
 //	test_configuration_terminal_test_state_machine();
-}
+//}
 
 
 /**
@@ -89,9 +88,9 @@ void main_run_tests(void)
  */
 int main(void)
 {
-	main_run_tests();
+//	main_run_tests();
 
-//	main_run();
+	main_run();
 
 	return 0;
 }
