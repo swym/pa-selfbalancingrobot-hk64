@@ -184,9 +184,9 @@ void configuration_terminal_state_set_parameter(void)
 
 		sscanf(value_string, "%u", &value_uint16);
 
-		//should always be positive...
-		if(value_uint16 < 1) {
-			value_uint16 = 1;
+		//should always non negative ...
+		if(value_uint16 < 0) {
+			value_uint16 = 0;
 		}
 
 		//and never greater INT16_MAX

@@ -331,6 +331,14 @@ void system_controller_state_run_pid_controller(void)
 			current_position = (int16_t)(motionsensor_get_position());
 			current_speed = pid_Controller(0, current_position, &pid_data);
 
+			if(current_speed > INT8_MAX) {
+				current_speed = INT8_MAX;
+			}
+
+			if(current_speed < INT8_MIN) {
+				current_speed = INT8_MIN;
+			}
+
 			new_speed.motor_1 = current_speed;
 			new_speed.motor_2 = current_speed;
 
@@ -349,12 +357,6 @@ void system_controller_state_run_pid_controller(void)
 			motor_control_set_new_speed();
 
 //			wireless_send_angularvelocity();
-		}
-
-		if(timer_slot_3) {
-			timer_slot_3 = false;
-			PORT_LED ^= _BV(2);
-
 			wireless_send_pid();
 		}
 
@@ -370,10 +372,6 @@ void system_controller_state_run_pid_controller(void)
 static inline void wireless_send_acceleration(void)
 {
 	wireless_send_buffer[0] = WIRELESS_TYPE_DATA_ACCELERATION;
-
-	current_acceleration.x = 1000;
-	current_acceleration.y = 2000;
-	current_acceleration.z = 3000;
 
 	wireless_send_buffer[1] = (uint8_t)(current_acceleration.x >> 8);
 	wireless_send_buffer[2] = (uint8_t)(current_acceleration.x & 0x00FF);
@@ -420,8 +418,6 @@ static inline void wireless_send_angularvelocity(void)
 
 static inline void wireless_send_pid(void)
 {
-	wireless_send_buffer[0] = WIRELESS_TYPE_DATA_ACCELERATION;
-
 	uint32_t temp;
 
 	//header

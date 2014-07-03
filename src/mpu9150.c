@@ -197,6 +197,7 @@ extern void mpu9150_read_acceleration(acceleration_t* acceleration_vector)
 	acceleration_vector->z = (uint16_t)(temp_data << 8);
 	temp_data = twi_receive_buffer[5];
 	acceleration_vector->z = (uint16_t)(acceleration_vector->z | temp_data);
+	acceleration_vector->z = -acceleration_vector->z;
 }
 
 void mpu9150_init()
