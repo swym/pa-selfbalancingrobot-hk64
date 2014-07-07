@@ -40,7 +40,7 @@ typedef struct {
 extern void motionsensor_init(void);
 extern void motionsensor_set_zero_point(void);
 
-extern double motionsensor_get_position(void);
+extern int16_t motionsensor_get_position(void);
 
 //TODO: make static when working
 extern void motionsensor_get_current_rotation(rotation_t *rotation);

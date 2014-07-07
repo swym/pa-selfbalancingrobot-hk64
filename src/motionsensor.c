@@ -30,6 +30,8 @@
 /* * local objects               * */
 
 static acceleration_t acceleration_offset;
+static rotation_t rotation_offset;
+
 static double position_multiplier;
 
 static moving_average_t average_rotation_x;
@@ -40,27 +42,64 @@ static moving_average_t average_acceleration_x;
 static moving_average_t average_acceleration_y;
 static moving_average_t average_acceleration_z;
 
+static int16_t gyro_angle_y;
+static int16_t accel_angle_y;
 
 /* * local function declarations * */
 //static void motionsensor_get_current_rotation(rotation_t *rotation);
 //static void motionsensor_get_current_acceleration(acceleration_t acceleration);
 
 /* *** FUNCTION DEFINITIONS ************************************************* */
-double motionsensor_get_position()
+//double motionsensor_get_position()
+//{
+//	//http://forum.arduino.cc/index.php/topic,58048.0.html
+//	double RAD2DEG = 57.295;
+//
+//	double position;
+//
+//	rotation_t tmp_rotation;
+//	acceleration_t tmp_acceleration;
+//
+//	motionsensor_get_current_rotation(&tmp_rotation);
+////	motionsensor_get_current_acceleration(&tmp_acceleration);
+//
+//	gyroAngle += (tmp_rotation.y * 20/1000);
+//
+//	printf("%i, %i\n",tmp_rotation.y, gyroAngle);
+//
+//	//Integriere gyroRate zu GyroAngle
+//
+//	return 0.0;
+//
+//	//position = atan2(tmp_acceleration.x, tmp_acceleration.z);
+//
+//	//return position_multiplier * (position * RAD2DEG);
+//
+//}
+
+int16_t motionsensor_get_position()
 {
-	double RAD2DEG = 57.295;
+	int16_t angle_y;
 
-	double position;
+	//update sensorwerte
+	rotation_t cur_rotation;
+	acceleration_t cur_acceleration;
 
-	rotation_t tmp_rotation;
-	acceleration_t tmp_acceleration;
+	motionsensor_get_current_rotation(&cur_rotation);
+	motionsensor_get_current_acceleration(&cur_acceleration);
 
-	motionsensor_get_current_rotation(&tmp_rotation);
-	motionsensor_get_current_acceleration(&tmp_acceleration);
+	//integrate angular velocity to angle over time (dt = 20 ms)
 
-	position = atan2(tmp_acceleration.x, tmp_acceleration.z);
+	gyro_angle_y += (cur_rotation.y * 20/1000);
+	accel_angle_y = (int16_t)(1000*(atan2(cur_acceleration.x, cur_acceleration.z)));
 
-	return position_multiplier * (position * RAD2DEG);
+
+
+	//Complementary Filter
+	angle_y = (0.9 * gyro_angle_y) + (0.1 * accel_angle_y);
+
+	return angle_y;
+
 }
 
 void motionsensor_get_current_rotation(rotation_t *rotation)
@@ -70,6 +109,9 @@ void motionsensor_get_current_rotation(rotation_t *rotation)
 	mpu9150_read_rotation(&new_rotation);
 
 	//do offset calculation?
+	new_rotation.x += 0;
+	new_rotation.y += 350;
+	new_rotation.z += 0;
 
 	moving_average_simple_put_element(&average_rotation_x, new_rotation.x);
 	moving_average_simple_put_element(&average_rotation_y, new_rotation.y);
@@ -79,7 +121,6 @@ void motionsensor_get_current_rotation(rotation_t *rotation)
 	rotation->x = average_rotation_x.mean;
 	rotation->y = average_rotation_y.mean;
 	rotation->z = average_rotation_z.mean;
-
 }
 void motionsensor_get_current_acceleration(acceleration_t *acceleration)
 {
