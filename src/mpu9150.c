@@ -14,11 +14,16 @@
 #include "lib/twi_master.h"
 
 /* *** DEFINES ************************************************************** */
-#define MPU9150_TWI_ADDRESS			0x68
+#define MPU9150_TWI_ADDRESS				0x68
+#define MPU9150_MAG_TWI_ADDRESS			0x0C
 
 /* *** REGISTER NAMING *** */
+#define MPU9150_REGISTER_SMPRT_DIV		0x19
 #define MPU9150_REGISTER_GYRO_CONFIG	0x1B
 #define MPU9150_REGISTER_ACCEL_CONFIG	0x1C
+
+#define MPU9150_REGISTER_INT_PIN_CFG	0x37
+#define MPU9150_REGISTER_INT_ENABLE		0x38
 
 #define MPU9150_REGISTER_ACCEL_XOUT_H	0x3B
 
@@ -28,6 +33,8 @@
 #define MPU9150_REGISTER_GYRO_YOUT_L	0x46
 #define MPU9150_REGISTER_GYRO_ZOUT_H	0x47
 #define MPU9150_REGISTER_GYRO_ZOUT_L	0x48
+
+
 
 #define MPU9150_REGISTER_PWR_MGMT_1		0x6B
 
@@ -151,11 +158,11 @@ extern void mpu9150_read_rotation(rotation_t* rotation_vector)
 {
 	uint8_t temp_data;
 
-	twi_send_buffer[0] = MPU9150_REGISTER_GYRO_XOUT_H;
-
+	twi_send_buffer[0] = MPU9150_REGISTER_GYRO_YOUT_H;
 	twi_master_set_ready();
+
 	twi_send_data(MPU9150_TWI_ADDRESS, 1);
-	twi_receive_data(MPU9150_TWI_ADDRESS, 6);
+	twi_receive_data(MPU9150_TWI_ADDRESS, 4);
 
 	temp_data = twi_receive_buffer[0];
 	rotation_vector->x = (uint16_t)(temp_data << 8);
@@ -175,9 +182,11 @@ extern void mpu9150_read_rotation(rotation_t* rotation_vector)
 
 extern void mpu9150_read_acceleration(acceleration_t* acceleration_vector)
 {
+
 	uint8_t temp_data;
 
 	twi_send_buffer[0] = MPU9150_REGISTER_ACCEL_XOUT_H;
+
 
 	twi_master_set_ready();
 	twi_send_data(MPU9150_TWI_ADDRESS, 1);
@@ -210,6 +219,18 @@ void mpu9150_init()
 
 	//ACCEL resolution
 	//twi_master_write_register(MPU9150_TWI_ADDRESS, MPU9150_REGISTER_GYRO_CONFIG, 0x18);
+
+	//Enable Data Interrupt
+	//twi_master_write_register(MPU9150_TWI_ADDRESS, MPU9150_REGISTER_INT_ENABLE, 0x01);
+
+	//Set Samplerate devider
+	//twi_master_write_register(MPU9150_TWI_ADDRESS, MPU9150_REGISTER_SMPRT_DIV, 0x10);
+
+	//enable bypass mode for accessing compass directly
+//	twi_master_write_register(MPU9150_TWI_ADDRESS, MPU9150_REGISTER_INT_PIN_CFG, 0x02);
+
+	//enable magnetometer
+//	twi_master_write_register(MPU9150_MAG_TWI_ADDRESS, 0x0A, 0x01);
 
 	//wake up (disable sleep)
 	twi_master_write_register(MPU9150_TWI_ADDRESS, MPU9150_REGISTER_PWR_MGMT_1, 0x01);
