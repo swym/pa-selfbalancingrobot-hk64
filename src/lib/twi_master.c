@@ -1,10 +1,17 @@
 #include "twi_master.h"
 
+#include <avr/io.h>
+
+
+#include "../common.h"
+#include "../timer.h"
+
 
 //----------- Global-Variables ----------//
 volatile uint8_t twi_receive_buffer[BUFFER_SIZE];
 volatile uint8_t twi_send_buffer[BUFFER_SIZE];
 
+volatile uint8_t timer_twi_ready_timeout;
 //----------- Modul-Variables -----------//
 volatile uint8_t transmitter;
 volatile uint8_t rindx;
@@ -114,13 +121,40 @@ has finished.
 */
 void twi_send_data(uint8_t slave, uint8_t anz_bytes)
 {
+	PORT_SCOPE |= _BV(5);
 	ready = false;
 	transmitter = true;
 	sla = slave;
+	PORT_SCOPE &= ~_BV(5);
+
+	PORT_SCOPE |= _BV(6);
 	number_of_bytes = anz_bytes;
 	sindx = 0;
 	TWCR = (1<<TWINT) | (1<<TWSTA) | (1<<TWEN) | (1<<TWIE);
-	while(!ready){}
+	PORT_SCOPE &= ~_BV(6);
+
+	PORT_SCOPE |= _BV(7);
+	/**
+	 * Wait for ready bit.
+	 * HACK: break if timeout runs out.
+	 */
+	//while(!ready){}
+	timer_twi_ready_timeout = TIMER_TWI_READY_TIMEOUT_MS;
+	for(;;) {
+
+		if(ready) {
+			PORT_LED ^= _BV(0);
+			break;
+		}
+
+		if(!timer_twi_ready_timeout) {
+			PORT_LED |= 0xFF;
+			ready = true;
+			break;
+		}
+	}
+
+	PORT_SCOPE &= ~_BV(7);
 }
 
 /**

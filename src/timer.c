@@ -77,4 +77,6 @@ ISR(TIMER0_COMP_vect)
 	} else {
 		timer_slot_counter = 0;
 	}
+
+	timer_twi_ready_timeout--;
 }
