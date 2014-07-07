@@ -74,7 +74,7 @@ void test_motionsensor_run()
 				accel_vector.x, accel_vector.y, accel_vector.z,
 				rot_vector.x,rot_vector.y, rot_vector.z);
 
-		printf("%f\n",motionsensor_get_position());
+		printf("%d\n",motionsensor_get_position());
 
 
 		//printf("pos: %f\n", motionsensor_get_position());
