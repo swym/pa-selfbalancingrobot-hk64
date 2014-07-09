@@ -23,10 +23,7 @@
 
 
 /* *** DEFINES ************************************************************** */
-#define RAD2DEG 5729.57
-
-#define COMPFILTER_GRYO_FACTOR  0.95
-#define COMPFILTER_ACCEL_FACTOR 0.05
+#define RAD2DEG100 5729.57
 
 /* *** DECLARATIONS ********************************************************* */
 
@@ -49,11 +46,10 @@ static moving_average_t average_angularvelocity_y;		//single average for using w
 
 average_vector_t average_acceleration;
 
-//static moving_average_t average_acceleration_x;
-//static moving_average_t average_acceleration_y;
-//static moving_average_t average_acceleration_z;
+static int16_t integrated_gyro_angle_y;
 
-static int16_t gyro_angle_y;
+static double complementary_filter_angularvelocity_factor;
+static double complementary_filter_acceleraton_factor;
 
 
 /* * local function declarations * */
@@ -61,6 +57,7 @@ static int16_t gyro_angle_y;
 //static void motionsensor_get_current_acceleration(acceleration_t acceleration);
 
 static int16_t motionsensor_get_current_angularvelocity_y(void);
+static inline void reset_integrated_gyro_angle_y();
 
 /* *** FUNCTION DEFINITIONS ************************************************* */
 int16_t motionsensor_get_position()
@@ -71,25 +68,33 @@ int16_t motionsensor_get_position()
 	int16_t angle_y;			      //fusioned angle
 
 
-	cur_angularvelocity_y = motionsensor_get_current_angularvelocity_y();
 	motionsensor_get_current_acceleration(&cur_acceleration);
-
-	//integrate angular velocity to angle over time (dt = 4 ms)
-	gyro_angle_y += (cur_angularvelocity_y * 4/1000);
+	cur_angularvelocity_y = motionsensor_get_current_angularvelocity_y();
 
 	//determine angle using acceleration vectors and atan
-	accel_angle_y = (int16_t)((atan2(cur_acceleration.x, cur_acceleration.z) * RAD2DEG));
+	accel_angle_y = (int16_t)((atan2(cur_acceleration.x, cur_acceleration.z) * RAD2DEG100));
+
+	//TODO: HACK: to reduce gyro errors, reset integrated gyro if acceleration of x is 0;
+	//Use a more stable solution
+	if(cur_acceleration.x == 0) {
+		reset_integrated_gyro_angle_y();
+	}
+
+	//integrate angular velocity to angle over time (dt = 4 ms)
+	integrated_gyro_angle_y += (cur_angularvelocity_y * (4/1000));
 
 	//sensordata fusion with a complementary filter
 	//angle_y = (0.3 * gyro_angle_y) + (0.7 * accel_angle_y); //ok, aber sehr verrauscht
-	angle_y = (COMPFILTER_GRYO_FACTOR * gyro_angle_y) + (COMPFILTER_ACCEL_FACTOR * accel_angle_y);
-
-
-
-//	printf("% 5d% 5d% 5d\n",gyro_angle_y, accel_angle_y, angle_y);
+	angle_y = (complementary_filter_angularvelocity_factor * integrated_gyro_angle_y) +
+			  (complementary_filter_acceleraton_factor * accel_angle_y);
 
 	return angle_y;
 
+}
+
+static inline void reset_integrated_gyro_angle_y()
+{
+	integrated_gyro_angle_y = 0;
 }
 
 int16_t motionsensor_get_current_angularvelocity_y(void)
@@ -152,7 +157,7 @@ void motionsensor_get_current_acceleration(acceleration_t *acceleration)
 
 /**
  * returns as call by reference the current offset.
- * @param accel
+ * @param acceleration
  */
 void motionsensor_get_acceleration_offset(acceleration_t *acceleration)
 {
@@ -163,7 +168,7 @@ void motionsensor_get_acceleration_offset(acceleration_t *acceleration)
 
 /**
  * sets the offset with a given acceleration vector
- * @param accel
+ * @param acceleration
  */
 void motionsensor_set_acceleration_offset(acceleration_t *acceleration)
 {
@@ -175,6 +180,34 @@ void motionsensor_set_acceleration_offset(acceleration_t *acceleration)
 		acceleration_offset.x = 0;
 		acceleration_offset.y = 0;
 		acceleration_offset.z = 0;
+	}
+}
+
+/**
+ * returns as call by reference the current offset.
+ * @param angularvelocity
+ */
+void motionsensor_get_angularvelocity_offset(angularvelocity_t *angularvelocity)
+{
+	angularvelocity->x = angularvelocity_offset.x;
+	angularvelocity->y = angularvelocity_offset.y;
+	angularvelocity->z = angularvelocity_offset.z;
+}
+
+/**
+ * sets the offset with a given acceleration vector
+ * @param angularvelocity
+ */
+void motionsensor_set_angularvelocity_offset(angularvelocity_t *angularvelocity)
+{
+	if(angularvelocity != NULL) {
+		angularvelocity_offset.x = angularvelocity->x;
+		angularvelocity_offset.y = angularvelocity->y;
+		angularvelocity_offset.z = angularvelocity->z;
+	} else {
+		angularvelocity_offset.x = 0;
+		angularvelocity_offset.y = 0;
+		angularvelocity_offset.z = 0;
 	}
 }
 
@@ -210,8 +243,8 @@ void motionsensor_set_zero_point(void)
 	int8_t i;
 	for(i = 0;i < (4 * MOVING_AVERAGE_ELEMENT_COUNT);i++) {
 
-		motionsensor_get_current_acceleration(&tmp_acceleration);
-		motionsensor_get_current_angularvelocity(&tmp_angularvelocity);
+		mpu9150_read_acceleration(&tmp_acceleration);
+		mpu9150_read_angularvelocity(&tmp_angularvelocity);
 
 		acceleration_offset.x = -tmp_acceleration.x;
 		acceleration_offset.y = -tmp_acceleration.y;
@@ -222,6 +255,34 @@ void motionsensor_set_zero_point(void)
 		angularvelocity_offset.z = -tmp_angularvelocity.z;
 
 	}
+}
+
+double motionsensor_get_complementary_filter_angularvelocity_factor(void)
+{
+	return complementary_filter_angularvelocity_factor;
+}
+
+void motionsensor_set_complementary_filter_angularvelocity_factor(double factor)
+{
+	if(factor > 1.0 || factor < 0.0) {
+		factor = 1.0 - complementary_filter_acceleraton_factor;
+	}
+
+	complementary_filter_angularvelocity_factor = factor;
+}
+
+double motionsensor_get_complementary_filter_acceleraton_factor(void)
+{
+	return complementary_filter_acceleraton_factor;
+}
+
+void motionsensor_set_complementary_filter_acceleraton_factor(double factor)
+{
+	if(factor > 1.0 || factor < 0.0) {
+		factor = 1.0 - complementary_filter_angularvelocity_factor;
+	}
+
+	complementary_filter_acceleraton_factor = factor;
 }
 
 void motionsensor_init()
@@ -242,6 +303,11 @@ void motionsensor_init()
 	angularvelocity_offset.z = 0;
 
 	position_multiplier = 1.0;
+
+	complementary_filter_angularvelocity_factor = 0.5;
+	complementary_filter_acceleraton_factor = 0.5;
+
+	reset_integrated_gyro_angle_y();
 
 	//fill buffer of the average with values
 	uint8_t i;
