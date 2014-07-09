@@ -11,12 +11,12 @@
 
 /* *** INCLUDES ************************************************************** */
 
-/* * system headers              * */ 
+/* * system headers              * */
 #include <stdint.h>
 #include <stdbool.h>
 
 /* * local headers               * */
-#include "accelerationsensor.h"
+#include "motionsensor.h"
 
 /* *** DECLARATIONS ********************************************************** */
 
@@ -28,7 +28,15 @@
 
 extern void     mpu9150_init();
 extern void     mpu9150_read_acceleration(acceleration_t*);
-extern void     mpu9150_read_rotation(rotation_t *);
+
+extern void     mpu9150_read_angularvelocity(angularvelocity_t *);
+
+extern int16_t	mpu9150_read_angularvelocity_x(void);
+extern int16_t	mpu9150_read_angularvelocity_y(void);
+extern int16_t	mpu9150_read_angularvelocity_z(void);
+
 extern uint8_t  mpu9150_get_who_am_i(void);
+
+extern uint8_t mpu9150_get_int_status(void);
 
 #endif /* MPU9150_H_ */

@@ -14,11 +14,18 @@
 #include "lib/twi_master.h"
 
 /* *** DEFINES ************************************************************** */
-#define MPU9150_TWI_ADDRESS			0x68
+#define MPU9150_TWI_ADDRESS				0x68
+#define MPU9150_MAG_TWI_ADDRESS			0x0C
 
 /* *** REGISTER NAMING *** */
+#define MPU9150_REGISTER_CONFIG			0x1A
+#define MPU9150_REGISTER_SMPRT_DIV		0x19
 #define MPU9150_REGISTER_GYRO_CONFIG	0x1B
 #define MPU9150_REGISTER_ACCEL_CONFIG	0x1C
+
+#define MPU9150_REGISTER_INT_PIN_CFG	0x37
+#define MPU9150_REGISTER_INT_ENABLE		0x38
+#define MPU9150_REGISTER_INT_STATUS		0x3A
 
 #define MPU9150_REGISTER_ACCEL_XOUT_H	0x3B
 
@@ -28,6 +35,8 @@
 #define MPU9150_REGISTER_GYRO_YOUT_L	0x46
 #define MPU9150_REGISTER_GYRO_ZOUT_H	0x47
 #define MPU9150_REGISTER_GYRO_ZOUT_L	0x48
+
+
 
 #define MPU9150_REGISTER_PWR_MGMT_1		0x6B
 
@@ -147,37 +156,96 @@ uint8_t mpu9150_get_who_am_i(void)
 //	return return_value;
 //}
 
-extern void mpu9150_read_rotation(rotation_t* rotation_vector)
+void mpu9150_read_angularvelocity(angularvelocity_t* angularvelocity)
 {
 	uint8_t temp_data;
 
 	twi_send_buffer[0] = MPU9150_REGISTER_GYRO_XOUT_H;
-
 	twi_master_set_ready();
+
 	twi_send_data(MPU9150_TWI_ADDRESS, 1);
 	twi_receive_data(MPU9150_TWI_ADDRESS, 6);
 
 	temp_data = twi_receive_buffer[0];
-	rotation_vector->x = (uint16_t)(temp_data << 8);
+	angularvelocity->x = (uint16_t)(temp_data << 8);
 	temp_data = twi_receive_buffer[1];
-	rotation_vector->x = (uint16_t)(rotation_vector->x | temp_data);
+	angularvelocity->x = (uint16_t)(angularvelocity->x | temp_data);
 
 	temp_data = twi_receive_buffer[2];
-	rotation_vector->y = (uint16_t)(temp_data << 8);
+	angularvelocity->y = (uint16_t)(temp_data << 8);
 	temp_data = twi_receive_buffer[3];
-	rotation_vector->y = (uint16_t)(rotation_vector->y | temp_data);
+	angularvelocity->y = (uint16_t)(angularvelocity->y | temp_data);
 
 	temp_data = twi_receive_buffer[4];
-	rotation_vector->z = (uint16_t)(temp_data << 8);
+	angularvelocity->z = (uint16_t)(temp_data << 8);
 	temp_data = twi_receive_buffer[5];
-	rotation_vector->z = (uint16_t)(rotation_vector->z | temp_data);
+	angularvelocity->z = (uint16_t)(angularvelocity->z | temp_data);
 }
 
-extern void mpu9150_read_acceleration(acceleration_t* acceleration_vector)
+int16_t mpu9150_read_angularvelocity_x(void)
 {
+	uint8_t temp_data;
+	int16_t rotation_x;
+
+	twi_send_buffer[0] = MPU9150_REGISTER_GYRO_XOUT_H;
+	twi_master_set_ready();
+
+	twi_send_data(MPU9150_TWI_ADDRESS, 1);
+	twi_receive_data(MPU9150_TWI_ADDRESS, 2);
+
+	temp_data = twi_receive_buffer[0];
+	rotation_x = (uint16_t)(temp_data << 8);
+	temp_data = twi_receive_buffer[1];
+	rotation_x = (uint16_t)(rotation_x | temp_data);
+
+	return rotation_x;
+}
+
+int16_t mpu9150_read_angularvelocity_y(void)
+{
+	uint8_t temp_data;
+	int16_t rotation_y;
+
+	twi_send_buffer[0] = MPU9150_REGISTER_GYRO_YOUT_H;
+	twi_master_set_ready();
+
+	twi_send_data(MPU9150_TWI_ADDRESS, 1);
+	twi_receive_data(MPU9150_TWI_ADDRESS, 2);
+
+	temp_data = twi_receive_buffer[0];
+	rotation_y = (uint16_t)(temp_data << 8);
+	temp_data = twi_receive_buffer[1];
+	rotation_y = (uint16_t)(rotation_y | temp_data);
+
+	return rotation_y;
+}
+
+int16_t mpu9150_read_angularvelocity_z(void)
+{
+	uint8_t temp_data;
+	int16_t rotation_z;
+
+	twi_send_buffer[0] = MPU9150_REGISTER_GYRO_ZOUT_H;
+	twi_master_set_ready();
+
+	twi_send_data(MPU9150_TWI_ADDRESS, 1);
+	twi_receive_data(MPU9150_TWI_ADDRESS, 2);
+
+	temp_data = twi_receive_buffer[0];
+	rotation_z = (uint16_t)(temp_data << 8);
+	temp_data = twi_receive_buffer[1];
+	rotation_z = (uint16_t)(rotation_z | temp_data);
+
+	return rotation_z;
+}
+
+void mpu9150_read_acceleration(acceleration_t* acceleration_vector)
+{
+
 	uint8_t temp_data;
 
 	twi_send_buffer[0] = MPU9150_REGISTER_ACCEL_XOUT_H;
+
 
 	twi_master_set_ready();
 	twi_send_data(MPU9150_TWI_ADDRESS, 1);
@@ -197,18 +265,42 @@ extern void mpu9150_read_acceleration(acceleration_t* acceleration_vector)
 	acceleration_vector->z = (uint16_t)(temp_data << 8);
 	temp_data = twi_receive_buffer[5];
 	acceleration_vector->z = (uint16_t)(acceleration_vector->z | temp_data);
+	acceleration_vector->z = -acceleration_vector->z;
+}
+
+uint8_t mpu9150_get_int_status(void)
+{
+	return twi_master_read_register(MPU9150_TWI_ADDRESS, MPU9150_REGISTER_INT_STATUS);
 }
 
 void mpu9150_init()
 {
+	//Device Reset
 	//set clocksource to x gyro as discripted in manual
 	twi_master_write_register(MPU9150_TWI_ADDRESS, MPU9150_REGISTER_PWR_MGMT_1, 0x41);
 
 	//GYRO resolution
-	//twi_master_write_register(MPU9150_TWI_ADDRESS, MPU9150_REGISTER_GYRO_CONFIG, 0x18);
+	twi_master_write_register(MPU9150_TWI_ADDRESS, MPU9150_REGISTER_GYRO_CONFIG, 0x00);
 
 	//ACCEL resolution
-	//twi_master_write_register(MPU9150_TWI_ADDRESS, MPU9150_REGISTER_GYRO_CONFIG, 0x18);
+	twi_master_write_register(MPU9150_TWI_ADDRESS, MPU9150_REGISTER_ACCEL_CONFIG, 0x00);
+
+	//Disable Data Interrupt
+	//twi_master_write_register(MPU9150_TWI_ADDRESS, MPU9150_REGISTER_INT_ENABLE, 0x00);
+	//Enable Data IRQ
+//	twi_master_write_register(MPU9150_TWI_ADDRESS, MPU9150_REGISTER_INT_ENABLE, 0x01);
+
+	//Set Samplerate devider
+//	twi_master_write_register(MPU9150_TWI_ADDRESS, MPU9150_REGISTER_SMPRT_DIV, 0x00);
+
+	//Set Digital Low Pass Filter to 188 Hz
+//	twi_master_write_register(MPU9150_TWI_ADDRESS, MPU9150_REGISTER_CONFIG, 0x01);
+
+	//enable bypass mode for accessing compass directly
+//	twi_master_write_register(MPU9150_TWI_ADDRESS, MPU9150_REGISTER_INT_PIN_CFG, 0x02);
+
+	//enable magnetometer
+//	twi_master_write_register(MPU9150_MAG_TWI_ADDRESS, 0x0A, 0x01);
 
 	//wake up (disable sleep)
 	twi_master_write_register(MPU9150_TWI_ADDRESS, MPU9150_REGISTER_PWR_MGMT_1, 0x01);
