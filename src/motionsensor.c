@@ -33,19 +33,25 @@
 /* * local type and constants    * */
 
 /* * local objects               * */
+typedef struct{
+	moving_average_t x;
+	moving_average_t y;
+	moving_average_t z;
+} average_vector_t;
 
 static acceleration_t acceleration_offset;
 static angularvelocity_t angularvelocity_offset;
 
 static double position_multiplier;
 
-static moving_average_t average_angularvelocity_x;
-static moving_average_t average_angularvelocity_y;
-static moving_average_t average_angularvelocity_z;
+static average_vector_t average_angularvelocity;		//average vector for using with motionsensor_get_current_angularvelocity(angularvelocity_t *angularvelocity);
+static moving_average_t average_angularvelocity_y;		//single average for using with motionsensor_get_current_angularvelocity_y();
 
-static moving_average_t average_acceleration_x;
-static moving_average_t average_acceleration_y;
-static moving_average_t average_acceleration_z;
+average_vector_t average_acceleration;
+
+//static moving_average_t average_acceleration_x;
+//static moving_average_t average_acceleration_y;
+//static moving_average_t average_acceleration_z;
 
 static int16_t gyro_angle_y;
 
@@ -96,7 +102,7 @@ int16_t motionsensor_get_current_angularvelocity_y(void)
 	moving_average_simple_put_element(&average_angularvelocity_y, new_angularvelocity_y);
 
 	//return mean
-	return average_angularvelocity_y->mean;
+	return average_angularvelocity_y.mean;
 }
 
 
@@ -112,14 +118,14 @@ void motionsensor_get_current_angularvelocity(angularvelocity_t *angularvelocity
 	new_angularvelocity.z += angularvelocity_offset.z;
 
 	//determine mean
-	moving_average_simple_put_element(&average_angularvelocity_x, new_angularvelocity.x);
-	moving_average_simple_put_element(&average_angularvelocity_y, new_angularvelocity.y);
-	moving_average_simple_put_element(&average_angularvelocity_z, new_angularvelocity.z);
+	moving_average_simple_put_element(&average_angularvelocity.x, new_angularvelocity.x);
+	moving_average_simple_put_element(&average_angularvelocity.y, new_angularvelocity.y);
+	moving_average_simple_put_element(&average_angularvelocity.z, new_angularvelocity.z);
 
 	//prepare acceleration struct
-	angularvelocity->x = average_angularvelocity_x.mean;
-	angularvelocity->y = average_angularvelocity_y.mean;
-	angularvelocity->z = average_angularvelocity_z.mean;
+	angularvelocity->x = average_angularvelocity.x.mean;
+	angularvelocity->y = average_angularvelocity.y.mean;
+	angularvelocity->z = average_angularvelocity.z.mean;
 }
 void motionsensor_get_current_acceleration(acceleration_t *acceleration)
 {
@@ -133,14 +139,14 @@ void motionsensor_get_current_acceleration(acceleration_t *acceleration)
 	new_acceleration.z += acceleration_offset.z;
 
 	//determine mean
-	moving_average_simple_put_element(&average_acceleration_x, new_acceleration.x);
-	moving_average_simple_put_element(&average_acceleration_y, new_acceleration.y);
-	moving_average_simple_put_element(&average_acceleration_z, new_acceleration.z);
+	moving_average_simple_put_element(&average_acceleration.x, new_acceleration.x);
+	moving_average_simple_put_element(&average_acceleration.y, new_acceleration.y);
+	moving_average_simple_put_element(&average_acceleration.z, new_acceleration.z);
 
 	//prepare acceleration struct
-	acceleration->x = average_acceleration_x.mean;
-	acceleration->y = average_acceleration_y.mean;
-	acceleration->z = average_acceleration_z.mean;
+	acceleration->x = average_acceleration.x.mean;
+	acceleration->y = average_acceleration.y.mean;
+	acceleration->z = average_acceleration.z.mean;
 
 }
 
@@ -242,5 +248,6 @@ void motionsensor_init()
 	for(i = 0;i < (4 * MOVING_AVERAGE_ELEMENT_COUNT);i++) {
 		motionsensor_get_current_acceleration(&tmp_acceleration);
 		motionsensor_get_current_angularvelocity(&tmp_angularvelocity);
+		motionsensor_get_current_angularvelocity_y();
 	}
 }
