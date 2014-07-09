@@ -44,7 +44,7 @@ typedef enum {
 	STATE_PRINT_CONFIG,
 	STATE_SET_PID_PARAMETER,
 	STATE_SET_MOTIONSENSOR_PARAMETER,
-	STATE_SET_ZERO_POINT,
+	STATE_SET_OFFSET,
 	STATE_SAVE_CONFIG,
 	STATE_FINAL,
 	STATE_NULL
@@ -62,7 +62,7 @@ static void configuration_terminal_state_print_help(void);
 static void configuration_terminal_state_print_config(void);
 static void configuration_terminal_state_set_pid_parameter(void);
 static void configuration_terminal_state_set_motionsensor_parameter(void);
-static void configuration_terminal_state_set_zero_point(void);
+static void configuration_terminal_state_set_offset(void);
 static void configuration_terminal_state_save_configuration(void);
 
 static bool parse_input2int16(int16_t *value, int16_t min, int16_t max);
@@ -98,8 +98,8 @@ void configuration_terminal_state_machine(void)
 				configuration_terminal_state_set_motionsensor_parameter();
 			break;
 
-			case STATE_SET_ZERO_POINT:
-				configuration_terminal_state_set_zero_point();
+			case STATE_SET_OFFSET:
+				configuration_terminal_state_set_offset();
 			break;
 
 			case STATE_SAVE_CONFIG:
@@ -195,7 +195,7 @@ void configuration_terminal_state_read_input(void)
 			next_state = STATE_SET_MOTIONSENSOR_PARAMETER;
 			break;
 		case 'z':
-			next_state = STATE_SET_ZERO_POINT;
+			next_state = STATE_SET_OFFSET;
 			break;
 		case '?':
 			next_state = STATE_PRINT_HELP;
@@ -295,7 +295,7 @@ void configuration_terminal_state_set_motionsensor_parameter(void)
 	next_state = STATE_READ_INPUT;
 }
 
-void configuration_terminal_state_set_zero_point(void)
+void configuration_terminal_state_set_offset(void)
 {
 	acceleration_t acceleration_offset;
 	angularvelocity_t angularvelocity_offset;
@@ -362,7 +362,7 @@ bool parse_input2int16(int16_t *value, int16_t min, int16_t max)
 	return false;
 }
 
-//FIXME! Cannot parse float/double - missing lib?
+//FIXME Cannot parse float/double - missing lib?
 /*
 bool parse_input2double(double *value, double min, double max)
 {
