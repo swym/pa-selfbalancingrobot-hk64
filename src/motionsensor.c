@@ -54,6 +54,8 @@ static int16_t gyro_angle_y;
 //static void motionsensor_get_current_rotation(rotation_t *rotation);
 //static void motionsensor_get_current_acceleration(acceleration_t acceleration);
 
+static int16_t motionsensor_get_current_angularvelocity_y(void);
+
 /* *** FUNCTION DEFINITIONS ************************************************* */
 int16_t motionsensor_get_position()
 {
@@ -63,7 +65,7 @@ int16_t motionsensor_get_position()
 	int16_t angle_y;			      //fusioned angle
 
 
-	cur_angularvelocity_y = mpu9150_read_angularvelocity_y();
+	cur_angularvelocity_y = motionsensor_get_current_angularvelocity_y();
 	motionsensor_get_current_acceleration(&cur_acceleration);
 
 	//integrate angular velocity to angle over time (dt = 4 ms)
@@ -83,6 +85,20 @@ int16_t motionsensor_get_position()
 	return angle_y;
 
 }
+
+int16_t motionsensor_get_current_angularvelocity_y(void)
+{
+	//read new value
+	int16_t new_angularvelocity_y = mpu9150_read_angularvelocity_y() +
+			angularvelocity_offset.y;
+
+	//determine mean
+	moving_average_simple_put_element(&average_angularvelocity_y, new_angularvelocity_y);
+
+	//return mean
+	return average_angularvelocity_y->mean;
+}
+
 
 void motionsensor_get_current_angularvelocity(angularvelocity_t *angularvelocity)
 {
