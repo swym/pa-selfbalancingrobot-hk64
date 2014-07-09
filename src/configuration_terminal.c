@@ -99,13 +99,21 @@ void configuration_terminal_state_machine(void)
 
 void configuration_terminal_state_print_help(void)
 {
-	printf("valid commands:\n");
-	printf("s[value],[integer] - set selected parameter to integer\n");
-	printf("    [value]   = 'p', 'i', 'd', 's', 'm'\n");
-	printf("    [integer] = > 0 and < INT16_MAX'\n");
-	printf("z - set new zero point for acceleration\n");
-	printf("? - show this help\n");
-	printf("c - show current configuration\n");
+	printf("valid commands:\n\n");
+
+	printf("pp,<0 .. INT16_MAX> - set proportional factor of PID controller\n");
+	printf("pi,<0 .. INT16_MAX> - set integral factor of PID controller\n");
+	printf("pd,<0 .. INT16_MAX> - set differential factor of PID controller\n\n");
+
+	printf("ca,<0.0 .. 1.0> - set the acceleration_factor of complementary filter\n");
+	printf("cv,<0.0 .. 1.0> - set the angularvelocity_factor of complementary filter\n");
+	printf("                  [!] Sum of ca and cv must be 1.0 [!]\n\n");
+
+	printf("z - set new zero point for acceleration and angularvelocity\n\n");
+
+	printf("? - print this help\n");
+	printf("s - show current configuration\n\n");
+
 	printf("q - quit terminal and write changes to eeprom\n");
 
 
@@ -116,15 +124,24 @@ void configuration_terminal_state_print_config(void)
 	acceleration_t accel_offset;
 	configuration_storage_get_acceleration_offset(&accel_offset);
 
+	angularvelocity_t angvelo_offset;
+	configuration_storage_get_angularvelocity_offset(&angvelo_offset);
+
+
 	printf("pid.p: %i\n",configuration_storage_get_p_factor());
 	printf("pid.i: %i\n",configuration_storage_get_i_factor());
 	printf("pid.d: %i\n",configuration_storage_get_d_factor());
-	printf("pid.scaling: %u\n",configuration_storage_get_scalingfactor());
-	printf("position_multiplier: %u\n",configuration_storage_get_position_multiplier());
-	printf("accel_offset.x: %i\n",accel_offset.x);
-	printf("accel_offset.y: %i\n",accel_offset.y);
-	printf("accel_offset.z: %i\n",accel_offset.z);
-	printf("gyroscope.bias: 0.0\n");
+	printf("pid.scalingfactor: %u\n",configuration_storage_get_scalingfactor());
+	printf("motionsensor.acceleration_offset.x: %i\n",accel_offset.x);
+	printf("motionsensor.acceleration_offset.y: %i\n",accel_offset.y);
+	printf("motionsensor.acceleration_offset.z: %i\n",accel_offset.z);
+	printf("motionsensor.angularvelocity_offset.x: %i\n",angvelo_offset.x);
+	printf("motionsensor.angularvelocity_offset.y: %i\n",angvelo_offset.y);
+	printf("motionsensor.angularvelocity_offset.z: %i\n",angvelo_offset.z);
+	printf("position.multiplier: %u\n",configuration_storage_get_position_multiplier());
+	printf("position.complementary_filter.angularvelocity_factor: %f\n",configuration_storage_get_complementary_filter_angularvelocity_factor());
+	printf("position.complementary_filter.acceleration_factor: %f\n",configuration_storage_get_complementary_filter_acceleraton_factor());
+
 
 	next_state = STATE_READ_INPUT;
 }
@@ -206,14 +223,18 @@ void configuration_terminal_state_set_parameter(void)
 
 void configuration_terminal_state_set_zero_point(void)
 {
-	acceleration_t acceleration;
+	acceleration_t acceleration_offset;
+	angularvelocity_t angularvelocity_offset;
 
 	//Perform calibration
 	motionsensor_set_zero_point();
 
 	//Read and save the offset from the sensor
-	motionsensor_get_acceleration_offset(&acceleration);
-	configuration_storage_set_acceleration_offset(&acceleration);
+	motionsensor_get_acceleration_offset(&acceleration_offset);
+	configuration_storage_set_acceleration_offset(&acceleration_offset);
+
+	motionsensor_get_angularvelocity_offset(&angularvelocity_offset);
+	configuration_storage_set_angularvelocity_offset(&angularvelocity_offset);
 
 	next_state = STATE_READ_INPUT;
 }
