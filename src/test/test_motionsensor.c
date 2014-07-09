@@ -73,9 +73,11 @@ void test_motionsensor_init()
 	simplex_protocol_init();
 	rfm12_init();
 
-	mpu9150_init();
 	motionsensor_init();
 	motionsensor_set_zero_point();
+
+	motionsensor_set_complementary_filter_acceleraton_factor(0.1);
+	motionsensor_set_complementary_filter_angularvelocity_factor(0.9);
 }
 
 void test_motionsensor_run()
@@ -85,8 +87,9 @@ void test_motionsensor_run()
 	printf("test_motionsensor_run\n");
 
 	acceleration_t accel;
+	angularvelocity_t angvelo;
 
-	uint8_t i;
+	uint8_t i = 0;
 
 	while(true) {
 
@@ -94,17 +97,17 @@ void test_motionsensor_run()
 			PORT_SCOPE ^= _BV(0);
 			timer_slot_1 = false;
 
+//			motionsensor_get_current_acceleration(&accel);
+//			motionsensor_get_current_angularvelocity(&angvelo);
+
 			current_position = motionsensor_get_position();
-			mpu9150_read_acceleration(&accel);
-			printf("% 4d%",i++);
-			printf("% 5d% 5d% 5d",accel.x, accel.y, accel.z);
-			printf("% 5d", mpu9150_read_angularvelocity_x());
-			printf("% 5d", mpu9150_read_angularvelocity_y());
-			printf("% 5d", mpu9150_read_angularvelocity_z());
-			printf("%x",mpu9150_get_who_am_i());
+
+			printf("% 5d", current_position);
+//			printf("% 5d% 5d% 5d",accel.x, accel.y, accel.z);
+//			printf("% 5d% 5d% 5d",angvelo.x, angvelo.y, angvelo.z);
 			printf("\n");
 
-			wireless_send_pid();
+			//wireless_send_pid();
 
 			PORT_SCOPE &= ~_BV(0);
 		}
