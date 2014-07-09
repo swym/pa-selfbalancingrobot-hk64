@@ -328,20 +328,18 @@ void system_controller_state_run_pid_controller(void)
 			 * Stellgr��e an Motorsteuerung weitergeben, ABER noch nicht setzen
 			 */
 			current_position = motionsensor_get_position();
-
-
 			current_speed = pid_Controller(0, current_position, &pid_data);
 
-			if(current_speed > INT8_MAX) {
-				current_speed = INT8_MAX;
+			if(current_speed > 125) {
+				current_speed = 125;
 			}
 
-			if(current_speed < INT8_MIN) {
-				current_speed = INT8_MIN;
+			if(current_speed < -125) {
+				current_speed = -125;
 			}
 
-			new_speed.motor_1 = current_speed;
-			new_speed.motor_2 = current_speed;
+			new_speed.motor_1 = -current_speed;
+			new_speed.motor_2 = -current_speed;
 
 			motor_control_prepare_new_speed(&new_speed);
 		}
@@ -353,9 +351,6 @@ void system_controller_state_run_pid_controller(void)
 			 * Neue Stellgröße des Motors setzen
 			 */
 			motor_control_set_new_speed();
-
-//			wireless_send_angularvelocity();
-//			wireless_send_acceleration();
 
 			wireless_send_pid();
 		}
