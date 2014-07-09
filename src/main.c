@@ -18,17 +18,8 @@
 /* local headers               */
 #include "system_controller.h"
 
-
 /* Tests */
-//#include "test/test_twi_master.h"
-//#include "test/test_bma020.h"
-//#include "test/test_motor_control.h"
-//#include "test/test_acceleration.h"
-//#include "test/test_configuration_terminal.h"
-
-//#include "test/test_mpu9150.h"
-//#include "test/test_motionsensor.h"
-//#include "test/test_configuration_storage.h"
+#include "motionsensor.h"
 
 
 /* *** DECLARATIONS ********************************************************** */
@@ -37,7 +28,7 @@
 
 /* local function declarations  */
 static void main_run(void);
-//static void main_run_tests(void);
+static void main_run_tests(void);
 
 /* *** FUNCTION DEFINITIONS ************************************************** */
 
@@ -46,41 +37,10 @@ void main_run(void)
 	system_controller_state_machine();
 }
 
-
-//void main_run_tests(void)
-//{
-//	configuration_terminal_state_machine();
-
-	//test_mpu9150_run();
-	//test_motionsensor_run();
-	//test_configuration_storage_run();
-
-
-	//	test_acceleration_init_and_calibration();
-	//	test_motor_control_set_different_speeds();
-	//test_twi_master_get_bytes();
-	//test_master_write_and_read_bytes();
-	//test_twi_master_read_and_write_bits();
-//	uint8_t i;
-//	uint8_t max = 1;
-
-//	for(i = 0;i < max;i ++) {
-//		test_bma020_settings();
-//		_delay_ms(100);
-//	}
-
-//	uint8_t i;
-//	uint8_t max = 1;
-
-//	for(i = 0;i < max;i ++) {
-//		test_bma020_settings();
-//		_delay_ms(100);
-//	}
-	//test_motor_control_set_different_speeds();
-
-//	test_configuration_terminal_test_state_machine();
-//}
-
+void main_run_tests(void)
+{
+	test_motionsensor_run();
+}
 
 /**
  * @details Does something important
