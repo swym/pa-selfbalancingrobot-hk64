@@ -46,14 +46,22 @@ bool configuration_storage_init()
 	// if invalid set defaults
 	if(configuration.version != CONFIGURATION_STORAGE_VERSION) {
 
-		configuration.pid.p_factor = 1;
-		configuration.pid.i_factor = 1;
-		configuration.pid.d_factor = 1;
-		configuration.pid.scalingfactor = 128;
+		configuration.pid.p_factor = 100;
+		configuration.pid.i_factor = 0;
+		configuration.pid.d_factor = 0;
+		configuration.pid.scalingfactor = 256;
 
 		configuration.motionsensor.acceleration_offset.x = 0;
 		configuration.motionsensor.acceleration_offset.y = 0;
 		configuration.motionsensor.acceleration_offset.z = 0;
+
+		configuration.motionsensor.angularvelocity_offset.x = 0;
+		configuration.motionsensor.angularvelocity_offset.y = 0;
+		configuration.motionsensor.angularvelocity_offset.z = 0;
+
+		configuration.motionsensor.complementary_filter_acceleraton_factor = 0.5;
+		configuration.motionsensor.complementary_filter_angularvelocity_factor = 0.5;
+
 		configuration.motionsensor.position_multiplier = 1.0;
 
 		strncpy(configuration.comment, "- new -", CONFIGURATION_STORAGE_COMMENT_LENGTH);
@@ -137,6 +145,49 @@ void configuration_storage_set_acceleration_offset(acceleration_t *accel)
 
 	configuration.has_changed = true;
 }
+
+void configuration_storage_get_angularvelocity_offset(angularvelocity_t * angularvelocity)
+{
+	angularvelocity->x = configuration.motionsensor.angularvelocity_offset.x;
+	angularvelocity->y = configuration.motionsensor.angularvelocity_offset.y;
+	angularvelocity->z = configuration.motionsensor.angularvelocity_offset.z;
+}
+
+
+void configuration_storage_set_angularvelocity_offset(angularvelocity_t * angularvelocity)
+{
+
+	configuration.motionsensor.angularvelocity_offset.x = angularvelocity->x;
+	configuration.motionsensor.angularvelocity_offset.y = angularvelocity->y;
+	configuration.motionsensor.angularvelocity_offset.z = angularvelocity->z;
+
+	configuration.has_changed = true;
+}
+
+double configuration_storage_get_complementary_filter_angularvelocity_factor(void)
+{
+	return configuration.motionsensor.complementary_filter_angularvelocity_factor;
+}
+
+void configuration_storage_set_complementary_filter_angularvelocity_factor(double factor)
+{
+	configuration.motionsensor.complementary_filter_angularvelocity_factor = factor;
+
+	configuration.has_changed = true;
+}
+
+double configuration_storage_get_complementary_filter_acceleraton_factor(void)
+{
+	return configuration.motionsensor.complementary_filter_acceleraton_factor;
+}
+
+void configuration_storage_set_complementary_filter_acceleraton_factor(double factor)
+{
+	configuration.motionsensor.complementary_filter_acceleraton_factor = factor;
+
+	configuration.has_changed = true;
+}
+
 
 
 uint16_t configuration_storage_get_position_multiplier(void)
