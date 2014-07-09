@@ -280,7 +280,10 @@ void system_controller_state_init_pid_controller(void)
 	printf("system_controller_state_init_pid_controller(void)\n");
 
 	acceleration_t acceleration;
+	angularvelocity_t angularvelocity;
 	uint16_t position_multiplier;
+
+	double tmp_double;
 
 	/* **** DO ***** */
 
@@ -291,11 +294,23 @@ void system_controller_state_init_pid_controller(void)
 			 configuration_storage_get_scalingfactor(),
 			 &pid_data);
 
+	//restore position multiplier
+	position_multiplier = configuration_storage_get_position_multiplier();
+	motionsensor_set_position_multiplier(position_multiplier);
+
+	//restore acceleration offset
 	configuration_storage_get_acceleration_offset(&acceleration);
 	motionsensor_set_acceleration_offset(&acceleration);
 
-	position_multiplier = configuration_storage_get_position_multiplier();
-	motionsensor_set_position_multiplier(position_multiplier);
+	//restore angularvelocity offset
+	configuration_storage_get_angularvelocity_offset(&angularvelocity);
+	motionsensor_set_angularvelocity_offset(&angularvelocity);
+
+	//restore parameters for complementary filter
+	tmp_double = configuration_storage_get_complementary_filter_acceleraton_factor();
+	motionsensor_set_complementary_filter_acceleraton_factor(tmp_double);
+	tmp_double = configuration_storage_get_complementary_filter_angularvelocity_factor();
+	motionsensor_set_complementary_filter_angularvelocity_factor(tmp_double);
 
 	/* *** EXIT **** */
 
