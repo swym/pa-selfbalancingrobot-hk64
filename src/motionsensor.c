@@ -39,9 +39,9 @@ static angularvelocity_t angularvelocity_offset;
 
 static double position_multiplier;
 
-static moving_average_t average_rotation_x;
-static moving_average_t average_rotation_y;
-static moving_average_t average_rotation_z;
+static moving_average_t average_angularvelocity_x;
+static moving_average_t average_angularvelocity_y;
+static moving_average_t average_angularvelocity_z;
 
 static moving_average_t average_acceleration_x;
 static moving_average_t average_acceleration_y;
@@ -55,52 +55,25 @@ static int16_t gyro_angle_y;
 //static void motionsensor_get_current_acceleration(acceleration_t acceleration);
 
 /* *** FUNCTION DEFINITIONS ************************************************* */
-//double motionsensor_get_position()
-//{
-//	//http://forum.arduino.cc/index.php/topic,58048.0.html
-//	double RAD2DEG = 57.295;
-//
-//	double position;
-//
-//	rotation_t tmp_rotation;
-//	acceleration_t tmp_acceleration;
-//
-//	motionsensor_get_current_rotation(&tmp_rotation);
-////	motionsensor_get_current_acceleration(&tmp_acceleration);
-//
-//	gyroAngle += (tmp_rotation.y * 20/1000);
-//
-//	printf("%i, %i\n",tmp_rotation.y, gyroAngle);
-//
-//	//Integriere gyroRate zu GyroAngle
-//
-//	return 0.0;
-//
-//	//position = atan2(tmp_acceleration.x, tmp_acceleration.z);
-//
-//	//return position_multiplier * (position * RAD2DEG);
-//
-//}
-
 int16_t motionsensor_get_position()
 {
-	int16_t angularvelocity_y;  //neue winkelgeschwindigkeit
-	int16_t accel_angle_y;
-	int16_t angle_y;
-	acceleration_t cur_acceleration;
+	acceleration_t cur_acceleration;  //current acceleration
+	int16_t cur_angularvelocity_y;    //current angularvelocity
+	int16_t accel_angle_y;			  //calculated angle from acceleration sensor
+	int16_t angle_y;			      //fusioned angle
 
-	//motionsensor_get_current_rotation(&cur_rotation);
-	angularvelocity_y = mpu9150_read_angularvelocity_y() + 350;
+
+	cur_angularvelocity_y = mpu9150_read_angularvelocity_y();
 	motionsensor_get_current_acceleration(&cur_acceleration);
 
 	//integrate angular velocity to angle over time (dt = 4 ms)
-	gyro_angle_y += (angularvelocity_y * 4/1000);
+	gyro_angle_y += (cur_angularvelocity_y * 4/1000);
 
 	//determine angle using acceleration vectors and atan
 	accel_angle_y = (int16_t)((atan2(cur_acceleration.x, cur_acceleration.z) * RAD2DEG));
 
 	//sensordata fusion with a complementary filter
-	//angle_y = (0.3 * gyro_angle_y) + (0.7 * accel_angle_y); //gut, aber sehr verrauscht
+	//angle_y = (0.3 * gyro_angle_y) + (0.7 * accel_angle_y); //ok, aber sehr verrauscht
 	angle_y = (COMPFILTER_GRYO_FACTOR * gyro_angle_y) + (COMPFILTER_ACCEL_FACTOR * accel_angle_y);
 
 
@@ -111,25 +84,26 @@ int16_t motionsensor_get_position()
 
 }
 
-void motionsensor_get_current_rotation(angularvelocity_t *angularvelocity)
+void motionsensor_get_current_angularvelocity(angularvelocity_t *angularvelocity)
 {
 	angularvelocity_t new_angularvelocity;
 
 	mpu9150_read_angularvelocity(&new_angularvelocity);
 
-	//do offset calculation?
-	new_angularvelocity.x += 0;
-	new_angularvelocity.y += 350;
-	new_angularvelocity.z += 0;
+	//correct with offset
+	new_angularvelocity.x += angularvelocity_offset.x;
+	new_angularvelocity.y += angularvelocity_offset.y;
+	new_angularvelocity.z += angularvelocity_offset.z;
 
-	moving_average_simple_put_element(&average_rotation_x, new_angularvelocity.x);
-	moving_average_simple_put_element(&average_rotation_y, new_angularvelocity.y);
-	moving_average_simple_put_element(&average_rotation_z, new_angularvelocity.z);
+	//determine mean
+	moving_average_simple_put_element(&average_angularvelocity_x, new_angularvelocity.x);
+	moving_average_simple_put_element(&average_angularvelocity_y, new_angularvelocity.y);
+	moving_average_simple_put_element(&average_angularvelocity_z, new_angularvelocity.z);
 
 	//prepare acceleration struct
-	angularvelocity->x = average_rotation_x.mean;
-	angularvelocity->y = average_rotation_y.mean;
-	angularvelocity->z = average_rotation_z.mean;
+	angularvelocity->x = average_angularvelocity_x.mean;
+	angularvelocity->y = average_angularvelocity_y.mean;
+	angularvelocity->z = average_angularvelocity_z.mean;
 }
 void motionsensor_get_current_acceleration(acceleration_t *acceleration)
 {
@@ -142,6 +116,7 @@ void motionsensor_get_current_acceleration(acceleration_t *acceleration)
 	new_acceleration.y += acceleration_offset.y;
 	new_acceleration.z += acceleration_offset.z;
 
+	//determine mean
 	moving_average_simple_put_element(&average_acceleration_x, new_acceleration.x);
 	moving_average_simple_put_element(&average_acceleration_y, new_acceleration.y);
 	moving_average_simple_put_element(&average_acceleration_z, new_acceleration.z);
@@ -208,37 +183,48 @@ void motionsensor_set_position_multiplier(uint16_t multiplier)
 void motionsensor_set_zero_point(void)
 {
 	acceleration_t tmp_acceleration;
+	angularvelocity_t tmp_angularvelocity;
 
-	motionsensor_get_current_acceleration(&tmp_acceleration);
+	int8_t i;
+	for(i = 0;i < (4 * MOVING_AVERAGE_ELEMENT_COUNT);i++) {
 
+		motionsensor_get_current_acceleration(&tmp_acceleration);
+		motionsensor_get_current_angularvelocity(&tmp_angularvelocity);
 
-	//TODO: regard acceleration range to set correct z-value
-	acceleration_offset.x = -tmp_acceleration.x;
-	acceleration_offset.y = -tmp_acceleration.y;
-	acceleration_offset.z = (INT16_MAX / 2) -tmp_acceleration.z;
+		acceleration_offset.x = -tmp_acceleration.x;
+		acceleration_offset.y = -tmp_acceleration.y;
+		acceleration_offset.z = (INT16_MAX / 2) -tmp_acceleration.z;
 
+		angularvelocity_offset.x = -tmp_angularvelocity.x;
+		angularvelocity_offset.y = -tmp_angularvelocity.y;
+		angularvelocity_offset.z = -tmp_angularvelocity.z;
 
-	angularvelocity_offset.x = -
-
+	}
 }
 
 void motionsensor_init()
 {
-	//init under laying hardware
-	//bma020_init();
+	acceleration_t tmp_acceleration;
+	angularvelocity_t tmp_angularvelocity;
 
+	//init under laying hardware
 	mpu9150_init();
 
+	//init offset structures
 	acceleration_offset.x = 0;
 	acceleration_offset.y = 0;
 	acceleration_offset.z = 0;
 
-	position_multiplier = 1.0;
+	angularvelocity_offset.x = 0;
+	angularvelocity_offset.y = 0;
+	angularvelocity_offset.z = 0;
 
+	position_multiplier = 1.0;
 
 	//fill buffer of the average with values
 	uint8_t i;
 	for(i = 0;i < (4 * MOVING_AVERAGE_ELEMENT_COUNT);i++) {
-		motionsensor_get_position();
+		motionsensor_get_current_acceleration(&tmp_acceleration);
+		motionsensor_get_current_angularvelocity(&tmp_angularvelocity);
 	}
 }
