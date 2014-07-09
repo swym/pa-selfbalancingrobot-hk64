@@ -25,12 +25,12 @@
 #include "configuration_storage.h"
 #include "vt100.h"
 
-
 #include "motionsensor.h"
 #include "simplex-protocol.h"
 #include "motor_control.h"
 #include "pid.h"
 #include "timer.h"
+#include "common.h"
 
 
 /* *** DECLARATIONS ********************************************************** */
@@ -55,9 +55,6 @@ volatile bool timer_slot_3;
 #define WIRELESS_TYPE_DATA_ANGULARVELOCITY	0xA0
 
 #define WIRELESS_SEND_BUFFER_MAX_LEN		10
-
-#define DDR_LED	 	DDRC
-#define PORT_LED	PORTC
 
 typedef enum {
 	STATE_INIT_HARDWARE,
@@ -158,6 +155,7 @@ void system_controller_state_init_hardware(void)
 	timer_init();		/* Init Timer */
 
 	DDR_LED = 0xFF;		/* Setze LED Port als Ausgang */
+	DDR_SCOPE = 0xFF;
 
 	sei();
 
@@ -181,6 +179,7 @@ void system_controller_state_init_hardware(void)
 	/* *** EXIT **** */
 
 	next_state = STATE_LOAD_CONFIGURATON;
+	//next_state = STATE_RUN_PID_CONTROLLER;
 }
 
 void system_controller_state_load_configuration(void)
@@ -316,19 +315,21 @@ void system_controller_state_run_pid_controller(void)
 
 	/* **** DO ***** */
 
-	PORT_LED = 0xFF;
+	while(true) {
 
-	for(;;) {
 		if(timer_slot_1) {
+			PORT_LED ^= _BV(7);
+
 			timer_slot_1 = false;
-			PORT_LED ^= _BV(0);
 
 			/*
 			 * Sensorwerte lesen und in Position umrechnen
 			 * als IST-Wert in den PID-Regler geben
 			 * Stellgr��e an Motorsteuerung weitergeben, ABER noch nicht setzen
 			 */
-			current_position = (int16_t)(motionsensor_get_position());
+			current_position = motionsensor_get_position();
+
+
 			current_speed = pid_Controller(0, current_position, &pid_data);
 
 			if(current_speed > INT8_MAX) {
@@ -343,24 +344,25 @@ void system_controller_state_run_pid_controller(void)
 			new_speed.motor_2 = current_speed;
 
 			motor_control_prepare_new_speed(&new_speed);
-
-//			wireless_send_acceleration();
 		}
 
 		if(timer_slot_2) {
-			timer_slot_2 = false;
-			PORT_LED ^= _BV(1);
 
+			timer_slot_2 = false;
 			/*
 			 * Neue Stellgröße des Motors setzen
 			 */
 			motor_control_set_new_speed();
 
 //			wireless_send_angularvelocity();
+//			wireless_send_acceleration();
+
 			wireless_send_pid();
 		}
 
+
 		simplex_protocol_tick();
+
 	} // end for(;;)
 
 
@@ -418,11 +420,13 @@ static inline void wireless_send_angularvelocity(void)
 
 static inline void wireless_send_pid(void)
 {
-	uint32_t temp;
+
 
 	//header
 	wireless_send_buffer[0] = WIRELESS_TYPE_DATA_PID;
-/*
+/*	uint32_t temp;
+
+
 	//position
 	temp = (uint32_t)(current_position);
 	wireless_send_buffer[1] = (uint8_t)(temp >> 24);

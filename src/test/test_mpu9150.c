@@ -68,7 +68,7 @@ static void test_mpu9150_with_rfm12(void)
 
 	PORTC |= _BV(1);
 
-	rotation_t rot_vector;
+	angularvelocity_t angvelo_vector;
 	acceleration_t accel_vector;
 
 	uint8_t data_len = 6;
@@ -78,7 +78,7 @@ static void test_mpu9150_with_rfm12(void)
 
 	while(true) {
 
-		mpu9150_read_rotation(&rot_vector);
+		mpu9150_read_angularvelocity(&angvelo_vector);
 		mpu9150_read_acceleration(&accel_vector);
 
 		data[0]  = (uint8_t)(accel_vector.x >> 8);
@@ -104,7 +104,7 @@ static void test_mpu9150_with_uart()
 {
 	printf("test_mpu9150_with_uart()\n");
 
-	rotation_t rot_vector;
+	angularvelocity_t angvelo_vector;
 	acceleration_t accel_vector;
 
 	while(true) {
@@ -112,11 +112,11 @@ static void test_mpu9150_with_uart()
 		PORTC ^= _BV(PC7);
 
 		mpu9150_read_acceleration(&accel_vector);
-		mpu9150_read_rotation(&rot_vector);
+		mpu9150_read_angularvelocity(&angvelo_vector);
 
 		printf("%d:%d:%d:%d:%d:%d:\n",
 				accel_vector.x, accel_vector.y, accel_vector.z,
-				rot_vector.x,rot_vector.y, rot_vector.z);
+				angvelo_vector.x,angvelo_vector.y, angvelo_vector.z);
 
 		_delay_ms(100);
 	}

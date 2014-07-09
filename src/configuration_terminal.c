@@ -184,16 +184,6 @@ void configuration_terminal_state_set_parameter(void)
 
 		sscanf(value_string, "%u", &value_uint16);
 
-		//should always non negative ...
-		if(value_uint16 < 0) {
-			value_uint16 = 0;
-		}
-
-		//and never greater INT16_MAX
-		if(value_uint16 > INT16_MAX) {
-			value_uint16 = INT16_MAX;
-		}
-
 		if(command == 'p') {
 			configuration_storage_set_p_factor(value_uint16);
 		} else if(command == 'i') {
