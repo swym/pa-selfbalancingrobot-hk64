@@ -18,11 +18,11 @@
 /* *** DECLARATIONS ********************************************************** */
 
 /* * external type and constants * */
-#define PORT_LED	PORTF
-#define DDR_LED		DDRF
+#define PORT_SCOPE	PORTF
+#define DDR_SCOPE	DDRF
 
-#define PORT_SCOPE	PORTC
-#define DDR_SCOPE	DDRC
+#define PORT_LED	PORTC
+#define DDR_LED		DDRC
 
 /* * external objects            * */
 

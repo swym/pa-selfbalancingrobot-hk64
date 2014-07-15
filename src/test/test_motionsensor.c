@@ -64,7 +64,7 @@ void test_motionsensor_init()
 	DDR_SCOPE = 0xFF;
 
 	UART_init(56700);	/* Init UART mit 38400 baud */
-	twi_master_init();	/* Init TWI/I2C Schnittstelle */
+	twi_master_init(TWI_TWBR_VALUE_100);	/* Init TWI/I2C Schnittstelle */
 
 	timer_init();
 
