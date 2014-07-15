@@ -20,7 +20,7 @@
 /* *** DECLARATIONS ********************************************************** */
 
 /* * external type and constants * */
-#define CONFIGURATION_STORAGE_VERSION			100
+#define CONFIGURATION_STORAGE_VERSION			101
 #define CONFIGURATION_STORAGE_COMMENT_LENGTH	60
 
 /* * external objects            * */
@@ -34,6 +34,9 @@ typedef struct {
 
 typedef struct {
 	acceleration_t acceleration_offset;
+	angularvelocity_t angularvelocity_offset;
+	double complementary_filter_angularvelocity_factor;
+	double complementary_filter_acceleraton_factor;
 	uint16_t position_multiplier;
 } motionsensor_config_t;
 
@@ -66,6 +69,15 @@ extern void configuration_storage_set_scalingfactor(uint16_t);
 
 extern void configuration_storage_get_acceleration_offset(acceleration_t *); /* acceleration_t *accel */
 extern void configuration_storage_set_acceleration_offset(acceleration_t *); /* acceleration_t *accel */
+
+extern void configuration_storage_get_angularvelocity_offset(angularvelocity_t *); /* angularvelocity_t *angularvelocity */
+extern void configuration_storage_set_angularvelocity_offset(angularvelocity_t *); /* angularvelocity_t *angularvelocity */
+
+extern double configuration_storage_get_complementary_filter_angularvelocity_factor(void);
+extern void configuration_storage_set_complementary_filter_angularvelocity_factor(double);
+
+extern double configuration_storage_get_complementary_filter_acceleraton_factor(void);
+extern void configuration_storage_set_complementary_filter_acceleraton_factor(double);
 
 extern uint16_t configuration_storage_get_position_multiplier(void);
 extern void configuration_storage_set_position_multiplier(uint16_t);
