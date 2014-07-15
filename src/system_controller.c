@@ -40,9 +40,9 @@
 
 /* global types and constants */
 // Timer
+volatile bool timer_slot_0;
 volatile bool timer_slot_1;
-volatile bool timer_slot_2;
-volatile bool timer_slot_3;
+
 
 
 /* local type and constants     */
@@ -337,10 +337,10 @@ void system_controller_state_run_pid_controller(void)
 
 	while(true) {
 
-		if(timer_slot_1) {
+		if(timer_slot_0) {
 			PORT_SCOPE = 0x01;
 
-			timer_slot_1 = false;
+			timer_slot_0 = false;
 
 			/*
 			 * Sensorwerte lesen und in Position umrechnen
@@ -367,10 +367,10 @@ void system_controller_state_run_pid_controller(void)
 			PORT_SCOPE = 0x00;
 		}
 
-		if(timer_slot_2) {
+		if(timer_slot_1) {
 			PORT_SCOPE = 0x02;
 
-			timer_slot_2 = false;
+			timer_slot_1 = false;
 			/*
 			 * Neue Stellgröße des Motors setzen
 			 */
