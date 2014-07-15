@@ -150,12 +150,12 @@ void system_controller_state_init_hardware(void)
 
 	/* **** DO ***** */
 
-	UART_init(38400);	/* Init UART mit 38400 baud */
-	twi_master_init();	/* Init TWI/I2C Schnittstelle */
-	timer_init();		/* Init Timer */
+	UART_init(38400);						/* Init UART mit 38400 baud */
+	twi_master_init(TWI_TWBR_VALUE_100);	/* Init TWI/I2C Schnittstelle */
+	timer_init();							/* Init Timer */
 
-	DDR_LED = 0xFF;		/* Setze LED Port als Ausgang */
-	DDR_SCOPE = 0xFF;
+	DDR_LED = 0xFF;							/* Set LED port as output */
+	DDR_SCOPE = 0xFF;						/* set scope port as output */
 
 	sei();
 
