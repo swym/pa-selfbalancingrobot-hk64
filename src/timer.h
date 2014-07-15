@@ -16,6 +16,7 @@
 
 
 //External Data
+extern volatile bool timer_slot_0;
 extern volatile bool timer_slot_1;
 extern volatile bool timer_slot_2;
 extern volatile bool timer_slot_3;

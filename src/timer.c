@@ -33,19 +33,23 @@ static volatile uint8_t timer_slot_counter;
 */
 void timer_init()
 {
+
+	timer_slot_0 = false;
 	timer_slot_1 = false;
-	timer_slot_2 = false;
-	timer_slot_3 = false;
+//	timer_slot_2 = false;
+//	timer_slot_3 = false;
 	timer_slot_counter = 0;
 
 
-	/* Timer0 wird auf eine Periodenl�nge von T = 4 ms einstellt */
+	/* Timer0 wird auf eine Periodenl�nge von T = 2 ms einstellt */
 
 	//Timer0 Betriebsart festlegen - Timer/Counter Control Register:
 	TCCR0 |= (1 << WGM01); 				// Mode 4 - CTC
 
 	//Timer1 Prescaler festlegen
-	TCCR0 |= (1 << CS02 | 1 << CS01);	//Prescaler = 256
+	//TCCR0 |= (1 << CS02 | 1 << CS01);	//Prescaler = 256
+	TCCR0 |= (1 << CS02 | 1 << CS00);	//Prescaler = 128
+	//TCCR0 |= (1 << CS02);				//Prescaler = 64
 
 	//Interruptverhalten definieren
 	TIMSK |= (1 << OCIE0);				//OCIE0: Timer/Counter0,
@@ -53,6 +57,7 @@ void timer_init()
 
 	//Timer0 OCR-Register vorladen
 	OCR0 = 249;							//OCR0: Output Compare Register
+	//OCR0 = 124;							//OCR0: Output Compare Register
 
 }
 
@@ -61,22 +66,20 @@ ISR(TIMER0_COMP_vect)
 {
 
 	if(timer_slot_counter == 0) {
+		timer_slot_0 = true;
+	}
+
+	if (timer_slot_counter == 1){
 		timer_slot_1 = true;
 	}
 
-	if(timer_slot_counter == 2) {
-		timer_slot_2 = true;
-	}
-
-	if(timer_slot_counter == 3) {
-		timer_slot_3 = true;
-	}
-
-	if(timer_slot_counter < TIMER_SLOT_COUNTER_MAX) {
-		timer_slot_counter++;
-	} else {
+	if (timer_slot_counter >= 1){
 		timer_slot_counter = 0;
+	} else {
+		timer_slot_counter++;
 	}
 
 	timer_twi_ready_timeout--;
+
+
 }
