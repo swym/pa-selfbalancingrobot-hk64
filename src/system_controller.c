@@ -150,12 +150,12 @@ void system_controller_state_init_hardware(void)
 
 	/* **** DO ***** */
 
-	UART_init(38400);	/* Init UART mit 38400 baud */
-	twi_master_init();	/* Init TWI/I2C Schnittstelle */
-	timer_init();		/* Init Timer */
+	UART_init(38400);						/* Init UART mit 38400 baud */
+	twi_master_init(TWI_TWBR_VALUE_100);	/* Init TWI/I2C Schnittstelle */
+	timer_init();							/* Init Timer */
 
-	DDR_LED = 0xFF;		/* Setze LED Port als Ausgang */
-	DDR_SCOPE = 0xFF;
+	DDR_LED = 0xFF;							/* Set LED port as output */
+	DDR_SCOPE = 0xFF;						/* set scope port as output */
 
 	sei();
 
@@ -330,10 +330,15 @@ void system_controller_state_run_pid_controller(void)
 
 	/* **** DO ***** */
 
+	twi_master_set_speed(TWI_TWBR_VALUE_400);	//bereite den TWI Bus vor, mit 400 khz den motionsensor zu lesen
+
+	PORT_LED = 0x00;
+	PORT_SCOPE = 0x00;
+
 	while(true) {
 
 		if(timer_slot_1) {
-			PORT_LED ^= _BV(7);
+			PORT_SCOPE = 0x01;
 
 			timer_slot_1 = false;
 
@@ -357,9 +362,13 @@ void system_controller_state_run_pid_controller(void)
 			new_speed.motor_2 = -current_speed;
 
 			motor_control_prepare_new_speed(&new_speed);
+			twi_master_set_speed(TWI_TWBR_VALUE_100);	//bereite den TWI Bus vor, mit 100 khz den motortreiber zu schreiben
+
+			PORT_SCOPE = 0x00;
 		}
 
 		if(timer_slot_2) {
+			PORT_SCOPE = 0x02;
 
 			timer_slot_2 = false;
 			/*
@@ -367,7 +376,11 @@ void system_controller_state_run_pid_controller(void)
 			 */
 			motor_control_set_new_speed();
 
+			twi_master_set_speed(TWI_TWBR_VALUE_400);	//bereite den TWI Bus vor, mit 400 khz den motionsensor zu lesen
+
 			wireless_send_pid();
+
+			PORT_SCOPE = 0x00;
 		}
 
 

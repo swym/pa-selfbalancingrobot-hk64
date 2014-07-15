@@ -167,12 +167,10 @@ void twi_send_data(uint8_t slave, uint8_t anz_bytes)
 	for(;;) {
 
 		if(ready) {
-			PORT_LED ^= _BV(0);
 			break;
 		}
 
 		if(!timer_twi_ready_timeout) {
-			PORT_LED |= 0xFF;
 			ready = true;
 			break;
 		}
