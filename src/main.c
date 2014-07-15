@@ -19,7 +19,7 @@
 #include "system_controller.h"
 
 /* Tests */
-#include "motionsensor.h"
+#include "test/test_motionsensor.h"
 
 
 /* *** DECLARATIONS ********************************************************** */
