@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
+#include <util/delay.h>
 
 /* * local headers               * */
 #include "lib/uart.h"
@@ -46,6 +47,7 @@ typedef enum {
 	STATE_SET_MOTIONSENSOR_PARAMETER,
 	STATE_SET_OFFSET,
 	STATE_SAVE_CONFIG,
+	STATE_LIVE_DATA,
 	STATE_FINAL,
 	STATE_NULL
 } configuration_terminal_state_t;
@@ -64,6 +66,7 @@ static void configuration_terminal_state_set_pid_parameter(void);
 static void configuration_terminal_state_set_motionsensor_parameter(void);
 static void configuration_terminal_state_set_offset(void);
 static void configuration_terminal_state_save_configuration(void);
+static void configuration_terminal_state_live_data(void);
 
 static bool parse_input2int16(int16_t *value, int16_t min, int16_t max);
 //static bool parse_input2double(double *value, double min, double max);
@@ -96,6 +99,10 @@ void configuration_terminal_state_machine(void)
 
 			case STATE_SET_MOTIONSENSOR_PARAMETER:
 				configuration_terminal_state_set_motionsensor_parameter();
+			break;
+
+			case STATE_LIVE_DATA:
+				configuration_terminal_state_live_data();
 			break;
 
 			case STATE_SET_OFFSET:
@@ -132,6 +139,8 @@ void configuration_terminal_state_print_help(void)
 	printf("                 [!] Sum of ca and cv must be 100 [!]\n\n");
 
 	printf("z - set new offset for acceleration and angularvelocity\n\n");
+
+//	printf("l - show live data\n\n");
 
 	printf("? - print this help\n");
 	printf("s - show current configuration\n\n");
@@ -203,6 +212,9 @@ void configuration_terminal_state_read_input(void)
 		case 's':
 			next_state = STATE_PRINT_CONFIG;
 			break;
+//		case 'l':
+//			next_state = STATE_LIVE_DATA;
+//			break;
 		case 'q':
 			next_state = STATE_SAVE_CONFIG;
 			break;
@@ -317,6 +329,23 @@ void configuration_terminal_state_save_configuration(void)
 {
 	configuration_storage_save_configuration();
 	next_state = STATE_FINAL;
+}
+
+void configuration_terminal_state_live_data(void)
+{
+	int16_t run = 500;
+
+	acceleration_t acceleration;
+	angularvelocity_t angularvelocity;
+
+	while(run--) {
+		printf("% 5d% 5d% 5d",acceleration.x, acceleration.y, acceleration.z);
+		printf("% 5d% 5d% 5d",angularvelocity.x, angularvelocity.y, angularvelocity.z);
+		printf("\n");
+		_delay_ms(3);
+	}
+
+	next_state = STATE_READ_INPUT;
 }
 
 bool parse_input2int16(int16_t *value, int16_t min, int16_t max)
