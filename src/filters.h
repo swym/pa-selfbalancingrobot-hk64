@@ -32,9 +32,7 @@ typedef struct {
 
 typedef struct {
 	int16_t elements[WEIGHTED_AVERAGE_ELEMENT_COUNT];
-	int8_t  head_index;
-	int16_t mean;
-	int64_t elements_sum;							//sum of all elements and their weights
+	int16_t mean;								//sum of all elements and their weights
 } weighted_average_t;
 
 /* * external objects            * */
