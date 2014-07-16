@@ -150,7 +150,7 @@ void system_controller_state_init_hardware(void)
 
 	/* **** DO ***** */
 
-	UART_init(38400);						/* Init UART mit 38400 baud */
+	UART_init(56700);						/* Init UART mit 38400 baud */
 	twi_master_init(TWI_TWBR_VALUE_100);	/* Init TWI/I2C Schnittstelle */
 	timer_init();							/* Init Timer */
 
@@ -348,18 +348,17 @@ void system_controller_state_run_pid_controller(void)
 			 * Stellgr��e an Motorsteuerung weitergeben, ABER noch nicht setzen
 			 */
 			current_position = motionsensor_get_position();
-			current_speed = pid_Controller(0, current_position, &pid_data);
+			printf("%d\n",current_position);
+//			current_speed = pid_Controller(0, current_position, &pid_data);
 
 			if(current_speed > 125) {
 				current_speed = 125;
-			}
-
-			if(current_speed < -125) {
+			} else if(current_speed < -125) {
 				current_speed = -125;
 			}
 
-			new_speed.motor_1 = -current_speed;
-			new_speed.motor_2 = -current_speed;
+			new_speed.motor_1 = 0;
+			new_speed.motor_2 = 0;
 
 			motor_control_prepare_new_speed(&new_speed);
 			twi_master_set_speed(TWI_TWBR_VALUE_100);	//bereite den TWI Bus vor, mit 100 khz den motortreiber zu schreiben
@@ -378,7 +377,7 @@ void system_controller_state_run_pid_controller(void)
 
 			twi_master_set_speed(TWI_TWBR_VALUE_400);	//bereite den TWI Bus vor, mit 400 khz den motionsensor zu lesen
 
-			wireless_send_pid();
+			//wireless_send_pid();
 
 			PORT_SCOPE = 0x00;
 		}
