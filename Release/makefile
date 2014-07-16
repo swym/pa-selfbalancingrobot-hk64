@@ -8,7 +8,6 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
--include src/test/subdir.mk
 -include src/lib/subdir.mk
 -include src/subdir.mk
 -include .metadata/.plugins/org.eclipse.cdt.make.core/subdir.mk
@@ -35,14 +34,18 @@ endif
 # Add inputs and outputs from these tool invocations to the build variables 
 LSS += \
 pa-einpersonentransportmittel-hk64.lss \
+pa-einpersonentransportmittel-hk64.lss \
 
 FLASH_IMAGE += \
+pa-einpersonentransportmittel-hk64.hex \
 pa-einpersonentransportmittel-hk64.hex \
 
 EEPROM_IMAGE += \
 pa-einpersonentransportmittel-hk64.eep \
+pa-einpersonentransportmittel-hk64.eep \
 
 SIZEDUMMY += \
+sizedummy \
 sizedummy \
 
 

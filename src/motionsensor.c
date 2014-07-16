@@ -18,7 +18,7 @@
 /* * local headers               * */
 //#include "bma020.h"
 #include "mpu9150.h"
-#include "moving_average.h"
+#include "filters.h"
 
 
 
@@ -108,7 +108,7 @@ int16_t motionsensor_get_current_angularvelocity_y(void)
 			angularvelocity_offset.y;
 
 	//determine mean
-	moving_average_simple_put_element(&average_angularvelocity_y, new_angularvelocity_y);
+	filters_moving_average_put_element(&average_angularvelocity_y, new_angularvelocity_y);
 
 	//return mean
 	return average_angularvelocity_y.mean;
@@ -127,9 +127,9 @@ void motionsensor_get_current_angularvelocity(angularvelocity_t *angularvelocity
 	new_angularvelocity.z += angularvelocity_offset.z;
 
 	//determine mean
-	moving_average_simple_put_element(&average_angularvelocity.x, new_angularvelocity.x);
-	moving_average_simple_put_element(&average_angularvelocity.y, new_angularvelocity.y);
-	moving_average_simple_put_element(&average_angularvelocity.z, new_angularvelocity.z);
+	filters_moving_average_put_element(&average_angularvelocity.x, new_angularvelocity.x);
+	filters_moving_average_put_element(&average_angularvelocity.y, new_angularvelocity.y);
+	filters_moving_average_put_element(&average_angularvelocity.z, new_angularvelocity.z);
 
 	//prepare acceleration struct
 	angularvelocity->x = average_angularvelocity.x.mean;
@@ -148,9 +148,9 @@ void motionsensor_get_current_acceleration(acceleration_t *acceleration)
 	new_acceleration.z += acceleration_offset.z;
 
 	//determine mean
-	moving_average_simple_put_element(&average_acceleration.x, new_acceleration.x);
-	moving_average_simple_put_element(&average_acceleration.y, new_acceleration.y);
-	moving_average_simple_put_element(&average_acceleration.z, new_acceleration.z);
+	filters_moving_average_put_element(&average_acceleration.x, new_acceleration.x);
+	filters_moving_average_put_element(&average_acceleration.y, new_acceleration.y);
+	filters_moving_average_put_element(&average_acceleration.z, new_acceleration.z);
 
 	//prepare acceleration struct
 	acceleration->x = average_acceleration.x.mean;
