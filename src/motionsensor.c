@@ -32,9 +32,9 @@
 
 /* * local objects               * */
 typedef struct{
-	moving_average_t x;
-	moving_average_t y;
-	moving_average_t z;
+	weighted_average_t x;
+	weighted_average_t y;
+	weighted_average_t z;
 } average_vector_t;
 
 static acceleration_t acceleration_offset;
@@ -43,7 +43,7 @@ static angularvelocity_t angularvelocity_offset;
 static double position_multiplier;
 
 static average_vector_t average_angularvelocity;		//average vector for using with motionsensor_get_current_angularvelocity(angularvelocity_t *angularvelocity);
-static moving_average_t average_angularvelocity_y;		//single average for using with motionsensor_get_current_angularvelocity_y();
+static weighted_average_t average_angularvelocity_y;		//single average for using with motionsensor_get_current_angularvelocity_y();
 
 average_vector_t average_acceleration;
 
@@ -108,7 +108,7 @@ int16_t motionsensor_get_current_angularvelocity_y(void)
 			angularvelocity_offset.y;
 
 	//determine mean
-	filters_moving_average_put_element(&average_angularvelocity_y, new_angularvelocity_y);
+	filters_weighted_average_put_element(&average_angularvelocity_y, new_angularvelocity_y);
 
 	//return mean
 	return average_angularvelocity_y.mean;
@@ -127,9 +127,9 @@ void motionsensor_get_current_angularvelocity(angularvelocity_t *angularvelocity
 	new_angularvelocity.z += angularvelocity_offset.z;
 
 	//determine mean
-	filters_moving_average_put_element(&average_angularvelocity.x, new_angularvelocity.x);
-	filters_moving_average_put_element(&average_angularvelocity.y, new_angularvelocity.y);
-	filters_moving_average_put_element(&average_angularvelocity.z, new_angularvelocity.z);
+	filters_weighted_average_put_element(&average_angularvelocity.x, new_angularvelocity.x);
+	filters_weighted_average_put_element(&average_angularvelocity.y, new_angularvelocity.y);
+	filters_weighted_average_put_element(&average_angularvelocity.z, new_angularvelocity.z);
 
 	//prepare acceleration struct
 	angularvelocity->x = average_angularvelocity.x.mean;
@@ -148,9 +148,9 @@ void motionsensor_get_current_acceleration(acceleration_t *acceleration)
 	new_acceleration.z += acceleration_offset.z;
 
 	//determine mean
-	filters_moving_average_put_element(&average_acceleration.x, new_acceleration.x);
-	filters_moving_average_put_element(&average_acceleration.y, new_acceleration.y);
-	filters_moving_average_put_element(&average_acceleration.z, new_acceleration.z);
+	filters_weighted_average_put_element(&average_acceleration.x, new_acceleration.x);
+	filters_weighted_average_put_element(&average_acceleration.y, new_acceleration.y);
+	filters_weighted_average_put_element(&average_acceleration.z, new_acceleration.z);
 
 	//prepare acceleration struct
 	acceleration->x = average_acceleration.x.mean;
