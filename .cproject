@@ -112,7 +112,7 @@
 						<entry excluding="lib|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry excluding="test|lib|src|accelerationsensor.c|accelerationsensor.h|configuration_manager.c|configuration_manager.h|_configuration_terminal.c|_configuration_terminal.h|moving_average.c|moving_average.h" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src"/>
 						<entry excluding="rfm12lib/" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/lib"/>
-						<entry excluding="test_acceleration.c|test_acceleration.h|test_bma020.c|test_bma020.h|test_configuration_storage.c|test_configuration_storage.h|test_configuration_terminal.c|test_configuration_terminal.h|test_md25.c|test_md25.h|test_motionsensor.c|test_motionsensor.h|test_motor_control.c|test_motor_control.h|test_mpu9150.c|test_mpu9150.h|test_twi_master.c|test_twi_master.h" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/test"/>
+						<entry excluding="test_acceleration.c|test_acceleration.h|test_bma020.c|test_bma020.h|test_configuration_storage.c|test_configuration_storage.h|test_configuration_terminal.c|test_configuration_terminal.h|test_md25.c|test_md25.h|test_motionsensor.c|test_motionsensor.h|test_motor_control.c|test_motor_control.h|test_twi_master.c|test_twi_master.h" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/test"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

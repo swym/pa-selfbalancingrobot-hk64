@@ -22,11 +22,13 @@
 #include "../lib/rfm12.h"
 
 #include "../simplex-protocol.h"
-#include "../accelerationsensor.h"
-
-#include "../test/test_twi_master.h"
-
+#include "../motionsensor.h"
 #include "../mpu9150.h"
+#include "../timer.h"
+
+#include "../common.h"
+
+
 
 
 /* *** DEFINES ************************************************************** */
@@ -104,21 +106,24 @@ static void test_mpu9150_with_uart()
 {
 	printf("test_mpu9150_with_uart()\n");
 
-	angularvelocity_t angvelo_vector;
-	acceleration_t accel_vector;
+	int16_t y;
+	int16_t max = 0;
+
+	_delay_ms(100);
 
 	while(true) {
 
-		PORTC ^= _BV(PC7);
+		if(timer_slot_0) {
+			timer_slot_0 = false;
+			PORT_LED ^= _BV(0);
 
-		mpu9150_read_acceleration(&accel_vector);
-		mpu9150_read_angularvelocity(&angvelo_vector);
+			y = mpu9150_read_angularvelocity_y();
 
-		printf("%d:%d:%d:%d:%d:%d:\n",
-				accel_vector.x, accel_vector.y, accel_vector.z,
-				angvelo_vector.x,angvelo_vector.y, angvelo_vector.z);
-
-		_delay_ms(100);
+			if(y > max) {
+				max = y;
+				printf("%d\n", max);
+			}
+		}
 	}
 }
 
@@ -133,12 +138,12 @@ void test_mpu9150_run()
 
 void test_mpu9150_init()
 {
-	DDRC = 0xFF;		/* Data Direction Register der LEDs als Ausgang definieren */
+	DDR_LED = 0xFF;							/* Data Direction Register der LEDs als Ausgang definieren */
 
-	UART_init(38400);	/* Init UART mit 38400 baud */
-	twi_master_init();	/* Init TWI/I2C Schnittstelle */
+	UART_init(57600);						/* Init UART mit 57600 baud */
+	twi_master_init(TWI_TWBR_VALUE_400);	/* Init TWI/I2C Schnittstelle */
 
-	PORTC |= _BV(0);
+	timer_init();
 
 	sei();
 
