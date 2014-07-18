@@ -74,12 +74,14 @@ static system_controller_state_t next_state;
 static uint8_t wireless_send_buffer[WIRELESS_SEND_BUFFER_MAX_LEN];
 static uint8_t wireless_send_buffer_len = 0;
 
-static int16_t current_position;
-static int16_t current_speed;
+static int16_t current_angle;
+static int16_t pid_output;
+static motor_contol_speed_t new_motor_speed;
 static acceleration_t current_acceleration;
 static acceleration_t current_angularvelocity;
 
 static pidData_t pid_data;
+static int8_t    pid_setpoint;
 
 /* local function declarations  */
 
@@ -243,6 +245,8 @@ void system_controller_state_waiting_for_user_interrupt(void)
 		_delay_ms(delay);
 	}
 
+	printf("\n");
+
 	/* *** EXIT **** */
 	if(user_irq_received) {
 		user_irq_received = false;
@@ -266,8 +270,6 @@ void system_controller_state_run_configuration_terminal(void)
 
 	/* *** EXIT **** */
 
-
-
 	next_state = STATE_WAITING_FOR_USER_INTERRUPT;
 	vt100_clear_all();
 }
@@ -287,12 +289,15 @@ void system_controller_state_init_pid_controller(void)
 
 	/* **** DO ***** */
 
-
+	//initialize PID Controller with saved values
 	pid_Init(configuration_storage_get_p_factor(),
 			 configuration_storage_get_i_factor(),
 			 configuration_storage_get_d_factor(),
 			 configuration_storage_get_scalingfactor(),
 			 &pid_data);
+
+	//set set_point
+	pid_setpoint = 0;
 
 	//restore position multiplier
 	position_multiplier = configuration_storage_get_position_multiplier();
@@ -323,69 +328,65 @@ void system_controller_state_run_pid_controller(void)
 	/* *** ENTRY *** */
 	printf("run controller loop...\n");
 
-	//uint16_t speed = 0;
-	motor_contol_speed_t new_speed;
-
-	//double position = 1337;
-
 	/* **** DO ***** */
 
-	twi_master_set_speed(TWI_TWBR_VALUE_400);	//bereite den TWI Bus vor, mit 400 khz den motionsensor zu lesen
+	twi_master_set_speed(TWI_TWBR_VALUE_400);		//Set TWI speed to 400 khz for reading sensor
 
 	PORT_LED = 0x00;
 	PORT_SCOPE = 0x00;
 
 	while(true) {
 
+		/*
+		 * - Read sensor values and calculate current angle
+		 * - determine pid output
+		 * - limit pid output and prepare as new motor speed
+		 */
 		if(timer_slot_0) {
 			PORT_SCOPE = 0x01;
-
 			timer_slot_0 = false;
 
-			/*
-			 * Sensorwerte lesen und in Position umrechnen
-			 * als IST-Wert in den PID-Regler geben
-			 * Stellgr��e an Motorsteuerung weitergeben, ABER noch nicht setzen
-			 */
-			current_position = motionsensor_get_position();
-			printf("%d\n",current_position);
-//			current_speed = pid_Controller(0, current_position, &pid_data);
+			//read angle
+			current_angle = motionsensor_get_angle();
 
-			if(current_speed > 125) {
-				current_speed = 125;
-			} else if(current_speed < -125) {
-				current_speed = -125;
+			//calculate pid
+			pid_output = pid_Controller(pid_setpoint, current_angle, &pid_data);
+
+			//limit pid output for motor control
+			if(pid_output > 125) {
+				pid_output = 125;
+			} else if(pid_output < -125) {
+				pid_output = -125;
 			}
 
-			new_speed.motor_1 = 0;
-			new_speed.motor_2 = 0;
+			//prepare new motor speed
+			//TODO: PID Outpxut shouldn't inverted. something wrong named in mpu9150 module?
+			new_motor_speed.motor_1 = -pid_output;
+			new_motor_speed.motor_2 = -pid_output;
+			motor_control_prepare_new_speed(&new_motor_speed);
 
-			motor_control_prepare_new_speed(&new_speed);
-			twi_master_set_speed(TWI_TWBR_VALUE_100);	//bereite den TWI Bus vor, mit 100 khz den motortreiber zu schreiben
+			twi_master_set_speed(TWI_TWBR_VALUE_100);	//Set TWI speed to 100 khz for setting motor speed in next time slot
 
 			PORT_SCOPE = 0x00;
-		}
+		} //end time_slot_0
 
+		/*
+		 * - set new motor speed
+		 * - prepare send pid data
+		 */
 		if(timer_slot_1) {
 			PORT_SCOPE = 0x02;
-
 			timer_slot_1 = false;
-			/*
-			 * Neue Stellgröße des Motors setzen
-			 */
+
 			motor_control_set_new_speed();
 
-			twi_master_set_speed(TWI_TWBR_VALUE_400);	//bereite den TWI Bus vor, mit 400 khz den motionsensor zu lesen
+			twi_master_set_speed(TWI_TWBR_VALUE_400);	//Set TWI speed to 400 khz for reading sensor in next time slot
 
 			//wireless_send_pid();
-
+			//simplex_protocol_tick();
 			PORT_SCOPE = 0x00;
-		}
-
-
-		simplex_protocol_tick();
-
-	} // end for(;;)
+		} // end time_slot_1
+	} // end while(true)
 
 
 	/* *** EXIT **** */
@@ -465,12 +466,12 @@ static inline void wireless_send_pid(void)
 	wireless_send_buffer[4] = (uint8_t)((temp) & 0x000000FF);
 */
 	//position
-	wireless_send_buffer[1] = (uint8_t)(current_position >> 8);
-	wireless_send_buffer[2] = (uint8_t)(current_position & 0x00FF);
+	wireless_send_buffer[1] = (uint8_t)(current_angle >> 8);
+	wireless_send_buffer[2] = (uint8_t)(current_angle & 0x00FF);
 
 	//speed
-	wireless_send_buffer[3] = (uint8_t)((current_speed) >> 8);
-	wireless_send_buffer[4] = (uint8_t)((current_speed) & 0x00FF);
+	wireless_send_buffer[3] = (uint8_t)((pid_output) >> 8);
+	wireless_send_buffer[4] = (uint8_t)((pid_output) & 0x00FF);
 
 	wireless_send_buffer_len = 5;
 
