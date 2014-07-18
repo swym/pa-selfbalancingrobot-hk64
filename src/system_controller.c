@@ -245,6 +245,8 @@ void system_controller_state_waiting_for_user_interrupt(void)
 		_delay_ms(delay);
 	}
 
+	printf("\n");
+
 	/* *** EXIT **** */
 	if(user_irq_received) {
 		user_irq_received = false;
