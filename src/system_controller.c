@@ -468,8 +468,8 @@ static inline void wireless_send_pid(void)
 	wireless_send_buffer[2] = (uint8_t)(current_angle & 0x00FF);
 
 	//speed
-	wireless_send_buffer[3] = (uint8_t)((new_motor_speed) >> 8);
-	wireless_send_buffer[4] = (uint8_t)((new_motor_speed) & 0x00FF);
+	wireless_send_buffer[3] = (uint8_t)((pid_output) >> 8);
+	wireless_send_buffer[4] = (uint8_t)((pid_output) & 0x00FF);
 
 	wireless_send_buffer_len = 5;
 
