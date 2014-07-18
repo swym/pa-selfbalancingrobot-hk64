@@ -61,7 +61,7 @@ static int16_t motionsensor_get_current_angularvelocity_y(void);
 static inline void reset_integrated_gyro_angle_y();
 
 /* *** FUNCTION DEFINITIONS ************************************************* */
-int16_t motionsensor_get_position()
+int16_t motionsensor_get_angle()
 {
 	acceleration_t cur_acceleration;  //current acceleration
 	int16_t cur_angularvelocity_y;    //current angularvelocity
@@ -76,15 +76,15 @@ int16_t motionsensor_get_position()
 	//determine angle using acceleration vectors and atan and normalize
 	accel_angle_y = (int16_t)((atan2(cur_acceleration.x, cur_acceleration.z) * NORMALIZATION_RAD2INT14));
 
-	//TODO: HACK: to reduce gyro errors, reset integrated gyro if acceleration of x is 0;
-	//Use a more stable solution
-	if(cur_acceleration.x == 0) {
-		reset_integrated_gyro_angle_y();
-	}
-
 	//integrate angular velocity to angle over time (dt = 4 ms) and normalize
 	//integrated_gyro_angle_y += (cur_angularvelocity_y * (4/1000));
 	integrated_angularvelocity_angle_y += cur_angularvelocity_y * NORMALIZATION_AVELO2INT14;
+
+	//TODO: HACK: to reduce gyro errors, reset integrated gyro if acceleration of x is 0;
+	//Use a more stable solution
+	if(cur_acceleration.x < 20 && cur_acceleration.x > -20 ) {
+		reset_integrated_gyro_angle_y();
+	}
 
 	//sensordata fusion with a complementary filter
 	//angle_y = (0.3 * gyro_angle_y) + (0.7 * accel_angle_y); //ok, aber sehr verrauscht
