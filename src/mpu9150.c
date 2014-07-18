@@ -290,8 +290,8 @@ void mpu9150_init()
 	//Enable Data IRQ
 //	twi_master_write_register(MPU9150_TWI_ADDRESS, MPU9150_REGISTER_INT_ENABLE, 0x01);
 
-	//Set Samplerate devider
-//	twi_master_write_register(MPU9150_TWI_ADDRESS, MPU9150_REGISTER_SMPRT_DIV, 0x00);
+	//Set Samplerate devider from 8 kHz down to 250 Hz
+	twi_master_write_register(MPU9150_TWI_ADDRESS, MPU9150_REGISTER_SMPRT_DIV, 0x1F);
 
 	//Set Digital Low Pass Filter to 188 Hz
 //	twi_master_write_register(MPU9150_TWI_ADDRESS, MPU9150_REGISTER_CONFIG, 0x01);
