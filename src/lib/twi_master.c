@@ -28,6 +28,9 @@ This function sets up the twi module for master operation. Therefore we have to 
 - TWSR      Two Wire Status Register
 - TWCR      Two Wire Control Register
 <p>
+
+FIXME: Diese Annahmen scheinen für einen anderen Prozessor zu gelten.
+
 TWBR and TWSR are used to configure the bus clock speed.
 The TWI specifications allows us to choose between two different clock speed modes: one below 100kHz and one up to 400kHz.<br>
 The following equation shows how to set up the clock speed:<p>
@@ -40,15 +43,36 @@ TWSR |= 0x01;
 \endcode<br>
 As we can see in this tiny code fragment, the TWPS value is encoded by the two last bits of the TWSR register.
 */
-void twi_master_init()
+void twi_master_init(uint8_t speed)
 {
+	if(speed != TWI_TWBR_VALUE_25 &&
+	   speed != TWI_TWBR_VALUE_100 &&
+	   speed != TWI_TWBR_VALUE_400) {
+		speed = TWI_TWBR_VALUE_100;
+	}
 
-
-	TWBR = TWI_TWBR_VALUE_100;
+	TWBR = speed;			//setze Bitrate
+	/* was zur Hölle?
 	TWSR &= 0b11111100;
 	TWSR |= 0x01;
+	*/
 	TWCR = (1<<TWEN) | (1<<TWEA) | (1<<TWIE);
 
+}
+
+void twi_master_set_speed(uint8_t speed)
+{
+	cli();
+
+	if(speed != TWI_TWBR_VALUE_25 &&
+	   speed != TWI_TWBR_VALUE_100 &&
+	   speed != TWI_TWBR_VALUE_400) {
+		speed = TWI_TWBR_VALUE_100;
+	}
+
+	TWBR = speed;			//setze Bitrate
+
+	sei();
 }
 
 /**
@@ -143,12 +167,10 @@ void twi_send_data(uint8_t slave, uint8_t anz_bytes)
 	for(;;) {
 
 		if(ready) {
-			PORT_LED ^= _BV(0);
 			break;
 		}
 
 		if(!timer_twi_ready_timeout) {
-			PORT_LED |= 0xFF;
 			ready = true;
 			break;
 		}

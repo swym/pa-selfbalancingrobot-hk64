@@ -1,13 +1,13 @@
 /*
- * common.h
+ * test_filters.h
  *
- *  Created on: Jul 7, 2014
+ *  Created on: Jul 16, 2014
  *      Author: alexandermertens
  */
 
 
-#ifndef COMMON_H_
-#define COMMON_H_
+#ifndef TEST_FILTERS_H_
+#define TEST_FILTERS_H_
 
 /* *** INCLUDES ************************************************************** */
 
@@ -18,14 +18,10 @@
 /* *** DECLARATIONS ********************************************************** */
 
 /* * external type and constants * */
-#define PORT_SCOPE	PORTF
-#define DDR_SCOPE	DDRF
-
-#define PORT_LED	PORTC
-#define DDR_LED		DDRC
 
 /* * external objects            * */
 
 /* * external functions          * */
+extern void test_filters_run(void);
 
-#endif /* COMMON_H_ */
+#endif /* TEST_FILTERS_H_ */

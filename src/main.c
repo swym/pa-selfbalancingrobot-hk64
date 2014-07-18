@@ -19,7 +19,7 @@
 #include "system_controller.h"
 
 /* Tests */
-#include "test/test_motionsensor.h"
+#include "test/test_filters.h"
 
 
 /* *** DECLARATIONS ********************************************************** */
@@ -39,7 +39,7 @@ void main_run(void)
 
 void main_run_tests(void)
 {
-	test_motionsensor_run();
+	test_filters_run();
 }
 
 /**
