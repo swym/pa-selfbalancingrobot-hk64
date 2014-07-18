@@ -132,7 +132,7 @@ void configuration_terminal_state_print_help(void)
 
 	printf("ps,<0 .. %d> - set the result divider of the PID controller\n\n", INT16_MAX);
 
-	printf("mm,<0 .. 1024> - set the position multiplier\n\n");
+//	printf("mm,<0 .. 1024> - set the position multiplier\n\n");
 
 	printf("ma,<0 .. 100>  - set the acceleration_factor of complementary filter\n");
 	printf("mv,<0 .. 100>  - set the angularvelocity_factor of complementary filter\n");
@@ -164,7 +164,7 @@ void configuration_terminal_state_print_config(void)
 	printf("pid.i: %i\n",configuration_storage_get_i_factor());
 	printf("pid.d: %i\n",configuration_storage_get_d_factor());
 	printf("pid.scalingfactor: %u\n",configuration_storage_get_scalingfactor());
-	printf("position.multiplier: %u\n",configuration_storage_get_position_multiplier());
+//	printf("position.multiplier: %u\n",configuration_storage_get_position_multiplier());
 	printf("motionsensor.acceleration_offset.x: %i\n",accel_offset.x);
 	printf("motionsensor.acceleration_offset.y: %i\n",accel_offset.y);
 	printf("motionsensor.acceleration_offset.z: %i\n",accel_offset.z);
@@ -290,14 +290,14 @@ void configuration_terminal_state_set_motionsensor_parameter(void)
 			}
 			break;
 
-		case 'm':
-			if(parse_input2int16(&tmp_int16, 0, 1024)) {
-				configuration_storage_set_position_multiplier(tmp_int16);
-				printf("OK\n");
-			} else {
-				printf("invalid number\n");
-			}
-			break;
+//		case 'm':
+//			if(parse_input2int16(&tmp_int16, 0, 1024)) {
+//				configuration_storage_set_position_multiplier(tmp_int16);
+//				printf("OK\n");
+//			} else {
+//				printf("invalid number\n");
+//			}
+//			break;
 
 		default:
 			printf("invalid value\n");
