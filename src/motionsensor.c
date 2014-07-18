@@ -26,6 +26,7 @@
 #define RAD2DEG100 5729.57
 #define NORMALIZATION_RAD2INT14   10430
 #define NORMALIZATION_AVELO2INT14 0.0057  // == dt * normalization_factor == (4 / 1000) * 1.425
+
 /* *** DECLARATIONS ********************************************************* */
 
 /* * local type and constants    * */
@@ -82,9 +83,9 @@ int16_t motionsensor_get_angle()
 
 	//TODO: HACK: to reduce gyro errors, reset integrated gyro if acceleration of x is 0;
 	//Use a more stable solution
-	if(cur_acceleration.x < 20 && cur_acceleration.x > -20 ) {
-		reset_integrated_gyro_angle_y();
-	}
+//	if(cur_acceleration.x < 20 && cur_acceleration.x > -20 ) {
+//		reset_integrated_gyro_angle_y();
+//	}
 
 	//sensordata fusion with a complementary filter
 	//angle_y = (0.3 * gyro_angle_y) + (0.7 * accel_angle_y); //ok, aber sehr verrauscht
