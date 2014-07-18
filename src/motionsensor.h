@@ -40,7 +40,18 @@ typedef struct {
 extern void motionsensor_init(void);
 extern void motionsensor_set_zero_point(void);
 
-extern int16_t motionsensor_get_position(void);
+/**
+ * Normierung:
+ * Sollwert == 0°
+ * Min: -pi/2 == -90 deg == -1,5707963267949 rad == -16384 int == -2^14
+ * Max: +pi/2 == +90 deg == +1,5707963267949 rad == +16384 int == +2^14
+ *
+ * => Magic numbers:
+ *   - rad to int convertion:  RAD2INT14   == 10430,37835047045352 => 10430
+ *   - integrated_gyro to int: AVELO2INT14 == 1,425 (Nachverfahren: 1,57 rad * r_index<<1: pi/2 = 11500)
+ * @return
+ */
+extern int16_t motionsensor_get_angle(void);
 
 //TODO: make static when working
 extern void motionsensor_get_current_angularvelocity(angularvelocity_t *angularvelocity);

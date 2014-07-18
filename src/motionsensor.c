@@ -18,12 +18,14 @@
 /* * local headers               * */
 //#include "bma020.h"
 #include "mpu9150.h"
-#include "moving_average.h"
+#include "filters.h"
 
 
 
 /* *** DEFINES ************************************************************** */
 #define RAD2DEG100 5729.57
+#define NORMALIZATION_RAD2INT14   10430
+#define NORMALIZATION_AVELO2INT14 0.0057  // == dt * normalization_factor == (4 / 1000) * 1.425
 
 /* *** DECLARATIONS ********************************************************* */
 
@@ -31,9 +33,9 @@
 
 /* * local objects               * */
 typedef struct{
-	moving_average_t x;
-	moving_average_t y;
-	moving_average_t z;
+	weighted_average_t x;
+	weighted_average_t y;
+	weighted_average_t z;
 } average_vector_t;
 
 static acceleration_t acceleration_offset;
@@ -42,11 +44,11 @@ static angularvelocity_t angularvelocity_offset;
 static double position_multiplier;
 
 static average_vector_t average_angularvelocity;		//average vector for using with motionsensor_get_current_angularvelocity(angularvelocity_t *angularvelocity);
-static moving_average_t average_angularvelocity_y;		//single average for using with motionsensor_get_current_angularvelocity_y();
+static weighted_average_t average_angularvelocity_y;		//single average for using with motionsensor_get_current_angularvelocity_y();
 
 average_vector_t average_acceleration;
 
-static int16_t integrated_gyro_angle_y;
+static int16_t integrated_angularvelocity_angle_y;
 
 static double complementary_filter_angularvelocity_factor;
 static double complementary_filter_acceleraton_factor;
@@ -60,7 +62,7 @@ static int16_t motionsensor_get_current_angularvelocity_y(void);
 static inline void reset_integrated_gyro_angle_y();
 
 /* *** FUNCTION DEFINITIONS ************************************************* */
-int16_t motionsensor_get_position()
+int16_t motionsensor_get_angle()
 {
 	acceleration_t cur_acceleration;  //current acceleration
 	int16_t cur_angularvelocity_y;    //current angularvelocity
@@ -70,31 +72,34 @@ int16_t motionsensor_get_position()
 
 	motionsensor_get_current_acceleration(&cur_acceleration);
 	cur_angularvelocity_y = motionsensor_get_current_angularvelocity_y();
+	//cur_angularvelocity_y = mpu9150_read_angularvelocity_y();
 
-	//determine angle using acceleration vectors and atan
-	accel_angle_y = (int16_t)((atan2(cur_acceleration.x, cur_acceleration.z) * RAD2DEG100));
+	//determine angle using acceleration vectors and atan and normalize
+	accel_angle_y = (int16_t)((atan2(cur_acceleration.x, cur_acceleration.z) * NORMALIZATION_RAD2INT14));
+
+	//integrate angular velocity to angle over time (dt = 4 ms) and normalize
+	//integrated_gyro_angle_y += (cur_angularvelocity_y * (4/1000));
+	integrated_angularvelocity_angle_y += cur_angularvelocity_y * NORMALIZATION_AVELO2INT14;
 
 	//TODO: HACK: to reduce gyro errors, reset integrated gyro if acceleration of x is 0;
 	//Use a more stable solution
-	if(cur_acceleration.x == 0) {
-		reset_integrated_gyro_angle_y();
-	}
-
-	//integrate angular velocity to angle over time (dt = 4 ms)
-	integrated_gyro_angle_y += (cur_angularvelocity_y * (4/1000));
+//	if(cur_acceleration.x < 20 && cur_acceleration.x > -20 ) {
+//		reset_integrated_gyro_angle_y();
+//	}
 
 	//sensordata fusion with a complementary filter
 	//angle_y = (0.3 * gyro_angle_y) + (0.7 * accel_angle_y); //ok, aber sehr verrauscht
-	angle_y = (complementary_filter_angularvelocity_factor * integrated_gyro_angle_y) +
+	angle_y = (complementary_filter_angularvelocity_factor * integrated_angularvelocity_angle_y) +
 			  (complementary_filter_acceleraton_factor * accel_angle_y);
 
 	return angle_y;
+
 
 }
 
 static inline void reset_integrated_gyro_angle_y()
 {
-	integrated_gyro_angle_y = 0;
+	integrated_angularvelocity_angle_y = 0;
 }
 
 int16_t motionsensor_get_current_angularvelocity_y(void)
@@ -104,7 +109,7 @@ int16_t motionsensor_get_current_angularvelocity_y(void)
 			angularvelocity_offset.y;
 
 	//determine mean
-	moving_average_simple_put_element(&average_angularvelocity_y, new_angularvelocity_y);
+	filters_weighted_average_put_element(&average_angularvelocity_y, new_angularvelocity_y);
 
 	//return mean
 	return average_angularvelocity_y.mean;
@@ -123,9 +128,9 @@ void motionsensor_get_current_angularvelocity(angularvelocity_t *angularvelocity
 	new_angularvelocity.z += angularvelocity_offset.z;
 
 	//determine mean
-	moving_average_simple_put_element(&average_angularvelocity.x, new_angularvelocity.x);
-	moving_average_simple_put_element(&average_angularvelocity.y, new_angularvelocity.y);
-	moving_average_simple_put_element(&average_angularvelocity.z, new_angularvelocity.z);
+	filters_weighted_average_put_element(&average_angularvelocity.x, new_angularvelocity.x);
+	filters_weighted_average_put_element(&average_angularvelocity.y, new_angularvelocity.y);
+	filters_weighted_average_put_element(&average_angularvelocity.z, new_angularvelocity.z);
 
 	//prepare acceleration struct
 	angularvelocity->x = average_angularvelocity.x.mean;
@@ -144,9 +149,9 @@ void motionsensor_get_current_acceleration(acceleration_t *acceleration)
 	new_acceleration.z += acceleration_offset.z;
 
 	//determine mean
-	moving_average_simple_put_element(&average_acceleration.x, new_acceleration.x);
-	moving_average_simple_put_element(&average_acceleration.y, new_acceleration.y);
-	moving_average_simple_put_element(&average_acceleration.z, new_acceleration.z);
+	filters_weighted_average_put_element(&average_acceleration.x, new_acceleration.x);
+	filters_weighted_average_put_element(&average_acceleration.y, new_acceleration.y);
+	filters_weighted_average_put_element(&average_acceleration.z, new_acceleration.z);
 
 	//prepare acceleration struct
 	acceleration->x = average_acceleration.x.mean;
