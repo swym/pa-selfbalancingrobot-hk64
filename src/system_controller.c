@@ -241,7 +241,7 @@ void system_controller_state_waiting_for_user_interrupt(void)
 			printf(".");
 			parts_of_seconds_counter--;
 		}
-
+		PORT_LED ^= _BV(0);
 		_delay_ms(delay);
 	}
 
@@ -352,11 +352,19 @@ void system_controller_state_run_pid_controller(void)
 			//calculate pid
 			pid_output = pid_Controller(pid_setpoint, current_angle, &pid_data);
 
+
+
 			//limit pid output for motor control
-			if(pid_output > 125) {
-				pid_output = 125;
-			} else if(pid_output < -125) {
-				pid_output = -125;
+			if(pid_output > INT8_MAX) {
+				pid_output = INT8_MAX;
+			} else if(pid_output < INT8_MIN) {
+				pid_output = INT8_MIN;
+			}
+
+			if(pid_output >= 0) {
+				PORT_LED = pid_output;
+			} else {
+				PORT_LED = -pid_output;
 			}
 
 			//prepare new motor speed
