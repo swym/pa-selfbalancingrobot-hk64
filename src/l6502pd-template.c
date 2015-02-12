@@ -12,8 +12,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "uart.h"
-
 // PORT declaration
 #define DELAY_MS		125
 
@@ -226,16 +224,6 @@ void init_motors(void)
 	motor_2.pwm_ocr_ptr = &OCR1C;
 }
 
-
-void init_leds(void)
-{
-	//set LED Pins as output
-	DDR_LED = _BV(LED0) | _BV(LED1) |
-			  _BV(LED2) | _BV(LED3) |
-			  _BV(LED4) | _BV(LED5) |
-			  _BV(LED6) | _BV(LED7);
-}
-
 void init(void)
 {
 	init_leds();
@@ -253,161 +241,6 @@ void init(void)
 
 }
 
-motor_t motor_test;
-
-void test_write_motor_struct(void)
-{
-	//init motor_test
-	motor_test.speed_current = 0xAA;
-	motor_test.pwm_ocr_ptr = &OCR1C;
-	PORT_LED = motor_test.speed_current;
-
-	_delay_ms(1000);
-
-	motor_t * m_ptr;
-	m_ptr = &motor_test;
-
-	*m_ptr->pwm_ocr_ptr = m_ptr->speed_current;
-
-	for(;;) {
-
-		*m_ptr->pwm_ocr_ptr = *m_ptr->pwm_ocr_ptr + 1;
-
-		PORT_LED = *m_ptr->pwm_ocr_ptr;
-
-		_delay_ms(500);
-	}
-}
-
-typedef struct {
-	uint8_t value;
-	volatile uint16_t * reg_ptr;
-} struct_reg_t;
-
-
-void test_write_register_ptr(void)
-{
-	struct_reg_t reg;							//konkretes struct mit daten und ziel_pointer
-	struct_reg_t * struct_ptr;					//pointer auf ein struct
-
-	struct_ptr = &reg;							//init pointer mit adresse des structs
-
-	reg.value = 0x42;							//init wert direkt im struct
-	reg.reg_ptr = &OCR1B;						//stetze pointer für temp-register auf ein konkretes register
-
-	PORT_LED = 0xFF; 							// alle LED an
-	_delay_ms(1000);
-
-		//ENTWEDER
-	//PORT_LED = *reg.reg_ptr; //LEDs = valueof(reg_ptr)	// schreibe aktuellen Wert des temp-registers auf LEDs
-
-		//ODER
-	PORT_LED = *(*struct_ptr).reg_ptr;			// schreibe aktuellen Wert des temp-registers auf LEDs
-
-	_delay_ms(1000);
-
-		//ENTWEDER
-	//*reg.reg_ptr = reg.value;
-	//*(*struct_ptr).reg_ptr = (*struct_ptr).value; //schreibe initial-wert aus struct in temp-register
-
-	*struct_ptr->reg_ptr = (*struct_ptr).value;
-
-
-	PORT_LED = *((*struct_ptr).reg_ptr);		// schreibe aktuellen Wert des temp-registers auf LEDs
-
-
-	for(;;) {
-		//*reg.reg_ptr = *reg.reg_ptr + 1;		// inc temp-register
-
-		*struct_ptr->reg_ptr = *struct_ptr->reg_ptr + 1;
-
-		PORT_LED = *(*struct_ptr).reg_ptr;		// schreibe aktuellen Wert des temp-registers auf LEDs
-		_delay_ms(500);
-	}
-
-	_delay_ms(1000);
-
-//	*reg.reg_ptr = value;
-
-//	uint8_t value = 0xAA;
-//	volatile uint16_t * reg_ptr;
-
-//	reg_ptr = &OCR1A;
-//	*reg_ptr = value;
-//
-//	PORTA = *reg_ptr;
-
-//	for(;;) {
-//		*reg_ptr = *reg_ptr + 1;
-//		PORTA = *reg_ptr;
-//		_delay_ms(500);
-//	}
-}
-
-
-
-void test_update_motor_pwm(motor_t * m, int16_t speed)
-{
-	printf("--START--\n");
-
-	printf("new speed_setpoint: %4d\n", speed);
-	motor_set_speed(m, speed);
-
-	_delay_ms(2000);
-
-	while(m->speed_setpoint != m->speed_current) {
-		motor_update_pwm(m);
-		test_print_motor(m);
-
-		_delay_ms(5);
-	}
-
-	printf("--COMPLETE--\n\n");
-	_delay_ms(2000);
-}
-
-void run_test_motor_ramp(void)
-{
-	printf("--run_test_motor_ramp()--\n");
-
-	test_update_motor_pwm(&motor_1, -255);
-	test_update_motor_pwm(&motor_1, 255);
-	test_update_motor_pwm(&motor_2, 255);
-	test_update_motor_pwm(&motor_2, 0);
-	//test_update_motor_pwm(&motor_1, -100);
-/*
-
-
-	motor_set_speed(&motor_1, 255);
-	test_print_motor(&motor_1);
-	_delay_ms(DELAY_MS);
-
-	motor_set_speed(&motor_1, -255);
-	test_print_motor(&motor_1);
-	_delay_ms(DELAY_MS);
-
-	motor_set_speed(&motor_1, 1000);
-	test_print_motor(&motor_1);
-	_delay_ms(DELAY_MS);
-
-	motor_set_speed(&motor_1, -1000);
-	test_print_motor(&motor_1);
-	_delay_ms(DELAY_MS);
-
-	motor_set_speed(&motor_1, 50);
-	test_print_motor(&motor_1);
-	_delay_ms(DELAY_MS);
-
-	motor_set_speed(&motor_1, -50);
-	test_print_motor(&motor_1);
-	_delay_ms(DELAY_MS);
-
-	motor_set_speed(&motor_1, 0);
-	test_print_motor(&motor_1);
-	_delay_ms(DELAY_MS);
-*/
-}
-
 void run_test_motor_update(void)
 {
 
@@ -419,12 +252,10 @@ void run_test_motor_update(void)
 	motor_set_speed(&motor_2, 255);
 	_delay_ms(2000);
 
-
 	motor_set_speed(&motor_1, 0);
 	motor_set_speed(&motor_2, 0);
 	_delay_ms(2000);
 }
-
 
 
 void run(void)
@@ -434,7 +265,7 @@ void run(void)
     }
 }
 
-int main(void)
+int main_defunct(void)
 {
 	init();
 	run();
