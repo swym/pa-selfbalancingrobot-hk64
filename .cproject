@@ -32,6 +32,9 @@
 								<option id="de.innot.avreclipse.compiler.option.optimize.53846481" name="Optimization Level" superClass="de.innot.avreclipse.compiler.option.optimize" value="de.innot.avreclipse.compiler.optimize.size" valueType="enumerated"/>
 								<option id="de.innot.avreclipse.compiler.option.verbose.1788895501" name="Verbose (-v)" superClass="de.innot.avreclipse.compiler.option.verbose" value="false" valueType="boolean"/>
 								<option id="de.innot.avreclipse.compiler.option.otherflags.1178132548" name="Other flags" superClass="de.innot.avreclipse.compiler.option.otherflags" value="-Wextra" valueType="string"/>
+								<option id="de.innot.avreclipse.compiler.option.undef.640750070" name="Undefine Syms (-U)" superClass="de.innot.avreclipse.compiler.option.undef" valueType="undefDefinedSymbols">
+									<listOptionValue builtIn="false" value="__AVR_ATmega16__"/>
+								</option>
 								<inputType id="de.innot.avreclipse.compiler.winavr.input.17655026" name="C Source Files" superClass="de.innot.avreclipse.compiler.winavr.input"/>
 							</tool>
 							<tool id="de.innot.avreclipse.tool.cppcompiler.app.release.188020781" name="AVR C++ Compiler" superClass="de.innot.avreclipse.tool.cppcompiler.app.release">
@@ -110,9 +113,9 @@
 					</folderInfo>
 					<sourceEntries>
 						<entry excluding="lib|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
-						<entry excluding="test|lib|src|accelerationsensor.c|accelerationsensor.h|configuration_manager.c|configuration_manager.h|_configuration_terminal.c|_configuration_terminal.h|moving_average.c|moving_average.h" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src"/>
-						<entry excluding="rfm12lib/" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/lib"/>
-						<entry excluding="test_acceleration.c|test_acceleration.h|test_bma020.c|test_bma020.h|test_configuration_storage.c|test_configuration_storage.h|test_configuration_terminal.c|test_configuration_terminal.h|test_md25.c|test_md25.h|test_motionsensor.c|test_motionsensor.h|test_motor_control.c|test_motor_control.h|test_twi_master.c|test_twi_master.h" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/test"/>
+						<entry excluding="test|lib|src|bma020.c|bma020.h|md25.c|md25.h|simplex-protocol.c|simplex-protocol.h" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src"/>
+						<entry excluding="rfm12lib/|hamming.c|hamming.h|rfm12_config.h|rfm12.c|rfm12.h" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/lib"/>
+						<entry excluding="test_acceleration.c|test_acceleration.h|test_bma020.c|test_bma020.h|test_configuration_storage.c|test_configuration_storage.h|test_configuration_terminal.c|test_configuration_terminal.h|test_filters.c|test_filters.h|test_md25.c|test_md25.h|test_motionsensor.c|test_motionsensor.h|test_motor_control.c|test_motor_control.h|test_mpu9150.c|test_mpu9150.h|test_twi_master.c|test_twi_master.h" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/test"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
