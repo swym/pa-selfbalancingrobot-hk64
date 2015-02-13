@@ -5,8 +5,8 @@
  *      Author: alexandermertens
  */
 
-#ifndef L6205PD_H_
-#define L6205PD_H_
+#ifndef L6205_H_
+#define L6205_H_
 
 /* *** INCLUDES ************************************************************** */
 
@@ -21,8 +21,7 @@
 typedef struct {
 	int16_t speed_current;
 	int16_t speed_setpoint;
-	uint8_t ramp_acceleration;
-	uint8_t mode;
+	uint8_t acceleration;
 	uint8_t mctrl_in1;
 	uint8_t mctrl_in2;
 	volatile uint16_t * pwm_ocr_ptr;
@@ -34,9 +33,12 @@ typedef uint8_t motor_id_t;
 #define MOTOR_1		0
 #define MOTOR_2		1
 
-/* * external functions          * */
-extern void init_motors(void);
-extern void motor_set_speed(motor_id_t motor, int16_t new_speed);
-extern void motor_update_pwm(void);
+#define L6205_ACCELERATION_MAX		50
+#define L6205_ACCELERATION_DEFAULT  20
 
-#endif /* L6205PD_H_ */
+/* * external functions          * */
+extern void l6205_init(uint8_t acceleration);
+extern void l6205_set_speed(motor_id_t motor, int16_t new_speed);
+extern void l6205_update_pwm(void);
+
+#endif /* L6205_H_ */

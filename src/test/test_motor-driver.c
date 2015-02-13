@@ -16,22 +16,26 @@
 #include <avr/interrupt.h>
 
 /* * local headers               * */
-#include "../l6205pd.h"
 #include "../timer.h"
 #include "../common.h"
+#include "../l6205.h"
 #include "../lib/uart.h"
 
 
 /* *** DEFINES ************************************************************** */
 
+#define TICKS_TO_EVENT 		250
 
 /* *** DECLARATIONS ********************************************************* */
+
+volatile timer_slot_t timer_current_minorslot;
+volatile timer_slot_t timer_current_majorslot;
 
 /* * local type and constants    * */
 
 /* * local objects               * */
-static uint16_t motor_speed_timer;
-static uint8_t led_value;
+static uint16_t tickcnt;
+static uint8_t  event;
 
 /* * local function declarations * */
 void test_motor_driver_init(void);
@@ -42,77 +46,71 @@ void test_motor_driver_init(void);
 
 void test_motor_driver(void)
 {
-	test_motor_driver_init();
+	uint8_t led_value = 0;
 
-	bool set_speed = true;
+	test_motor_driver_init();
 
 	for(;;) {
 
-		if(timer_slot_0) {
+		if(timer_current_minorslot == TIMER_MINORSLOT_0) {
+			timer_current_minorslot = TIMER_MINORSLOT_NONE;
 
-			if(set_speed) {
+			PORTA = 0xFF;
 
-				motor_set_speed(MOTOR_1, 255);
+			l6205_update_pwm();
 
-				set_speed = false;
-			}
+			PORTA = 0;
 		}
 
-			/*
+		if(timer_current_majorslot == TIMER_MAJORSLOT_0) {
+			timer_current_majorslot = TIMER_MAJORSLOT_NONE;
 
-			motor_speed_timer++;
-
-			if(motor_speed_timer == 1) {
-
-
-				printf("step1\n");
-				PORTA = led_value++;
-
-				motor_set_speed(MOTOR_1, 128);
-				motor_set_speed(MOTOR_2, 128);
-			}
-
-			if(motor_speed_timer == 20480) {
-
-				printf("step2\n");
-				PORTA = led_value++;
-
-				motor_set_speed(MOTOR_1, 0);
-				motor_set_speed(MOTOR_2, 0);
-			}
-
-			if(motor_speed_timer == 40960) {
-
-				printf("step3\n");
-				PORTA = led_value++;
-
-				motor_set_speed(MOTOR_1, 255);
-				motor_set_speed(MOTOR_2, 255);
-			}
+			tickcnt++;
+			if(tickcnt >= TICKS_TO_EVENT) {
 
 
-			if(motor_speed_timer > 40960) {
 
+				if(event == 0) {
+					event++;
 
-				motor_speed_timer = 0;
+					l6205_set_speed(MOTOR_1,  -255);
+					l6205_set_speed(MOTOR_2,  -255);
+
+				} else if(event == 1) {
+					event++;
+
+					l6205_set_speed(MOTOR_1, 0);
+					l6205_set_speed(MOTOR_2, 0);
+
+				} else if(event == 2) {
+					event++;
+
+					l6205_set_speed(MOTOR_1,  255);
+					l6205_set_speed(MOTOR_2,  255);
+
+				}else if(event == 3) {
+					event = 0;
+
+					l6205_set_speed(MOTOR_1, 0);
+					l6205_set_speed(MOTOR_2, 0);
+				}
+				tickcnt = 0;
 			}
 
 		}
-
-		*/
-
-		motor_update_pwm();
 	}
 }
 
 void test_motor_driver_init(void)
 {
 	timer_init();
-	init_motors();
+	l6205_init(L6205_ACCELERATION_DEFAULT);
 
 	UART_init(57600);
 
 	DDRA = 0xFF;
+	tickcnt = 0;
+	event = 0;
 
 	sei();
 
