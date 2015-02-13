@@ -37,5 +37,6 @@ typedef uint8_t motor_id_t;
 /* * external functions          * */
 extern void init_motors(void);
 extern void motor_set_speed(motor_id_t motor, int16_t new_speed);
+extern void motor_update_pwm(void);
 
 #endif /* L6205PD_H_ */

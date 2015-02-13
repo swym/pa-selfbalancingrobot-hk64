@@ -42,19 +42,20 @@
 
 #define MOTOR_DEFAULT_RAMP_ACCEL	2
 
-#define MOTOR_SPEED_MIN		(-255)
-#define MOTOR_SPEED_MAX		  255
+#define MOTOR_SPEED_MIN				(-255)
+#define MOTOR_SPEED_MAX				  255
 
 /* * local objects               * */
 static motor_t motor_1;
 static motor_t motor_2;
 
 /* * local function declarations * */
-void init_pwm_timer(void);
-void init_irq_timer(void);
+void motor_update_motor_pwm(motor_t * m);
+
 
 /* *** FUNCTION DEFINITIONS ************************************************* */
 
+/*
 void init_pwm_timer(void)
 {
 	// Phase Correct PWM with Timer1 on PWM3 PB6/OC1B) and PWM4 (PB7/OC1C)
@@ -66,8 +67,8 @@ void init_pwm_timer(void)
 
 	TCCR1B |= _BV(CS10);				// Clock Select: clk/1
 
-	OCR1B   = 0;						// initial compare value
-	OCR1C	= 0;
+	OCR1B   = 128;						// initial compare value
+	OCR1C	= 128;
 }
 
 void init_irq_timer(void)
@@ -82,7 +83,7 @@ void init_irq_timer(void)
 
 	OCR2  = 249;						// Set Output Compare Register value
 }
-
+*/
 
 void motor_set_speed(motor_id_t motor, int16_t new_speed)
 {
@@ -108,7 +109,13 @@ void motor_set_speed(motor_id_t motor, int16_t new_speed)
 	}
 }
 
-void motor_update_pwm(motor_t * m)
+void motor_update_pwm(void)
+{
+	motor_update_motor_pwm(&motor_1);
+	motor_update_motor_pwm(&motor_2);
+}
+
+void motor_update_motor_pwm(motor_t * m)
 {
 	uint16_t speed_diff;
 	uint8_t  ramp_step;
@@ -158,12 +165,8 @@ void motor_update_pwm(motor_t * m)
 
 void init_motors(void)
 {
-	init_pwm_timer();
-	init_irq_timer();
-
 	// set Motor Ctrl Pins as output
 	DDR_MCTRL = _BV(MCTRL_M11) | _BV(MCTRL_M12) | _BV(MCTRL_M21) | _BV(MCTRL_M22);
-	//DDRC = 0xFF;
 
 	// set M1 (PWM3) and M2 (PWM4) as output
 	DDR_MOTOR_PWM = _BV(PWM_M1) | _BV(PWM_M2);
@@ -184,10 +187,3 @@ void init_motors(void)
 	motor_2.mctrl_in2 = MCTRL_M22;
 	motor_2.pwm_ocr_ptr = &OCR1C;
 }
-
-ISR(TIMER2_COMP_vect)
-{
-	motor_update_pwm(&motor_1);
-	motor_update_pwm(&motor_2);
-}
-
