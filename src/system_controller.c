@@ -71,14 +71,14 @@ typedef enum {
 static system_controller_state_t current_state;
 static system_controller_state_t next_state;
 
-static uint8_t wireless_send_buffer[WIRELESS_SEND_BUFFER_MAX_LEN];
-static uint8_t wireless_send_buffer_len = 0;
+//static uint8_t wireless_send_buffer[WIRELESS_SEND_BUFFER_MAX_LEN];
+//static uint8_t wireless_send_buffer_len = 0;
 
 static int16_t current_angle;
 static int16_t pid_output;
 static motor_contol_speed_t new_motor_speed;
-static acceleration_t current_acceleration;
-static acceleration_t current_angularvelocity;
+//static acceleration_t current_acceleration;
+//static acceleration_t current_angularvelocity;
 
 static pidData_t pid_data;
 static int8_t    pid_setpoint;
@@ -96,9 +96,9 @@ static void system_controller_state_run_pid_controller(void);
 
 
 //inline helper functions for sending data
-static inline void wireless_send_acceleration(void);
-static inline void wireless_send_angularvelocity(void);
-static inline void wireless_send_pid(void);
+//static inline void wireless_send_acceleration(void);
+//static inline void wireless_send_angularvelocity(void);
+//static inline void wireless_send_pid(void);
 
 /* *** FUNCTION DEFINITIONS ************************************************** */
 void system_controller_state_machine(void)
@@ -152,7 +152,7 @@ void system_controller_state_init_hardware(void)
 
 	/* **** DO ***** */
 
-	UART_init(56700);						/* Init UART mit 38400 baud */
+	UART_init(56700);						/* Init UART mit 56700 baud */
 	twi_master_init(TWI_TWBR_VALUE_100);	/* Init TWI/I2C Schnittstelle */
 	timer_init();							/* Init Timer */
 
@@ -166,10 +166,10 @@ void system_controller_state_init_hardware(void)
 	printf("init hardware...\n");
 
 	//init rfm12 interface
-	rfm12_init();
+	//rfm12_init();
 
 	//init simplex_protocol
-	simplex_protocol_init();
+	//simplex_protocol_init();
 
 	//init motionsensor
 	motionsensor_init();
@@ -401,7 +401,7 @@ void system_controller_state_run_pid_controller(void)
 
 	next_state = STATE_NULL;
 }
-
+/*
 static inline void wireless_send_acceleration(void)
 {
 	wireless_send_buffer[0] = WIRELESS_TYPE_DATA_ACCELERATION;
@@ -424,7 +424,9 @@ static inline void wireless_send_acceleration(void)
 			wireless_send_buffer_len,
 			wireless_send_buffer);
 }
+*/
 
+/*
 static inline void wireless_send_angularvelocity(void)
 {
 	wireless_send_buffer[0] = WIRELESS_TYPE_DATA_ANGULARVELOCITY;
@@ -448,14 +450,16 @@ static inline void wireless_send_angularvelocity(void)
 			wireless_send_buffer_len,
 			wireless_send_buffer);
 }
+*/
 
+/*
 static inline void wireless_send_pid(void)
 {
 
 
 	//header
 	wireless_send_buffer[0] = WIRELESS_TYPE_DATA_PID;
-/*	uint32_t temp;
+	uint32_t temp;
 
 
 	//position
@@ -472,7 +476,7 @@ static inline void wireless_send_pid(void)
 
 	temp = (uint32_t)(current_position);
 	wireless_send_buffer[4] = (uint8_t)((temp) & 0x000000FF);
-*/
+
 	//position
 	wireless_send_buffer[1] = (uint8_t)(current_angle >> 8);
 	wireless_send_buffer[2] = (uint8_t)(current_angle & 0x00FF);
@@ -487,3 +491,5 @@ static inline void wireless_send_pid(void)
 			wireless_send_buffer_len,
 			wireless_send_buffer);
 }
+
+*/
