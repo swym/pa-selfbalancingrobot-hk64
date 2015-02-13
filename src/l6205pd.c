@@ -40,7 +40,7 @@
 #define PWM_M1			PB6
 #define PWM_M2			PB7
 
-#define MOTOR_DEFAULT_RAMP_ACCEL	2
+#define MOTOR_DEFAULT_RAMP_ACCEL	20
 
 #define MOTOR_SPEED_MIN				(-255)
 #define MOTOR_SPEED_MAX				  255
