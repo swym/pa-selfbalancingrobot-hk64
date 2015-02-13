@@ -196,7 +196,7 @@ void bma020_read_raw_acceleration(acceleration_t* raw_a_vector)
 	temp_data = twi_receive_buffer[2];
 	raw_a_vector->y = (uint16_t)((temp_data & 0xC0));
 	temp_data = twi_receive_buffer[3];
-	raw_a_vector->y = (uint16_t)(raw_a_vector->y | temp_data << 8);
+	raw_a_vector->y = 	 (uint16_t)(raw_a_vector->y | temp_data << 8);
 
 	temp_data = twi_receive_buffer[4];
 	raw_a_vector->z = (uint16_t)((temp_data & 0xC0));
@@ -897,7 +897,7 @@ uint8_t bma020_get_lg_hysterese(void)
  *
  * Condition                            |   Result
  * :----------------------------------: | : ----------------------------------------------------------------------------------------------------------------:
- * HG_threshold criterion_x is true if  | \f$ |acc_x | ³ HG_thres / 255 * range\f$
+ * HG_threshold criterion_x is true if  | \f$ |acc_x | ï¿½ HG_thres / 255 * range\f$
  * HG_threshold interrupt is set if     | \f$ (HG_thres criterion_x OR HG_thres criterion_y OR HG_thres criterion_z) AND interrupt counter = (HG_dur+1)\f$
  * HG_threshold criterion_x is false if | \f$ |acc_x | < (HG_thres - 32*HG_hyst) / 255 * range\f$
  * HG_threshold interrupt is reset if   | \f$ NOT(HG_thres criterion_x OR HG_thres criterion_y OR HG_thres criterion_z)\f$
@@ -1058,7 +1058,7 @@ uint8_t bma020_get_hg_hysterese(void)
 }
 
 /**
- * For the evaluation using Òany motionÓ criterion successive acceleration data
+ * For the evaluation using ï¿½any motionï¿½ criterion successive acceleration data
  * from digital filter output are stored and moving differences for all axes are
  * built. To calculate the difference the acceleration values of all axes at
  * time t0 are compared to values at t0+3/(2*bandwidth). The difference of both
@@ -1509,7 +1509,7 @@ uint8_t bma020_get_customer_reserved_2()
  */
 void bma020_init(void)
 {
-
+	bma020_set_range(2);
 }
 
 

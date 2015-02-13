@@ -17,7 +17,7 @@ extern volatile uint8_t twi_receive_buffer[BUFFER_SIZE];
 extern volatile uint8_t twi_send_buffer[BUFFER_SIZE];
 
 
-extern void twi_master_init();
+extern void twi_master_init(uint8_t speed);
 extern void twi_send_data(uint8_t slave, uint8_t anz_bytes);
 extern void twi_receive_data(uint8_t slave, uint8_t anz_bytes);
 extern void twi_master_set_ready();
@@ -26,3 +26,5 @@ extern uint8_t twi_master_read_register(uint8_t, uint8_t); /*uint8_t slave_addre
 extern void twi_master_write_register(uint8_t, uint8_t, uint8_t); /* uint8_t slave_address, uint8_t register_address, uint8_t value */
 extern bool twi_master_read_register_bit(uint8_t, uint8_t, uint8_t); /* uint8_t slave_address, uint8_t register_address, uint8_t bit */
 extern void twi_master_write_register_bit(uint8_t, uint8_t, uint8_t, bool); /* uint8_t slave_address, uint8_t register_address, uint8_t bit, bool enable */
+
+extern void twi_master_set_speed(uint8_t speed);

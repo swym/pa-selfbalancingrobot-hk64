@@ -17,7 +17,7 @@
 #include "../lib/uart.h"
 #include "../lib/twi_master.h"
 
-#include "../acceleration_t.h"
+#include "../accelerationsensor.h"
 #include "../bma020.h"
 
 /* *** DECLARATIONS ********************************************************** */

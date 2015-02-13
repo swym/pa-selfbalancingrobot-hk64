@@ -1,10 +1,17 @@
 #include "twi_master.h"
 
+#include <avr/io.h>
+
+
+#include "../common.h"
+#include "../timer.h"
+
 
 //----------- Global-Variables ----------//
 volatile uint8_t twi_receive_buffer[BUFFER_SIZE];
 volatile uint8_t twi_send_buffer[BUFFER_SIZE];
 
+volatile uint8_t timer_twi_ready_timeout;
 //----------- Modul-Variables -----------//
 volatile uint8_t transmitter;
 volatile uint8_t rindx;
@@ -17,11 +24,14 @@ volatile uint8_t sla;
 \brief Setup the twi module.
 
 This function sets up the twi module for master operation. Therefore we have to write proper values to the following registers:<p>
-- TWBR      Two Wire Bitrate Register 
-- TWSR      Two Wire Status Register 
-- TWCR      Two Wire Control Register 
+- TWBR      Two Wire Bitrate Register
+- TWSR      Two Wire Status Register
+- TWCR      Two Wire Control Register
 <p>
-TWBR and TWSR are used to configure the bus clock speed. 
+
+FIXME: Diese Annahmen scheinen für einen anderen Prozessor zu gelten.
+
+TWBR and TWSR are used to configure the bus clock speed.
 The TWI specifications allows us to choose between two different clock speed modes: one below 100kHz and one up to 400kHz.<br>
 The following equation shows how to set up the clock speed:<p>
 SCL frequency = CPU clock / 16 + 2 * TWBR * (4 ^ TWPS)<p>
@@ -31,17 +41,38 @@ TWBR = TWI_TWBR_VALUE_100;
 TWSR &= 0b11111100;
 TWSR |= 0x01;
 \endcode<br>
-As we can see in this tiny code fragment, the TWPS value is encoded by the two last bits of the TWSR register. 
+As we can see in this tiny code fragment, the TWPS value is encoded by the two last bits of the TWSR register.
 */
-void twi_master_init()
+void twi_master_init(uint8_t speed)
 {
+	if(speed != TWI_TWBR_VALUE_25 &&
+	   speed != TWI_TWBR_VALUE_100 &&
+	   speed != TWI_TWBR_VALUE_400) {
+		speed = TWI_TWBR_VALUE_100;
+	}
 
-
-	TWBR = TWI_TWBR_VALUE_100;
+	TWBR = speed;			//setze Bitrate
+	/* was zur Hölle?
 	TWSR &= 0b11111100;
 	TWSR |= 0x01;
+	*/
 	TWCR = (1<<TWEN) | (1<<TWEA) | (1<<TWIE);
 
+}
+
+void twi_master_set_speed(uint8_t speed)
+{
+	cli();
+
+	if(speed != TWI_TWBR_VALUE_25 &&
+	   speed != TWI_TWBR_VALUE_100 &&
+	   speed != TWI_TWBR_VALUE_400) {
+		speed = TWI_TWBR_VALUE_100;
+	}
+
+	TWBR = speed;			//setze Bitrate
+
+	sei();
 }
 
 /**
@@ -49,7 +80,7 @@ void twi_master_init()
 \param slave contains the slave adress
 \param anz_bytes contains the amount of bytes that have to be transmitted
 
-The data to be transmitted is stored in the global variable send_buffer. send_buffer[] is an array of uint8_t types. 
+The data to be transmitted is stored in the global variable send_buffer. send_buffer[] is an array of uint8_t types.
 It's size is defined by the constant BUF_SIZE. The declaration of send_buffer is located in the twi_master.h file.
 <p>
 If one wants to transmit data to a slave, he has to write the data to the send_buffer. After calling the send_data() method,
@@ -78,7 +109,7 @@ The program flow within the main method of this master controller is halted unti
 \code
 transmitter = true;
 \endcode
-By setting the variable <b>transmitter</b> to <i>TRUE</i>, the ISR of the master controller can determine wether Master Transmitter 
+By setting the variable <b>transmitter</b> to <i>TRUE</i>, the ISR of the master controller can determine wether Master Transmitter
 or Master Receiver mode is active.
 <p>
 \code
@@ -99,7 +130,7 @@ Here we can see how to manipulate the Two Wire Control Register.
 \n
 TWINT causes the TWI to trigger an interrupt so that the ISR executes.
 \n
-TWSTA cause the TWI to put a <i> start signal </i> on the TWI bus. All attached slave will recognize the 
+TWSTA cause the TWI to put a <i> start signal </i> on the TWI bus. All attached slave will recognize the
 start signal.
 \n
 TWEN enables the TWI.
@@ -114,13 +145,38 @@ has finished.
 */
 void twi_send_data(uint8_t slave, uint8_t anz_bytes)
 {
+	PORT_SCOPE |= _BV(5);
 	ready = false;
 	transmitter = true;
 	sla = slave;
+	PORT_SCOPE &= ~_BV(5);
+
+	PORT_SCOPE |= _BV(6);
 	number_of_bytes = anz_bytes;
 	sindx = 0;
 	TWCR = (1<<TWINT) | (1<<TWSTA) | (1<<TWEN) | (1<<TWIE);
-	while(!ready){}
+	PORT_SCOPE &= ~_BV(6);
+
+	PORT_SCOPE |= _BV(7);
+	/**
+	 * Wait for ready bit.
+	 * HACK: break if timeout runs out.
+	 */
+	//while(!ready){}
+	timer_twi_ready_timeout = TIMER_TWI_READY_TIMEOUT_MS;
+	for(;;) {
+
+		if(ready) {
+			break;
+		}
+
+		if(!timer_twi_ready_timeout) {
+			ready = true;
+			break;
+		}
+	}
+
+	PORT_SCOPE &= ~_BV(7);
 }
 
 /**
@@ -129,7 +185,7 @@ Corresponding to send_data this method receives data the same way.
 \param slave contains the slave adress
 \param anz_bytes contains the amount of bytes that have to be transmitted
 
-A global receive_buffer is used to store data that is received by TWI. 
+A global receive_buffer is used to store data that is received by TWI.
 \code
 extern void receive_data(uint8_t slave, uint8_t anz_bytes)
 {
