@@ -32,6 +32,9 @@
 								<option id="de.innot.avreclipse.compiler.option.optimize.53846481" name="Optimization Level" superClass="de.innot.avreclipse.compiler.option.optimize" value="de.innot.avreclipse.compiler.optimize.size" valueType="enumerated"/>
 								<option id="de.innot.avreclipse.compiler.option.verbose.1788895501" name="Verbose (-v)" superClass="de.innot.avreclipse.compiler.option.verbose" value="false" valueType="boolean"/>
 								<option id="de.innot.avreclipse.compiler.option.otherflags.1178132548" name="Other flags" superClass="de.innot.avreclipse.compiler.option.otherflags" value="-Wextra" valueType="string"/>
+								<option id="de.innot.avreclipse.compiler.option.undef.640750070" superClass="de.innot.avreclipse.compiler.option.undef" valueType="undefDefinedSymbols">
+									<listOptionValue builtIn="false" value="__AVR_ATmega16__"/>
+								</option>
 								<inputType id="de.innot.avreclipse.compiler.winavr.input.17655026" name="C Source Files" superClass="de.innot.avreclipse.compiler.winavr.input"/>
 							</tool>
 							<tool id="de.innot.avreclipse.tool.cppcompiler.app.release.188020781" name="AVR C++ Compiler" superClass="de.innot.avreclipse.tool.cppcompiler.app.release">

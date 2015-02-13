@@ -63,7 +63,6 @@ void timer_init_systemtick(void)
 
 void timer_init_pwm(void)
 {
-
 	TCCR1A |= _BV(WGM10);				// Mode Select: 1 - PWM, Phase Correct; TOP is 0x00FF
 
 	TCCR1A |= _BV(COM1B1);				// Compare Output Mode for PWM3: Set on upcountung
