@@ -27,6 +27,7 @@ static volatile uint8_t timer_slot_counter;
 
 /* * local function declarations * */
 void timer_init_systemtick(void);
+void timer_init_pwm(void);
 
 
 /* *** FUNCTION DEFINITIONS ************************************************* */
@@ -60,8 +61,23 @@ void timer_init_systemtick(void)
 
 }
 
+void timer_init_pwm(void)
+{
+
+	TCCR1A |= _BV(WGM10);				// Mode Select: 1 - PWM, Phase Correct; TOP is 0x00FF
+
+	TCCR1A |= _BV(COM1B1);				// Compare Output Mode for PWM3: Set on upcountung
+	TCCR1A |= _BV(COM1C1);				// Compare Output Mode for PWM4: Set on upcountung
+
+	TCCR1B |= _BV(CS10);				// Clock Select: clk/1
+
+	OCR1B   = 0;						// initial compare value
+	OCR1C	= 0;
+}
+
 void timer_init()
 {
+	timer_init_systemtick();
 	timer_init_pwm();
 }
 
