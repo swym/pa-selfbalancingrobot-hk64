@@ -40,7 +40,8 @@
 
 /* global types and constants */
 // Timer
-
+volatile timer_slot_t timer_current_majorslot;
+volatile timer_slot_t timer_current_minorslot;
 
 /* local type and constants     */
 #define STATE_WAITING_FOR_USER_INTERRUPT_TIMEOUT	5			//Timeout in seconds
@@ -336,8 +337,8 @@ void system_controller_state_run_pid_controller(void)
 		 * - determine pid output
 		 * - limit pid output and prepare as new motor speed
 		 */
-		if(timer_slot_0) {
-			timer_slot_0 = false;
+		if(timer_current_majorslot = TIMER_MAJORSLOT_0) {
+			timer_current_majorslot = TIMER_MAJORSLOT_NONE;
 
 			//read angle
 			current_angle = motionsensor_get_angle();
@@ -367,18 +368,17 @@ void system_controller_state_run_pid_controller(void)
 			motor_control_prepare_new_speed(&new_motor_speed);
 
 
-		} //end time_slot_0
+		} //end TIMER_MAJORSLOT_0
 
 		/*
 		 * - set new motor speed
 		 * - prepare send pid data
 		 */
-		if(timer_slot_1) {
-			PORT_SCOPE = 0x02;
-			timer_slot_1 = false;
+		if(timer_current_majorslot = TIMER_MAJORSLOT_1) {
+			timer_current_majorslot = TIMER_MAJORSLOT_NONE;
 
 			motor_control_set_new_speed();
-		} // end time_slot_1
+		} // end TIMER_MAJORSLOT_1
 	} // end while(true)
 
 
