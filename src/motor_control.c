@@ -9,7 +9,7 @@
 /* *** INCLUDES ************************************************************** */
 #include "motor_control.h"
 
-#include "md25.h"
+#include "l6205.h"
 
 /* *** DECLARATIONS ********************************************************** */
 
@@ -33,7 +33,7 @@ void motor_control_init()
 	new_speed.motor_1 = 0;
 	new_speed.motor_2 = 0;
 
-	md25_init();
+	l6205_init(L6205_ACCELERATION_DEFAULT);
 }
 
 
@@ -54,7 +54,8 @@ void motor_control_prepare_new_speed(motor_contol_speed_t *s)
  */
 void motor_control_set_new_speed()
 {
-	md25_set_speed(new_speed.motor_1, new_speed.motor_2);
+	l6205_set_speed(MOTOR_1, new_speed.motor_1);
+	l6205_set_speed(MOTOR_2, new_speed.motor_2);
 
 	current_speed.motor_1 = new_speed.motor_1;
 	current_speed.motor_2 = new_speed.motor_2;
