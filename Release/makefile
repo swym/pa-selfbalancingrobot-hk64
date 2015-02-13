@@ -35,14 +35,22 @@ endif
 # Add inputs and outputs from these tool invocations to the build variables 
 LSS += \
 pa-einpersonentransportmittel-hk64.lss \
+pa-einpersonentransportmittel-hk64.lss \
+pa-einpersonentransportmittel-hk64.lss \
 
 FLASH_IMAGE += \
+pa-einpersonentransportmittel-hk64.hex \
+pa-einpersonentransportmittel-hk64.hex \
 pa-einpersonentransportmittel-hk64.hex \
 
 EEPROM_IMAGE += \
 pa-einpersonentransportmittel-hk64.eep \
+pa-einpersonentransportmittel-hk64.eep \
+pa-einpersonentransportmittel-hk64.eep \
 
 SIZEDUMMY += \
+sizedummy \
+sizedummy \
 sizedummy \
 
 
@@ -65,7 +73,7 @@ pa-einpersonentransportmittel-hk64.lss: pa-einpersonentransportmittel-hk64.elf
 
 pa-einpersonentransportmittel-hk64.hex: pa-einpersonentransportmittel-hk64.elf
 	@echo 'Create Flash image (ihex format)'
-	-avr-objcopy -R .eeprom -O ihex pa-einpersonentransportmittel-hk64.elf  "pa-einpersonentransportmittel-hk64.hex"
+	-avr-objcopy -R .eeprom -R .fuse -R .lock -R .signature -O ihex pa-einpersonentransportmittel-hk64.elf  "pa-einpersonentransportmittel-hk64.hex"
 	@echo 'Finished building: $@'
 	@echo ' '
 

@@ -14,11 +14,11 @@
 #define BMA020_H_
 
 /* *** INCLUDES ************************************************************** */
-/* system headers              */ 
+/* system headers              */
 #include <stdbool.h>
 
 /* local headers               */
-#include "accelerationsensor.h"
+#include "motionsensor.h"
 
 
 /* *** DECLARATIONS ********************************************************** */

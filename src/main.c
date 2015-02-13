@@ -19,7 +19,8 @@
 #include "system_controller.h"
 
 /* Tests */
-#include "test/test_motionsensor.h"
+//#include "test/test_filters.h"
+#include "test/test_motor-driver.h"
 
 
 /* *** DECLARATIONS ********************************************************** */
@@ -39,7 +40,8 @@ void main_run(void)
 
 void main_run_tests(void)
 {
-	test_motionsensor_run();
+	//test_filters_run();
+	test_motor_driver();
 }
 
 /**
@@ -48,9 +50,9 @@ void main_run_tests(void)
  */
 int main(void)
 {
-//	main_run_tests();
+	main_run_tests();
 
-	main_run();
+//	main_run();
 
 	return 0;
 }

@@ -44,7 +44,7 @@ typedef enum {
 	STATE_PRINT_HELP,
 	STATE_PRINT_CONFIG,
 	STATE_SET_PID_PARAMETER,
-	STATE_SET_MOTIONSENSOR_PARAMETER,
+	STATE_SET_COMPLEMENTARY_FILTER_PARAMETER,
 	STATE_SET_OFFSET,
 	STATE_SAVE_CONFIG,
 	STATE_LIVE_DATA,
@@ -63,7 +63,7 @@ static void configuration_terminal_state_read_input(void);
 static void configuration_terminal_state_print_help(void);
 static void configuration_terminal_state_print_config(void);
 static void configuration_terminal_state_set_pid_parameter(void);
-static void configuration_terminal_state_set_motionsensor_parameter(void);
+static void configuration_terminal_state_set_complementary_filter_parameter(void);
 static void configuration_terminal_state_set_offset(void);
 static void configuration_terminal_state_save_configuration(void);
 static void configuration_terminal_state_live_data(void);
@@ -97,8 +97,8 @@ void configuration_terminal_state_machine(void)
 				configuration_terminal_state_set_pid_parameter();
 			break;
 
-			case STATE_SET_MOTIONSENSOR_PARAMETER:
-				configuration_terminal_state_set_motionsensor_parameter();
+			case STATE_SET_COMPLEMENTARY_FILTER_PARAMETER:
+				configuration_terminal_state_set_complementary_filter_parameter();
 			break;
 
 			case STATE_LIVE_DATA:
@@ -132,10 +132,10 @@ void configuration_terminal_state_print_help(void)
 
 	printf("ps,<0 .. %d> - set the result divider of the PID controller\n\n", INT16_MAX);
 
-	printf("mm,<0 .. 1024> - set the position multiplier\n\n");
+//	printf("mm,<0 .. 1024> - set the position multiplier\n\n");
 
-	printf("ma,<0 .. 100>  - set the acceleration_factor of complementary filter\n");
-	printf("mv,<0 .. 100>  - set the angularvelocity_factor of complementary filter\n");
+	printf("ca,<0 .. 100>  - set the acceleration_factor of complementary filter\n");
+	printf("cv,<0 .. 100>  - set the angularvelocity_factor of complementary filter\n");
 	printf("                 [!] Sum of ca and cv must be 100 [!]\n\n");
 
 	printf("z - set new offset for acceleration and angularvelocity\n\n");
@@ -164,15 +164,15 @@ void configuration_terminal_state_print_config(void)
 	printf("pid.i: %i\n",configuration_storage_get_i_factor());
 	printf("pid.d: %i\n",configuration_storage_get_d_factor());
 	printf("pid.scalingfactor: %u\n",configuration_storage_get_scalingfactor());
-	printf("position.multiplier: %u\n",configuration_storage_get_position_multiplier());
+//	printf("position.multiplier: %u\n",configuration_storage_get_position_multiplier());
+	printf("complementary_filter.angularvelocity_factor: %i\n",(int16_t)(configuration_storage_get_complementary_filter_angularvelocity_factor() * 100.0));
+	printf("complementary_filter.acceleration_factor: %i\n",(int16_t)(configuration_storage_get_complementary_filter_acceleraton_factor() * 100.0));
 	printf("motionsensor.acceleration_offset.x: %i\n",accel_offset.x);
 	printf("motionsensor.acceleration_offset.y: %i\n",accel_offset.y);
 	printf("motionsensor.acceleration_offset.z: %i\n",accel_offset.z);
 	printf("motionsensor.angularvelocity_offset.x: %i\n",angvelo_offset.x);
 	printf("motionsensor.angularvelocity_offset.y: %i\n",angvelo_offset.y);
 	printf("motionsensor.angularvelocity_offset.z: %i\n",angvelo_offset.z);
-	printf("complementary_filter.angularvelocity_factor: %i\n",(int16_t)(configuration_storage_get_complementary_filter_angularvelocity_factor() * 100.0));
-	printf("complementary_filter.acceleration_factor: %i\n",(int16_t)(configuration_storage_get_complementary_filter_acceleraton_factor() * 100.0));
 	printf("enter '?' for help\n");
 
 
@@ -200,8 +200,8 @@ void configuration_terminal_state_read_input(void)
 		case 'p':
 			next_state = STATE_SET_PID_PARAMETER;
 			break;
-		case 'm':
-			next_state = STATE_SET_MOTIONSENSOR_PARAMETER;
+		case 'c':
+			next_state = STATE_SET_COMPLEMENTARY_FILTER_PARAMETER;
 			break;
 		case 'z':
 			next_state = STATE_SET_OFFSET;
@@ -264,7 +264,7 @@ void configuration_terminal_state_set_pid_parameter(void)
 	next_state = STATE_READ_INPUT;
 }
 
-void configuration_terminal_state_set_motionsensor_parameter(void)
+void configuration_terminal_state_set_complementary_filter_parameter(void)
 {
 	int16_t tmp_int16 = 0;
 	double tmp_double = 0.0;
@@ -290,14 +290,14 @@ void configuration_terminal_state_set_motionsensor_parameter(void)
 			}
 			break;
 
-		case 'm':
-			if(parse_input2int16(&tmp_int16, 0, 1024)) {
-				configuration_storage_set_position_multiplier(tmp_int16);
-				printf("OK\n");
-			} else {
-				printf("invalid number\n");
-			}
-			break;
+//		case 'm':
+//			if(parse_input2int16(&tmp_int16, 0, 1024)) {
+//				configuration_storage_set_position_multiplier(tmp_int16);
+//				printf("OK\n");
+//			} else {
+//				printf("invalid number\n");
+//			}
+//			break;
 
 		default:
 			printf("invalid value\n");
