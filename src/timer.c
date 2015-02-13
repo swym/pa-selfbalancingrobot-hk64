@@ -1,37 +1,36 @@
 /*
  * timer.c
  *
- *  Created on: 25.11.2013
+ *  Created on: Feb 13, 2015
  *      Author: alexandermertens
  */
 
 
+/* *** INCLUDES ************************************************************* */
 #include "timer.h"
 
+/* * system headers              * */
 #include <avr/interrupt.h>
 
+/* * local headers               * */
 
-//global Data
+
+/* *** DEFINES ************************************************************** */
+
+
+/* *** DECLARATIONS ********************************************************* */
+
+/* * local type and constants    * */
+
+/* * local objects               * */
 static volatile uint8_t timer_slot_counter;
 
+/* * local function declarations * */
+void timer_init_systemtick(void);
 
 
-/*
-	Timer0 wird auf eine Periodenl�nge von T = 4 ms einstellt
-
-	F_OC0 = 250
-
-	OCR0    = ?
-
-	F_OC0   =    (F_CPU) / (2 * Prescaler * (1 + OCR0))
-	OCR0    =   ((F_CPU) / (2 * Prescaler * F_OC0)) - 1
-	OCR0    =  (16000000 / (2 * 256 * 250)) - 1
-	OCR0    =  124
-
-	Vgl.:	Atmel-2490-8-bit-AVR-Microcontroller-ATmega64-L_datasheet.pdf
-			Seite 125
-*/
-void timer_init()
+/* *** FUNCTION DEFINITIONS ************************************************* */
+void timer_init_systemtick(void)
 {
 
 	timer_slot_0 = false;
@@ -61,6 +60,10 @@ void timer_init()
 
 }
 
+void timer_init()
+{
+	timer_init_pwm();
+}
 
 ISR(TIMER0_COMP_vect)
 {
@@ -80,6 +83,4 @@ ISR(TIMER0_COMP_vect)
 	}
 
 	timer_twi_ready_timeout--;
-
-
 }
