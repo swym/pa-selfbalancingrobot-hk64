@@ -16,9 +16,9 @@
 #include <avr/interrupt.h>
 
 /* * local headers               * */
-#include "../l6205pd.h"
 #include "../timer.h"
 #include "../common.h"
+#include "../l6205.h"
 #include "../lib/uart.h"
 
 
@@ -57,7 +57,7 @@ void test_motor_driver(void)
 
 			PORTA = 0xFF;
 
-			motor_update_pwm();
+			l6205_update_pwm();
 
 			PORTA = 0;
 		}
@@ -73,26 +73,26 @@ void test_motor_driver(void)
 				if(event == 0) {
 					event++;
 
-					motor_set_speed(MOTOR_1,  255);
-					motor_set_speed(MOTOR_2, -255);
+					l6205_set_speed(MOTOR_1,  -255);
+					l6205_set_speed(MOTOR_2,  -255);
 
 				} else if(event == 1) {
 					event++;
 
-					motor_set_speed(MOTOR_1, 0);
-					motor_set_speed(MOTOR_2, 0);
+					l6205_set_speed(MOTOR_1, 0);
+					l6205_set_speed(MOTOR_2, 0);
 
 				} else if(event == 2) {
 					event++;
 
-					motor_set_speed(MOTOR_1, -255);
-					motor_set_speed(MOTOR_2,  255);
+					l6205_set_speed(MOTOR_1,  255);
+					l6205_set_speed(MOTOR_2,  255);
 
 				}else if(event == 3) {
 					event = 0;
 
-					motor_set_speed(MOTOR_1, 0);
-					motor_set_speed(MOTOR_2, 0);
+					l6205_set_speed(MOTOR_1, 0);
+					l6205_set_speed(MOTOR_2, 0);
 				}
 				tickcnt = 0;
 			}
@@ -104,7 +104,7 @@ void test_motor_driver(void)
 void test_motor_driver_init(void)
 {
 	timer_init();
-	init_motors();
+	l6205_init(L6205_ACCELERATION_DEFAULT);
 
 	UART_init(57600);
 
