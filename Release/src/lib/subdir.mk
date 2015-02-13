@@ -4,20 +4,14 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../src/lib/hamming.c \
-../src/lib/rfm12.c \
 ../src/lib/twi_master.c \
 ../src/lib/uart.c 
 
 OBJS += \
-./src/lib/hamming.o \
-./src/lib/rfm12.o \
 ./src/lib/twi_master.o \
 ./src/lib/uart.o 
 
 C_DEPS += \
-./src/lib/hamming.d \
-./src/lib/rfm12.d \
 ./src/lib/twi_master.d \
 ./src/lib/uart.d 
 
