@@ -11,7 +11,7 @@
 /* *** INCLUDES ************************************************************** */
 
 /* * system headers              * */
-#include <stdlib.h>
+#include <stdint.h>
 #include <stdbool.h>
 
 /* * local headers               * */
@@ -22,11 +22,19 @@
 #define TIMER_SLOT_COUNTER_MAX		4 // (Intervalll�nge = 20 ms / IRQ-Zeit = 4 ms)
 #define TIMER_TWI_READY_TIMEOUT_MS	2
 
+#define TIMER_MAJORSLOT_NONE		0
+#define TIMER_MAJORSLOT_0			1
+#define TIMER_MAJORSLOT_1			2
+
+#define TIMER_MINORSLOT_NONE		0
+#define TIMER_MINORSLOT_0			1
+
+typedef uint8_t timer_slot_t;
+
 /* * external objects            * */
-extern volatile bool timer_slot_0;
-extern volatile bool timer_slot_1;
-extern volatile bool timer_slot_2;
-extern volatile bool timer_slot_3;
+extern volatile timer_slot_t timer_current_majorslot;
+extern volatile timer_slot_t timer_current_minorslot;
+
 extern volatile uint8_t timer_twi_ready_timeout;
 
 /* * external functions          * */
