@@ -40,9 +40,6 @@
 
 /* global types and constants */
 // Timer
-volatile bool timer_slot_0;
-volatile bool timer_slot_1;
-
 
 
 /* local type and constants     */
@@ -50,11 +47,11 @@ volatile bool timer_slot_1;
 #define STATE_WAITING_FOR_USER_INTERRUPT_PARTS   	4
 
 //Datatypes iterate higher nibble - lower nibble for sec-number
-#define WIRELESS_TYPE_DATA_PID				0x80
-#define WIRELESS_TYPE_DATA_ACCELERATION		0x90
-#define WIRELESS_TYPE_DATA_ANGULARVELOCITY	0xA0
+//#define WIRELESS_TYPE_DATA_PID				0x80
+//#define WIRELESS_TYPE_DATA_ACCELERATION		0x90
+//#define WIRELESS_TYPE_DATA_ANGULARVELOCITY	0xA0
 
-#define WIRELESS_SEND_BUFFER_MAX_LEN		10
+//#define WIRELESS_SEND_BUFFER_MAX_LEN		10
 
 typedef enum {
 	STATE_INIT_HARDWARE,
@@ -77,6 +74,7 @@ static system_controller_state_t next_state;
 static int16_t current_angle;
 static int16_t pid_output;
 static motor_contol_speed_t new_motor_speed;
+
 //static acceleration_t current_acceleration;
 //static acceleration_t current_angularvelocity;
 
@@ -153,7 +151,7 @@ void system_controller_state_init_hardware(void)
 	/* **** DO ***** */
 
 	UART_init(56700);						/* Init UART mit 56700 baud */
-	twi_master_init(TWI_TWBR_VALUE_100);	/* Init TWI/I2C Schnittstelle */
+	twi_master_init(TWI_TWBR_VALUE_400);	/* Init TWI/I2C Schnittstelle */
 	timer_init();							/* Init Timer */
 
 	DDR_LED = 0xFF;							/* Set LED port as output */
@@ -330,10 +328,6 @@ void system_controller_state_run_pid_controller(void)
 
 	/* **** DO ***** */
 
-	twi_master_set_speed(TWI_TWBR_VALUE_400);		//Set TWI speed to 400 khz for reading sensor
-
-	PORT_LED = 0x00;
-	PORT_SCOPE = 0x00;
 
 	while(true) {
 
@@ -343,7 +337,6 @@ void system_controller_state_run_pid_controller(void)
 		 * - limit pid output and prepare as new motor speed
 		 */
 		if(timer_slot_0) {
-			PORT_SCOPE = 0x01;
 			timer_slot_0 = false;
 
 			//read angle
@@ -373,9 +366,7 @@ void system_controller_state_run_pid_controller(void)
 			new_motor_speed.motor_2 = -pid_output;
 			motor_control_prepare_new_speed(&new_motor_speed);
 
-			twi_master_set_speed(TWI_TWBR_VALUE_100);	//Set TWI speed to 100 khz for setting motor speed in next time slot
 
-			PORT_SCOPE = 0x00;
 		} //end time_slot_0
 
 		/*
@@ -387,12 +378,6 @@ void system_controller_state_run_pid_controller(void)
 			timer_slot_1 = false;
 
 			motor_control_set_new_speed();
-
-			twi_master_set_speed(TWI_TWBR_VALUE_400);	//Set TWI speed to 400 khz for reading sensor in next time slot
-
-			//wireless_send_pid();
-			//simplex_protocol_tick();
-			PORT_SCOPE = 0x00;
 		} // end time_slot_1
 	} // end while(true)
 
