@@ -132,7 +132,7 @@ void configuration_terminal_state_print_help(void)
 
 	printf("ps,<0 .. %d> - set the result divider of the PID controller\n\n", INT16_MAX);
 
-//	printf("mm,<0 .. 1024> - set the position multiplier\n\n");
+	printf("mm,<0 .. %d> - set the position multiplier\n\n", INT16_MAX);
 
 	printf("ca,<0 .. 100>  - set the acceleration_factor of complementary filter\n");
 	printf("cv,<0 .. 100>  - set the angularvelocity_factor of complementary filter\n");
@@ -159,12 +159,11 @@ void configuration_terminal_state_print_config(void)
 	angularvelocity_t angvelo_offset;
 	configuration_storage_get_angularvelocity_offset(&angvelo_offset);
 
-
 	printf("pid.p: %i\n",configuration_storage_get_p_factor());
 	printf("pid.i: %i\n",configuration_storage_get_i_factor());
 	printf("pid.d: %i\n",configuration_storage_get_d_factor());
 	printf("pid.scalingfactor: %u\n",configuration_storage_get_scalingfactor());
-//	printf("position.multiplier: %u\n",configuration_storage_get_position_multiplier());
+	printf("position.scalinngfactor: %u\n",configuration_storage_get_position_multiplier());
 	printf("complementary_filter.angularvelocity_factor: %i\n",(int16_t)(configuration_storage_get_complementary_filter_angularvelocity_factor() * 100.0));
 	printf("complementary_filter.acceleration_factor: %i\n",(int16_t)(configuration_storage_get_complementary_filter_acceleraton_factor() * 100.0));
 	printf("motionsensor.acceleration_offset.x: %i\n",accel_offset.x);
@@ -290,14 +289,14 @@ void configuration_terminal_state_set_complementary_filter_parameter(void)
 			}
 			break;
 
-//		case 'm':
-//			if(parse_input2int16(&tmp_int16, 0, 1024)) {
-//				configuration_storage_set_position_multiplier(tmp_int16);
-//				printf("OK\n");
-//			} else {
-//				printf("invalid number\n");
-//			}
-//			break;
+		case 's':
+			if(parse_input2int16(&tmp_int16, 0, INT16_MAX)) {
+				configuration_storage_set_position_multiplier(tmp_int16);
+				printf("OK\n");
+			} else {
+				printf("invalid number\n");
+			}
+			break;
 
 		default:
 			printf("invalid value\n");
@@ -311,16 +310,46 @@ void configuration_terminal_state_set_offset(void)
 {
 	acceleration_t acceleration_offset;
 	angularvelocity_t angularvelocity_offset;
+	uint8_t rounds = 5;
 
 	//Perform calibration
-	motionsensor_set_zero_point();
 
-	//Read and save the offset from the sensor
-	motionsensor_get_acceleration_offset(&acceleration_offset);
-	configuration_storage_set_acceleration_offset(&acceleration_offset);
+	switch (input_buffer[INPUT_BUFFER_VALUE]) {
+		case 'a':
+			printf("acceleration calibration - place robot on stands\n");
+			_delay_ms(2000);
+			printf("Start calibration...\n");
 
-	motionsensor_get_angularvelocity_offset(&angularvelocity_offset);
-	configuration_storage_set_angularvelocity_offset(&angularvelocity_offset);
+			for(;rounds > 0;rounds--) {
+				printf("%d rounds to go...\n", rounds);
+				motionsensor_acceleration_set_zero_point();
+			}
+
+			//Read and save the offset from the sensor
+			motionsensor_get_acceleration_offset(&acceleration_offset);
+			configuration_storage_set_acceleration_offset(&acceleration_offset);
+
+			break;
+
+		case 'v':
+			printf("angularvelocity calibration - lay robot on table\n");
+			_delay_ms(2000);
+			printf("Start calibration...\n");
+
+			for(;rounds > 0;rounds--) {
+				printf("%d rounds to go...\n", rounds);
+				motionsensor_angularvelocity_set_zero_point();
+			}
+
+
+			motionsensor_get_angularvelocity_offset(&angularvelocity_offset);
+			configuration_storage_set_angularvelocity_offset(&angularvelocity_offset);
+
+			break;
+		default:
+			printf("invalid input\n");
+			break;
+	}
 
 	next_state = STATE_READ_INPUT;
 }
