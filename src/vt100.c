@@ -4,7 +4,7 @@
  *  Created on: Dec 5, 2013
  *      Author: alexandermertens
  *
- *      †bersicht gŠngiger VT100 Befehle
+ *      ï¿½bersicht gï¿½ngiger VT100 Befehle
  *      http://www-user.tu-chemnitz.de/~heha/hs/terminal/terminal.htm
  *      http://ascii-table.com/ansi-escape-sequences-vt-100.php
  *      http://www.avrfreaks.net/index.php?name=PNphpBB2&file=printview&t=80382&start=0
@@ -62,6 +62,8 @@ void vt100_clear_all(void)
 	vt100_clear_screen();
 	vt100_set_cursor_top_left();
 	vt100_clear_input_buffer();
+	printf("\n");
+	printf("\n");
 }
 
 void vt100_set_cursor_top_left(void)
