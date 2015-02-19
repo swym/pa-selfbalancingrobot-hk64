@@ -21,8 +21,8 @@
 
 /* external type and constants */
 typedef struct {
-	int8_t motor_1;
-	int8_t motor_2;
+	int16_t motor_1;
+	int16_t motor_2;
 } motor_contol_speed_t;
 
 
@@ -32,7 +32,9 @@ typedef struct {
 extern void motor_control_init(void);
 
 extern void motor_control_prepare_new_speed(motor_contol_speed_t *); /* motor_contol_speed_t *s */
-extern void motor_control_set_new_speed();
+extern void motor_control_set_new_speed(void);
+//extern void motor_control_update_pwm(void);
+
 
 extern void motor_control_get_current_speed(motor_contol_speed_t *); /* motor_contol_speed_t *s */
 extern void motor_control_get_new_speed(motor_contol_speed_t *); /* motor_contol_speed_t *s */

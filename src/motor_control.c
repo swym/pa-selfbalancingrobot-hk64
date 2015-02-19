@@ -80,3 +80,11 @@ void motor_control_get_new_speed(motor_contol_speed_t *s)
 	s->motor_1 = new_speed.motor_1;
 	s->motor_2 = new_speed.motor_2;
 }
+
+/**
+ * Calls the pwm update method
+ */
+//void motor_control_update_pwm(void)
+//{
+//	//l6205_update_pwm();
+//}
