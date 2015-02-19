@@ -15,6 +15,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include <avr/io.h>
+
 #include <util/delay.h>
 
 #include "lib/uart.h"
@@ -30,7 +32,7 @@
 #include "motor_control.h"
 #include "pid.h"
 #include "timer.h"
-#include "common.h"
+#include "leds.h"
 
 
 /* *** DECLARATIONS ********************************************************** */
@@ -151,18 +153,16 @@ void system_controller_state_init_hardware(void)
 
 	/* **** DO ***** */
 
-	UART_init(56700);						/* Init UART mit 56700 baud */
+	//UART_init(112500);						/* Init UART mit 112500 baud */
+	UART_init();
 	twi_master_init(TWI_TWBR_VALUE_400);	/* Init TWI/I2C Schnittstelle */
 	timer_init();							/* Init Timer */
-
-	DDR_LED = 0xFF;							/* Set LED port as output */
-	DDR_SCOPE = 0xFF;						/* set scope port as output */
+	leds_init();
 
 	sei();
 
 	vt100_clear_all();
-
-	printf("init hardware...\n");
+	printf("basic hardware inited...\n");
 
 	//init rfm12 interface
 	//rfm12_init();
@@ -170,10 +170,13 @@ void system_controller_state_init_hardware(void)
 	//init simplex_protocol
 	//simplex_protocol_init();
 
+
 	//init motionsensor
+	printf("init motionsensor...\n");
 	motionsensor_init();
 
 	//init motor controller
+	printf("init motor control...\n");
 	motor_control_init();
 
 
@@ -240,7 +243,7 @@ void system_controller_state_waiting_for_user_interrupt(void)
 			printf(".");
 			parts_of_seconds_counter--;
 		}
-		PORT_LED ^= _BV(0);
+		PORT_LEDS ^= _BV(LED0);
 		_delay_ms(delay);
 	}
 
@@ -295,7 +298,7 @@ void system_controller_state_init_pid_controller(void)
 			 configuration_storage_get_scalingfactor(),
 			 &pid_data);
 
-	//set set_point
+	//set setpoint
 	pid_setpoint = 0;
 
 	//restore position multiplier
@@ -330,6 +333,13 @@ void system_controller_state_run_pid_controller(void)
 	/* **** DO ***** */
 
 
+	uint8_t led = 0;
+
+	uint8_t sensordata[5];
+
+	int i;
+
+
 	while(true) {
 
 		/*
@@ -337,35 +347,53 @@ void system_controller_state_run_pid_controller(void)
 		 * - determine pid output
 		 * - limit pid output and prepare as new motor speed
 		 */
-		if(timer_current_majorslot = TIMER_MAJORSLOT_0) {
+		if(timer_current_majorslot == TIMER_MAJORSLOT_0) {
 			timer_current_majorslot = TIMER_MAJORSLOT_NONE;
 
+			leds_inc();
+
 			//read angle
+
+			PORT_LEDS |= _BV(LED6);
 			current_angle = motionsensor_get_angle();
+			PORT_LEDS&= ~_BV(LED6);
 
 			//calculate pid
+
+			PORT_LEDS |= _BV(LED5);
 			pid_output = pid_Controller(pid_setpoint, current_angle, &pid_data);
+			PORT_LEDS&= ~_BV(LED5);
+
+//			PORT_LEDS &= ~_BV(LED6);
+//			printf("#%d:%d\n",current_angle, pid_output);
+//			PORT_LEDS |= _BV(LED6);
 
 
 
 			//limit pid output for motor control
-			if(pid_output > INT8_MAX) {
-				pid_output = INT8_MAX;
-			} else if(pid_output < INT8_MIN) {
-				pid_output = INT8_MIN;
+			/*
+			if(pid_output > 255) {
+				PORT_LED |= _BV(7);
+				pid_output = 255;
+			} else if(pid_output < -255) {
+				pid_output = -255;
+				PORT_LED |= _BV(6);
 			}
+			*/
 
-			if(pid_output >= 0) {
-				PORT_LED = pid_output;
-			} else {
-				PORT_LED = -pid_output;
-			}
+			//display on LEDs
+//			if(pid_output >= 0) {
+//				PORT_LED = pid_output;
+//			} else {
+//				PORT_LED = -pid_output;
+//			}
 
 			//prepare new motor speed
-			//TODO: PID Outpxut shouldn't inverted. something wrong named in mpu9150 module?
-			new_motor_speed.motor_1 = -pid_output;
-			new_motor_speed.motor_2 = -pid_output;
+			PORT_LEDS |= _BV(LED4);
+			new_motor_speed.motor_1 = pid_output;
+			new_motor_speed.motor_2 = pid_output;
 			motor_control_prepare_new_speed(&new_motor_speed);
+			PORT_LEDS&= ~_BV(LED4);
 
 
 		} //end TIMER_MAJORSLOT_0
@@ -374,11 +402,13 @@ void system_controller_state_run_pid_controller(void)
 		 * - set new motor speed
 		 * - prepare send pid data
 		 */
-		if(timer_current_majorslot = TIMER_MAJORSLOT_1) {
+		if(timer_current_majorslot == TIMER_MAJORSLOT_1) {
 			timer_current_majorslot = TIMER_MAJORSLOT_NONE;
-
+			PORT_LEDS |= _BV(LED3);
 			motor_control_set_new_speed();
+			PORT_LEDS&= ~_BV(LED3);
 		} // end TIMER_MAJORSLOT_1
+
 	} // end while(true)
 
 
