@@ -70,6 +70,12 @@ void filters_weighted_average_put_element(weighted_average_t *average, int16_t v
 	//devide sum
 	average->mean = elements_sum >> weighted_average_devisor;
 }
+
+void filters_smooth_put_element(smooth_t * average, int16_t value)
+{
+	average->smoothed = ((value - average->smoothed) / average->factor) + average->smoothed;
+}
+
 /*
 	for(i = 0;i < WEIGHTED_AVERAGE_ELEMENT_COUNT - 1;i++) {
 		elements_sum += average->elements[i] * weighted_average_weights[i+1];

@@ -35,10 +35,17 @@ typedef struct {
 	int16_t mean;								//sum of all elements and their weights
 } weighted_average_t;
 
+typedef struct {
+	int16_t	smoothed;
+	uint8_t factor;
+} smooth_t;
+
 /* * external objects            * */
 
 /* * external functions          * */
+
 void filters_moving_average_put_element(moving_average_t *average, int16_t value); /* moving_average_t *mean, int16_t value */
 void filters_weighted_average_put_element(weighted_average_t *average, int16_t value); /* moving_average_t *mean, int16_t value */
+void filters_smooth_put_element(smooth_t * average, int16_t value);
 
 #endif /* FILTERS_H_ */
