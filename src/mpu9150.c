@@ -156,7 +156,7 @@ uint8_t mpu9150_get_who_am_i(void)
 //	return return_value;
 //}
 
-void mpu9150_read_angularvelocity(angularvelocity_t* angularvelocity)
+void mpu9150_read_angularvelocity(mpu9150_angularvelocity_vector_t * angularvelocity)
 {
 	uint8_t temp_data;
 
@@ -182,10 +182,10 @@ void mpu9150_read_angularvelocity(angularvelocity_t* angularvelocity)
 	angularvelocity->z = (uint16_t)(angularvelocity->z | temp_data);
 }
 
-int16_t mpu9150_read_angularvelocity_x(void)
+mpu9150_angularvelocity mpu9150_read_angularvelocity_x(void)
 {
 	uint8_t temp_data;
-	int16_t rotation_x;
+	mpu9150_angularvelocity rotation_x;
 
 	twi_send_buffer[0] = MPU9150_REGISTER_GYRO_XOUT_H;
 	twi_master_set_ready();
@@ -201,10 +201,10 @@ int16_t mpu9150_read_angularvelocity_x(void)
 	return rotation_x;
 }
 
-int16_t mpu9150_read_angularvelocity_y(void)
+mpu9150_angularvelocity mpu9150_read_angularvelocity_y(void)
 {
 	uint8_t temp_data;
-	int16_t rotation_y;
+	mpu9150_angularvelocity rotation_y;
 
 	twi_send_buffer[0] = MPU9150_REGISTER_GYRO_YOUT_H;
 	twi_master_set_ready();
@@ -220,10 +220,10 @@ int16_t mpu9150_read_angularvelocity_y(void)
 	return rotation_y;
 }
 
-int16_t mpu9150_read_angularvelocity_z(void)
+mpu9150_angularvelocity mpu9150_read_angularvelocity_z(void)
 {
 	uint8_t temp_data;
-	int16_t rotation_z;
+	mpu9150_angularvelocity rotation_z;
 
 	twi_send_buffer[0] = MPU9150_REGISTER_GYRO_ZOUT_H;
 	twi_master_set_ready();
@@ -239,7 +239,7 @@ int16_t mpu9150_read_angularvelocity_z(void)
 	return rotation_z;
 }
 
-void mpu9150_read_acceleration(acceleration_t* acceleration_vector)
+void mpu9150_read_acceleration(mpu9150_acceleration_vector_t * acceleration)
 {
 
 	uint8_t temp_data;
@@ -252,20 +252,20 @@ void mpu9150_read_acceleration(acceleration_t* acceleration_vector)
 	twi_receive_data(MPU9150_TWI_ADDRESS, 6);
 
 	temp_data = twi_receive_buffer[0];
-	acceleration_vector->x = (uint16_t)(temp_data << 8);
+	acceleration->x = (uint16_t)(temp_data << 8);
 	temp_data = twi_receive_buffer[1];
-	acceleration_vector->x = (uint16_t)(acceleration_vector->x | temp_data);
+	acceleration->x = (uint16_t)(acceleration->x | temp_data);
 
 	temp_data = twi_receive_buffer[2];
-	acceleration_vector->y = (uint16_t)(temp_data << 8);
+	acceleration->y = (uint16_t)(temp_data << 8);
 	temp_data = twi_receive_buffer[3];
-	acceleration_vector->y = (uint16_t)(acceleration_vector->y | temp_data);
+	acceleration->y = (uint16_t)(acceleration->y | temp_data);
 
 	temp_data = twi_receive_buffer[4];
-	acceleration_vector->z = (uint16_t)(temp_data << 8);
+	acceleration->z = (uint16_t)(temp_data << 8);
 	temp_data = twi_receive_buffer[5];
-	acceleration_vector->z = (uint16_t)(acceleration_vector->z | temp_data);
-	acceleration_vector->z = -acceleration_vector->z;
+	acceleration->z = (uint16_t)(acceleration->z | temp_data);
+	acceleration->z = -acceleration->z;
 }
 
 uint8_t mpu9150_get_int_status(void)
