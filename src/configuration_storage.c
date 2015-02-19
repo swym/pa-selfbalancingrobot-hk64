@@ -49,7 +49,7 @@ bool configuration_storage_init()
 		configuration.pid.p_factor = 100;
 		configuration.pid.i_factor = 0;
 		configuration.pid.d_factor = 0;
-		configuration.pid.scalingfactor = 256;
+		configuration.pid.scalingfactor = 1;
 
 		configuration.motionsensor.acceleration_offset.x = 0;
 		configuration.motionsensor.acceleration_offset.y = 0;
@@ -59,10 +59,10 @@ bool configuration_storage_init()
 		configuration.motionsensor.angularvelocity_offset.y = 0;
 		configuration.motionsensor.angularvelocity_offset.z = 0;
 
-		configuration.motionsensor.complementary_filter_acceleraton_factor = 0.5;
-		configuration.motionsensor.complementary_filter_angularvelocity_factor = 0.5;
+		configuration.motionsensor.complementary_filter_acceleraton_factor = 0.9;
+		configuration.motionsensor.complementary_filter_angularvelocity_factor = 0.1;
 
-		configuration.motionsensor.position_multiplier = 1.0;
+		configuration.motionsensor.position_multiplier = 1;
 
 		strncpy(configuration.comment, "- new -", CONFIGURATION_STORAGE_COMMENT_LENGTH);
 		configuration.version = CONFIGURATION_STORAGE_VERSION;
