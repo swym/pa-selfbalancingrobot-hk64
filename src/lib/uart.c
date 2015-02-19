@@ -125,14 +125,20 @@ void UART_clr_rx_buf(void)
 }
 
 
-void UART_init(uint32_t baudrate)
+void UART_init(void)
 {
+	uint32_t baudrate = 115200;
+
+/* TODO: Better: calc error rate with and without U2X and decide which is smaller
 #if F_CPU < 2000000UL && defined(MYUSE_U2X)
-    MYUCSRA = _BV(U2X); /* improve baud rate error by using 2x clk */
+    MYUCSRA = _BV(U2X); // improve baud rate error by using 2x clk
     MYUBRRL = (F_CPU / (8UL * baudrate)) - 1;
 #else
     MYUBRRL = (F_CPU / (16UL * baudrate)) - 1;
 #endif
+*/
+    MYUCSRA = _BV(U2X); /* improve baud rate error by using 2x clk */
+    MYUBRRL = (F_CPU / (8UL * baudrate)) - 1;
     MYUCSRB = _BV(MYTXEN) | _BV(MYRXEN); /* tx/rx enable */
 
     stdout = stdin = &uart_str;
