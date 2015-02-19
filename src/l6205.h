@@ -34,7 +34,7 @@ typedef uint8_t motor_id_t;
 #define MOTOR_2		1
 
 #define L6205_ACCELERATION_MAX		50
-#define L6205_ACCELERATION_DEFAULT  20
+#define L6205_ACCELERATION_DEFAULT  15
 
 /* * external functions          * */
 extern void l6205_init(uint8_t acceleration);
