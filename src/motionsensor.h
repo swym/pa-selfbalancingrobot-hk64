@@ -66,11 +66,11 @@ extern void motionsensor_acceleration_calibrate_zero_point(void);
 extern void motionsensor_angularvelocity_calibrate_zero_point(void);
 
 //Getter and Setters
-extern void motionsensor_get_acceleration_offset(acceleration_vector_t *acceleration);
-extern void motionsensor_set_acceleration_offset(acceleration_vector_t *acceleration);
+extern void motionsensor_get_acceleration_offset_vector(acceleration_vector_t *acceleration);
+extern void motionsensor_set_acceleration_offset_vector(acceleration_vector_t *acceleration);
 
-extern void motionsensor_get_angularvelocity_offset(angularvelocity_vector_t *angularvelocity);
-extern void motionsensor_set_angularvelocity_offset(angularvelocity_vector_t *angularvelocity);
+extern void motionsensor_get_angularvelocity_offset_vector(angularvelocity_vector_t *angularvelocity);
+extern void motionsensor_set_angularvelocity_offset_vector(angularvelocity_vector_t *angularvelocity);
 
 extern double motionsensor_get_complementary_filter_angularvelocity_factor(void);
 extern void motionsensor_set_complementary_filter_angularvelocity_factor(double factor);

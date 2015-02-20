@@ -100,10 +100,10 @@ static double complementary_filter_acceleraton_factor;
 
 static void motionsensor_get_rawdata(void);
 
-static int16_t motionsensor_get_acceleration_angle_y(void);
+static int16_t motionsensor_calc_acceleration_angle_y(void);
 static void motionsensor_filter_acceleration_vector(void);
 
-static int16_t motionsensor_get_angularvelocity_angle_y(void);
+static int16_t motionsensor_calc_angularvelocity_angle_y(void);
 static void motionsensor_filter_angularvelocity_vector(void);
 
 
@@ -179,12 +179,12 @@ int16_t motionsensor_get_angle_y(void)
 	//get acceleration_angle of y
 	// //filter (smooth) acceleration_vector
 	// //determine angle using acceleration vectors and atan and normalize
-	accel_y = motionsensor_get_acceleration_angle_y();
+	accel_y = motionsensor_calc_acceleration_angle_y();
 
 	//get angularvelocity of y
 	// //filter (smooth) angularvelocity_vector
 	// //integrate angular velocity to angle over time (dt = 4 ms) and normalize
-	angular_y = motionsensor_get_angularvelocity_angle_y();
+	angular_y = motionsensor_calc_angularvelocity_angle_y();
 
 	//fuse sensor data with complementary filter
 	fused_y = (complementary_filter_acceleraton_factor * accel_y) +
@@ -210,7 +210,7 @@ void motionsensor_get_rawdata(void)
 }
 
 
-int16_t motionsensor_get_acceleration_angle_y(void)
+int16_t motionsensor_calc_acceleration_angle_y(void)
 {
 	int16_t acceleration_angle_y;
 
@@ -233,7 +233,7 @@ void motionsensor_filter_acceleration_vector(void)
 }
 
 
-int16_t motionsensor_get_angularvelocity_angle_y(void)
+int16_t motionsensor_calc_angularvelocity_angle_y(void)
 {
 	int16_t angular_angle_y;
 
@@ -507,7 +507,7 @@ void motionsensor_set_complementary_filter_acceleraton_factor(double factor)
 	complementary_filter_acceleraton_factor = factor;
 }
 
-void motionsensor_init()
+void motionsensor_init(void)
 {
 	//acceleration_t tmp_acceleration;
 	//angularvelocity_t tmp_angularvelocity;

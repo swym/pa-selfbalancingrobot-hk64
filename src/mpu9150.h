@@ -39,9 +39,9 @@ typedef struct {
 } mpu9150_angularvelocity_vector_t;
 
 typedef struct {
-	mpu9150_acceleration_vector_t;
-	mpu9150_angularvelocity_vector_t;
-	mpu9150_temp_t;
+	mpu9150_acceleration_vector_t acceleration;
+	mpu9150_angularvelocity_vector_t angularvelocity;
+	mpu9150_temp_t temp;
 } mpu9150_motiondata_t;
 
 /* * external objects            * */

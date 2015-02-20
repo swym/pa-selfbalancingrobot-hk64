@@ -59,8 +59,9 @@ bool configuration_storage_init()
 		configuration.motionsensor.angularvelocity_offset.y = 0;
 		configuration.motionsensor.angularvelocity_offset.z = 0;
 
-		configuration.motionsensor.complementary_filter_acceleraton_factor = 0.9;
-		configuration.motionsensor.complementary_filter_angularvelocity_factor = 0.1;
+		configuration.motionsensor.complementary_filter_angularvelocity_factor = 0.9;
+		configuration.motionsensor.complementary_filter_acceleraton_factor = 0.1;
+
 
 		configuration.motionsensor.position_multiplier = 1;
 
