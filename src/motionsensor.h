@@ -78,8 +78,8 @@ extern void motionsensor_set_complementary_filter_angularvelocity_factor(double 
 extern double motionsensor_get_complementary_filter_acceleraton_factor(void);
 extern void motionsensor_set_complementary_filter_acceleraton_factor(double factor);
 
-extern uint16_t motionsensor_get_angle_y_scalingfactor(void);
-extern void motionsensor_set_angle_y_scalingfactor(uint16_t s);
+extern uint16_t motionsensor_get_angle_scalingfactor(void);
+extern void motionsensor_set_angle_scalingfactor(uint16_t s);
 
 /* * external functions          * */
 

@@ -65,6 +65,7 @@ static mpu9150_motiondata_t raw_motiondata;
 //maybe replace with filter_t_*
 static acceleration_vector_t acceleration_vector;
 static angularvelocity_vector_t angularvelocity_vector;
+static int16_t	temperature;
 
 // persistent value of integrated angularvelocity of y-axis
 static int16_t integral_angularvelocity_angle_y;
@@ -207,6 +208,7 @@ void motionsensor_get_rawdata(void)
 	angularvelocity_vector.y = raw_motiondata.acceleration.y;
 	angularvelocity_vector.z = raw_motiondata.acceleration.z;
 
+	temperature = raw_motiondata.temp;
 }
 
 
@@ -235,8 +237,6 @@ void motionsensor_filter_acceleration_vector(void)
 
 int16_t motionsensor_calc_angularvelocity_angle_y(void)
 {
-	int16_t angular_angle_y;
-
 	motionsensor_filter_angularvelocity_vector();
 
 	//integrate angular velocity to angle over time (dt = 4 ms) and normalize
@@ -324,7 +324,7 @@ void motionsensor_get_current_acceleration(acceleration_t *acceleration)
  * returns as call by reference the current offset.
  * @param acceleration
  */
-void motionsensor_get_acceleration_offset(acceleration_vector_t *accel_v)
+void motionsensor_get_acceleration_offset_vector(acceleration_vector_t *accel_v)
 {
 	accel_v->x = acceleration_offset_vector.x;
 	accel_v->y = acceleration_offset_vector.y;
@@ -335,7 +335,7 @@ void motionsensor_get_acceleration_offset(acceleration_vector_t *accel_v)
  * sets the offset with a given acceleration vector
  * @param acceleration
  */
-void motionsensor_set_acceleration_offset(acceleration_vector_t *accel_v)
+void motionsensor_set_acceleration_offset_vector(acceleration_vector_t *accel_v)
 {
 	if(accel_v != NULL) {
 		acceleration_offset_vector.x = accel_v->x;
@@ -352,7 +352,7 @@ void motionsensor_set_acceleration_offset(acceleration_vector_t *accel_v)
  * returns as call by reference the current offset.
  * @param angularvelocity
  */
-void motionsensor_get_angularvelocity_offset(angularvelocity_vector_t *angular_v)
+void motionsensor_get_angularvelocity_offset_vector(angularvelocity_vector_t *angular_v)
 {
 	angular_v->x = angularvelocity_offset_vector.x;
 	angular_v->y = angularvelocity_offset_vector.y;
@@ -363,7 +363,7 @@ void motionsensor_get_angularvelocity_offset(angularvelocity_vector_t *angular_v
  * sets the offset with a given acceleration vector
  * @param angularvelocity
  */
-void motionsensor_set_angularvelocity_offset(angularvelocity_vector_t *angular_v)
+void motionsensor_set_angularvelocity_offset_vector(angularvelocity_vector_t *angular_v)
 {
 	if(angular_v != NULL) {
 		angularvelocity_offset_vector.x = angular_v->x;
@@ -376,12 +376,12 @@ void motionsensor_set_angularvelocity_offset(angularvelocity_vector_t *angular_v
 	}
 }
 
-uint16_t motionsensor_get_angle_y_scalingfactor(void)
+uint16_t motionsensor_get_angle_scalingfactor(void)
 {
 	return angle_y_scalingfactor;
 }
 
-void motionsensor_set_angle_y_scalingfactor(uint16_t s)
+void motionsensor_set_angle_scalingfactor(uint16_t s)
 {
 	angle_y_scalingfactor = s;
 }

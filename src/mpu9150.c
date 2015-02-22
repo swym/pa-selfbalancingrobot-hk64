@@ -156,6 +156,53 @@ uint8_t mpu9150_get_who_am_i(void)
 //	return return_value;
 //}
 
+
+void mpu9150_read_motiondata(mpu9150_motiondata_t * motiondata)
+{
+	uint8_t temp_data;
+
+	twi_send_buffer[0] = MPU9150_REGISTER_ACCEL_XOUT_H;
+	twi_master_set_ready();
+
+	twi_send_data(MPU9150_TWI_ADDRESS, 1);
+	twi_receive_data(MPU9150_TWI_ADDRESS, 14);
+
+	temp_data = twi_receive_buffer[0];
+	motiondata->acceleration.x = (uint16_t)(temp_data << 8);
+	temp_data = twi_receive_buffer[1];
+	motiondata->acceleration.x = (uint16_t)(motiondata->acceleration.x | temp_data);
+
+	temp_data = twi_receive_buffer[2];
+	motiondata->acceleration.y = (uint16_t)(temp_data << 8);
+	temp_data = twi_receive_buffer[3];
+	motiondata->acceleration.y = (uint16_t)(motiondata->acceleration.y | temp_data);
+
+	temp_data = twi_receive_buffer[4];
+	motiondata->acceleration.z = (uint16_t)(temp_data << 8);
+	temp_data = twi_receive_buffer[5];
+	motiondata->acceleration.z = (uint16_t)(motiondata->acceleration.z | temp_data);
+
+	temp_data = twi_receive_buffer[6];
+	motiondata->temp = (uint16_t)(temp_data << 8);
+	temp_data = twi_receive_buffer[7];
+	motiondata->temp = (uint16_t)(motiondata->temp | temp_data);
+
+	temp_data = twi_receive_buffer[8];
+	motiondata->angularvelocity.x = (uint16_t)(temp_data << 8);
+	temp_data = twi_receive_buffer[9];
+	motiondata->angularvelocity.x = (uint16_t)(motiondata->angularvelocity.x | temp_data);
+
+	temp_data = twi_receive_buffer[10];
+	motiondata->angularvelocity.y = (uint16_t)(temp_data << 8);
+	temp_data = twi_receive_buffer[11];
+	motiondata->angularvelocity.y = (uint16_t)(motiondata->angularvelocity.y | temp_data);
+
+	temp_data = twi_receive_buffer[12];
+	motiondata->angularvelocity.z = (uint16_t)(temp_data << 8);
+	temp_data = twi_receive_buffer[13];
+	motiondata->angularvelocity.z = (uint16_t)(motiondata->angularvelocity.z | temp_data);
+}
+
 void mpu9150_read_angularvelocity(mpu9150_angularvelocity_vector_t * angularvelocity)
 {
 	uint8_t temp_data;
