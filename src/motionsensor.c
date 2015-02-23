@@ -70,9 +70,9 @@ static int16_t	temperature;
 // persistent value of integrated angularvelocity of y-axis
 static int16_t integral_angularvelocity_angle_y;
 
-static int16_t angle_y_scalingfactor;
-static double complementary_filter_angularvelocity_factor;
-static double complementary_filter_acceleraton_factor;
+static int16_t angle_scalingfactor;
+static uint8_t complementary_filter_angularvelocity_factor;
+static uint8_t complementary_filter_acceleraton_factor;
 
 //* check for deprecation: *//
 
@@ -172,7 +172,7 @@ int16_t motionsensor_get_angle_y(void)
 {
 	int16_t accel_y;
 	int16_t angular_y;
-	int16_t fused_y;
+	int32_t fused_y;
 
 	//get raw data
 	motionsensor_get_rawdata();
@@ -188,10 +188,11 @@ int16_t motionsensor_get_angle_y(void)
 	angular_y = motionsensor_calc_angularvelocity_angle_y();
 
 	//fuse sensor data with complementary filter
-	fused_y = (complementary_filter_acceleraton_factor * accel_y) +
-			  (complementary_filter_angularvelocity_factor * angular_y);
+	fused_y = ((uint32_t)(accel_y)) * complementary_filter_acceleraton_factor +
+			  ((uint32_t)(angular_y)) * complementary_filter_angularvelocity_factor;
+	fused_y /= 100; //TODO: Merge with scalingfactor
 
-	return fused_y / angle_y_scalingfactor;
+	return fused_y / angle_scalingfactor;
 }
 
 void motionsensor_get_rawdata(void)
@@ -204,9 +205,9 @@ void motionsensor_get_rawdata(void)
 	acceleration_vector.y = raw_motiondata.acceleration.y;
 	acceleration_vector.z = raw_motiondata.acceleration.z;
 
-	angularvelocity_vector.x = raw_motiondata.acceleration.x;
-	angularvelocity_vector.y = raw_motiondata.acceleration.y;
-	angularvelocity_vector.z = raw_motiondata.acceleration.z;
+	angularvelocity_vector.x = raw_motiondata.angularvelocity.x;
+	angularvelocity_vector.y = raw_motiondata.angularvelocity.y;
+	angularvelocity_vector.z = raw_motiondata.angularvelocity.z;
 
 	temperature = raw_motiondata.temp;
 }
@@ -280,7 +281,7 @@ void motionsensor_calibrate_zero_point(void)
 
 	acceleration_offset_vector.x = -acceleration_vector.x;
 	acceleration_offset_vector.y = -acceleration_vector.y;
-	acceleration_offset_vector.z = (INT16_MAX / 2) - acceleration_vector.z;  //TOOD: define 1 G somewhere
+	acceleration_offset_vector.z = (INT16_MIN / 2) - acceleration_vector.z;  //TOOD: define -1 G somewhere
 
 
 	//TODO: replace with temp sensitiv solution
@@ -417,12 +418,12 @@ void motionsensor_set_angularvelocity_offset_vector(angularvelocity_vector_t *an
 
 uint16_t motionsensor_get_angle_scalingfactor(void)
 {
-	return angle_y_scalingfactor;
+	return angle_scalingfactor;
 }
 
 void motionsensor_set_angle_scalingfactor(uint16_t s)
 {
-	angle_y_scalingfactor = s;
+	angle_scalingfactor = s;
 }
 
 /*
@@ -521,7 +522,7 @@ void motionsensor_angularvelocity_set_zero_point(void)
 }
 */
 
-double motionsensor_get_complementary_filter_ratio(void)
+uint8_t motionsensor_get_complementary_filter_ratio(void)
 {
 	//angularvelocity_factor == b; acceleration_factor == 1-b
 	return complementary_filter_angularvelocity_factor;
@@ -529,16 +530,14 @@ double motionsensor_get_complementary_filter_ratio(void)
 
 
 //angularvelocity_factor == b; acceleration_factor == 1-b
-void motionsensor_set_complementary_filter_ratio(double ratio)
+void motionsensor_set_complementary_filter_ratio(uint8_t ratio)
 {
-	if(ratio > 1.0) {
-		ratio = 1.0;
-	} else if(ratio < 0.0) {
-		ratio = 0.0;
+	if(ratio > 100) {
+		ratio = 100;
 	}
 
 	complementary_filter_angularvelocity_factor = ratio;
-	complementary_filter_acceleraton_factor     = 1.0 - ratio;
+	complementary_filter_acceleraton_factor     = 100 - ratio;
 }
 
 void motionsensor_init(void)
@@ -558,10 +557,11 @@ void motionsensor_init(void)
 	angularvelocity_offset_vector.y = 0;
 	angularvelocity_offset_vector.z = 0;
 
-	angle_y_scalingfactor = 1;
+	angle_scalingfactor = 1;
 
-	complementary_filter_angularvelocity_factor = 0.9;
-	complementary_filter_acceleraton_factor = 0.1;
+	complementary_filter_angularvelocity_factor = 100;
+	complementary_filter_acceleraton_factor = 0;
+
 
 	//reset_integrated_gyro_angle_y();
 
