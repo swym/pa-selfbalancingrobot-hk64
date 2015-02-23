@@ -27,6 +27,12 @@
 #define NORMALIZATION_RAD2INT14   10430
 #define NORMALIZATION_AVELO2INT14 0.0057  // == dt * normalization_factor == (4 / 1000) * 1.425
 
+#define MOTIONSENSOR_PRINT_FORMAT_NICE 0
+#define MOTIONSENSOR_PRINT_FORMAT_CSV  1
+
+#define MOTIONSENSOR_PRINT_DATA_ALL 		0
+#define MOTIONSENSOR_PRINT_DATA_NECESSARY	1
+
 /* *** DECLARATIONS ********************************************************* */
 
 /*
@@ -73,6 +79,9 @@ static int16_t integral_angularvelocity_angle_y;
 static int16_t angle_scalingfactor;
 static uint8_t complementary_filter_angularvelocity_factor;
 static uint8_t complementary_filter_acceleraton_factor;
+
+static uint8_t printformat;
+static uint8_t printdata;
 
 //* check for deprecation: *//
 
@@ -210,8 +219,60 @@ void motionsensor_get_rawdata(void)
 	angularvelocity_vector.z = raw_motiondata.angularvelocity.z;
 
 	temperature = raw_motiondata.temp;
+
+	//filter data
 }
 
+void motionsensor_printdata(void)
+{
+	//get raw data
+	motionsensor_get_rawdata();
+	motionsensor_filter_acceleration_vector();
+	motionsensor_filter_angularvelocity_vector();
+
+	if(printdata == MOTIONSENSOR_PRINT_DATA_ALL) {
+		if (printformat == MOTIONSENSOR_PRINT_FORMAT_CSV) {
+
+			printf("%d;%d;%d;%d;%d;%d;%d\n",
+					acceleration_vector.x,
+					acceleration_vector.y,
+					acceleration_vector.z,
+					angularvelocity_vector.x,
+					angularvelocity_vector.y,
+					angularvelocity_vector.z,
+					temperature);
+
+		} else { //printformat == MOTIONSENSOR_PRINTFORMAT_CSV
+
+			printf("%6d %6d %6d %6d %6d %6d %6d\n",
+					acceleration_vector.x,
+					acceleration_vector.y,
+					acceleration_vector.z,
+					angularvelocity_vector.x,
+					angularvelocity_vector.y,
+					angularvelocity_vector.z,
+					temperature);
+		}
+	} else { //printdata == MOTIONSENSOR_PRINT_DATA_NECESSARY
+
+		if (printformat == MOTIONSENSOR_PRINT_FORMAT_CSV) {
+
+			printf("%d;%d;%d;%d\n",
+					acceleration_vector.x,
+					acceleration_vector.z,
+					angularvelocity_vector.y,
+					temperature);
+
+		} else { //printformat == MOTIONSENSOR_PRINTFORMAT_CSV
+
+			printf("%6d %6d %6d %6d\n",
+					acceleration_vector.x,
+					acceleration_vector.z,
+					angularvelocity_vector.y,
+					temperature);
+		}
+	}
+}
 
 int16_t motionsensor_calc_acceleration_angle_y(void)
 {
@@ -562,6 +623,8 @@ void motionsensor_init(void)
 	complementary_filter_angularvelocity_factor = 100;
 	complementary_filter_acceleraton_factor = 0;
 
+	printformat = MOTIONSENSOR_PRINT_FORMAT_NICE;
+	printdata   = MOTIONSENSOR_PRINT_DATA_ALL;
 
 	//reset_integrated_gyro_angle_y();
 
