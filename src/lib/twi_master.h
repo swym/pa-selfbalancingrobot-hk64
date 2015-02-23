@@ -5,7 +5,7 @@
 							following equation:\n SCL frequency = CPU clock 
 							/ 16 + 2 * TWBR * (4 ^ TWPS)*/
 
-#define BUFFER_SIZE 10
+#define BUFFER_SIZE 20
 
 #include <avr/io.h>
 #include <util/twi.h>
