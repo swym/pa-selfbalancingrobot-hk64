@@ -46,35 +46,14 @@ bool configuration_storage_init()
 	// if invalid set defaults
 	if(configuration.version != CONFIGURATION_STORAGE_VERSION) {
 
-		configuration.pid.p_factor = 100;
-		configuration.pid.i_factor = 0;
-		configuration.pid.d_factor = 0;
-		configuration.pid.scalingfactor = 1;
-
-		configuration.motionsensor.acceleration_offset.x = 0;
-		configuration.motionsensor.acceleration_offset.y = 0;
-		configuration.motionsensor.acceleration_offset.z = 0;
-
-		configuration.motionsensor.angularvelocity_offset.x = 0;
-		configuration.motionsensor.angularvelocity_offset.y = 0;
-		configuration.motionsensor.angularvelocity_offset.z = 0;
-
-		configuration.motionsensor.complementary_filter_acceleraton_factor = 0.9;
-		configuration.motionsensor.complementary_filter_angularvelocity_factor = 0.1;
-
-		configuration.motionsensor.position_multiplier = 1;
-
-		strncpy(configuration.comment, "- new -", CONFIGURATION_STORAGE_COMMENT_LENGTH);
-		configuration.version = CONFIGURATION_STORAGE_VERSION;
-		configuration.has_changed = true;
-
+		configuration_storage_reset_configuration();
 		returnvalue = false;
 	}
 
 	return returnvalue;
 }
 
-void configuration_storage_save_configuration()
+void configuration_storage_save_configuration(void)
 {
 	if(configuration.has_changed) {
 		eeprom_write_block(&configuration,
@@ -83,121 +62,196 @@ void configuration_storage_save_configuration()
 	}
 }
 
-int16_t configuration_storage_get_p_factor(void)
+void configuration_storage_reset_configuration(void)
 {
-	return configuration.pid.p_factor;
-}
+	configuration.pid_center.p_factor = 0;
+	configuration.pid_center.i_factor = 0;
+	configuration.pid_center.d_factor = 0;
+	configuration.pid_center.pid_scalingfactor = 1;
 
-void configuration_storage_set_p_factor(int16_t p_factor)
-{
-	configuration.pid.p_factor =  p_factor;
+	configuration.pid_edge.p_factor = 0;
+	configuration.pid_edge.i_factor = 0;
+	configuration.pid_edge.d_factor = 0;
+	configuration.pid_edge.pid_scalingfactor = 1;
+
+	configuration.pid_edge_angle = UINT16_MAX;
+
+	configuration.motionsensor.acceleration_offset_vector.x = 0;
+	configuration.motionsensor.acceleration_offset_vector.y = 0;
+	configuration.motionsensor.acceleration_offset_vector.z = 0;
+
+	configuration.motionsensor.angularvelocity_offset_vector.x = 0;
+	configuration.motionsensor.angularvelocity_offset_vector.y = 0;
+	configuration.motionsensor.angularvelocity_offset_vector.z = 0;
+
+	configuration.motionsensor.complementary_filter_ratio = 100;
+
+	configuration.motionsensor.angle_scalingfactor = 1;
+
+	configuration.motor_acceleration = 15;
+
+	strncpy(configuration.comment, "- new -", CONFIGURATION_STORAGE_COMMENT_LENGTH);
+	configuration.version = CONFIGURATION_STORAGE_VERSION;
 	configuration.has_changed = true;
 }
 
-int16_t configuration_storage_get_i_factor(void)
+int16_t configuration_storage_get_pid_center_p_factor(void)
 {
-	return configuration.pid.i_factor;
+	return configuration.pid_center.p_factor;
 }
 
-void configuration_storage_set_i_factor(int16_t i_factor)
+void configuration_storage_set_pid_center_p_factor(int16_t p_factor)
 {
-	configuration.pid.i_factor =  i_factor;
+	configuration.pid_center.p_factor =  p_factor;
 	configuration.has_changed = true;
 }
 
-int16_t configuration_storage_get_d_factor(void)
+int16_t configuration_storage_get_pid_center_i_factor(void)
 {
-	return configuration.pid.d_factor;
+	return configuration.pid_center.i_factor;
 }
 
-void configuration_storage_set_d_factor(int16_t d_factor)
+void configuration_storage_set_pid_center_i_factor(int16_t i_factor)
 {
-	configuration.pid.d_factor =  d_factor;
+	configuration.pid_center.i_factor =  i_factor;
 	configuration.has_changed = true;
 }
 
-uint16_t configuration_storage_get_scalingfactor(void)
+int16_t configuration_storage_get_pid_center_d_factor(void)
 {
-	return configuration.pid.scalingfactor;
+	return configuration.pid_center.d_factor;
 }
 
-void configuration_storage_set_scalingfactor(uint16_t scalingfactor)
+void configuration_storage_set_pid_center_d_factor(int16_t d_factor)
 {
-	configuration.pid.scalingfactor = scalingfactor;
+	configuration.pid_center.d_factor =  d_factor;
 	configuration.has_changed = true;
 }
 
-
-void configuration_storage_get_acceleration_offset(acceleration_t * accel)
+uint16_t configuration_storage_get_pid_center_scalingfactor(void)
 {
-	accel->x = configuration.motionsensor.acceleration_offset.x;
-	accel->y = configuration.motionsensor.acceleration_offset.y;
-	accel->z = configuration.motionsensor.acceleration_offset.z;
+	return configuration.pid_center.pid_scalingfactor;
+}
+
+void configuration_storage_set_pid_center_scalingfactor(uint16_t pid_scalingfactor)
+{
+	configuration.pid_center.pid_scalingfactor = pid_scalingfactor;
+	configuration.has_changed = true;
+}
+
+int16_t configuration_storage_get_pid_edge_p_factor(void)
+{
+	return configuration.pid_edge.p_factor;
+}
+
+void configuration_storage_set_pid_edge_p_factor(int16_t p_factor)
+{
+	configuration.pid_edge.p_factor =  p_factor;
+	configuration.has_changed = true;
+}
+
+int16_t configuration_storage_get_pid_edge_i_factor(void)
+{
+	return configuration.pid_edge.i_factor;
+}
+
+void configuration_storage_set_pid_edge_i_factor(int16_t i_factor)
+{
+	configuration.pid_edge.i_factor =  i_factor;
+	configuration.has_changed = true;
+}
+
+int16_t configuration_storage_get_pid_edge_d_factor(void)
+{
+	return configuration.pid_edge.d_factor;
+}
+
+void configuration_storage_set_pid_edge_d_factor(int16_t d_factor)
+{
+	configuration.pid_edge.d_factor =  d_factor;
+	configuration.has_changed = true;
+}
+
+uint16_t configuration_storage_get_pid_edge_scalingfactor(void)
+{
+	return configuration.pid_edge.pid_scalingfactor;
+}
+
+void configuration_storage_set_pid_edge_scalingfactor(uint16_t pid_scalingfactor)
+{
+	configuration.pid_edge.pid_scalingfactor = pid_scalingfactor;
+	configuration.has_changed = true;
+}
+
+uint16_t configuration_storage_get_pid_edge_angle(void)
+{
+	return configuration.pid_edge_angle;
+}
+
+void configuration_storage_set_pid_edge_angle(uint16_t angle)
+{
+	configuration.pid_edge_angle = angle;
+	configuration.has_changed = true;
+}
+
+void configuration_storage_get_acceleration_offset_vector(acceleration_vector_t * accel_v)
+{
+	accel_v->x = configuration.motionsensor.acceleration_offset_vector.x;
+	accel_v->y = configuration.motionsensor.acceleration_offset_vector.y;
+	accel_v->z = configuration.motionsensor.acceleration_offset_vector.z;
 }
 
 
-void configuration_storage_set_acceleration_offset(acceleration_t *accel)
+void configuration_storage_set_acceleration_offset_vector(acceleration_vector_t * accel_v)
 {
 
-	configuration.motionsensor.acceleration_offset.x = accel->x;
-	configuration.motionsensor.acceleration_offset.y = accel->y;
-	configuration.motionsensor.acceleration_offset.z = accel->z;
+	configuration.motionsensor.acceleration_offset_vector.x = accel_v->x;
+	configuration.motionsensor.acceleration_offset_vector.y = accel_v->y;
+	configuration.motionsensor.acceleration_offset_vector.z = accel_v->z;
 
 	configuration.has_changed = true;
 }
 
-void configuration_storage_get_angularvelocity_offset(angularvelocity_t * angularvelocity)
+void configuration_storage_get_angularvelocity_offset_vector(angularvelocity_vector_t * angular_v)
 {
-	angularvelocity->x = configuration.motionsensor.angularvelocity_offset.x;
-	angularvelocity->y = configuration.motionsensor.angularvelocity_offset.y;
-	angularvelocity->z = configuration.motionsensor.angularvelocity_offset.z;
+	angular_v->x = configuration.motionsensor.angularvelocity_offset_vector.x;
+	angular_v->y = configuration.motionsensor.angularvelocity_offset_vector.y;
+	angular_v->z = configuration.motionsensor.angularvelocity_offset_vector.z;
 }
 
 
-void configuration_storage_set_angularvelocity_offset(angularvelocity_t * angularvelocity)
+void configuration_storage_set_angularvelocity_offset_vector(angularvelocity_vector_t * angular_v)
 {
 
-	configuration.motionsensor.angularvelocity_offset.x = angularvelocity->x;
-	configuration.motionsensor.angularvelocity_offset.y = angularvelocity->y;
-	configuration.motionsensor.angularvelocity_offset.z = angularvelocity->z;
+	configuration.motionsensor.angularvelocity_offset_vector.x = angular_v->x;
+	configuration.motionsensor.angularvelocity_offset_vector.y = angular_v->y;
+	configuration.motionsensor.angularvelocity_offset_vector.z = angular_v->z;
 
 	configuration.has_changed = true;
 }
 
-double configuration_storage_get_complementary_filter_angularvelocity_factor(void)
+uint8_t configuration_storage_get_complementary_filter_ratio(void)
 {
-	return configuration.motionsensor.complementary_filter_angularvelocity_factor;
+	return configuration.motionsensor.complementary_filter_ratio;
 }
 
-void configuration_storage_set_complementary_filter_angularvelocity_factor(double factor)
+void configuration_storage_set_complementary_filter_ratio(uint8_t factor)
 {
-	configuration.motionsensor.complementary_filter_angularvelocity_factor = factor;
+	if(factor <= 100) {
+		configuration.motionsensor.complementary_filter_ratio = factor;
 
-	configuration.has_changed = true;
+		configuration.has_changed = true;
+	}
 }
 
-double configuration_storage_get_complementary_filter_acceleraton_factor(void)
+uint16_t configuration_storage_get_angle_scalingfactor(void)
 {
-	return configuration.motionsensor.complementary_filter_acceleraton_factor;
+	return configuration.motionsensor.angle_scalingfactor;
 }
 
-void configuration_storage_set_complementary_filter_acceleraton_factor(double factor)
+void configuration_storage_set_angle_scalingfactor(uint16_t as)
 {
-	configuration.motionsensor.complementary_filter_acceleraton_factor = factor;
-
-	configuration.has_changed = true;
-}
-
-
-
-uint16_t configuration_storage_get_position_multiplier(void)
-{
-	return configuration.motionsensor.position_multiplier;
-}
-
-void configuration_storage_set_position_multiplier(uint16_t multiplier)
-{
-	configuration.motionsensor.position_multiplier = multiplier;
+	configuration.motionsensor.angle_scalingfactor = as;
 	configuration.has_changed = true;
 }
 
@@ -205,6 +259,16 @@ void configuration_storage_set_position_multiplier(uint16_t multiplier)
 char * configuration_storage_get_comment(void)
 {
 	return configuration.comment;
+}
+
+uint8_t configuration_storage_get_motor_acceleration(void)
+{
+	return configuration.motor_acceleration;
+}
+
+extern void configuration_storage_set_motor_acceleration(uint8_t accel)
+{
+	configuration.motor_acceleration = accel;
 }
 
 void configuration_storage_set_comment(char *new_comment)

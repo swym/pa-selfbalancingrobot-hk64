@@ -19,26 +19,33 @@
 /* *** DECLARATIONS ********************************************************** */
 
 /* * external type and constants * */
-typedef struct {
-	int16_t x;
-	int16_t y;
-	int16_t z;
-} angularvelocity_t;
+typedef int16_t angularvelocity_t_;
+typedef int16_t acceleration_t_;
 
 typedef struct {
 	int16_t x;
 	int16_t y;
 	int16_t z;
-} acceleration_t;
+} acceleration_vector_t;
 
 typedef struct {
-	angularvelocity_t angularvelocity;
-	acceleration_t acceleration;
-} motion_t;
+	int16_t x;
+	int16_t y;
+	int16_t z;
+} angularvelocity_vector_t;
+/*
+typedef struct {
+	acceleration_vector_t acceleration;
+	angularvelocity_vector_t angularvelocity;
+} motion_t_edit;
+
+typedef struct {
+	acceleration_vector_t acceleration;
+	angularvelocity_vector_t angularvelocity;
+} motionsensor_motiondata;
+*/
 
 /* * external objects            * */
-extern void motionsensor_init(void);
-extern void motionsensor_set_zero_point(void);
 
 /**
  * Normierung:
@@ -51,26 +58,36 @@ extern void motionsensor_set_zero_point(void);
  *   - integrated_gyro to int: AVELO2INT14 == 1,425 (Nachverfahren: 1,57 rad * r_index<<1: pi/2 = 11500)
  * @return
  */
-extern int16_t motionsensor_get_angle(void);
+extern int16_t motionsensor_get_angle_y(void);
 
-//TODO: make static when working
-extern void motionsensor_get_current_angularvelocity(angularvelocity_t *angularvelocity);
-extern void motionsensor_get_current_acceleration(acceleration_t *acceleration);
+extern void motionsensor_init(void);
+
+extern void motionsensor_calibrate_zero_point(void);
+
+//extern void motionsensor_acceleration_calibrate_zero_point(void);
+//extern void motionsensor_angularvelocity_calibrate_zero_point(void);
+
 //Getter and Setters
-extern void motionsensor_get_acceleration_offset(acceleration_t *acceleration);
-extern void motionsensor_set_acceleration_offset(acceleration_t *acceleration);
+extern void motionsensor_get_acceleration_offset_vector(acceleration_vector_t *acceleration);
+extern void motionsensor_set_acceleration_offset_vector(acceleration_vector_t *acceleration);
 
-extern void motionsensor_get_angularvelocity_offset(angularvelocity_t *angularvelocity);
-extern void motionsensor_set_angularvelocity_offset(angularvelocity_t *angularvelocity);
+extern void motionsensor_get_angularvelocity_offset_vector(angularvelocity_vector_t *angularvelocity);
+extern void motionsensor_set_angularvelocity_offset_vector(angularvelocity_vector_t *angularvelocity);
 
+extern uint8_t motionsensor_get_complementary_filter_ratio(void);
+extern void motionsensor_set_complementary_filter_ratio(uint8_t ratio);
+
+extern uint16_t motionsensor_get_angle_scalingfactor(void);
+extern void motionsensor_set_angle_scalingfactor(uint16_t s);
+
+/*
 extern double motionsensor_get_complementary_filter_angularvelocity_factor(void);
 extern void motionsensor_set_complementary_filter_angularvelocity_factor(double factor);
 
 extern double motionsensor_get_complementary_filter_acceleraton_factor(void);
 extern void motionsensor_set_complementary_filter_acceleraton_factor(double factor);
+*/
 
-extern uint16_t motionsensor_get_position_multiplier(void);
-extern void motionsensor_set_position_multiplier(uint16_t position_multiplier);
 
 /* * external functions          * */
 

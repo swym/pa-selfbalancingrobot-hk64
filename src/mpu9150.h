@@ -16,24 +16,48 @@
 #include <stdbool.h>
 
 /* * local headers               * */
-#include "motionsensor.h"
+//#include "motionsensor.h"
 
 /* *** DECLARATIONS ********************************************************** */
 
 /* * external type and constants * */
 
+typedef int16_t mpu9150_acceleration_t;
+typedef int16_t mpu9150_angularvelocity;
+typedef int16_t mpu9150_temp_t;
+
+typedef struct {
+	mpu9150_acceleration_t x;
+	mpu9150_acceleration_t y;
+	mpu9150_acceleration_t z;
+} mpu9150_acceleration_vector_t;
+
+typedef struct {
+	mpu9150_angularvelocity x;
+	mpu9150_angularvelocity y;
+	mpu9150_angularvelocity z;
+} mpu9150_angularvelocity_vector_t;
+
+typedef struct {
+	mpu9150_acceleration_vector_t acceleration;
+	mpu9150_angularvelocity_vector_t angularvelocity;
+	mpu9150_temp_t temp;
+} mpu9150_motiondata_t;
+
 /* * external objects            * */
 
 /* * external functions          * */
 
-extern void     mpu9150_init();
-extern void     mpu9150_read_acceleration(acceleration_t*);
+extern void mpu9150_init();
+extern void mpu9150_read_acceleration(mpu9150_acceleration_vector_t *);
 
-extern void     mpu9150_read_angularvelocity(angularvelocity_t *);
+extern void mpu9150_read_angularvelocity(mpu9150_angularvelocity_vector_t * angularvelocity);
 
-extern int16_t	mpu9150_read_angularvelocity_x(void);
-extern int16_t	mpu9150_read_angularvelocity_y(void);
-extern int16_t	mpu9150_read_angularvelocity_z(void);
+extern void	mpu9150_read_motiondata(mpu9150_motiondata_t * motiondata);
+
+extern mpu9150_angularvelocity mpu9150_read_angularvelocity_x(void);
+extern mpu9150_angularvelocity mpu9150_read_angularvelocity_y(void);
+extern mpu9150_angularvelocity mpu9150_read_angularvelocity_z(void);
 
 extern uint8_t  mpu9150_get_who_am_i(void);
 

@@ -50,9 +50,9 @@ void main_run_tests(void)
  */
 int main(void)
 {
-	main_run_tests();
+	//main_run_tests();
 
-//	main_run();
+	main_run();
 
 	return 0;
 }
