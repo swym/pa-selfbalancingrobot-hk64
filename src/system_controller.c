@@ -49,12 +49,13 @@ volatile timer_slot_t timer_current_minorslot;
 
 
 typedef enum {
-	STATE_INIT_HARDWARE,
+	STATE_INIT_BASIC_HARDWARE,
 	STATE_LOAD_CONFIGURATON,
 	STATE_WAITING_FOR_USER_INTERRUPT,
 	STATE_RUN_CONFIGURATION_TERMINAL,
-	STATE_INIT_PID_CONTROLLER,
-	STATE_RUN_PID_CONTROLLER,
+	STATE_INIT_CONTROLLER_ENVIRONMENT,
+	STATE_INIT_REMAINING_HARDWARE,
+	STATE_RUN_CONTROLLER,
 	STATE_FINAL,
 	STATE_NULL
 } system_controller_state_t;
@@ -80,30 +81,25 @@ static int8_t    pid_setpoint;
 
 
 // states
-static void system_controller_state_init_hardware(void);
+static void system_controller_state_init_basic_hardware(void);
 static void system_controller_state_load_configuration(void);
 static void system_controller_state_waiting_for_user_interrupt(void);
 static void system_controller_state_run_configuration_terminal(void);
-static void system_controller_state_init_pid_controller(void);
-static void system_controller_state_run_pid_controller(void);
-
-
-//inline helper functions for sending data
-//static inline void wireless_send_acceleration(void);
-//static inline void wireless_send_angularvelocity(void);
-//static inline void wireless_send_pid(void);
+static void system_controller_state_init_controller_environment(void);
+static void system_controller_state_init_remaining_hardware(void);
+static void system_controller_state_run_controller(void);
 
 /* *** FUNCTION DEFINITIONS ************************************************** */
 void system_controller_state_machine(void)
 {
-	current_state = STATE_INIT_HARDWARE;
+	current_state = STATE_INIT_BASIC_HARDWARE;
 	next_state = STATE_NULL;
 
 	while(current_state != STATE_FINAL) {
 		switch(current_state) {
 
-			case STATE_INIT_HARDWARE:
-				system_controller_state_init_hardware();
+			case STATE_INIT_BASIC_HARDWARE:
+				system_controller_state_init_basic_hardware();
 			break;
 
 			case STATE_LOAD_CONFIGURATON:
@@ -118,12 +114,16 @@ void system_controller_state_machine(void)
 				system_controller_state_run_configuration_terminal();
 			break;
 
-			case STATE_INIT_PID_CONTROLLER:
-				system_controller_state_init_pid_controller();
+			case STATE_INIT_CONTROLLER_ENVIRONMENT:
+				system_controller_state_init_controller_environment();
 			break;
 
-			case STATE_RUN_PID_CONTROLLER:
-				system_controller_state_run_pid_controller();
+			case STATE_INIT_REMAINING_HARDWARE:
+				system_controller_state_init_remaining_hardware();
+			break;
+
+			case STATE_RUN_CONTROLLER:
+				system_controller_state_run_controller();
 			break;
 
 			default:
@@ -137,45 +137,33 @@ void system_controller_state_machine(void)
 	}
 }
 
-void system_controller_state_init_hardware(void)
+void system_controller_state_init_basic_hardware(void)
 {
+	uint8_t i;
 	/* *** ENTRY *** */
 
 
-
 	/* **** DO ***** */
+	UART_init();							/* Init USART */
+	printf("usart inited\n");
 
-	//UART_init(112500);						/* Init UART mit 112500 baud */
-	UART_init();
-	twi_master_init(TWI_TWBR_VALUE_400);	/* Init TWI/I2C Schnittstelle */
-	timer_init();							/* Init Timer */
+	printf("init LED Port...\n");
 	leds_init();
 
+
+	printf("init TWI interface...\n");
+	twi_master_init(TWI_TWBR_VALUE_400);	/* Init TWI/I2C Schnittstelle */
+
+	printf("enable interrupts...\n");
 	sei();
-
-	vt100_clear_all();
-	printf("basic hardware inited...\n");
-
-	//init rfm12 interface
-	//rfm12_init();
-
-	//init simplex_protocol
-	//simplex_protocol_init();
-
 
 	//init motionsensor
 	printf("init motionsensor...\n");
 	motionsensor_init();
 
-	//init motor controller
-	printf("init motor control...\n");
-	motor_control_init();
-
-
 	/* *** EXIT **** */
 
 	next_state = STATE_LOAD_CONFIGURATON;
-	//next_state = STATE_RUN_PID_CONTROLLER;
 }
 
 void system_controller_state_load_configuration(void)
@@ -242,7 +230,7 @@ void system_controller_state_waiting_for_user_interrupt(void)
 		user_irq_received = false;
 		next_state = STATE_RUN_CONFIGURATION_TERMINAL;
 	} else {
-		next_state = STATE_INIT_PID_CONTROLLER;
+		next_state = STATE_INIT_CONTROLLER_ENVIRONMENT;
 	}
 	vt100_clear_input_buffer();
 }
@@ -263,68 +251,123 @@ void system_controller_state_run_configuration_terminal(void)
 }
 
 
-void system_controller_state_init_pid_controller(void)
+void system_controller_state_init_controller_environment(void)
 {
 	/* *** ENTRY *** */
 
-	printf("init pid controller...\n");
+	printf("init controller enviroment...\n");
 
-	acceleration_t acceleration;
-	angularvelocity_t angularvelocity;
-	uint16_t position_multiplier;
-
-	double tmp_double;
+	acceleration_vector_t acceleration_vector;
+	angularvelocity_vector_t angularvelocity_vector;
+	uint16_t angle_scalingfactor;
+	uint8_t complementary_filter_ratio;
 
 	/* **** DO ***** */
 
 	//initialize PID Controller with saved values
-	pid_Init(configuration_storage_get_p_factor(),
-			 configuration_storage_get_i_factor(),
-			 configuration_storage_get_d_factor(),
-			 configuration_storage_get_scalingfactor(),
-			 &pid_data);
+	pid_center.p_factor = configuration_storage_get_pid_center_p_factor();
+	pid_center.i_factor = configuration_storage_get_pid_center_i_factor();
+	pid_center.d_factor = configuration_storage_get_pid_center_d_factor();
+	pid_center.pid_scalingfactor = configuration_storage_get_pid_center_scalingfactor();
+
+	pid_edge.p_factor = configuration_storage_get_pid_edge_p_factor();
+	pid_edge.i_factor = configuration_storage_get_pid_edge_i_factor();
+	pid_edge.d_factor = configuration_storage_get_pid_edge_d_factor();
+	pid_edge.pid_scalingfactor = configuration_storage_get_pid_edge_scalingfactor();
+
+	pid_edge_angle = configuration_storage_get_pid_edge_angle();
+
+	printf("center pid: p:%6d i:%6d d:%6d s:%6d\n",
+			pid_center.p_factor,
+			pid_center.i_factor,
+			pid_center.d_factor,
+			pid_center.pid_scalingfactor);
+
+	printf("edge pid  : p:%6d i:%6d d:%6d s:%6d\n",
+			pid_center.p_factor,
+			pid_center.i_factor,
+			pid_center.d_factor,
+			pid_center.pid_scalingfactor);
+
+	printf("edge angle: %u\n", pid_edge_angle);
+
+
+	//init pid with parameters for center pid
+	pid_Init(pid_center.p_factor,
+			 pid_center.i_factor,
+			 pid_center.d_factor,
+			 pid_center.pid_scalingfactor,
+			 &pid_controller_data);
 
 	//set setpoint
 	pid_setpoint = 0;
 
-	//restore position multiplier
-	position_multiplier = configuration_storage_get_position_multiplier();
-	motionsensor_set_position_multiplier(position_multiplier);
+	printf("pid setpoint: %d\n", pid_setpoint);
+
+	//restore scaling factor
+	angle_scalingfactor = configuration_storage_get_angle_scalingfactor();
+	motionsensor_set_angle_scalingfactor(angle_scalingfactor);
+	printf("angle_scalingfactor: %d\n", angle_scalingfactor);
 
 	//restore acceleration offset
-	configuration_storage_get_acceleration_offset(&acceleration);
-	motionsensor_set_acceleration_offset(&acceleration);
+	configuration_storage_get_acceleration_offset_vector(&acceleration_vector);
+	motionsensor_set_acceleration_offset_vector(&acceleration_vector);
+	printf("offset acceleration\n  x:%6d y:%6d z:%6d\n",
+			acceleration_vector.x,
+			acceleration_vector.y,
+			acceleration_vector.z);
 
 	//restore angularvelocity offset
-	configuration_storage_get_angularvelocity_offset(&angularvelocity);
-	motionsensor_set_angularvelocity_offset(&angularvelocity);
+	configuration_storage_get_angularvelocity_offset_vector(&angularvelocity_vector);
+	motionsensor_set_angularvelocity_offset_vector(&angularvelocity_vector);
+	printf("offset angularvelocity\n  x:%6d y:%6d z:%6d\n",
+			angularvelocity_vector.x,
+			angularvelocity_vector.y,
+			angularvelocity_vector.z);
 
 	//restore parameters for complementary filter
-	tmp_double = configuration_storage_get_complementary_filter_acceleraton_factor();
-	motionsensor_set_complementary_filter_acceleraton_factor(tmp_double);
-	tmp_double = configuration_storage_get_complementary_filter_angularvelocity_factor();
-	motionsensor_set_complementary_filter_angularvelocity_factor(tmp_double);
+	complementary_filter_ratio = configuration_storage_get_complementary_filter_ratio();
+	motionsensor_set_complementary_filter_ratio(complementary_filter_ratio);
+	printf("complementary_filter_ratio\n  angularvelocity: %d, acceleration: %d\n",
+			complementary_filter_ratio,
+			100 - complementary_filter_ratio);
+
 
 	/* *** EXIT **** */
 
-	next_state = STATE_RUN_PID_CONTROLLER;
+	next_state = STATE_INIT_REMAINING_HARDWARE;
 }
 
-
-void system_controller_state_run_pid_controller(void)
+void system_controller_state_init_remaining_hardware(void)
 {
+	uint8_t motor_acceleration;
+
 	/* *** ENTRY *** */
-	printf("run controller loop...\n");
 
 	/* **** DO ***** */
 
+	//init motor controller
+	printf("init motor control...\n");
+	motor_acceleration = configuration_storage_get_motor_acceleration();
+	printf("motor acceleration: %d\n", motor_acceleration);
 
-	uint8_t led = 0;
+	motor_control_init(motor_acceleration);
 
-	uint8_t sensordata[5];
+	printf("init timers...\n");
+	timer_init();							/* Init Timer */
 
-	int i;
 
+	/* *** EXIT **** */
+	next_state = STATE_RUN_CONTROLLER;
+}
+
+
+void system_controller_state_run_controller(void)
+{
+	/* *** ENTRY *** */
+	printf("run controller...\n");
+
+	/* **** DO ***** */
 
 	while(true) {
 
