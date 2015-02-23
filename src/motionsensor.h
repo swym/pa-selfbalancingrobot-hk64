@@ -62,8 +62,10 @@ extern int16_t motionsensor_get_angle_y(void);
 
 extern void motionsensor_init(void);
 
-extern void motionsensor_acceleration_calibrate_zero_point(void);
-extern void motionsensor_angularvelocity_calibrate_zero_point(void);
+extern void motionsensor_calibrate_zero_point(void);
+
+//extern void motionsensor_acceleration_calibrate_zero_point(void);
+//extern void motionsensor_angularvelocity_calibrate_zero_point(void);
 
 //Getter and Setters
 extern void motionsensor_get_acceleration_offset_vector(acceleration_vector_t *acceleration);

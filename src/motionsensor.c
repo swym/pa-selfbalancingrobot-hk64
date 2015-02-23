@@ -58,7 +58,7 @@ typedef struct {
 //also a rawdata buffer
 
 static acceleration_vector_t acceleration_offset_vector;
-static angularvelocity_vector_t angularvelocity_offset_vector;
+static angularvelocity_vector_t angularvelocity_offset_vector; //TODO: replace with temp sensitiv solution
 
 static mpu9150_motiondata_t raw_motiondata;
 
@@ -249,6 +249,7 @@ int16_t motionsensor_calc_angularvelocity_angle_y(void)
 
 void motionsensor_filter_angularvelocity_vector(void)
 {
+	//TODO: replace with temp sensitiv solution
 	angularvelocity_vector.x += angularvelocity_offset_vector.x;
 	angularvelocity_vector.y += angularvelocity_offset_vector.y;
 	angularvelocity_vector.z += angularvelocity_offset_vector.z;
@@ -256,6 +257,44 @@ void motionsensor_filter_angularvelocity_vector(void)
 	//insert here complex filter method
 }
 
+void motionsensor_calibrate_zero_point(void)
+{
+	uint8_t i;
+
+	//set offsets to zero
+	acceleration_offset_vector.x = 0;
+	acceleration_offset_vector.y = 0;
+	acceleration_offset_vector.z = 0;
+
+	angularvelocity_offset_vector.x = 0;
+	angularvelocity_offset_vector.y = 0;
+	angularvelocity_offset_vector.z = 0;
+
+
+	//reset filters (set zero?)x or use other filter profiles...
+
+	//loop: read rawdata + filter them...
+	for(i = 0;i < 255;i++) {
+		motionsensor_get_rawdata();
+	}
+
+	acceleration_offset_vector.x = -acceleration_vector.x;
+	acceleration_offset_vector.y = -acceleration_vector.y;
+	acceleration_offset_vector.z = (INT16_MAX / 2) - acceleration_vector.z;  //TOOD: define 1 G somewhere
+
+
+	//TODO: replace with temp sensitiv solution
+	angularvelocity_offset_vector.x = -angularvelocity_vector.x;
+	angularvelocity_offset_vector.y = -angularvelocity_vector.y;
+	angularvelocity_offset_vector.z = -angularvelocity_vector.z;
+
+
+	//set new offsets with values in angular- and accel-vector
+		//keep in mind of sign/translation (1 G, earth accel)
+
+	//restore filter profiles
+	//read dummy data to fill up filters
+}
 
 /*
 void motionsensor_get_current_angularvelocity(angularvelocity_t *angularvelocity)
@@ -402,7 +441,7 @@ void motionsensor_set_position_multiplier(uint16_t multiplier)
 }
 */
 
-
+/*
 void motionsensor_acceleration_calibrate_zero_point(void)
 {
 	//acceleration_vector_t accel_v;
@@ -419,6 +458,7 @@ void motionsensor_acceleration_calibrate_zero_point(void)
 	acceleration_vector.y = -raw_temp_accel_v.y;
 	acceleration_vector.z = (INT16_MAX / 2) - raw_temp_accel_v.z; //TOOD: define 1 G somewhere
 }
+*/
 
 /*
 void motionsensor_acceleration_set_zero_point(void)
@@ -441,6 +481,7 @@ void motionsensor_acceleration_set_zero_point(void)
 }
 */
 
+/*
 void motionsensor_angularvelocity_calibrate_zero_point(void)
 {
 	//angularvelocit_vector_t angular_v;
@@ -457,6 +498,7 @@ void motionsensor_angularvelocity_calibrate_zero_point(void)
 	angularvelocity_offset_vector.y = -raw_temp_angular_v.y;
 	angularvelocity_offset_vector.z = -raw_temp_angular_v.z;
 }
+*/
 
 /*
 void motionsensor_angularvelocity_set_zero_point(void)
