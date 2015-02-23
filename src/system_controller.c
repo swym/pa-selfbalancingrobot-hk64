@@ -38,8 +38,6 @@
 /* *** DECLARATIONS ********************************************************** */
 
 
-
-
 /* global types and constants */
 // Timer
 volatile timer_slot_t timer_current_majorslot;
@@ -49,12 +47,6 @@ volatile timer_slot_t timer_current_minorslot;
 #define STATE_WAITING_FOR_USER_INTERRUPT_TIMEOUT	5			//Timeout in seconds
 #define STATE_WAITING_FOR_USER_INTERRUPT_PARTS   	4
 
-//Datatypes iterate higher nibble - lower nibble for sec-number
-//#define WIRELESS_TYPE_DATA_PID				0x80
-//#define WIRELESS_TYPE_DATA_ACCELERATION		0x90
-//#define WIRELESS_TYPE_DATA_ANGULARVELOCITY	0xA0
-
-//#define WIRELESS_SEND_BUFFER_MAX_LEN		10
 
 typedef enum {
 	STATE_INIT_HARDWARE,
@@ -71,18 +63,18 @@ typedef enum {
 static system_controller_state_t current_state;
 static system_controller_state_t next_state;
 
-//static uint8_t wireless_send_buffer[WIRELESS_SEND_BUFFER_MAX_LEN];
-//static uint8_t wireless_send_buffer_len = 0;
-
 static int16_t current_angle;
 static int16_t pid_output;
 static motor_contol_speed_t new_motor_speed;
 
-//static acceleration_t current_acceleration;
-//static acceleration_t current_angularvelocity;
+static pid_config_t pid_center;
+static pid_config_t pid_edge;
+static uint16_t		pid_edge_angle;
 
-static pidData_t pid_data;
+static pidData_t pid_controller_data;
 static int8_t    pid_setpoint;
+
+
 
 /* local function declarations  */
 
@@ -216,16 +208,12 @@ void system_controller_state_waiting_for_user_interrupt(void)
 
 	uint8_t parts_of_seconds_counter = 0;
 
-
-	//configuration_terminal_clear_all();
-
-	printf("Press any key for entering configuration menu...\n");
+	printf("press any key for entering configuration menu...\n");
 
 	/* **** DO ***** */
 
 	UART_clr_rx_buf();
 	while(waiting_time > 0 && !user_irq_received) {
-
 
 		//if user send any byte over usart then show configuration main menu
 		if(UART_char_received()) {
@@ -271,9 +259,7 @@ void system_controller_state_run_configuration_terminal(void)
 	configuration_terminal_state_machine();
 
 	/* *** EXIT **** */
-
 	next_state = STATE_WAITING_FOR_USER_INTERRUPT;
-	vt100_clear_all();
 }
 
 
@@ -355,13 +341,13 @@ void system_controller_state_run_pid_controller(void)
 			//read angle
 
 			PORT_LEDS |= _BV(LED6);
-			current_angle = motionsensor_get_angle();
+			current_angle = motionsensor_get_angle_y();
 			PORT_LEDS&= ~_BV(LED6);
 
 			//calculate pid
 
 			PORT_LEDS |= _BV(LED5);
-			pid_output = pid_Controller(pid_setpoint, current_angle, &pid_data);
+			pid_output = pid_Controller(pid_setpoint, current_angle, &pid_controller_data);
 			PORT_LEDS&= ~_BV(LED5);
 
 //			PORT_LEDS &= ~_BV(LED6);
@@ -416,95 +402,3 @@ void system_controller_state_run_pid_controller(void)
 
 	next_state = STATE_NULL;
 }
-/*
-static inline void wireless_send_acceleration(void)
-{
-	wireless_send_buffer[0] = WIRELESS_TYPE_DATA_ACCELERATION;
-
-	wireless_send_buffer[1] = (uint8_t)(current_acceleration.x >> 8);
-	wireless_send_buffer[2] = (uint8_t)(current_acceleration.x & 0x00FF);
-
-	//acceleration_y
-	wireless_send_buffer[3] = (uint8_t)((current_acceleration.y) >> 8);
-	wireless_send_buffer[4] = (uint8_t)((current_acceleration.y) & 0x00FF);
-
-	//acceleration_z
-	wireless_send_buffer[5] = (uint8_t)((current_acceleration.z) >> 8);
-	wireless_send_buffer[6] = (uint8_t)((current_acceleration.z) & 0x00FF);
-
-	wireless_send_buffer_len = 7;
-
-
-	simplex_protocol_send(SIMPLEX_PROTOCOL_FRAME_TYPE_DATA,
-			wireless_send_buffer_len,
-			wireless_send_buffer);
-}
-*/
-
-/*
-static inline void wireless_send_angularvelocity(void)
-{
-	wireless_send_buffer[0] = WIRELESS_TYPE_DATA_ANGULARVELOCITY;
-
-	wireless_send_buffer[1] = (uint8_t)(current_angularvelocity.x >> 8);
-	wireless_send_buffer[2] = (uint8_t)(current_angularvelocity.x & 0x00FF);
-
-	//acceleration_y
-	wireless_send_buffer[3] = (uint8_t)((current_angularvelocity.y) >> 8);
-	wireless_send_buffer[4] = (uint8_t)((current_angularvelocity.y) & 0x00FF);
-
-	//acceleration_z
-	wireless_send_buffer[5] = (uint8_t)((current_angularvelocity.z) >> 8);
-	wireless_send_buffer[6] = (uint8_t)((current_angularvelocity.z) & 0x00FF);
-
-
-	wireless_send_buffer_len = 7;
-
-
-	simplex_protocol_send(SIMPLEX_PROTOCOL_FRAME_TYPE_DATA,
-			wireless_send_buffer_len,
-			wireless_send_buffer);
-}
-*/
-
-/*
-static inline void wireless_send_pid(void)
-{
-
-
-	//header
-	wireless_send_buffer[0] = WIRELESS_TYPE_DATA_PID;
-	uint32_t temp;
-
-
-	//position
-	temp = (uint32_t)(current_position);
-	wireless_send_buffer[1] = (uint8_t)(temp >> 24);
-
-	temp = (uint32_t)(current_position);
-	temp = temp & 0x00FF0000;
-	wireless_send_buffer[2] = (uint8_t)(temp >> 16);
-
-	temp = (uint32_t)(current_position);
-	temp = temp & 0x0000FF00;
-	wireless_send_buffer[3] = (uint8_t)(temp >> 8);
-
-	temp = (uint32_t)(current_position);
-	wireless_send_buffer[4] = (uint8_t)((temp) & 0x000000FF);
-
-	//position
-	wireless_send_buffer[1] = (uint8_t)(current_angle >> 8);
-	wireless_send_buffer[2] = (uint8_t)(current_angle & 0x00FF);
-
-	//speed
-	wireless_send_buffer[3] = (uint8_t)((pid_output) >> 8);
-	wireless_send_buffer[4] = (uint8_t)((pid_output) & 0x00FF);
-
-	wireless_send_buffer_len = 5;
-
-	simplex_protocol_send(SIMPLEX_PROTOCOL_FRAME_TYPE_DATA,
-			wireless_send_buffer_len,
-			wireless_send_buffer);
-}
-
-*/
