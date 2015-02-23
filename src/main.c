@@ -19,8 +19,6 @@
 #include "system_controller.h"
 
 /* Tests */
-//#include "test/test_filters.h"
-#include "test/test_motor-driver.h"
 
 
 /* *** DECLARATIONS ********************************************************** */
@@ -29,7 +27,7 @@
 
 /* local function declarations  */
 static void main_run(void);
-static void main_run_tests(void);
+//static void main_run_tests(void);
 
 /* *** FUNCTION DEFINITIONS ************************************************** */
 
@@ -38,11 +36,8 @@ void main_run(void)
 	system_controller_state_machine();
 }
 
-void main_run_tests(void)
-{
-	//test_filters_run();
-	test_motor_driver();
-}
+//void main_run_tests(void)
+//{}
 
 /**
  * @details Does something important
@@ -51,7 +46,6 @@ void main_run_tests(void)
 int main(void)
 {
 	//main_run_tests();
-
 	main_run();
 
 	return 0;
