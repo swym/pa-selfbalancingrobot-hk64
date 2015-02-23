@@ -25,7 +25,7 @@ static motor_contol_speed_t new_speed;
 /**
  * Initialize the Motor-Controller and the underlaying Motor-driver MD25
  */
-void motor_control_init()
+void motor_control_init(uint8_t motor_acceleration)
 {
 	current_speed.motor_1 = 0;
 	current_speed.motor_2 = 0;
@@ -33,7 +33,7 @@ void motor_control_init()
 	new_speed.motor_1 = 0;
 	new_speed.motor_2 = 0;
 
-	l6205_init(L6205_ACCELERATION_DEFAULT);
+	l6205_init(motor_acceleration);
 }
 
 

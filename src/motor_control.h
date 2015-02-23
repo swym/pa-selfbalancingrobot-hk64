@@ -29,7 +29,7 @@ typedef struct {
 /* external objects            */
 
 /* external functions          */
-extern void motor_control_init(void);
+extern void motor_control_init(uint8_t motor_acceleration);
 
 extern void motor_control_prepare_new_speed(motor_contol_speed_t *); /* motor_contol_speed_t *s */
 extern void motor_control_set_new_speed(void);
