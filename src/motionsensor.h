@@ -47,6 +47,12 @@ typedef struct {
 
 /* * external objects            * */
 
+//TODO: Änderungen am Modul:
+// - Filter wieder einbinden.
+// - Filter vereinheitlichen
+// - Temperaturabhäniger Offset für angularvelocity
+// - printdata modul -> nach sprintf umbauen; und etwas geschicker aufbauen.
+
 /**
  * Normierung:
  * Sollwert == 0°
@@ -66,6 +72,8 @@ extern void motionsensor_calibrate_zero_point(void);
 
 //extern void motionsensor_acceleration_calibrate_zero_point(void);
 //extern void motionsensor_angularvelocity_calibrate_zero_point(void);
+
+extern void motionsensor_printdata(void);
 
 //Getter and Setters
 extern void motionsensor_get_acceleration_offset_vector(acceleration_vector_t *acceleration);
