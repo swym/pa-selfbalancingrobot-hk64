@@ -138,7 +138,8 @@ void UART_init(void)
 #endif
 */
     MYUCSRA = _BV(U2X); /* improve baud rate error by using 2x clk */
-    MYUBRRL = (F_CPU / (8UL * baudrate)) - 1;
+    //MYUBRRL = (F_CPU / (8UL * baudrate)) - 1;
+    MYUBRRL = 16;
     MYUCSRB = _BV(MYTXEN) | _BV(MYRXEN); /* tx/rx enable */
 
     stdout = stdin = &uart_str;
