@@ -528,11 +528,13 @@ double motionsensor_get_complementary_filter_ratio(void)
 }
 
 
-
+//angularvelocity_factor == b; acceleration_factor == 1-b
 void motionsensor_set_complementary_filter_ratio(double ratio)
 {
-	if(ratio > 1.0 || ratio < 0.0) {
-		ratio = 0.9;
+	if(ratio > 1.0) {
+		ratio = 1.0;
+	} else if(ratio < 0.0) {
+		ratio = 0.0;
 	}
 
 	complementary_filter_angularvelocity_factor = ratio;
