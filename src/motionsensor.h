@@ -74,14 +74,20 @@ extern void motionsensor_set_acceleration_offset_vector(acceleration_vector_t *a
 extern void motionsensor_get_angularvelocity_offset_vector(angularvelocity_vector_t *angularvelocity);
 extern void motionsensor_set_angularvelocity_offset_vector(angularvelocity_vector_t *angularvelocity);
 
+extern double motionsensor_get_complementary_filter_ratio(void);
+extern void motionsensor_set_complementary_filter_ratio(double ratio);
+
+extern uint16_t motionsensor_get_angle_scalingfactor(void);
+extern void motionsensor_set_angle_scalingfactor(uint16_t s);
+
+/*
 extern double motionsensor_get_complementary_filter_angularvelocity_factor(void);
 extern void motionsensor_set_complementary_filter_angularvelocity_factor(double factor);
 
 extern double motionsensor_get_complementary_filter_acceleraton_factor(void);
 extern void motionsensor_set_complementary_filter_acceleraton_factor(double factor);
+*/
 
-extern uint16_t motionsensor_get_angle_scalingfactor(void);
-extern void motionsensor_set_angle_scalingfactor(uint16_t s);
 
 /* * external functions          * */
 

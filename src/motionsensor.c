@@ -521,32 +521,22 @@ void motionsensor_angularvelocity_set_zero_point(void)
 }
 */
 
-double motionsensor_get_complementary_filter_angularvelocity_factor(void)
+double motionsensor_get_complementary_filter_ratio(void)
 {
+	//angularvelocity_factor == b; acceleration_factor == 1-b
 	return complementary_filter_angularvelocity_factor;
 }
 
-void motionsensor_set_complementary_filter_angularvelocity_factor(double factor)
+
+
+void motionsensor_set_complementary_filter_ratio(double ratio)
 {
-	if(factor > 1.0 || factor < 0.0) {
-		factor = 1.0 - complementary_filter_acceleraton_factor;
+	if(ratio > 1.0 || ratio < 0.0) {
+		ratio = 0.9;
 	}
 
-	complementary_filter_angularvelocity_factor = factor;
-}
-
-double motionsensor_get_complementary_filter_acceleraton_factor(void)
-{
-	return complementary_filter_acceleraton_factor;
-}
-
-void motionsensor_set_complementary_filter_acceleraton_factor(double factor)
-{
-	if(factor > 1.0 || factor < 0.0) {
-		factor = 1.0 - complementary_filter_angularvelocity_factor;
-	}
-
-	complementary_filter_acceleraton_factor = factor;
+	complementary_filter_angularvelocity_factor = ratio;
+	complementary_filter_acceleraton_factor     = 1.0 - ratio;
 }
 
 void motionsensor_init(void)
