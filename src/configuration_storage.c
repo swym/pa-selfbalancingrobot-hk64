@@ -92,6 +92,7 @@ void configuration_storage_reset_configuration(void)
 
 	strncpy(configuration.comment, "- new -", CONFIGURATION_STORAGE_COMMENT_LENGTH);
 	configuration.version = CONFIGURATION_STORAGE_VERSION;
+	configuration.run_mode = CONFIGURATION_STORAGE_RUN_MODE_NORMAL;
 	configuration.has_changed = true;
 }
 
@@ -259,6 +260,20 @@ void configuration_storage_set_angle_scalingfactor(uint16_t as)
 char * configuration_storage_get_comment(void)
 {
 	return configuration.comment;
+}
+
+void configuration_storage_set_run_mode(uint8_t mode)
+{
+	if(mode == CONFIGURATION_STORAGE_RUN_MODE_DEBUG) {
+		configuration.run_mode = CONFIGURATION_STORAGE_RUN_MODE_DEBUG;
+	} else {
+		configuration.run_mode = CONFIGURATION_STORAGE_RUN_MODE_NORMAL;
+	}
+}
+
+uint8_t configuration_storage_get_run_mode(void)
+{
+	return configuration.run_mode;
 }
 
 uint8_t configuration_storage_get_motor_acceleration(void)

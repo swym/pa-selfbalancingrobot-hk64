@@ -56,6 +56,7 @@ typedef enum {
 	STATE_INIT_CONTROLLER_ENVIRONMENT,
 	STATE_INIT_REMAINING_HARDWARE,
 	STATE_RUN_CONTROLLER,
+	STATE_RUN_DEBUG,
 	STATE_FINAL,
 	STATE_NULL
 } system_controller_state_t;
@@ -88,6 +89,7 @@ static void system_controller_state_run_configuration_terminal(void);
 static void system_controller_state_init_controller_environment(void);
 static void system_controller_state_init_remaining_hardware(void);
 static void system_controller_state_run_controller(void);
+static void system_controller_state_run_debug_mode(void);
 
 /* *** FUNCTION DEFINITIONS ************************************************** */
 void system_controller_state_machine(void)
@@ -126,6 +128,10 @@ void system_controller_state_machine(void)
 				system_controller_state_run_controller();
 			break;
 
+			case STATE_RUN_DEBUG:
+				system_controller_state_run_debug_mode();
+			break;
+
 			default:
 				current_state = STATE_FINAL;
 			break;
@@ -139,7 +145,6 @@ void system_controller_state_machine(void)
 
 void system_controller_state_init_basic_hardware(void)
 {
-	uint8_t i;
 	/* *** ENTRY *** */
 
 
@@ -358,14 +363,19 @@ void system_controller_state_init_remaining_hardware(void)
 
 
 	/* *** EXIT **** */
-	next_state = STATE_RUN_CONTROLLER;
-}
+	if(configuration_storage_get_run_mode() == CONFIGURATION_STORAGE_RUN_MODE_DEBUG) {
+		next_state = STATE_RUN_DEBUG;
+	} else {
+		next_state = STATE_RUN_CONTROLLER;
+	}
 
+}
 
 void system_controller_state_run_controller(void)
 {
 	/* *** ENTRY *** */
 	printf("run controller...\n");
+	PORT_LEDS = 0x00;
 
 	/* **** DO ***** */
 
@@ -441,6 +451,24 @@ void system_controller_state_run_controller(void)
 	} // end while(true)
 
 
+	/* *** EXIT **** */
+
+	next_state = STATE_NULL;
+}
+
+void system_controller_state_run_debug_mode(void)
+{
+	uint8_t led_value = 0;
+
+	/* *** ENTRY *** */
+	printf("run debug mode...\n");
+
+	/* **** DO ***** */
+	while(true) {
+		motionsensor_printdata();
+		PORT_LEDS = led_value++;
+		_delay_ms(50);
+	}
 	/* *** EXIT **** */
 
 	next_state = STATE_NULL;
