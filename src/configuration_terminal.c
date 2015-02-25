@@ -52,6 +52,7 @@ typedef enum {
 	STATE_RESET_CONFIG,
 	STATE_SAVE_CONFIG,
 	STATE_LIVE_DATA,
+	STATE_RUN_DEBUG,
 	STATE_FINAL,
 	STATE_NULL
 } configuration_terminal_state_t;
@@ -73,9 +74,10 @@ static void configuration_terminal_state_set_filter_parameter(void);
 static void configuration_terminal_state_set_offset(void);
 static void configuration_terminal_state_reset_configuration(void);
 static void configuration_terminal_state_save_configuration(void);
+static void configuration_terminal_state_run_debug(void);
+
 
 static bool parse_input2int16(int16_t *value, int16_t min, int16_t max);
-//static bool parse_input2double(double *value, double min, double max);
 
 /* *** FUNCTION DEFINITIONS ************************************************* */
 
@@ -115,10 +117,6 @@ void configuration_terminal_state_machine(void)
 				configuration_terminal_state_set_motor_parameter();
 			break;
 
-			case STATE_LIVE_DATA:
-//				configuration_terminal_state_live_data();
-			break;
-
 			case STATE_SET_OFFSET:
 				configuration_terminal_state_set_offset();
 			break;
@@ -131,6 +129,9 @@ void configuration_terminal_state_machine(void)
 				configuration_terminal_state_save_configuration();
 			break;
 
+			case STATE_RUN_DEBUG:
+				configuration_terminal_state_run_debug();
+			break;
 			default:
 			break;
 		}
@@ -161,8 +162,7 @@ void configuration_terminal_state_print_help(void)
 
 	printf("z - set new offsets for motionsensor\n\n");
 
-//	printf("l - show live data\n\n");
-//	printf("d - run in datadump mode?\n\n");
+
 
 	printf("? - print this help\n");
 	printf("s - show current configuration\n\n");
@@ -170,6 +170,7 @@ void configuration_terminal_state_print_help(void)
 	printf("r - reset parameters to defaults\n");
 	printf("x - quit terminal and DISCARD changes\n");
 	printf("q - quit terminal and SAVE changes to eeprom\n");
+	printf("d - quit terminal and SAVE changes and run in debug mode\n");
 
 
 	next_state = STATE_READ_INPUT;
@@ -220,9 +221,6 @@ void configuration_terminal_state_read_input(void)
 	vt100_clear_input_buffer();
 	vt100_get_string(input_buffer,INPUT_BUFFER_MAX);
 
-//	printf("%s",input_buffer);
-
-
 	switch (input_buffer[INPUT_BUFFER_COMMAND]) {
 		case 'c':
 			next_state = STATE_SET_PID_CENTER_PARAMETER;
@@ -245,14 +243,14 @@ void configuration_terminal_state_read_input(void)
 		case 's':
 			next_state = STATE_PRINT_CONFIG;
 			break;
-//		case 'l':
-//			next_state = STATE_LIVE_DATA;
-//			break;
 		case 'r':
 			next_state = STATE_RESET_CONFIG;
 			break;
 		case 'q':
 			next_state = STATE_SAVE_CONFIG;
+			break;
+		case 'd':
+			next_state = STATE_RUN_DEBUG;
 			break;
 		case 'x':
 			next_state = STATE_FINAL;
@@ -433,6 +431,13 @@ void configuration_terminal_state_reset_configuration(void)
 void configuration_terminal_state_save_configuration(void)
 {
 	configuration_storage_save_configuration();
+	next_state = STATE_FINAL;
+}
+
+void configuration_terminal_state_run_debug(void)
+{
+	configuration_storage_save_configuration();
+	configuration_storage_set_run_mode(CONFIGURATION_STORAGE_RUN_MODE_DEBUG);
 	next_state = STATE_FINAL;
 }
 

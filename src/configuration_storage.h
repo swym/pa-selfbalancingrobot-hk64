@@ -20,8 +20,11 @@
 /* *** DECLARATIONS ********************************************************** */
 
 /* * external type and constants * */
-#define CONFIGURATION_STORAGE_VERSION			106
+#define CONFIGURATION_STORAGE_VERSION			107
 #define CONFIGURATION_STORAGE_COMMENT_LENGTH	20
+
+#define CONFIGURATION_STORAGE_RUN_MODE_NORMAL	0
+#define CONFIGURATION_STORAGE_RUN_MODE_DEBUG	1
 
 /* * external objects            * */
 
@@ -48,6 +51,7 @@ typedef struct {
 
 	char comment[CONFIGURATION_STORAGE_COMMENT_LENGTH];
 	uint8_t version;
+	uint8_t run_mode;
 	bool has_changed;
 } configuration_t;
 
@@ -103,6 +107,9 @@ extern void configuration_storage_set_motor_acceleration(uint8_t);
 
 extern char * configuration_storage_get_comment(void);
 extern void configuration_storage_set_comment(char * comment);
+
+extern void configuration_storage_set_run_mode(uint8_t mode);
+extern uint8_t configuration_storage_get_run_mode(void);
 
 extern bool configuration_storage_config_has_changed(void);
 

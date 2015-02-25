@@ -623,7 +623,7 @@ void motionsensor_init(void)
 	complementary_filter_angularvelocity_factor = 100;
 	complementary_filter_acceleraton_factor = 0;
 
-	printformat = MOTIONSENSOR_PRINT_FORMAT_NICE;
+	printformat = MOTIONSENSOR_PRINT_FORMAT_CSV;
 	printdata   = MOTIONSENSOR_PRINT_DATA_ALL;
 
 	//reset_integrated_gyro_angle_y();
