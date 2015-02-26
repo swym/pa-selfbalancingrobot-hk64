@@ -16,11 +16,11 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
+#include "../filter.h"
 /* * local headers               * */
 #include "../lib/uart.h"
 #include "../leds.h"
 
-#include "../filters.h"
 
 /* *** DEFINES ************************************************************** */
 
@@ -141,12 +141,12 @@ void test_filters_run()
 		printf("test weights_fat...\n");
 		_delay_ms(1000);
 
-		filters_moving_generic_average_init(&gen_avg, weights_fat, 0);
+		filter_moving_generic_average_init(&gen_avg, weights_fat, 0);
 		printf("wcnt:%d wsum:%d\n",gen_avg.weights_count, gen_avg.weights_sum);
 
 		for(i = 0; i < test_values_counter; i++) {
 			PORT_LEDS = 0xFF;
-			filters_moving_generic_average_put_element(&gen_avg, test_values[i]);
+			filter_moving_generic_average_put_element(&gen_avg, test_values[i]);
 			PORT_LEDS = 0x00;
 			printf("%7d", gen_avg.avg);
 			_delay_ms(5);

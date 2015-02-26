@@ -15,10 +15,10 @@
 
 #include <stdio.h>
 
+#include "filter.h"
 /* * local headers               * */
 //#include "bma020.h"
 #include "mpu9150.h"
-#include "filters.h"
 
 
 

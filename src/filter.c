@@ -7,7 +7,7 @@
 
 
 /* *** INCLUDES ************************************************************* */
-#include "filters.h"
+#include "filter.h"
 
 /* * system headers              * */
 
@@ -28,8 +28,8 @@
 /* *** FUNCTION DEFINITIONS ************************************************* */
 
 
-void filters_moving_generic_average_put_element(
-		filters_moving_generic_average_t * average,
+void filter_moving_generic_average_put_element(
+		filter_moving_generic_average_t * average,
 		int16_t new_value)
 {
 	uint8_t i;
@@ -51,8 +51,8 @@ void filters_moving_generic_average_put_element(
 }
 
 
-void filters_moving_generic_average_init(
-		filters_moving_generic_average_t * average,
+void filter_moving_generic_average_init(
+		filter_moving_generic_average_t * average,
 		uint8_t * weights,
 		int16_t init_value)
 {
@@ -72,22 +72,22 @@ void filters_moving_generic_average_init(
 	}
 
 	for(i = 0; i < average->weights_count; i++) {
-		filters_moving_generic_average_put_element(average, init_value);
+		filter_moving_generic_average_put_element(average, init_value);
 	}
 }
 
-void filters_moving_generic_average_flush(
-		filters_moving_generic_average_t * average)
+void filter_moving_generic_average_flush(
+		filter_moving_generic_average_t * average)
 {
 	uint8_t i;
 
 	for(i = 0; i < average->weights_count; i++) {
-		filters_moving_generic_average_put_element(average, 0);
+		filter_moving_generic_average_put_element(average, 0);
 	}
 }
 
-void filters_moving_average_put_element(
-		filters_moving_average_t *average,
+void filter_moving_average_put_element(
+		filter_moving_average_t *average,
 		int16_t new_value)
 {
 	//remove oldest value from sum and add newest one
@@ -108,24 +108,24 @@ void filters_moving_average_put_element(
 	}
 }
 
-void filters_moving_average_init(
-		filters_moving_average_t *average,
+void filter_moving_average_init(
+		filter_moving_average_t *average,
 		int16_t init_value)
 {
 	uint8_t i;
 
 	for(i = 0;i < FILTER_MOVING_AVERAGE_ELEMENT_COUNT;i++) {
-		filters_moving_average_put_element(average, init_value);
+		filter_moving_average_put_element(average, init_value);
 	}
 }
 
-void filters_moving_average_flush(
-		filters_moving_average_t *average)
+void filter_moving_average_flush(
+		filter_moving_average_t *average)
 {
 	uint8_t i;
 
 	for(i = 0;i < FILTER_MOVING_AVERAGE_ELEMENT_COUNT;i++) {
-		filters_moving_average_put_element(average, 0);
+		filter_moving_average_put_element(average, 0);
 	}
 }
 
