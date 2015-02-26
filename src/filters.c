@@ -30,6 +30,90 @@ static uint8_t weighted_average_devisor = 4;				//sum of left shifted weights
 
 /* *** FUNCTION DEFINITIONS ************************************************* */
 
+//8, 2, 1, 0, 0, 0, 0, 0;
+void filters_moving_generic_average_init(
+		filters_moving_generic_average_t * average,
+		uint8_t * weights,
+		uint16_t init_value)
+{
+	uint8_t i;
+
+	average->weights_sum = 0;
+	average->weights_count = 0;
+
+	for(i = 0; i < FILTER_MOVING_GENERIC_WEIGHTS_COUNT;i++) {
+		if(weights[i] > 0) {
+			average->weights[i] = weights[i];				//copy weight
+			average->weights_sum += average->weights[i];	//upate sum
+			average->weights_count++;						//update counter
+		} else {
+			average->weights[i] = 0;
+		}
+	}
+
+	for(i = 0; i < average->weights_count; i++) {
+		filters_moving_generic_average_put_element(average, init_value);
+	}
+}
+
+void filters_moving_generic_average_flush(filters_moving_generic_average_t * average)
+{
+	uint8_t i;
+
+	for(i = 0; i < average->weights_count; i++) {
+		filters_moving_generic_average_put_element(average, 0);
+	}
+}
+
+void filters_moving_generic_average_put_element(
+		filters_moving_generic_average_t * average,
+		int16_t new_value)
+{
+
+	//int32_t elem = 0;
+	//int32_t mul = 0;
+
+	uint8_t i;
+	int32_t element_sum = 0;
+
+
+//	printf("summing:\n");
+	//iterate over elements and move elements to next
+	for(i = average->weights_count - 1; i > 0; i--) {
+		average->elements[i] = average->elements[i - 1];							//move elements to left (older them)
+//		elem = average->elements[i];
+//		mul = ((int32_t)average->elements[i]) * average->weights[i];
+		//element_sum +=  ((int32_t)(average->elements[i]) * average->weights[i]);	//sum them up with their weight
+		element_sum += ((int32_t)average->elements[i]) * average->weights[i];
+//		printf("[e:%6ld m:%6ld s:%6ld]     ",elem, mul, element_sum);
+	}
+	//add newest element
+	//apply weight to element and add to sum
+	average->elements[0] = new_value;
+	//element_sum += (int32_t)((average->elements[0]) * average->weights[0]);
+	//printf("%6ld\n", element_sum);
+//	elem = average->elements[0];
+//	mul = ((int32_t)average->elements[0]) * average->weights[0];
+	element_sum += ((int32_t)average->elements[0]) * average->weights[0];
+//	printf("[e:%6ld m:%6ld s:%6ld]\n",elem, mul, element_sum);
+/*
+	printf("elem: ");
+	for(i = 0; i < average->weights_count; i++) {
+		printf("%6d ", average->elements[i]);
+	}
+	printf("\n");
+
+	printf("w:    ");
+	for(i = 0; i < average->weights_count; i++) {
+		printf("%6d ", average->weights[i]);
+	}
+	printf("\n");
+*/
+	average->avg = (int16_t)(element_sum / average->weights_sum);			//devide sum with weights
+//	printf("avg: %6d\n", average->avg);
+//	printf("\n\n");
+}
+
 void filters_moving_average_put_element(moving_average_t *average, int16_t value)
 {
 	average->elements_sum -= average->elements[average->index];	//zu UEberschreibenen Wert aus der Summe loeschen
@@ -51,7 +135,7 @@ void filters_moving_average_put_element(moving_average_t *average, int16_t value
 //TODO: Replace with a more performant implementation
 void filters_weighted_average_put_element(weighted_average_t *average, int16_t value)
 {
-	int64_t elements_sum = 0;						//sum of all elements and their weights
+	int32_t elements_sum = 0;						//sum of all elements and their weights
 	int8_t i;										//index for-loop
 
 
