@@ -19,14 +19,12 @@
 /* * local headers               * */
 #include "../lib/uart.h"
 #include "../lib/twi_master.h"
-#include "../lib/rfm12.h"
 
-#include "../simplex-protocol.h"
 #include "../motionsensor.h"
 #include "../mpu9150.h"
 #include "../timer.h"
 
-#include "../common.h"
+#include "../leds.h"
 
 
 
@@ -47,12 +45,15 @@
 #define MPU9150_REGISTER_GYRO_ZOUT_L	0x48
 
 #define MPU9150_REGISTER_PWR_MGMT_1		0x6B
+#define MPU9150_REGISTER_SMPRT_DIV		0x19
 
 /* *** DECLARATIONS ********************************************************* */
 
 /* * local type and constants    * */
 
 /* * local objects               * */
+volatile timer_slot_t timer_current_majorslot;
+volatile timer_slot_t timer_current_minorslot;
 
 /* * local function declarations * */
 static void test_mpu9150_init();
@@ -60,69 +61,48 @@ static void test_mpu9150_with_rfm12();
 static void test_mpu9150_with_uart();
 
 /* *** FUNCTION DEFINITIONS ************************************************* */
-static void test_mpu9150_with_rfm12(void)
-{
-	simplex_protocol_init();
-	rfm12_init();
-
-	_delay_ms(500);  //little delay for the rfm12 to initialize properly
-	printf("rfm12 inited.\n");
-
-	PORTC |= _BV(1);
-
-	angularvelocity_t angvelo_vector;
-	acceleration_t accel_vector;
-
-	uint8_t data_len = 6;
-	uint8_t data[6];
-
-	printf("start sending angular velocity ...\n");
-
-	while(true) {
-
-		mpu9150_read_angularvelocity(&angvelo_vector);
-		mpu9150_read_acceleration(&accel_vector);
-
-		data[0]  = (uint8_t)(accel_vector.x >> 8);
-		data[1]  = (uint8_t)(accel_vector.x & 0x00FF);
-
-		data[2]  = (uint8_t)(accel_vector.y >> 8);
-		data[3]  = (uint8_t)(accel_vector.y & 0x00FF);
-
-		data[4]  = (uint8_t)(accel_vector.z >> 8);
-		data[5]  = (uint8_t)(accel_vector.z & 0x00FF);
-
-		simplex_protocol_send(SIMPLEX_PROTOCOL_FRAME_TYPE_DATA,
-							 data_len,
-							 data);
-
-		simplex_protocol_tick();
-
-		_delay_ms(20);
-	}
-}
 
 static void test_mpu9150_with_uart()
 {
 	printf("test_mpu9150_with_uart()\n");
 
-	int16_t y;
-	int16_t max = 0;
+	mpu9150_motiondata_t raw_data;
+	uint8_t tmp;
 
 	_delay_ms(100);
 
+	tmp = twi_master_read_register(MPU9150_TWI_ADDRESS, MPU9150_REGISTER_PWR_MGMT_1);
+	printf("PWR_MGMT_1: %X\n", tmp);
+
+	tmp = twi_master_read_register(MPU9150_TWI_ADDRESS, MPU9150_REGISTER_SMPRT_DIV);
+	printf("SMPRT_DIV: %X\n", tmp);
+
+	tmp = twi_master_read_register(MPU9150_TWI_ADDRESS, 0x1B);
+	printf("GYRO_CONFIG: %X\n", tmp);
+
+	tmp = twi_master_read_register(MPU9150_TWI_ADDRESS, 0x1C);
+	printf("ACCEL_CONFIG: %X\n", tmp);
+
+
+	_delay_ms(2000);
+
 	while(true) {
 
-		if(timer_slot_0) {
-			timer_slot_0 = false;
-			PORT_LED ^= _BV(0);
+		if(timer_current_majorslot == TIMER_MAJORSLOT_0) {
+			timer_current_majorslot = false;
 
-			y = mpu9150_read_angularvelocity_y();
+			PORT_LEDS ^= _BV(0);
 
-			if(y > max) {
-				max = y;
-				printf("%d\n", max);
-			}
+			mpu9150_read_motiondata(&raw_data);
+
+			printf("%7d%7d%7d%7d%7d%7d%7d\n",
+					raw_data.acceleration.x,
+					raw_data.acceleration.y,
+					raw_data.acceleration.z,
+					raw_data.angularvelocity.x,
+					raw_data.angularvelocity.y,
+					raw_data.angularvelocity.z,
+					raw_data.temp);
 		}
 	}
 }
@@ -132,20 +112,17 @@ void test_mpu9150_run()
 	test_mpu9150_init();
 	printf("test_mpu9150_inited\n");
 
-	//test_mpu9150_with_rfm12();
+
 	test_mpu9150_with_uart();
 }
 
 void test_mpu9150_init()
 {
-	DDR_LED = 0xFF;							/* Data Direction Register der LEDs als Ausgang definieren */
+	leds_init();							/* Data Direction Register der LEDs als Ausgang definieren */
 
-	UART_init(57600);						/* Init UART mit 57600 baud */
-	twi_master_init(TWI_TWBR_VALUE_400);	/* Init TWI/I2C Schnittstelle */
-
-	timer_init();
-
+	UART_init();							/* Init UART mit 57600 baud */
 	sei();
-
+	twi_master_init(TWI_TWBR_VALUE_400);	/* Init TWI/I2C Schnittstelle */
+	timer_init();
 	mpu9150_init();
 }
