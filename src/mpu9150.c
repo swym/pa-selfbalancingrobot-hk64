@@ -166,7 +166,7 @@ uint8_t mpu9150_get_who_am_i(void)
 //}
 
 
-void mpu9150_read_motiondata(mpu9150_motiondata_t * motiondata)
+void mpu9150_read_motiondata(mpu9150_data_t * motiondata)
 {
 	uint8_t temp_data;
 

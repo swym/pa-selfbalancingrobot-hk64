@@ -45,14 +45,18 @@
 
 //there a three object of each sensor value: offset_vector; vector with concret data; filter buffer
 //also a rawdata buffer
-static acceleration_vector_t acceleration_vector;
-static angularvelocity_vector_t angularvelocity_vector;
-static int16_t	temperature;
+static motionsensor_motiondata_t motiondata;
+static motionsensor_motiondata_t offset;
+static mpu9150_data_t raw_imudata;
 
-static acceleration_vector_t acceleration_offset_vector;
-static angularvelocity_vector_t angularvelocity_offset_vector; //TODO: replace with temp sensitiv solution
+//static acceleration_vector_t acceleration_vector;
+//static angularvelocity_vector_t angularvelocity_vector;
+//static int16_t	temperature;
 
-static mpu9150_motiondata_t raw_imudata;
+//static acceleration_vector_t acceleration_offset_vector;
+//static angularvelocity_vector_t angularvelocity_offset_vector; //TODO: replace with temp. sensitive solution
+
+
 
 // - FILTER
 static uint8_t angularvelocity_filter_mask[] = {64, 1, 0, 0, 0, 0, 0, 0};
@@ -69,8 +73,8 @@ static uint8_t calibrate_zero_point_filter_mask[] = {1, 1, 1, 1, 1, 1, 1, 1};
 
 
 // variables used in get_angle_y -> module internal - so print function can read them
-static int16_t angle_y;
-static int16_t acceleration_angle_y;
+static motionsensor_angle_t angle_y;
+static motionsensor_angle_t acceleration_angle_y;
 static double acceleration_angle_y_magnitude;
 
 static int16_t angle_scalingfactor;
@@ -82,36 +86,35 @@ static uint8_t printdata;
 
 
 /* * local function declarations * */
-static void motionsensor_get_motiondata(void);
+static void motionsensor_get_motiondata(motionsensor_motiondata_t * mdata);
 
 /* *** FUNCTION DEFINITIONS ************************************************* */
 
-int16_t motionsensor_get_angle_y(void)
+motionsensor_angle_t motionsensor_get_angle_y(void)
 {
 	int32_t fused_angles;
-	int32_t accel_x_sqared;
-	int32_t accel_z_sqared;
-
+	int32_t accel_x_squared;
+	int32_t accel_z_squared;
 
 	//get sensordata data
-	motionsensor_get_motiondata();
+	motionsensor_get_motiondata(&motiondata);
 
 	//## get acceleration_angle of y
 	//determine angle using acceleration vectors and atan and normalize
 	//acceleration_angle_y = (int16_t)(atan2(acceleration_vector.x, -acceleration_vector.z) * NORMALIZATION_ACCELERATION_ANGLE);
-	accel_x_sqared = (int32_t)acceleration_vector.x * (int32_t)acceleration_vector.x;
-	accel_z_sqared = (int32_t)acceleration_vector.z * (int32_t)acceleration_vector.z;
-	acceleration_angle_y_magnitude = (sqrt(accel_x_sqared + accel_z_sqared) / ((double)MOTIONSENSOR_ACCELERATION_1G)); //calculate magnitude and norm it to 1
+	accel_x_squared = (int32_t)motiondata.acceleration.x * (int32_t)motiondata.acceleration.x;
+	accel_z_squared = (int32_t)motiondata.acceleration.z * (int32_t)motiondata.acceleration.z;
+	acceleration_angle_y_magnitude = (sqrt(accel_x_squared + accel_z_squared) / ((double)MOTIONSENSOR_ACCELERATION_1G)); //calculate magnitude and norm it to 1
 
 	//calculate angle with acceleration using atan2 and respect magnitude
-	acceleration_angle_y  = (int16_t)(
-							(atan2(acceleration_vector.x , acceleration_vector.z)
+	acceleration_angle_y  = (motionsensor_angle_t)(
+							(atan2(motiondata.acceleration.x , motiondata.acceleration.z)
 							 / acceleration_angle_y_magnitude)
 							 * NORMALIZATION_ACCELERATION_ANGLE);
 
 	//##get angularvelocity of y
 	//integrate angular velocity to angle over time (dt = 4 ms) (no normalization needed)
-	angle_y += angularvelocity_vector.y / ANGULARVELOCITY_DELTA_TIME_MS; // gyro * dt =  angular * 4 / 1000
+	angle_y += motiondata.angularvelocity.y / ANGULARVELOCITY_DELTA_TIME_MS; // gyro * dt =  angular * 4 / 1000
 
 	//compensate gyro integral error using acceleration_angle
 	//grad der qualität des winkels des beschleunigungssensors bewerten
@@ -119,13 +122,13 @@ int16_t motionsensor_get_angle_y(void)
 		//fuse sensor data with complementary filter
 		fused_angles  = ((int32_t)angle_y) * complementary_filter_angularvelocity_factor;
 		fused_angles += ((int32_t)acceleration_angle_y) * complementary_filter_acceleraton_factor;
-		angle_y = (int16_t)(fused_angles / MOTIONSENSOR_COMPLEMTARY_FILTER_RATIO_BASE);
+		angle_y = (motionsensor_angle_t)(fused_angles / MOTIONSENSOR_COMPLEMTARY_FILTER_RATIO_BASE);
 	}
 
 	return angle_y * angle_scalingfactor;
 }
 
-void motionsensor_get_motiondata(void)
+void motionsensor_get_motiondata(motionsensor_motiondata_t * mdata)
 {
 	//get raw data from imu
 	mpu9150_read_motiondata(&raw_imudata);
@@ -140,17 +143,17 @@ void motionsensor_get_motiondata(void)
 	filter_moving_generic_average_put_element(&angularvelocity_filter_y, raw_imudata.angularvelocity.y);
 	filter_moving_generic_average_put_element(&angularvelocity_filter_z, raw_imudata.angularvelocity.z);
 
-	temperature = raw_imudata.temperature;
+	mdata->temperature = raw_imudata.temperature;
 
 	//apply offset
-	acceleration_vector.x = acceleration_filter_x.avg + acceleration_offset_vector.x;
-	acceleration_vector.y = acceleration_filter_y.avg + acceleration_offset_vector.y;
-	acceleration_vector.z = acceleration_filter_z.avg + acceleration_offset_vector.z;
+	mdata->acceleration.x = acceleration_filter_x.avg + offset.acceleration.x;
+	mdata->acceleration.y = acceleration_filter_y.avg + offset.acceleration.y;
+	mdata->acceleration.z = acceleration_filter_z.avg + offset.acceleration.z;
 
 	//TODO: Use temperature offset
-	angularvelocity_vector.x = raw_imudata.angularvelocity.x + angularvelocity_offset_vector.x;
-	angularvelocity_vector.y = raw_imudata.angularvelocity.y + angularvelocity_offset_vector.y;
-	angularvelocity_vector.z = raw_imudata.angularvelocity.x + angularvelocity_offset_vector.z;
+	mdata->angularvelocity.x = raw_imudata.angularvelocity.x + offset.angularvelocity.x;
+	mdata->angularvelocity.y = raw_imudata.angularvelocity.y + offset.angularvelocity.y;
+	mdata->angularvelocity.z = raw_imudata.angularvelocity.x + offset.angularvelocity.z;
 }
 
 void motionsensor_printdata(void)
@@ -162,9 +165,9 @@ void motionsensor_printdata(void)
 
 	if(printdata == MOTIONSENSOR_PRINT_DATA_ACCEL_ANGLE) {
 		printf("r:%6d %6d %6d - a:%6d m:%6f - %6d\n",
-				acceleration_vector.x,
-				acceleration_vector.z,
-				angularvelocity_vector.y,
+				motiondata.acceleration.x,
+				motiondata.acceleration.z,
+				motiondata.angularvelocity.y,
 				acceleration_angle_y,
 				acceleration_angle_y_magnitude,
 				angle_y);
@@ -174,42 +177,42 @@ void motionsensor_printdata(void)
 		if (printformat == MOTIONSENSOR_PRINT_FORMAT_CSV) {
 
 			printf("%d;%d;%d;%d;%d;%d;%d\n",
-					acceleration_vector.x,
-					acceleration_vector.y,
-					acceleration_vector.z,
-					angularvelocity_vector.x,
-					angularvelocity_vector.y,
-					angularvelocity_vector.z,
-					temperature);
+					motiondata.acceleration.x,
+					motiondata.acceleration.y,
+					motiondata.acceleration.z,
+					motiondata.angularvelocity.x,
+					motiondata.angularvelocity.y,
+					motiondata.angularvelocity.z,
+					motiondata.temperature);
 
 		} else { //printformat == MOTIONSENSOR_PRINTFORMAT_CSV
 
 			printf("%6d %6d %6d %6d %6d %6d %6d\n",
-					acceleration_vector.x,
-					acceleration_vector.y,
-					acceleration_vector.z,
-					angularvelocity_vector.x,
-					angularvelocity_vector.y,
-					angularvelocity_vector.z,
-					temperature);
+					motiondata.acceleration.x,
+					motiondata.acceleration.y,
+					motiondata.acceleration.z,
+					motiondata.angularvelocity.x,
+					motiondata.angularvelocity.y,
+					motiondata.angularvelocity.z,
+					motiondata.temperature);
 		}
 	} else { //printdata == MOTIONSENSOR_PRINT_DATA_NECESSARY
 
 		if (printformat == MOTIONSENSOR_PRINT_FORMAT_CSV) {
 
 			printf("%d;%d;%d;%d\n",
-					acceleration_vector.x,
-					acceleration_vector.z,
-					angularvelocity_vector.y,
-					temperature);
+					motiondata.acceleration.x,
+					motiondata.acceleration.z,
+					motiondata.angularvelocity.y,
+					motiondata.temperature);
 
 		} else { //printformat == MOTIONSENSOR_PRINTFORMAT_CSV
 
 			printf("%6d %6d %6d %6d\n",
-					acceleration_vector.x,
-					acceleration_vector.z,
-					angularvelocity_vector.y,
-					temperature);
+					motiondata.acceleration.x,
+					motiondata.acceleration.z,
+					motiondata.angularvelocity.y,
+					motiondata.temperature);
 		}
 	}
 }
@@ -219,14 +222,13 @@ void motionsensor_calibrate_zero_point(void)
 	uint8_t i;
 
 	//set offsets to zero
-	acceleration_offset_vector.x = 0;
-	acceleration_offset_vector.y = 0;
-	acceleration_offset_vector.z = 0;
+	offset.acceleration.x = 0;
+	offset.acceleration.y = 0;
+	offset.acceleration.z = 0;
 
-	angularvelocity_offset_vector.x = 0;
-	angularvelocity_offset_vector.y = 0;
-	angularvelocity_offset_vector.z = 0;
-
+	offset.angularvelocity.x = 0;
+	offset.angularvelocity.y = 0;
+	offset.angularvelocity.z = 0;
 
 	//reset filters - use
 	filter_moving_generic_average_init(&acceleration_filter_x, calibrate_zero_point_filter_mask, 0);
@@ -234,24 +236,23 @@ void motionsensor_calibrate_zero_point(void)
 	filter_moving_generic_average_init(&acceleration_filter_z, calibrate_zero_point_filter_mask, 0);
 
 	filter_moving_generic_average_init(&angularvelocity_filter_x, calibrate_zero_point_filter_mask, 0);
-	filter_moving_generic_average_init(&angularvelocity_filter_x, calibrate_zero_point_filter_mask, 0);
-	filter_moving_generic_average_init(&angularvelocity_filter_x, calibrate_zero_point_filter_mask, 0);
-
+	filter_moving_generic_average_init(&angularvelocity_filter_y, calibrate_zero_point_filter_mask, 0);
+	filter_moving_generic_average_init(&angularvelocity_filter_z, calibrate_zero_point_filter_mask, 0);
 
 	//loop: read rawdata + filter them...
 	for(i = 0;i < FILTER_MOVING_GENERIC_WEIGHTS_COUNT * 8;i++) {
-		motionsensor_get_motiondata();
+		motionsensor_get_motiondata(&motiondata);
 	}
 
 	//take current values and set them as offsets
-	acceleration_offset_vector.x = -acceleration_vector.x;
-	acceleration_offset_vector.y = -acceleration_vector.y;
-	acceleration_offset_vector.z = (MOTIONSENSOR_ACCELERATION_1G - acceleration_vector.z);  //TOOD: define -1 G somewhere
+	offset.acceleration.x = -motiondata.acceleration.x;
+	offset.acceleration.y = -motiondata.acceleration.y;
+	offset.acceleration.z = (MOTIONSENSOR_ACCELERATION_1G - motiondata.acceleration.z);  //TOOD: define -1 G somewhere
 
 	//TODO: replace with temp sensitiv solution
-	angularvelocity_offset_vector.x = -angularvelocity_vector.x;
-	angularvelocity_offset_vector.y = -angularvelocity_vector.y;
-	angularvelocity_offset_vector.z = -angularvelocity_vector.z;
+	offset.angularvelocity.x = -motiondata.angularvelocity.x;
+	offset.angularvelocity.y = -motiondata.angularvelocity.y;
+	offset.angularvelocity.z = -motiondata.angularvelocity.z;
 
 	//restore filter profiles
 	filter_moving_generic_average_init(&acceleration_filter_x, acceleration_filter_mask, 0);
@@ -264,7 +265,7 @@ void motionsensor_calibrate_zero_point(void)
 
 	//read dummy data to fill up filters again
 	for(i = 0;i < FILTER_MOVING_GENERIC_WEIGHTS_COUNT * 8;i++) {
-		motionsensor_get_motiondata();
+		motionsensor_get_motiondata(&motiondata);
 	}
 }
 
@@ -274,9 +275,9 @@ void motionsensor_calibrate_zero_point(void)
  */
 void motionsensor_get_acceleration_offset_vector(acceleration_vector_t *accel_v)
 {
-	accel_v->x = acceleration_offset_vector.x;
-	accel_v->y = acceleration_offset_vector.y;
-	accel_v->z = acceleration_offset_vector.z;
+	accel_v->x = offset.acceleration.x;
+	accel_v->y = offset.acceleration.y;
+	accel_v->z = offset.acceleration.z;
 }
 
 /**
@@ -286,13 +287,13 @@ void motionsensor_get_acceleration_offset_vector(acceleration_vector_t *accel_v)
 void motionsensor_set_acceleration_offset_vector(acceleration_vector_t *accel_v)
 {
 	if(accel_v != NULL) {
-		acceleration_offset_vector.x = accel_v->x;
-		acceleration_offset_vector.y = accel_v->y;
-		acceleration_offset_vector.z = accel_v->z;
+		offset.acceleration.x = accel_v->x;
+		offset.acceleration.y = accel_v->y;
+		offset.acceleration.z = accel_v->z;
 	} else {
-		acceleration_offset_vector.x = 0;
-		acceleration_offset_vector.y = 0;
-		acceleration_offset_vector.z = 0;
+		offset.acceleration.x = 0;
+		offset.acceleration.y = 0;
+		offset.acceleration.z = 0;
 	}
 }
 
@@ -302,9 +303,9 @@ void motionsensor_set_acceleration_offset_vector(acceleration_vector_t *accel_v)
  */
 void motionsensor_get_angularvelocity_offset_vector(angularvelocity_vector_t *angular_v)
 {
-	angular_v->x = angularvelocity_offset_vector.x;
-	angular_v->y = angularvelocity_offset_vector.y;
-	angular_v->z = angularvelocity_offset_vector.z;
+	angular_v->x = offset.angularvelocity.x;
+	angular_v->y = offset.angularvelocity.y;
+	angular_v->z = offset.angularvelocity.z;
 }
 
 /**
@@ -314,13 +315,13 @@ void motionsensor_get_angularvelocity_offset_vector(angularvelocity_vector_t *an
 void motionsensor_set_angularvelocity_offset_vector(angularvelocity_vector_t *angular_v)
 {
 	if(angular_v != NULL) {
-		angularvelocity_offset_vector.x = angular_v->x;
-		angularvelocity_offset_vector.y = angular_v->y;
-		angularvelocity_offset_vector.z = angular_v->z;
+		offset.angularvelocity.x = angular_v->x;
+		offset.angularvelocity.y = angular_v->y;
+		offset.angularvelocity.z = angular_v->z;
 	} else {
-		angularvelocity_offset_vector.x = 0;
-		angularvelocity_offset_vector.y = 0;
-		angularvelocity_offset_vector.z = 0;
+		offset.angularvelocity.x = 0;
+		offset.angularvelocity.y = 0;
+		offset.angularvelocity.z = 0;
 	}
 }
 
@@ -359,18 +360,18 @@ void motionsensor_init(void)
 	mpu9150_init();
 
 	//init offset structures
-	acceleration_offset_vector.x = 0;
-	acceleration_offset_vector.y = 0;
-	acceleration_offset_vector.z = 0;
+	offset.acceleration.x = 0;
+	offset.acceleration.y = 0;
+	offset.acceleration.z = 0;
 
-	angularvelocity_offset_vector.x = 0;
-	angularvelocity_offset_vector.y = 0;
-	angularvelocity_offset_vector.z = 0;
+	offset.angularvelocity.x = 0;
+	offset.angularvelocity.y = 0;
+	offset.angularvelocity.z = 0;
 
 	//init filters
 	filter_moving_generic_average_init(&acceleration_filter_x, acceleration_filter_mask, 0);
 	filter_moving_generic_average_init(&acceleration_filter_y, acceleration_filter_mask, 0);
-	filter_moving_generic_average_init(&acceleration_filter_z, acceleration_filter_mask, 0);
+	filter_moving_generic_average_init(&acceleration_filter_z, acceleration_filter_mask, MOTIONSENSOR_ACCELERATION_1G);
 
 	filter_moving_generic_average_init(&angularvelocity_filter_x, angularvelocity_filter_mask, 0);
 	filter_moving_generic_average_init(&angularvelocity_filter_y, angularvelocity_filter_mask, 0);
