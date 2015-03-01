@@ -33,7 +33,7 @@
 //weighted_average_t wavg;
 //moving_average_t   mavg;
 
-filters_moving_generic_average_t gen_avg;
+filter_moving_generic_average_t gen_avg;
 int16_t test_values[] = {1000, 0, -2333, 23, 544,
 						123, 330, 100, 0, -222,
 						345, 30, 10000, 10000, 12000,

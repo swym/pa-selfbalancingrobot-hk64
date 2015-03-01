@@ -464,11 +464,23 @@ void system_controller_state_run_debug_mode(void)
 	printf("run debug mode...\n");
 
 	/* **** DO ***** */
-	while(true) {
+/*	while(true) {
 		motionsensor_printdata();
-		PORT_LEDS = led_value++;
-		_delay_ms(50);
+		//PORT_LEDS = led_value++;
+		_delay_ms(40);
 	}
+*/
+	while(true) {
+		if(timer_current_majorslot == TIMER_MAJORSLOT_0) {
+			//PORT_LEDS = 0xFF;
+			timer_current_majorslot = TIMER_MAJORSLOT_NONE;
+
+			motionsensor_printdata();
+			//PORT_LEDS = 0;
+		}
+	}
+
+
 	/* *** EXIT **** */
 
 	next_state = STATE_NULL;
