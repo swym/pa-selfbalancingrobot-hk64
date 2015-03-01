@@ -73,8 +73,6 @@ static int16_t angle_y;
 static int16_t acceleration_angle_y;
 static double acceleration_angle_y_magnitude;
 
-
-
 static int16_t angle_scalingfactor;
 static uint8_t complementary_filter_angularvelocity_factor;
 static uint8_t complementary_filter_acceleraton_factor;
@@ -142,7 +140,7 @@ void motionsensor_get_motiondata(void)
 	filter_moving_generic_average_put_element(&angularvelocity_filter_y, raw_imudata.angularvelocity.y);
 	filter_moving_generic_average_put_element(&angularvelocity_filter_z, raw_imudata.angularvelocity.z);
 
-	temperature = raw_imudata.temp;
+	temperature = raw_imudata.temperature;
 
 	//apply offset
 	acceleration_vector.x = acceleration_filter_x.avg + acceleration_offset_vector.x;

@@ -24,7 +24,7 @@
 
 typedef int16_t mpu9150_acceleration_t;
 typedef int16_t mpu9150_angularvelocity;
-typedef int16_t mpu9150_temp_t;
+typedef int16_t mpu9150_temperature_t;
 
 typedef struct {
 	mpu9150_acceleration_t x;
@@ -41,7 +41,7 @@ typedef struct {
 typedef struct {
 	mpu9150_acceleration_vector_t acceleration;
 	mpu9150_angularvelocity_vector_t angularvelocity;
-	mpu9150_temp_t temp;
+	mpu9150_temperature_t temperature;
 } mpu9150_motiondata_t;
 
 /* * external objects            * */
@@ -49,18 +49,11 @@ typedef struct {
 /* * external functions          * */
 
 extern void mpu9150_init();
-extern void mpu9150_read_acceleration(mpu9150_acceleration_vector_t *);
-
-extern void mpu9150_read_angularvelocity(mpu9150_angularvelocity_vector_t * angularvelocity);
-
 extern void	mpu9150_read_motiondata(mpu9150_motiondata_t * motiondata);
 
-extern mpu9150_angularvelocity mpu9150_read_angularvelocity_x(void);
-extern mpu9150_angularvelocity mpu9150_read_angularvelocity_y(void);
-extern mpu9150_angularvelocity mpu9150_read_angularvelocity_z(void);
-
-extern uint8_t  mpu9150_get_who_am_i(void);
-
+extern void mpu9150_read_acceleration(mpu9150_acceleration_vector_t * acceleration);
+extern void mpu9150_read_angularvelocity(mpu9150_angularvelocity_vector_t * angularvelocity);
+extern uint8_t mpu9150_get_who_am_i(void);
 extern uint8_t mpu9150_get_int_status(void);
 
 #endif /* MPU9150_H_ */

@@ -38,8 +38,6 @@
 #define MPU9150_REGISTER_GYRO_ZOUT_H	0x47
 #define MPU9150_REGISTER_GYRO_ZOUT_L	0x48
 
-
-
 #define MPU9150_REGISTER_PWR_MGMT_1		0x6B
 
 #define MPU9150_REGISTER_WHO_AM_I		0x75
@@ -194,9 +192,9 @@ void mpu9150_read_motiondata(mpu9150_motiondata_t * motiondata)
 	motiondata->acceleration.z = (uint16_t)(motiondata->acceleration.z | temp_data);
 
 	temp_data = twi_receive_buffer[6];
-	motiondata->temp = (uint16_t)(temp_data << 8);
+	motiondata->temperature = (uint16_t)(temp_data << 8);
 	temp_data = twi_receive_buffer[7];
-	motiondata->temp = (uint16_t)(motiondata->temp | temp_data);
+	motiondata->temperature = (uint16_t)(motiondata->temperature | temp_data);
 
 	temp_data = twi_receive_buffer[8];
 	motiondata->angularvelocity.x = (uint16_t)(temp_data << 8);
@@ -238,63 +236,6 @@ void mpu9150_read_angularvelocity(mpu9150_angularvelocity_vector_t * angularvelo
 	angularvelocity->z = (uint16_t)(temp_data << 8);
 	temp_data = twi_receive_buffer[5];
 	angularvelocity->z = (uint16_t)(angularvelocity->z | temp_data);
-}
-
-mpu9150_angularvelocity mpu9150_read_angularvelocity_x(void)
-{
-	uint8_t temp_data;
-	mpu9150_angularvelocity rotation_x;
-
-	twi_send_buffer[0] = MPU9150_REGISTER_GYRO_XOUT_H;
-	twi_master_set_ready();
-
-	twi_send_data(MPU9150_TWI_ADDRESS, 1);
-	twi_receive_data(MPU9150_TWI_ADDRESS, 2);
-
-	temp_data = twi_receive_buffer[0];
-	rotation_x = (uint16_t)(temp_data << 8);
-	temp_data = twi_receive_buffer[1];
-	rotation_x = (uint16_t)(rotation_x | temp_data);
-
-	return rotation_x;
-}
-
-mpu9150_angularvelocity mpu9150_read_angularvelocity_y(void)
-{
-	uint8_t temp_data;
-	mpu9150_angularvelocity rotation_y;
-
-	twi_send_buffer[0] = MPU9150_REGISTER_GYRO_YOUT_H;
-	twi_master_set_ready();
-
-	twi_send_data(MPU9150_TWI_ADDRESS, 1);
-	twi_receive_data(MPU9150_TWI_ADDRESS, 2);
-
-	temp_data = twi_receive_buffer[0];
-	rotation_y = (uint16_t)(temp_data << 8);
-	temp_data = twi_receive_buffer[1];
-	rotation_y = (uint16_t)(rotation_y | temp_data);
-
-	return rotation_y;
-}
-
-mpu9150_angularvelocity mpu9150_read_angularvelocity_z(void)
-{
-	uint8_t temp_data;
-	mpu9150_angularvelocity rotation_z;
-
-	twi_send_buffer[0] = MPU9150_REGISTER_GYRO_ZOUT_H;
-	twi_master_set_ready();
-
-	twi_send_data(MPU9150_TWI_ADDRESS, 1);
-	twi_receive_data(MPU9150_TWI_ADDRESS, 2);
-
-	temp_data = twi_receive_buffer[0];
-	rotation_z = (uint16_t)(temp_data << 8);
-	temp_data = twi_receive_buffer[1];
-	rotation_z = (uint16_t)(rotation_z | temp_data);
-
-	return rotation_z;
 }
 
 void mpu9150_read_acceleration(mpu9150_acceleration_vector_t * acceleration)

@@ -57,7 +57,6 @@ volatile timer_slot_t timer_current_minorslot;
 
 /* * local function declarations * */
 static void test_mpu9150_init();
-static void test_mpu9150_with_rfm12();
 static void test_mpu9150_with_uart();
 
 /* *** FUNCTION DEFINITIONS ************************************************* */
@@ -102,7 +101,7 @@ static void test_mpu9150_with_uart()
 					raw_data.angularvelocity.x,
 					raw_data.angularvelocity.y,
 					raw_data.angularvelocity.z,
-					raw_data.temp);
+					raw_data.temperature);
 		}
 	}
 }
