@@ -65,10 +65,10 @@ int16_t pid_Controller(int16_t setPoint, int16_t processValue, struct PID_DATA *
   error = setPoint - processValue;
 
   // Calculate Pterm and limit error overflow
-  if (error > pid_st->maxError){
+  if (error > pid_st->maxError) {
     p_term = MAX_INT;
   }
-  else if (error < -pid_st->maxError){
+  else if (error < -pid_st->maxError) {
     p_term = -MAX_INT;
   }
   else{
@@ -77,11 +77,11 @@ int16_t pid_Controller(int16_t setPoint, int16_t processValue, struct PID_DATA *
 
   // Calculate Iterm and limit integral runaway
   temp = pid_st->sumError + error;
-  if(temp > pid_st->maxSumError){
+  if(temp > pid_st->maxSumError) {
     i_term = MAX_I_TERM;
     pid_st->sumError = pid_st->maxSumError;
   }
-  else if(temp < -pid_st->maxSumError){
+  else if(temp < -pid_st->maxSumError) {
     i_term = -MAX_I_TERM;
     pid_st->sumError = -pid_st->maxSumError;
   }
@@ -96,10 +96,10 @@ int16_t pid_Controller(int16_t setPoint, int16_t processValue, struct PID_DATA *
   pid_st->lastProcessValue = processValue;
 
   ret = (p_term + i_term + d_term) / pid_st->scalingfactor;
-  if(ret > MAX_INT){
+  if(ret > MAX_INT) {
     ret = MAX_INT;
   }
-  else if(ret < -MAX_INT){
+  else if(ret < -MAX_INT) {
     ret = -MAX_INT;
   }
 
