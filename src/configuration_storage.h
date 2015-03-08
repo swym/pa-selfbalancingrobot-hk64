@@ -96,8 +96,8 @@ extern void configuration_storage_set_acceleration_offset_vector(acceleration_ve
 extern void configuration_storage_get_angularvelocity_offset_vector(angularvelocity_vector_t * accel_v);
 extern void configuration_storage_set_angularvelocity_offset_vector(angularvelocity_vector_t * angular_v);
 
-extern uint8_t configuration_storage_get_complementary_filter_ratio(void);
-extern void configuration_storage_set_complementary_filter_ratio(uint8_t ratio);
+extern uint16_t configuration_storage_get_complementary_filter_ratio(void);
+extern void configuration_storage_set_complementary_filter_ratio(uint16_t ratio);
 
 extern uint16_t configuration_storage_get_angle_scalingfactor(void);
 extern void configuration_storage_set_angle_scalingfactor(uint16_t);
@@ -108,8 +108,8 @@ extern void configuration_storage_set_motor_acceleration(uint8_t);
 extern char * configuration_storage_get_comment(void);
 extern void configuration_storage_set_comment(char * comment);
 
-extern void configuration_storage_set_run_mode(uint8_t mode);
-extern uint8_t configuration_storage_get_run_mode(void);
+extern void configuration_storage_set_print_data_mode(print_data_enum_t mode);
+extern print_data_enum_t configuration_storage_get_print_data_mode(void);
 
 extern bool configuration_storage_config_has_changed(void);
 

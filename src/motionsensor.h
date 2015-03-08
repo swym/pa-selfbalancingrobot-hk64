@@ -18,8 +18,8 @@
 
 /* *** DECLARATIONS ********************************************************** */
 
-#define MOTIONSENSOR_ACCELERATION_1G				8192
-#define MOTIONSENSOR_COMPLEMTARY_FILTER_RATIO_BASE	100
+#define MOTIONSENSOR_ACCELERATION_1G				16384
+#define MOTIONSENSOR_COMPLEMTARY_FILTER_RATIO_BASE	1000
 
 /* * external type and constants * */
 typedef int16_t motionsensor_acceleration_t;
@@ -82,11 +82,14 @@ extern void motionsensor_set_acceleration_offset_vector(acceleration_vector_t *a
 extern void motionsensor_get_angularvelocity_offset_vector(angularvelocity_vector_t *angularvelocity);
 extern void motionsensor_set_angularvelocity_offset_vector(angularvelocity_vector_t *angularvelocity);
 
-extern uint8_t motionsensor_get_complementary_filter_ratio(void);
-extern void motionsensor_set_complementary_filter_ratio(uint8_t ratio);
+extern uint16_t motionsensor_get_complementary_filter_ratio(void);
+extern void motionsensor_set_complementary_filter_ratio(uint16_t ratio);
 
 extern uint16_t motionsensor_get_angle_scalingfactor(void);
 extern void motionsensor_set_angle_scalingfactor(uint16_t s);
+
+extern void  motionsensor_get_raw_motiondata(motionsensor_motiondata_t * mdata);
+extern void  motionsensor_get_filtered_motiondata(motionsensor_motiondata_t * mdata);
 
 /*
 extern double motionsensor_get_complementary_filter_angularvelocity_factor(void);
