@@ -21,17 +21,16 @@
 
 #include "lib/uart.h"
 #include "lib/twi_master.h"
-#include "lib/rfm12.h"
 
 #include "configuration_terminal.h"
 #include "configuration_storage.h"
 #include "vt100.h"
 
 #include "motionsensor.h"
-#include "simplex-protocol.h"
 #include "motor_control.h"
 #include "pid.h"
 #include "timer.h"
+#include "base64.h"
 #include "leds.h"
 
 
@@ -47,6 +46,7 @@ volatile timer_slot_t timer_current_minorslot;
 #define STATE_WAITING_FOR_USER_INTERRUPT_TIMEOUT	5			//Timeout in seconds
 #define STATE_WAITING_FOR_USER_INTERRUPT_PARTS   	4
 
+#define PRINT_DATA_BUFFER_SIZE 	20
 
 typedef enum {
 	STATE_INIT_BASIC_HARDWARE,
@@ -56,7 +56,6 @@ typedef enum {
 	STATE_INIT_CONTROLLER_ENVIRONMENT,
 	STATE_INIT_REMAINING_HARDWARE,
 	STATE_RUN_CONTROLLER,
-	STATE_RUN_DEBUG,
 	STATE_FINAL,
 	STATE_NULL
 } system_controller_state_t;
@@ -65,21 +64,23 @@ typedef enum {
 static system_controller_state_t current_state;
 static system_controller_state_t next_state;
 
-static int16_t current_angle;
+static motionsensor_angle_t current_angle;
 static int16_t pid_output;
 static motor_contol_speed_t new_motor_speed;
 
-static pid_config_t pid_center;
-static pid_config_t pid_edge;
-static uint16_t		pid_edge_angle;
+static pid_config_t				pid_center;
+static pid_config_t				pid_edge;
+static motionsensor_angle_t		pid_edge_angle;
 
 static pidData_t pid_controller_data;
 static int8_t    pid_setpoint;
 
+static void (*print_data_fptr)(void);
+static uint8_t print_ticker_cnt;
 
+static uint8_t print_data_buffer[PRINT_DATA_BUFFER_SIZE];
 
 /* local function declarations  */
-
 
 // states
 static void system_controller_state_init_basic_hardware(void);
@@ -89,7 +90,13 @@ static void system_controller_state_run_configuration_terminal(void);
 static void system_controller_state_init_controller_environment(void);
 static void system_controller_state_init_remaining_hardware(void);
 static void system_controller_state_run_controller(void);
-static void system_controller_state_run_debug_mode(void);
+
+// print functions
+static void system_controller_print_ticker(void);
+static void system_controller_print_data_anglepid(void);
+static void system_controller_print_data_all_raw(void);
+static void system_controller_print_data_all_filtered(void);
+
 
 /* *** FUNCTION DEFINITIONS ************************************************** */
 void system_controller_state_machine(void)
@@ -126,10 +133,6 @@ void system_controller_state_machine(void)
 
 			case STATE_RUN_CONTROLLER:
 				system_controller_state_run_controller();
-			break;
-
-			case STATE_RUN_DEBUG:
-				system_controller_state_run_debug_mode();
 			break;
 
 			default:
@@ -246,12 +249,14 @@ void system_controller_state_run_configuration_terminal(void)
 	/* *** ENTRY *** */
 
 	printf("run configuration terminal...\n");
-
+	PORT_LEDS =    _BV(LED6) | _BV(LED7);
 	/* **** DO ***** */
+
 	//start sub state machine "configuration terminal"
 	configuration_terminal_state_machine();
 
 	/* *** EXIT **** */
+	PORT_LEDS &= ~(_BV(LED6) | _BV(LED7));
 	next_state = STATE_WAITING_FOR_USER_INTERRUPT;
 }
 
@@ -260,12 +265,12 @@ void system_controller_state_init_controller_environment(void)
 {
 	/* *** ENTRY *** */
 
-	printf("init controller enviroment...\n");
+	printf("init controller environment...\n");
 
 	acceleration_vector_t acceleration_vector;
 	angularvelocity_vector_t angularvelocity_vector;
 	uint16_t angle_scalingfactor;
-	uint8_t complementary_filter_ratio;
+	uint16_t complementary_filter_ratio;
 
 	/* **** DO ***** */
 
@@ -289,10 +294,10 @@ void system_controller_state_init_controller_environment(void)
 			pid_center.pid_scalingfactor);
 
 	printf("edge pid  : p:%6d i:%6d d:%6d s:%6d\n",
-			pid_center.p_factor,
-			pid_center.i_factor,
-			pid_center.d_factor,
-			pid_center.pid_scalingfactor);
+			pid_edge.p_factor,
+			pid_edge.i_factor,
+			pid_edge.d_factor,
+			pid_edge.pid_scalingfactor);
 
 	printf("edge angle: %u\n", pid_edge_angle);
 
@@ -335,8 +340,37 @@ void system_controller_state_init_controller_environment(void)
 	motionsensor_set_complementary_filter_ratio(complementary_filter_ratio);
 	printf("complementary_filter_ratio\n  angularvelocity: %d, acceleration: %d\n",
 			complementary_filter_ratio,
-			100 - complementary_filter_ratio);
+			MOTIONSENSOR_COMPLEMTARY_FILTER_RATIO_BASE - complementary_filter_ratio);
 
+
+	//init print_data_fptr
+
+	print_data_enum_t print_mode = configuration_storage_get_print_data_mode();
+	printf("print_data_mode: %d\n", print_mode);
+
+	switch(print_mode) {
+
+		case PRINT_NONE:
+			print_data_fptr = NULL;
+		break;
+
+		case PRINT_DATA_ANGLEPID:
+			print_data_fptr = &system_controller_print_data_anglepid;
+		break;
+
+		case PRINT_DATA_ALL_RAW:
+			print_data_fptr = &system_controller_print_data_all_raw;
+		break;
+
+		case PRINT_DATA_ALL_FILTERED:
+			print_data_fptr = &system_controller_print_data_all_filtered;
+		break;
+
+		case PRINT_TICKER:
+		default:
+			print_data_fptr = &system_controller_print_ticker;
+		break;
+	}
 
 	/* *** EXIT **** */
 
@@ -361,14 +395,8 @@ void system_controller_state_init_remaining_hardware(void)
 	printf("init timers...\n");
 	timer_init();							/* Init Timer */
 
-
 	/* *** EXIT **** */
-	if(configuration_storage_get_run_mode() == CONFIGURATION_STORAGE_RUN_MODE_DEBUG) {
-		next_state = STATE_RUN_DEBUG;
-	} else {
-		next_state = STATE_RUN_CONTROLLER;
-	}
-
+	next_state = STATE_RUN_CONTROLLER;
 }
 
 void system_controller_state_run_controller(void)
@@ -389,51 +417,41 @@ void system_controller_state_run_controller(void)
 		if(timer_current_majorslot == TIMER_MAJORSLOT_0) {
 			timer_current_majorslot = TIMER_MAJORSLOT_NONE;
 
-			leds_inc();
-
 			//read angle
 
-			PORT_LEDS |= _BV(LED6);
+			PORT_LEDS |= _BV(LED7);
 			current_angle = motionsensor_get_angle_y();
-			PORT_LEDS&= ~_BV(LED6);
+			PORT_LEDS &= ~_BV(LED7);
 
 			//calculate pid
+			PORT_LEDS |= _BV(LED6);
 
-			PORT_LEDS |= _BV(LED5);
-			pid_output = pid_Controller(pid_setpoint, current_angle, &pid_controller_data);
-			PORT_LEDS&= ~_BV(LED5);
-
-//			PORT_LEDS &= ~_BV(LED6);
-//			printf("#%d:%d\n",current_angle, pid_output);
-//			PORT_LEDS |= _BV(LED6);
-
-
-
-			//limit pid output for motor control
-			/*
-			if(pid_output > 255) {
-				PORT_LED |= _BV(7);
-				pid_output = 255;
-			} else if(pid_output < -255) {
-				pid_output = -255;
-				PORT_LED |= _BV(6);
+			//switch pid set
+			if(abs(current_angle) > pid_edge_angle) {
+				PORT_LEDS |=  _BV(LED1);
+				PORT_LEDS &= ~_BV(LED0);
+				pid_controller_data.P_Factor = pid_edge.p_factor;
+				pid_controller_data.I_Factor = pid_edge.i_factor;
+				pid_controller_data.D_Factor = pid_edge.d_factor;
+			} else {
+				PORT_LEDS |=  _BV(LED0);
+				PORT_LEDS &= ~_BV(LED1);
+				pid_controller_data.P_Factor = pid_center.p_factor;
+				pid_controller_data.I_Factor = pid_center.i_factor;
+				pid_controller_data.D_Factor = pid_center.d_factor;
 			}
-			*/
 
-			//display on LEDs
-//			if(pid_output >= 0) {
-//				PORT_LED = pid_output;
-//			} else {
-//				PORT_LED = -pid_output;
-//			}
+			//negate pid output
+			pid_output = -pid_Controller(pid_setpoint, current_angle, &pid_controller_data);
+			PORT_LEDS &= ~_BV(LED6);
+
 
 			//prepare new motor speed
-			PORT_LEDS |= _BV(LED4);
+			PORT_LEDS |= _BV(LED5);
 			new_motor_speed.motor_1 = pid_output;
 			new_motor_speed.motor_2 = pid_output;
 			motor_control_prepare_new_speed(&new_motor_speed);
-			PORT_LEDS&= ~_BV(LED4);
-
+			PORT_LEDS &= ~_BV(LED5);
 
 		} //end TIMER_MAJORSLOT_0
 
@@ -443,8 +461,15 @@ void system_controller_state_run_controller(void)
 		 */
 		if(timer_current_majorslot == TIMER_MAJORSLOT_1) {
 			timer_current_majorslot = TIMER_MAJORSLOT_NONE;
-			PORT_LEDS |= _BV(LED3);
+			PORT_LEDS |= _BV(LED4);
 			motor_control_set_new_speed();
+			PORT_LEDS&= ~_BV(LED4);
+
+			//print pid and angle
+			PORT_LEDS |= _BV(LED3);
+			if(print_data_fptr != NULL) {
+				print_data_fptr();
+			}
 			PORT_LEDS&= ~_BV(LED3);
 		} // end TIMER_MAJORSLOT_1
 
@@ -456,32 +481,99 @@ void system_controller_state_run_controller(void)
 	next_state = STATE_NULL;
 }
 
-void system_controller_state_run_debug_mode(void)
+void system_controller_print_ticker(void)
 {
-	uint8_t led_value = 0;
 
-	/* *** ENTRY *** */
-	printf("run debug mode...\n");
-
-	/* **** DO ***** */
-/*	while(true) {
-		motionsensor_printdata();
-		//PORT_LEDS = led_value++;
-		_delay_ms(40);
+	if(print_ticker_cnt++ >= 250) {
+		print_ticker_cnt = 0;
+		printf(".\n");
 	}
+}
+
+void system_controller_print_data_anglepid(void)
+{
+	printf("p:%d:%d\n",current_angle, pid_output);
+}
+
+
+void system_controller_print_data_all_raw(void)
+{
+	uint8_t buf_idx = 0;
+
+	int16_t tmpdata1 =  1000;
+	int16_t tmpdata2 = -1000;
+
+	motionsensor_motiondata_t motiondata;
+
+	motionsensor_get_raw_motiondata(&motiondata);
+
+	print_data_buffer[buf_idx++] = 'r';
+	print_data_buffer[buf_idx++] = ':';
+	print_data_buffer[buf_idx++] = (uint8_t)tmpdata1 >> 8;
+	print_data_buffer[buf_idx++] = (uint8_t)tmpdata1 & 0x00FF;
+	print_data_buffer[buf_idx++] = (uint8_t)tmpdata2 >> 8;
+	print_data_buffer[buf_idx++] = (uint8_t)tmpdata2 & 0x00FF;
+	print_data_buffer[buf_idx++] = (uint8_t)tmpdata1 >> 8;
+	print_data_buffer[buf_idx++] = (uint8_t)tmpdata1 & 0x00FF;
+	print_data_buffer[buf_idx++] = (uint8_t)tmpdata2 >> 8;
+	print_data_buffer[buf_idx++] = (uint8_t)tmpdata2 & 0x00FF;
+	print_data_buffer[buf_idx++] = (uint8_t)tmpdata1 >> 8;
+	print_data_buffer[buf_idx++] = (uint8_t)tmpdata1 & 0x00FF;
+
+	base64_encode(print_data_buffer, buf_idx);
+	//bytes [ax,ax,az,az,gz,gz,aa,aa,pid,pid] -> 10 Bytes payload
+	printf("%s\n",base64_encode_buffer);
+}
+static void system_controller_print_data_all_filtered(void)
+{
+	uint8_t buf_idx = 0;
+	motionsensor_motiondata_t motiondata;
+
+	//motionsensor_get_filtered_motiondata(&motiondata);
+	motionsensor_get_raw_motiondata(&motiondata);
+
+	printf("%d;%d;%d;%d;%d\n",
+			motiondata.acceleration.x,
+			motiondata.acceleration.z,
+			motiondata.angularvelocity.x,
+			current_angle,
+			pid_output);
+/*
+	print_data_buffer[buf_idx++] = 'r';
+	print_data_buffer[buf_idx++] = ':';
+	print_data_buffer[buf_idx++] = 'a';
+	print_data_buffer[buf_idx++] = 'x';
+	print_data_buffer[buf_idx++] = 'a';
+	print_data_buffer[buf_idx++] = 'z';
+	print_data_buffer[buf_idx++] = 'g';
+	print_data_buffer[buf_idx++] = 'y';
+	print_data_buffer[buf_idx++] = 'A';
+	print_data_buffer[buf_idx++] = 'A';
+	print_data_buffer[buf_idx++] = 'P';
+	print_data_buffer[buf_idx++] = 'P';
+	print_data_buffer[buf_idx]   = '\0';
 */
-	while(true) {
-		if(timer_current_majorslot == TIMER_MAJORSLOT_0) {
-			//PORT_LEDS = 0xFF;
-			timer_current_majorslot = TIMER_MAJORSLOT_NONE;
+	//base64_encode(print_data_buffer, buf_idx);
+	//bytes [ax,ax,az,az,gz,gz,aa,aa,pid,pid] -> 10 Bytes payload
+	printf("%s\n",print_data_buffer);
 
-			motionsensor_printdata();
-			//PORT_LEDS = 0;
-		}
-	}
+/*
+	print_data_buffer[buf_idx++] = 'f';
+	print_data_buffer[buf_idx++] = ':';
+	print_data_buffer[buf_idx++] = (uint8_t)motiondata.acceleration.x >> 8;
+	print_data_buffer[buf_idx++] = (uint8_t)motiondata.acceleration.x & 0x00FF;
+	print_data_buffer[buf_idx++] = (uint8_t)motiondata.acceleration.z >> 8;
+	print_data_buffer[buf_idx++] = (uint8_t)motiondata.acceleration.z & 0x00FF;
+	print_data_buffer[buf_idx++] = (uint8_t)motiondata.angularvelocity.y >> 8;
+	print_data_buffer[buf_idx++] = (uint8_t)motiondata.angularvelocity.y & 0x00FF;
+	print_data_buffer[buf_idx++] = (uint8_t)current_angle >> 8;
+	print_data_buffer[buf_idx++] = (uint8_t)current_angle & 0x00FF;
+	print_data_buffer[buf_idx++] = (uint8_t)pid_output >> 8;
+	print_data_buffer[buf_idx++] = (uint8_t)pid_output & 0x00FF;
+	print_data_buffer[buf_idx]   = '\0';
 
-
-	/* *** EXIT **** */
-
-	next_state = STATE_NULL;
+	base64_encode(print_data_buffer, buf_idx);
+	//bytes [ax,ax,az,az,gz,gz,aa,aa,pid,pid] -> 10 Bytes payload
+	printf("%s\n",base64_encode_buffer);
+	*/
 }

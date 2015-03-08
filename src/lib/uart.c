@@ -122,6 +122,7 @@ void UART_clr_rx_buf(void)
     while (MYUCSRA & (1<<MYRXC)) {
         tmp = MYUDR;
     }
+    tmp = tmp + 0;
 }
 
 
@@ -138,7 +139,7 @@ void UART_init(void)
 */
     MYUCSRA = _BV(U2X); /* improve baud rate error by using 2x clk */
     //MYUBRRL = (F_CPU / (8UL * baudrate)) - 1;
-   // MYUBRRL = 16;		//115200
+    //MYUBRRL = 16;		//115200
     MYUBRRL =  8;		//230400
     MYUCSRB = _BV(MYTXEN) | _BV(MYRXEN); /* tx/rx enable */
 
