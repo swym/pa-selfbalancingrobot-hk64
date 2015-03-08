@@ -278,7 +278,7 @@ void mpu9150_init()
 	twi_master_write_register(MPU9150_TWI_ADDRESS, MPU9150_REGISTER_PWR_MGMT_1, 0x01);
 	_delay_ms(2000);
 
-	//perform some dummy readings, otherwise the sensor don't start correctly .... ???
+	//perform some dummy readings, otherwise the sensor don't init correctly .... ???
 	twi_master_read_register(MPU9150_TWI_ADDRESS, MPU9150_REGISTER_PWR_MGMT_1);
 	twi_master_read_register(MPU9150_TWI_ADDRESS, 0x1B);
 	twi_master_read_register(MPU9150_TWI_ADDRESS, 0x1C);
@@ -295,13 +295,13 @@ void mpu9150_init()
 			MPU9150_TWI_ADDRESS, MPU9150_REGISTER_SMPRT_DIV, 0x1F);
 
 	//change resolution of gyro and accel
-	twi_master_write_register_bit(
-			MPU9150_TWI_ADDRESS, MPU9150_REGISTER_GYRO_CONFIG,
-			MPU9150_BIT_GYRO_FS_SEL_1, true);
+//	twi_master_write_register_bit(
+//			MPU9150_TWI_ADDRESS, MPU9150_REGISTER_GYRO_CONFIG,
+//			MPU9150_BIT_GYRO_FS_SEL_0, true);
 
-	twi_master_write_register_bit(
-			MPU9150_TWI_ADDRESS, MPU9150_REGISTER_ACCEL_CONFIG,
-			MPU9150_BIT_ACCEL_FS_SEL_0, true);
+//	twi_master_write_register_bit(
+//			MPU9150_TWI_ADDRESS, MPU9150_REGISTER_ACCEL_CONFIG,
+//			MPU9150_BIT_ACCEL_FS_SEL_0, true);
 
 	//TODO: Consider following settings...
 	//Set Digital Low Pass Filter to 188 Hz
