@@ -74,7 +74,7 @@ void configuration_storage_reset_configuration(void)
 	configuration.pid_edge.d_factor = 0;
 	configuration.pid_edge.pid_scalingfactor = 1;
 
-	configuration.pid_edge_angle = UINT16_MAX;
+	configuration.pid_edge_angle = INT16_MAX;
 
 	configuration.motionsensor.acceleration_offset_vector.x = 0;
 	configuration.motionsensor.acceleration_offset_vector.y = 0;
@@ -84,7 +84,7 @@ void configuration_storage_reset_configuration(void)
 	configuration.motionsensor.angularvelocity_offset_vector.y = 0;
 	configuration.motionsensor.angularvelocity_offset_vector.z = 0;
 
-	configuration.motionsensor.complementary_filter_ratio = 100;
+	configuration.motionsensor.complementary_filter_ratio = 1000;
 
 	configuration.motionsensor.angle_scalingfactor = 1;
 
@@ -92,7 +92,7 @@ void configuration_storage_reset_configuration(void)
 
 	strncpy(configuration.comment, "- new -", CONFIGURATION_STORAGE_COMMENT_LENGTH);
 	configuration.version = CONFIGURATION_STORAGE_VERSION;
-	configuration.run_mode = CONFIGURATION_STORAGE_RUN_MODE_NORMAL;
+	configuration.print_data_mode = 1;
 	configuration.has_changed = true;
 }
 
@@ -231,14 +231,14 @@ void configuration_storage_set_angularvelocity_offset_vector(angularvelocity_vec
 	configuration.has_changed = true;
 }
 
-uint8_t configuration_storage_get_complementary_filter_ratio(void)
+uint16_t configuration_storage_get_complementary_filter_ratio(void)
 {
 	return configuration.motionsensor.complementary_filter_ratio;
 }
 
-void configuration_storage_set_complementary_filter_ratio(uint8_t factor)
+void configuration_storage_set_complementary_filter_ratio(uint16_t factor)
 {
-	if(factor <= 100) {
+	if(factor <= 1000) {
 		configuration.motionsensor.complementary_filter_ratio = factor;
 
 		configuration.has_changed = true;
@@ -262,23 +262,20 @@ char * configuration_storage_get_comment(void)
 	return configuration.comment;
 }
 
-void configuration_storage_set_run_mode(uint8_t mode)
-{
-	if(mode == CONFIGURATION_STORAGE_RUN_MODE_DEBUG) {
-		configuration.run_mode = CONFIGURATION_STORAGE_RUN_MODE_DEBUG;
-	} else {
-		configuration.run_mode = CONFIGURATION_STORAGE_RUN_MODE_NORMAL;
-	}
-}
-
-uint8_t configuration_storage_get_run_mode(void)
-{
-	return configuration.run_mode;
-}
-
 uint8_t configuration_storage_get_motor_acceleration(void)
 {
 	return configuration.motor_acceleration;
+}
+
+void configuration_storage_set_print_data_mode(print_data_enum_t mode)
+{
+	if(mode < FINAL_print_data_enum_t_ENTRY) {
+		configuration.print_data_mode = mode;
+	}
+}
+print_data_enum_t configuration_storage_get_print_data_mode(void)
+{
+	return configuration.print_data_mode;
 }
 
 extern void configuration_storage_set_motor_acceleration(uint8_t accel)
