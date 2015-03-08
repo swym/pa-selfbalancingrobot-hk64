@@ -14,6 +14,7 @@
 
 /* * local headers               * */
 #include "l6205.h"
+#include "encoder.h"
 
 
 /* *** DEFINES ************************************************************** */
@@ -88,10 +89,10 @@ ISR(TIMER0_COMP_vect)
 
 		timer_systemticks = 0;
 	}
-
-	timer_systemticks++;
-	l6205_update_pwm();
 	timer_current_minorslot = TIMER_MINORSLOT_0;
 
+	timer_systemticks++;
 
+	l6205_update_pwm();
+	encoder_handler();
 }
