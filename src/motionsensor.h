@@ -18,47 +18,53 @@
 
 /* *** DECLARATIONS ********************************************************** */
 
+#define MOTIONSENSOR_ACCELERATION_1G				8192
+#define MOTIONSENSOR_COMPLEMTARY_FILTER_RATIO_BASE	100
+
 /* * external type and constants * */
-typedef int16_t angularvelocity_t_;
-typedef int16_t acceleration_t_;
+typedef int16_t motionsensor_acceleration_t;
+typedef int16_t motionsensor_angularvelocity_t;
+typedef int16_t motionsensor_temperature_t;
+typedef int16_t motionsensor_angle_t;
+
 
 typedef struct {
-	int16_t x;
-	int16_t y;
-	int16_t z;
+	motionsensor_acceleration_t x;
+	motionsensor_acceleration_t y;
+	motionsensor_acceleration_t z;
 } acceleration_vector_t;
 
 typedef struct {
-	int16_t x;
-	int16_t y;
-	int16_t z;
+	motionsensor_angularvelocity_t x;
+	motionsensor_angularvelocity_t y;
+	motionsensor_angularvelocity_t z;
 } angularvelocity_vector_t;
-/*
-typedef struct {
-	acceleration_vector_t acceleration;
-	angularvelocity_vector_t angularvelocity;
-} motion_t_edit;
 
 typedef struct {
 	acceleration_vector_t acceleration;
 	angularvelocity_vector_t angularvelocity;
-} motionsensor_motiondata;
-*/
+	motionsensor_temperature_t temperature;
+} motionsensor_motiondata_t;
 
 /* * external objects            * */
+
+//TODO: Änderungen am Modul:
+// - Temperaturabhäniger Offset für angularvelocity
+// - printdata modul -> nach sprintf umbauen; und etwas geschicker aufbauen.
+// - qulität des betrags des bechleunigungsvektors definieren
 
 /**
  * Normierung:
  * Sollwert == 0°
- * Min: -pi/2 == -90 deg == -1,5707963267949 rad == -16384 int == -2^14
- * Max: +pi/2 == +90 deg == +1,5707963267949 rad == +16384 int == +2^14
+ * Min: -pi/2 == -90 deg == -1,5707963267949 rad ~= -1,571
+ * Max: +pi/2 == +90 deg == -1,5707963267949 rad ~= +1,571
  *
- * => Magic numbers:
- *   - rad to int convertion:  RAD2INT14   == 10430,37835047045352 => 10430
- *   - integrated_gyro to int: AVELO2INT14 == 1,425 (Nachverfahren: 1,57 rad * r_index<<1: pi/2 = 11500)
+ * => Magic numbers für 2^13
+ *   - rad to int convertion: (2^13/pi/2) RAD2INT13   == 5215,189175235 => 5215
+ *   - integrated_gyro to int:
  * @return
  */
-extern int16_t motionsensor_get_angle_y(void);
+extern motionsensor_angle_t motionsensor_get_angle_y(void);
 
 extern void motionsensor_init(void);
 
@@ -66,6 +72,8 @@ extern void motionsensor_calibrate_zero_point(void);
 
 //extern void motionsensor_acceleration_calibrate_zero_point(void);
 //extern void motionsensor_angularvelocity_calibrate_zero_point(void);
+
+extern void motionsensor_printdata(void);
 
 //Getter and Setters
 extern void motionsensor_get_acceleration_offset_vector(acceleration_vector_t *acceleration);
