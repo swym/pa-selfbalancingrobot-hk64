@@ -24,18 +24,19 @@
 
 #include "configuration_storage.h"
 #include "motionsensor.h"
+#include "l6205.h"
 #include "vt100.h"
 
 /* *** DEFINES ************************************************************** */
-#define INPUT_BUFFER_MAX			40
-#define INPUT_BUFFER_PARSE_MINLEN	3
+#define INPUT_BUFFER_MAX				40
+#define INPUT_BUFFER_PARSE_MINLEN		3
 
-#define INPUT_BUFFER_COMMAND			0
-#define INPUT_BUFFER_VALUE				1
-#define INPUT_BUFFER_SEPERATOR			','
+#define INPUT_BUFFER_GROUP_INDEX		0
+#define INPUT_BUFFER_COMMAND_INDEX		1
 #define INPUT_BUFFER_SEPERATOR_INDEX	2
+#define INPUT_BUFFER_SEPERATOR			','
 
-#define VALUE_BUFFER_MAX			10
+#define VALUE_BUFFER_MAX				10
 
 /* *** DECLARATIONS ********************************************************* */
 
@@ -49,6 +50,7 @@ typedef enum {
 	STATE_SET_FILTER_PARAMETER,
 	STATE_SET_MOTOR_PARAMETER,
 	STATE_SET_OFFSET,
+	STATE_SET_PRINT_DATA_MODE,
 	STATE_RESET_CONFIG,
 	STATE_SAVE_CONFIG,
 	STATE_LIVE_DATA,
@@ -63,6 +65,56 @@ static configuration_terminal_state_t next_state;
 
 static char input_buffer[INPUT_BUFFER_MAX];
 
+//string const
+static const char string_terminal_center_pid_p[] PROGMEM = "pid_center.p: %i";
+static const char string_terminal_center_pid_i[] PROGMEM = "pid_center.i: %i";
+static const char string_terminal_center_pid_d[] PROGMEM = "pid_center.d: %i";
+static const char string_terminal_center_pid_s[] PROGMEM = "pid_center.scalingfactor: %u";
+static const char string_terminal_edge_pid_p[] PROGMEM = "pid_edge.p: %i";
+static const char string_terminal_edge_pid_i[] PROGMEM = "pid_edge.i: %i";
+static const char string_terminal_edge_pid_d[] PROGMEM = "pid_edge.d: %i";
+static const char string_terminal_edge_pid_s[] PROGMEM = "pid_edge.scalingfactor: %u";
+static const char string_terminal_edge_angle[] PROGMEM = "pid_edge_angle: %u";
+static const char string_terminal_complementary_filter_ratio[] PROGMEM = "complementary_filter.ratio: %i";
+static const char string_terminal_angle_scaling[] PROGMEM = "motionsensor.angle_scalingfactor: %u";
+static const char string_terminal_motionsensor_offset_accel_x[] PROGMEM = "motionsensor.acceleration_offset.x: %i";
+static const char string_terminal_motionsensor_offset_accel_y[] PROGMEM = "motionsensor.acceleration_offset.y: %i";
+static const char string_terminal_motionsensor_offset_accel_z[] PROGMEM = "motionsensor.acceleration_offset.z: %i";
+static const char string_terminal_motionsensor_offset_angular_x[] PROGMEM = "motionsensor.angularvelocity_offset.x: %u";
+static const char string_terminal_motionsensor_offset_angular_y[] PROGMEM = "motionsensor.angularvelocity_offset.y: %u";
+static const char string_terminal_motionsensor_offset_angular_z[] PROGMEM = "motionsensor.angularvelocity_offset.z: %u";
+static const char string_terminal_motor_acceleration[] PROGMEM = "motor_control.acceleration: %i";
+static const char string_terminal_print_data_mode[] PROGMEM = "print_data_mode: %i";
+static const char string_terminal_help[] PROGMEM = "enter '?' for help";
+
+static const char string_print_help_center_pid_p[] PROGMEM = "cp,<0..%d> - set proportional factor of center PID controller";
+static const char string_print_help_center_pid_i[] PROGMEM = "ci,<0..%d> - set integral factor of center PID controller";
+static const char string_print_help_center_pid_d[] PROGMEM = "cd,<0..%d> - set differential factor of center PID controller";
+static const char string_print_help_center_pid_s[] PROGMEM = "cs,<0..%d> - set the result divider of the center PID controller";
+static const char string_print_help_edge_pid_p[] PROGMEM = "ep,<0..%d> - set proportional factor of edge PID controller";
+static const char string_print_help_edge_pid_i[] PROGMEM = "ei,<0..%d> - set integral factor of egde PID controller";
+static const char string_print_help_edge_pid_d[] PROGMEM = "ed,<0..%d> - set differential factor of egde PID controller";
+static const char string_print_help_edge_pid_s[] PROGMEM = "es,<0..%d> - set the result divider of the egde PID controller";
+static const char string_print_help_edge_angle[] PROGMEM = "ea,<0..%d> - set edge angle at which egde PID controller should be active";
+static const char string_print_help_complementary_filter_ratio[] PROGMEM = "fc,<0..%d> - set the ratio of complementary filter";
+static const char string_print_help_angle_scaling[] PROGMEM = "fa,<0..%d> - set the angle scaling factor";
+static const char string_print_help_motor_acceleration[] PROGMEM = "ma,<0..%d> - set the motor acceleration";
+static const char string_print_help_print_data_mode_1[] PROGMEM = "pm,<0..%d> - set print data mode";
+static const char string_print_help_print_data_mode_2[] PROGMEM = "    0 - none, 1 - ticker, 2 - angle & pid, 3 - all raw, 4 - all filtered";
+static const char string_print_help_print_data_new_offsets[] PROGMEM = "z - set new offsets for motionsensor";
+static const char string_print_help[] PROGMEM = "? - print this help";
+static const char string_print_help_current_config[] PROGMEM = "s - show current configuration";
+static const char string_print_help_reset_config[] PROGMEM = "r - reset configuration to defaults";
+static const char string_print_help_save_and_quit[] PROGMEM = "x - quit terminal and DISCARD changes";
+static const char string_print_help_discard_and_quit[] PROGMEM = "q - quit terminal and SAVE changes to eeprom";
+
+static const char string_input[] PROGMEM = "> ";
+static const char string_LF[] PROGMEM = "\n";
+static const char string_OK[] PROGMEM = "OK\n";
+static const char string_INVALID_SELECT[] PROGMEM = "invalid selection!\n";
+static const char string_INVALID_NUMBER[] PROGMEM = "invalid number!\n";
+//static const char string_ERROR[] PROGMEM = "error!\n";
+
 /* * local function declarations * */
 static void configuration_terminal_state_read_input(void);
 static void configuration_terminal_state_print_help(void);
@@ -72,9 +124,9 @@ static void configuration_terminal_state_set_pid_edge_parameter(void);
 static void configuration_terminal_state_set_motor_parameter(void);
 static void configuration_terminal_state_set_filter_parameter(void);
 static void configuration_terminal_state_set_offset(void);
+static void configuration_terminal_state_set_print_data_mode(void);
 static void configuration_terminal_state_reset_configuration(void);
 static void configuration_terminal_state_save_configuration(void);
-static void configuration_terminal_state_run_debug(void);
 
 
 static bool parse_input2int16(int16_t *value, int16_t min, int16_t max);
@@ -121,6 +173,10 @@ void configuration_terminal_state_machine(void)
 				configuration_terminal_state_set_offset();
 			break;
 
+			case STATE_SET_PRINT_DATA_MODE:
+				configuration_terminal_state_set_print_data_mode();
+			break;
+
 			case STATE_RESET_CONFIG:
 				configuration_terminal_state_reset_configuration();
 			break;
@@ -129,9 +185,6 @@ void configuration_terminal_state_machine(void)
 				configuration_terminal_state_save_configuration();
 			break;
 
-			case STATE_RUN_DEBUG:
-				configuration_terminal_state_run_debug();
-			break;
 			default:
 			break;
 		}
@@ -141,73 +194,6 @@ void configuration_terminal_state_machine(void)
  	}
 }
 
-void configuration_terminal_state_print_help(void)
-{
-	printf("cp,<0..%d> - set proportional factor of center PID controller\n", INT16_MAX);
-	printf("ci,<0..%d> - set integral factor of center PID controller\n", INT16_MAX);
-	printf("cd,<0..%d> - set differential factor of center PID controller\n", INT16_MAX);
-	printf("ps,<0..%d> - set the result divider of the center PID controller\n\n", INT16_MAX);
-
-	printf("ep,<0..%d> - set proportional factor of edge PID controller\n", INT16_MAX);
-	printf("ei,<0..%d> - set integral factor of egde PID controller\n", INT16_MAX);
-	printf("ed,<0..%d> - set differential factor of egde PID controller\n", INT16_MAX);
-	printf("es,<0..%d> - set the result divider of the egde PID controller\n\n", INT16_MAX);
-
-	printf("ea,<0..%d> - set edge angle at which egde PID controller should be active\n\n", UINT16_MAX - 1);
-
-	printf("fc,<0..%d> - set the ratio of complementary filter\n", 100);
-	printf("fa,<0..%d>  - set the angle scaling divider\n\n", INT16_MAX);
-
-	printf("ma,<0..%d>  - set the angle scaling divider\n\n", 50);
-
-	printf("z - set new offsets for motionsensor\n\n");
-
-
-
-	printf("? - print this help\n");
-	printf("s - show current configuration\n\n");
-
-	printf("r - reset parameters to defaults\n");
-	printf("x - quit terminal and DISCARD changes\n");
-	printf("q - quit terminal and SAVE changes to eeprom\n");
-	printf("d - quit terminal and SAVE changes and run in debug mode\n");
-
-
-	next_state = STATE_READ_INPUT;
-}
-void configuration_terminal_state_print_config(void)
-{
-	acceleration_vector_t accel_offset;
-	configuration_storage_get_acceleration_offset_vector(&accel_offset);
-
-	angularvelocity_vector_t angular_offset;
-	configuration_storage_get_angularvelocity_offset_vector(&angular_offset);
-
-	printf("pid_center.p: %i\n",configuration_storage_get_pid_center_p_factor());
-	printf("pid_center.i: %i\n",configuration_storage_get_pid_center_i_factor());
-	printf("pid_center.d: %i\n",configuration_storage_get_pid_center_d_factor());
-	printf("pid_center.scalingfactor: %u\n",configuration_storage_get_pid_center_scalingfactor());
-	printf("pid_edge.p: %i\n",configuration_storage_get_pid_edge_p_factor());
-	printf("pid_edge.i: %i\n",configuration_storage_get_pid_edge_i_factor());
-	printf("pid_edge.d: %i\n",configuration_storage_get_pid_edge_d_factor());
-	printf("pid_edge.scalingfactor: %u\n",configuration_storage_get_pid_edge_scalingfactor());
-	printf("pid_edge_angle: %u\n",configuration_storage_get_pid_edge_angle());
-	printf("complementary_filter.ratio (angularvelocity): %i\n",configuration_storage_get_complementary_filter_ratio());
-	printf("complementary_filter.ratio (acceleration): %i\n", 100 - configuration_storage_get_complementary_filter_ratio());
-	printf("motionsensor.angle_scalingfactor: %u\n",configuration_storage_get_angle_scalingfactor());
-	printf("motionsensor.acceleration_offset.x: %i\n",accel_offset.x);
-	printf("motionsensor.acceleration_offset.y: %i\n",accel_offset.y);
-	printf("motionsensor.acceleration_offset.z: %i\n",accel_offset.z);
-	printf("motionsensor.angularvelocity_offset.x: %i\n",angular_offset.x);
-	printf("motionsensor.angularvelocity_offset.y: %i\n",angular_offset.y);
-	printf("motionsensor.angularvelocity_offset.z: %i\n",angular_offset.z);
-	printf("motor_control.acceleration: %i\n",configuration_storage_get_motor_acceleration());
-	printf("\nenter '?' for help\n");
-
-	next_state = STATE_READ_INPUT;
-}
-
-
 void configuration_terminal_state_read_input(void)
 {
 	//ENTRY
@@ -216,12 +202,12 @@ void configuration_terminal_state_read_input(void)
 	vt100_clear_input_buffer();
 	UART_char_received();
 
-	printf(" > ");
+	printf_P(string_input);
 
 	vt100_clear_input_buffer();
 	vt100_get_string(input_buffer,INPUT_BUFFER_MAX);
 
-	switch (input_buffer[INPUT_BUFFER_COMMAND]) {
+	switch (input_buffer[INPUT_BUFFER_GROUP_INDEX]) {
 		case 'c':
 			next_state = STATE_SET_PID_CENTER_PARAMETER;
 			break;
@@ -237,6 +223,9 @@ void configuration_terminal_state_read_input(void)
 		case 'z':
 			next_state = STATE_SET_OFFSET;
 			break;
+		case 'p':
+			next_state = STATE_SET_PRINT_DATA_MODE;
+			break;
 		case '?':
 			next_state = STATE_PRINT_HELP;
 			break;
@@ -249,9 +238,6 @@ void configuration_terminal_state_read_input(void)
 		case 'q':
 			next_state = STATE_SAVE_CONFIG;
 			break;
-		case 'd':
-			next_state = STATE_RUN_DEBUG;
-			break;
 		case 'x':
 			next_state = STATE_FINAL;
 			break;
@@ -263,6 +249,73 @@ void configuration_terminal_state_read_input(void)
 	vt100_clear_input_buffer();
 }
 
+
+void configuration_terminal_state_print_help(void)
+{
+	printf_P(string_print_help_center_pid_p, INT16_MAX);		printf_P(string_LF);
+	printf_P(string_print_help_center_pid_i, INT16_MAX);		printf_P(string_LF);
+	printf_P(string_print_help_center_pid_d, INT16_MAX);		printf_P(string_LF);
+	printf_P(string_print_help_center_pid_s, INT16_MAX);		printf_P(string_LF); printf_P(string_LF);
+
+	printf_P(string_print_help_edge_pid_p, INT16_MAX);			printf_P(string_LF);
+	printf_P(string_print_help_edge_pid_i, INT16_MAX);			printf_P(string_LF);
+	printf_P(string_print_help_edge_pid_d, INT16_MAX);			printf_P(string_LF);
+	printf_P(string_print_help_edge_pid_s, INT16_MAX);			printf_P(string_LF);
+
+	printf_P(string_print_help_edge_angle, INT16_MAX);			printf_P(string_LF); printf_P(string_LF);
+
+	printf_P(string_print_help_complementary_filter_ratio, MOTIONSENSOR_COMPLEMTARY_FILTER_RATIO_BASE); printf_P(string_LF);
+	printf_P(string_print_help_angle_scaling, INT16_MAX);												printf_P(string_LF); printf_P(string_LF);
+
+	printf_P(string_print_help_motor_acceleration, L6205_ACCELERATION_MAX);								printf_P(string_LF);
+	printf_P(string_print_help_print_data_mode_1, FINAL_print_data_enum_t_ENTRY - 1);					printf_P(string_LF);
+	printf_P(string_print_help_print_data_mode_2);														printf_P(string_LF); printf_P(string_LF);
+
+	printf_P(string_print_help_print_data_new_offsets);			printf_P(string_LF); printf_P(string_LF);
+
+	printf_P(string_print_help);								printf_P(string_LF);
+	printf_P(string_print_help_current_config);					printf_P(string_LF);
+	printf_P(string_print_help_reset_config);					printf_P(string_LF); printf_P(string_LF);
+
+	printf_P(string_print_help_save_and_quit);					printf_P(string_LF);
+	printf_P(string_print_help_discard_and_quit);				printf_P(string_LF); printf_P(string_LF);
+
+	next_state = STATE_READ_INPUT;
+}
+void configuration_terminal_state_print_config(void)
+{
+	acceleration_vector_t accel_offset;
+	configuration_storage_get_acceleration_offset_vector(&accel_offset);
+
+	angularvelocity_vector_t angular_offset;
+	configuration_storage_get_angularvelocity_offset_vector(&angular_offset);
+
+	printf_P(string_terminal_center_pid_p, configuration_storage_get_pid_center_p_factor());				printf_P(string_LF);
+	printf_P(string_terminal_center_pid_i, configuration_storage_get_pid_center_i_factor());				printf_P(string_LF);
+	printf_P(string_terminal_center_pid_d, configuration_storage_get_pid_center_d_factor());				printf_P(string_LF);
+	printf_P(string_terminal_center_pid_s, configuration_storage_get_pid_center_scalingfactor());			printf_P(string_LF);
+	printf_P(string_terminal_edge_pid_p, configuration_storage_get_pid_edge_p_factor());					printf_P(string_LF);
+	printf_P(string_terminal_edge_pid_i, configuration_storage_get_pid_edge_i_factor());					printf_P(string_LF);
+	printf_P(string_terminal_edge_pid_d, configuration_storage_get_pid_edge_d_factor());					printf_P(string_LF);
+	printf_P(string_terminal_edge_pid_s, configuration_storage_get_pid_edge_scalingfactor());				printf_P(string_LF);
+	printf_P(string_terminal_edge_angle, configuration_storage_get_pid_edge_angle());						printf_P(string_LF);
+	printf_P(string_terminal_complementary_filter_ratio, configuration_storage_get_complementary_filter_ratio());		printf_P(string_LF);
+	printf_P(string_terminal_angle_scaling, configuration_storage_get_angle_scalingfactor());				printf_P(string_LF);
+	printf_P(string_terminal_motionsensor_offset_accel_x, accel_offset.x);									printf_P(string_LF);
+	printf_P(string_terminal_motionsensor_offset_accel_y, accel_offset.y);									printf_P(string_LF);
+	printf_P(string_terminal_motionsensor_offset_accel_z, accel_offset.z);									printf_P(string_LF);
+	printf_P(string_terminal_motionsensor_offset_angular_x, angular_offset.x);								printf_P(string_LF);
+	printf_P(string_terminal_motionsensor_offset_angular_y, angular_offset.y);								printf_P(string_LF);
+	printf_P(string_terminal_motionsensor_offset_angular_z, angular_offset.z);								printf_P(string_LF);
+	printf_P(string_terminal_motor_acceleration, configuration_storage_get_motor_acceleration());			printf_P(string_LF);
+	printf_P(string_terminal_print_data_mode, configuration_storage_get_print_data_mode());					printf_P(string_LF); 	printf_P(string_LF);
+	printf_P(string_terminal_help);																			printf_P(string_LF);	printf_P(string_LF);
+
+	next_state = STATE_READ_INPUT;
+}
+
+
+
 void configuration_terminal_state_set_pid_center_parameter(void)
 {
 	int16_t pid_value = 0;
@@ -270,29 +323,29 @@ void configuration_terminal_state_set_pid_center_parameter(void)
 	//parsing string to integer
 	if(parse_input2int16(&pid_value, 0, INT16_MAX)) {
 
-		switch (input_buffer[INPUT_BUFFER_VALUE]) {
+		switch (input_buffer[INPUT_BUFFER_COMMAND_INDEX]) {
 			case 'p':
 				configuration_storage_set_pid_center_p_factor(pid_value);
-				printf("OK\n");
+				printf_P(string_OK);
 				break;
 			case 'i':
 				configuration_storage_set_pid_center_i_factor(pid_value);
-				printf("OK\n");
+				printf_P(string_OK);
 				break;
 			case 'd':
 				configuration_storage_set_pid_center_d_factor(pid_value);
-				printf("OK\n");
+				printf_P(string_OK);
 				break;
 			case 's':
 				configuration_storage_set_pid_center_scalingfactor(pid_value);
-				printf("OK\n");
+				printf_P(string_OK);
 				break;
 			default:
-				printf("invalid value\n");
+				printf_P(string_INVALID_SELECT);
 				break;
 		}
 	} else {
-		printf("invalid number\n");
+		printf_P(string_INVALID_NUMBER);
 	}
 
 	next_state = STATE_READ_INPUT;
@@ -305,33 +358,33 @@ void configuration_terminal_state_set_pid_edge_parameter(void)
 	//parsing string to integer
 	if(parse_input2int16(&pid_value, 0, INT16_MAX)) {
 
-		switch (input_buffer[INPUT_BUFFER_VALUE]) {
+		switch (input_buffer[INPUT_BUFFER_COMMAND_INDEX]) {
 			case 'p':
 				configuration_storage_set_pid_edge_p_factor(pid_value);
-				printf("OK\n");
+				printf_P(string_OK);
 				break;
 			case 'i':
 				configuration_storage_set_pid_edge_i_factor(pid_value);
-				printf("OK\n");
+				printf_P(string_OK);
 				break;
 			case 'd':
 				configuration_storage_set_pid_edge_d_factor(pid_value);
-				printf("OK\n");
+				printf_P(string_OK);
 				break;
 			case 's':
 				configuration_storage_set_pid_edge_scalingfactor(pid_value);
-				printf("OK\n");
+				printf_P(string_OK);
 				break;
 			case 'a':
 				configuration_storage_set_pid_edge_angle(pid_value);
-				printf("OK\n");
+				printf_P(string_OK);
 				break;
 			default:
-				printf("invalid value\n");
+				printf_P(string_INVALID_SELECT);
 				break;
 		}
 	} else {
-		printf("invalid number\n");
+		printf_P(string_INVALID_NUMBER);
 	}
 
 	next_state = STATE_READ_INPUT;
@@ -341,27 +394,27 @@ void configuration_terminal_state_set_filter_parameter(void)
 {
 	int16_t tmp_int16 = 0;
 
-	switch (input_buffer[INPUT_BUFFER_VALUE]) {
+	switch (input_buffer[INPUT_BUFFER_COMMAND_INDEX]) {
 		case 'c':
-			if(parse_input2int16(&tmp_int16, 0, 100)) {
+			if(parse_input2int16(&tmp_int16, 0, MOTIONSENSOR_COMPLEMTARY_FILTER_RATIO_BASE)) {
 				configuration_storage_set_complementary_filter_ratio(tmp_int16);
-				printf("OK\n");
+				printf_P(string_OK);
 			} else {
-				printf("invalid number\n");
+				printf_P(string_INVALID_NUMBER);
 			}
 			break;
 
 		case 'a':
 			if(parse_input2int16(&tmp_int16, 0, INT16_MAX)) {
 				configuration_storage_set_angle_scalingfactor(tmp_int16);
-				printf("OK\n");
+				printf_P(string_OK);
 			} else {
-				printf("invalid number\n");
+				printf_P(string_INVALID_NUMBER);
 			}
 			break;
 
 		default:
-			printf("invalid value\n");
+			printf_P(string_INVALID_SELECT);
 			break;
 	}
 
@@ -372,18 +425,18 @@ void configuration_terminal_state_set_motor_parameter(void)
 {
 	int16_t tmp_int16 = 0;
 
-	switch (input_buffer[INPUT_BUFFER_VALUE]) {
+	switch (input_buffer[INPUT_BUFFER_COMMAND_INDEX]) {
 		case 'a':
-			if(parse_input2int16(&tmp_int16, 0, 50)) {
+			if(parse_input2int16(&tmp_int16, 0, L6205_ACCELERATION_MAX)) {
 				configuration_storage_set_motor_acceleration((uint8_t)(tmp_int16));
-				printf("OK\n");
+				printf(string_OK);
 			} else {
-				printf("invalid number\n");
+				printf_P(string_INVALID_NUMBER);
 			}
 			break;
 
 		default:
-			printf("invalid value\n");
+			printf_P(string_INVALID_SELECT);
 			break;
 	}
 
@@ -422,6 +475,28 @@ void configuration_terminal_state_set_offset(void)
 	next_state = STATE_READ_INPUT;
 }
 
+void configuration_terminal_state_set_print_data_mode(void)
+{
+	int16_t tmp_int16 = 0;
+
+	switch (input_buffer[INPUT_BUFFER_COMMAND_INDEX]) {
+		case 'm':
+			if(parse_input2int16(&tmp_int16, 0, FINAL_print_data_enum_t_ENTRY - 1)) {
+				configuration_storage_set_print_data_mode((uint8_t)(tmp_int16));
+				printf_P(string_OK);
+			} else {
+				printf_P(string_INVALID_NUMBER);
+			}
+			break;
+
+		default:
+			printf_P(string_INVALID_SELECT);
+			break;
+	}
+
+	next_state = STATE_READ_INPUT;
+}
+
 void configuration_terminal_state_reset_configuration(void)
 {
 	configuration_storage_reset_configuration();
@@ -431,13 +506,6 @@ void configuration_terminal_state_reset_configuration(void)
 void configuration_terminal_state_save_configuration(void)
 {
 	configuration_storage_save_configuration();
-	next_state = STATE_FINAL;
-}
-
-void configuration_terminal_state_run_debug(void)
-{
-	configuration_storage_save_configuration();
-	configuration_storage_set_run_mode(CONFIGURATION_STORAGE_RUN_MODE_DEBUG);
 	next_state = STATE_FINAL;
 }
 
