@@ -483,7 +483,6 @@ void system_controller_state_run_controller(void)
 
 void system_controller_print_ticker(void)
 {
-
 	if(print_ticker_cnt++ >= 250) {
 		print_ticker_cnt = 0;
 		printf(".\n");
@@ -500,28 +499,29 @@ void system_controller_print_data_all_raw(void)
 {
 	uint8_t buf_idx = 0;
 
-	int16_t tmpdata1 =  1000;
-	int16_t tmpdata2 = -1000;
-
 	motionsensor_motiondata_t motiondata;
-
 	motionsensor_get_raw_motiondata(&motiondata);
 
+	//header: type: r
+	//header: size payload: 10
+	//payload [accel.x H,accel.x L,accel.z H,accel.z L,angular.y H,angular.y L,angle H,angle L,pid H,pid L]
 	print_data_buffer[buf_idx++] = 'r';
-	print_data_buffer[buf_idx++] = ':';
-	print_data_buffer[buf_idx++] = (uint8_t)tmpdata1 >> 8;
-	print_data_buffer[buf_idx++] = (uint8_t)tmpdata1 & 0x00FF;
-	print_data_buffer[buf_idx++] = (uint8_t)tmpdata2 >> 8;
-	print_data_buffer[buf_idx++] = (uint8_t)tmpdata2 & 0x00FF;
-	print_data_buffer[buf_idx++] = (uint8_t)tmpdata1 >> 8;
-	print_data_buffer[buf_idx++] = (uint8_t)tmpdata1 & 0x00FF;
-	print_data_buffer[buf_idx++] = (uint8_t)tmpdata2 >> 8;
-	print_data_buffer[buf_idx++] = (uint8_t)tmpdata2 & 0x00FF;
-	print_data_buffer[buf_idx++] = (uint8_t)tmpdata1 >> 8;
-	print_data_buffer[buf_idx++] = (uint8_t)tmpdata1 & 0x00FF;
+	print_data_buffer[buf_idx++] = 10;
+	print_data_buffer[buf_idx++] = (uint8_t)(motiondata.acceleration.x >> 8);
+	print_data_buffer[buf_idx++] = (uint8_t)(motiondata.acceleration.x & 0x00FF);
+	print_data_buffer[buf_idx++] = (uint8_t)(motiondata.acceleration.z >> 8);
+	print_data_buffer[buf_idx++] = (uint8_t)(motiondata.acceleration.z & 0x00FF);
+	print_data_buffer[buf_idx++] = (uint8_t)(motiondata.angularvelocity.y >> 8);
+	print_data_buffer[buf_idx++] = (uint8_t)(motiondata.angularvelocity.y & 0x00FF);
+	print_data_buffer[buf_idx++] = (uint8_t)(current_angle >> 8);
+	print_data_buffer[buf_idx++] = (uint8_t)(current_angle & 0x00FF);
+	print_data_buffer[buf_idx++] = (uint8_t)(pid_output >> 8);
+	print_data_buffer[buf_idx++] = (uint8_t)(pid_output & 0x00FF);
 
+	//marshall packet with base64
 	base64_encode(print_data_buffer, buf_idx);
-	//bytes [ax,ax,az,az,gz,gz,aa,aa,pid,pid] -> 10 Bytes payload
+
+	//send trough usart
 	printf("%s\n",base64_encode_buffer);
 }
 static void system_controller_print_data_all_filtered(void)
@@ -529,51 +529,28 @@ static void system_controller_print_data_all_filtered(void)
 	uint8_t buf_idx = 0;
 	motionsensor_motiondata_t motiondata;
 
-	//motionsensor_get_filtered_motiondata(&motiondata);
+	motionsensor_get_filtered_motiondata(&motiondata);
 	motionsensor_get_raw_motiondata(&motiondata);
 
-	printf("%d;%d;%d;%d;%d\n",
-			motiondata.acceleration.x,
-			motiondata.acceleration.z,
-			motiondata.angularvelocity.x,
-			current_angle,
-			pid_output);
-/*
-	print_data_buffer[buf_idx++] = 'r';
-	print_data_buffer[buf_idx++] = ':';
-	print_data_buffer[buf_idx++] = 'a';
-	print_data_buffer[buf_idx++] = 'x';
-	print_data_buffer[buf_idx++] = 'a';
-	print_data_buffer[buf_idx++] = 'z';
-	print_data_buffer[buf_idx++] = 'g';
-	print_data_buffer[buf_idx++] = 'y';
-	print_data_buffer[buf_idx++] = 'A';
-	print_data_buffer[buf_idx++] = 'A';
-	print_data_buffer[buf_idx++] = 'P';
-	print_data_buffer[buf_idx++] = 'P';
-	print_data_buffer[buf_idx]   = '\0';
-*/
-	//base64_encode(print_data_buffer, buf_idx);
-	//bytes [ax,ax,az,az,gz,gz,aa,aa,pid,pid] -> 10 Bytes payload
-	printf("%s\n",print_data_buffer);
-
-/*
+	//header: type: f
+	//header: size payload: 10
+	//payload [accel.x H,accel.x L,accel.z H,accel.z L,angular.y H,angular.y L,angle H,angle L,pid H,pid L]
 	print_data_buffer[buf_idx++] = 'f';
-	print_data_buffer[buf_idx++] = ':';
-	print_data_buffer[buf_idx++] = (uint8_t)motiondata.acceleration.x >> 8;
-	print_data_buffer[buf_idx++] = (uint8_t)motiondata.acceleration.x & 0x00FF;
-	print_data_buffer[buf_idx++] = (uint8_t)motiondata.acceleration.z >> 8;
-	print_data_buffer[buf_idx++] = (uint8_t)motiondata.acceleration.z & 0x00FF;
-	print_data_buffer[buf_idx++] = (uint8_t)motiondata.angularvelocity.y >> 8;
-	print_data_buffer[buf_idx++] = (uint8_t)motiondata.angularvelocity.y & 0x00FF;
-	print_data_buffer[buf_idx++] = (uint8_t)current_angle >> 8;
-	print_data_buffer[buf_idx++] = (uint8_t)current_angle & 0x00FF;
-	print_data_buffer[buf_idx++] = (uint8_t)pid_output >> 8;
-	print_data_buffer[buf_idx++] = (uint8_t)pid_output & 0x00FF;
-	print_data_buffer[buf_idx]   = '\0';
+	print_data_buffer[buf_idx++] = 10;
+	print_data_buffer[buf_idx++] = (uint8_t)(motiondata.acceleration.x >> 8);
+	print_data_buffer[buf_idx++] = (uint8_t)(motiondata.acceleration.x & 0x00FF);
+	print_data_buffer[buf_idx++] = (uint8_t)(motiondata.acceleration.z >> 8);
+	print_data_buffer[buf_idx++] = (uint8_t)(motiondata.acceleration.z & 0x00FF);
+	print_data_buffer[buf_idx++] = (uint8_t)(motiondata.angularvelocity.y >> 8);
+	print_data_buffer[buf_idx++] = (uint8_t)(motiondata.angularvelocity.y & 0x00FF);
+	print_data_buffer[buf_idx++] = (uint8_t)(current_angle >> 8);
+	print_data_buffer[buf_idx++] = (uint8_t)(current_angle & 0x00FF);
+	print_data_buffer[buf_idx++] = (uint8_t)(pid_output >> 8);
+	print_data_buffer[buf_idx++] = (uint8_t)(pid_output & 0x00FF);
 
+	//marshall packet with base64
 	base64_encode(print_data_buffer, buf_idx);
-	//bytes [ax,ax,az,az,gz,gz,aa,aa,pid,pid] -> 10 Bytes payload
+
+	//send trough usart
 	printf("%s\n",base64_encode_buffer);
-	*/
 }

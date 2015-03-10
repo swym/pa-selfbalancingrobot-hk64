@@ -54,7 +54,6 @@ typedef enum {
 	STATE_RESET_CONFIG,
 	STATE_SAVE_CONFIG,
 	STATE_LIVE_DATA,
-	STATE_RUN_DEBUG,
 	STATE_FINAL,
 	STATE_NULL
 } configuration_terminal_state_t;
