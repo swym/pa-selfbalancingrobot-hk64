@@ -93,8 +93,9 @@
    F_CPU_nicht_definiert = Hier_ist_ein_Fehler;
 #endif /*F_CPU*/
 
-#define USE_U2X    1
-#define RX_BUFSIZE 80
+#define USE_U2X		1
+#define RX_BUFSIZE	80
+#define SEND_CR		0
 
 static int uart_putchar(char c, FILE *stream);
 static int uart_getchar(FILE *stream);
@@ -122,6 +123,7 @@ void UART_clr_rx_buf(void)
     while (MYUCSRA & (1<<MYRXC)) {
         tmp = MYUDR;
     }
+    tmp = tmp + 0;
 }
 
 
@@ -138,7 +140,7 @@ void UART_init(void)
 */
     MYUCSRA = _BV(U2X); /* improve baud rate error by using 2x clk */
     //MYUBRRL = (F_CPU / (8UL * baudrate)) - 1;
-   // MYUBRRL = 16;		//115200
+    //MYUBRRL = 16;		//115200
     MYUBRRL =  8;		//230400
     MYUCSRB = _BV(MYTXEN) | _BV(MYRXEN); /* tx/rx enable */
 
@@ -150,6 +152,7 @@ void UART_init(void)
 /* **************************************************************************
     M O D U L I N T E R N E   F U N K T I O N E N
 *****************************************************************************/
+
 static int uart_putchar(char c, FILE *stream)
 {
     /*XXX: Hier kann jemand einen Summer, Licht oder sonstwas aktivieren.*/
@@ -157,9 +160,12 @@ static int uart_putchar(char c, FILE *stream)
         return 0;
     }
 
+#if SEND_CR
     if (c == '\n') {
-        uart_putchar('\r', stream);
+    	uart_putchar('\r', stream);
     }
+#endif
+
     loop_until_bit_is_set(MYUCSRA, MYUDRE);
     MYUDR = c;
 

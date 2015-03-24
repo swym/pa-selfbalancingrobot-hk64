@@ -19,25 +19,16 @@
 #include "system_controller.h"
 
 /* Tests */
-
+//#include "test/test_encoder.h"
+//#include "test/test_plot_data.h"
 
 /* *** DECLARATIONS ********************************************************** */
 
 /* local type and constants     */
 
 /* local function declarations  */
-static void main_run(void);
-//static void main_run_tests(void);
 
 /* *** FUNCTION DEFINITIONS ************************************************** */
-
-void main_run(void)
-{
-	system_controller_state_machine();
-}
-
-//void main_run_tests(void)
-//{}
 
 /**
  * @details Does something important
@@ -45,9 +36,14 @@ void main_run(void)
  */
 int main(void)
 {
-	//main_run_tests();
-	main_run();
+	// main program
 
+	//test_encoder_run();
+	//test_data_plot();
+
+	system_controller_state_machine();
+
+	//never reached
 	return 0;
 }
 

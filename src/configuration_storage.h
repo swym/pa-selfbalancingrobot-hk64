@@ -20,7 +20,7 @@
 /* *** DECLARATIONS ********************************************************** */
 
 /* * external type and constants * */
-#define CONFIGURATION_STORAGE_VERSION			107
+#define CONFIGURATION_STORAGE_VERSION			110
 #define CONFIGURATION_STORAGE_COMMENT_LENGTH	20
 
 #define CONFIGURATION_STORAGE_RUN_MODE_NORMAL	0
@@ -38,9 +38,19 @@ typedef struct {
 typedef struct {
 	acceleration_vector_t acceleration_offset_vector;
 	angularvelocity_vector_t angularvelocity_offset_vector;
-	uint8_t complementary_filter_ratio;
+	uint16_t complementary_filter_ratio;
 	uint16_t angle_scalingfactor;
 } motionsensor_config_t;
+
+typedef enum  {
+	PRINT_NONE,
+	PRINT_TICKER,
+	PRINT_DATA_ANGLEPID,
+	PRINT_DATA_ALL_RAW,
+	PRINT_DATA_ALL_FILTERED,
+	FINAL_print_data_enum_t_ENTRY
+
+} print_data_enum_t;
 
 typedef struct {
 	pid_config_t pid_center;
@@ -51,7 +61,7 @@ typedef struct {
 
 	char comment[CONFIGURATION_STORAGE_COMMENT_LENGTH];
 	uint8_t version;
-	uint8_t run_mode;
+	print_data_enum_t print_data_mode;
 	bool has_changed;
 } configuration_t;
 
