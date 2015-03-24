@@ -20,6 +20,7 @@
 
 /* Tests */
 //#include "test/test_encoder.h"
+//#include "test/test_plot_data.h"
 
 /* *** DECLARATIONS ********************************************************** */
 
@@ -36,8 +37,11 @@
 int main(void)
 {
 	// main program
-	system_controller_state_machine();
+
 	//test_encoder_run();
+	//test_data_plot();
+
+	system_controller_state_machine();
 
 	//never reached
 	return 0;
