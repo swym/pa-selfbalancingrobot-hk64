@@ -48,6 +48,7 @@ typedef enum  {
 	PRINT_DATA_ANGLEPID,
 	PRINT_DATA_ALL_RAW,
 	PRINT_DATA_ALL_FILTERED,
+	PRINT_DATA_REALLY_ALL_FILTERED,
 	FINAL_print_data_enum_t_ENTRY
 
 } print_data_enum_t;

@@ -79,9 +79,9 @@ static const char string_terminal_angle_scaling[] PROGMEM = "motionsensor.angle_
 static const char string_terminal_motionsensor_offset_accel_x[] PROGMEM = "motionsensor.acceleration_offset.x: %i";
 static const char string_terminal_motionsensor_offset_accel_y[] PROGMEM = "motionsensor.acceleration_offset.y: %i";
 static const char string_terminal_motionsensor_offset_accel_z[] PROGMEM = "motionsensor.acceleration_offset.z: %i";
-static const char string_terminal_motionsensor_offset_angular_x[] PROGMEM = "motionsensor.angularvelocity_offset.x: %u";
-static const char string_terminal_motionsensor_offset_angular_y[] PROGMEM = "motionsensor.angularvelocity_offset.y: %u";
-static const char string_terminal_motionsensor_offset_angular_z[] PROGMEM = "motionsensor.angularvelocity_offset.z: %u";
+static const char string_terminal_motionsensor_offset_angular_x[] PROGMEM = "motionsensor.angularvelocity_offset.x: %i";
+static const char string_terminal_motionsensor_offset_angular_y[] PROGMEM = "motionsensor.angularvelocity_offset.y: %i";
+static const char string_terminal_motionsensor_offset_angular_z[] PROGMEM = "motionsensor.angularvelocity_offset.z: %i";
 static const char string_terminal_motor_acceleration[] PROGMEM = "motor_control.acceleration: %i";
 static const char string_terminal_print_data_mode[] PROGMEM = "print_data_mode: %i";
 static const char string_terminal_help[] PROGMEM = "enter '?' for help";
@@ -99,7 +99,8 @@ static const char string_print_help_complementary_filter_ratio[] PROGMEM = "fc,<
 static const char string_print_help_angle_scaling[] PROGMEM = "fa,<0..%d> - set the angle scaling factor";
 static const char string_print_help_motor_acceleration[] PROGMEM = "ma,<0..%d> - set the motor acceleration";
 static const char string_print_help_print_data_mode_1[] PROGMEM = "pm,<0..%d> - set print data mode";
-static const char string_print_help_print_data_mode_2[] PROGMEM = "    0 - none, 1 - ticker, 2 - angle & pid, 3 - all raw, 4 - all filtered";
+static const char string_print_help_print_data_mode_2[] PROGMEM = "    0 - none, 1 - ticker, 2 - angle & pid, 3 - all raw";
+static const char string_print_help_print_data_mode_3[] PROGMEM = "    4 - all filtered, 5 - really all (filtered)";
 static const char string_print_help_print_data_new_offsets[] PROGMEM = "z - set new offsets for motionsensor";
 static const char string_print_help[] PROGMEM = "? - print this help";
 static const char string_print_help_current_config[] PROGMEM = "s - show current configuration";
@@ -268,7 +269,8 @@ void configuration_terminal_state_print_help(void)
 
 	printf_P(string_print_help_motor_acceleration, L6205_ACCELERATION_MAX);								printf_P(string_LF);
 	printf_P(string_print_help_print_data_mode_1, FINAL_print_data_enum_t_ENTRY - 1);					printf_P(string_LF);
-	printf_P(string_print_help_print_data_mode_2);														printf_P(string_LF); printf_P(string_LF);
+	printf_P(string_print_help_print_data_mode_2);														printf_P(string_LF);
+	printf_P(string_print_help_print_data_mode_3);														printf_P(string_LF); printf_P(string_LF);
 
 	printf_P(string_print_help_print_data_new_offsets);			printf_P(string_LF); printf_P(string_LF);
 

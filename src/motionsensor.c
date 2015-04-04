@@ -82,9 +82,6 @@ static int16_t angle_scalingfactor;
 static uint16_t complementary_filter_angularvelocity_factor;
 static uint16_t complementary_filter_acceleraton_factor;
 
-static uint8_t printformat;
-static uint8_t printdata;
-
 
 /* * local function declarations * */
 static void motionsensor_read_motiondata(motionsensor_motiondata_t * mdata);
@@ -173,64 +170,6 @@ void motionsensor_read_motiondata(motionsensor_motiondata_t * mdata)
 	mdata->angularvelocity.z = raw_imudata.angularvelocity.z + offset.angularvelocity.z;
 }
 
-void motionsensor_printdata(void)
-{
-	//get raw data
-	PORT_LEDS = 0xFF;
-	motionsensor_get_angle_y();
-	PORT_LEDS = 0x00;
-
-	if(printdata == MOTIONSENSOR_PRINT_DATA_ACCEL_ANGLE) {
-		printf("%6d%6d%6d:%6d\n",
-				motiondata.acceleration.x,
-				motiondata.acceleration.z,
-				motiondata.angularvelocity.y,
-				angle_y);
-
-	} else if(printdata == MOTIONSENSOR_PRINT_DATA_ALL) {
-
-		if (printformat == MOTIONSENSOR_PRINT_FORMAT_CSV) {
-
-			printf("%d;%d;%d;%d;%d;%d;%d\n",
-					motiondata.acceleration.x,
-					motiondata.acceleration.y,
-					motiondata.acceleration.z,
-					motiondata.angularvelocity.x,
-					motiondata.angularvelocity.y,
-					motiondata.angularvelocity.z,
-					motiondata.temperature);
-
-		} else { //printformat == MOTIONSENSOR_PRINTFORMAT_CSV
-
-			printf("%6d %6d %6d %6d %6d %6d %6d\n",
-					motiondata.acceleration.x,
-					motiondata.acceleration.y,
-					motiondata.acceleration.z,
-					motiondata.angularvelocity.x,
-					motiondata.angularvelocity.y,
-					motiondata.angularvelocity.z,
-					motiondata.temperature);
-		}
-	} else { //printdata == MOTIONSENSOR_PRINT_DATA_NECESSARY
-
-		if (printformat == MOTIONSENSOR_PRINT_FORMAT_CSV) {
-
-			printf("%d;%d;%d;%d\n",
-					motiondata.acceleration.x,
-					motiondata.acceleration.z,
-					motiondata.angularvelocity.y,
-					motiondata.temperature);
-
-		} else { //printformat == MOTIONSENSOR_PRINTFORMAT_CSV
-
-			printf("%6d %6d %6d %6d\n",
-					motiondata.acceleration.x,
-					motiondata.acceleration.z,
-					motiondata.angularvelocity.y,
-					motiondata.temperature);
-		}
-	}
-}
 
 void motionsensor_calibrate_zero_point(void)
 {
@@ -397,6 +336,16 @@ void motionsensor_get_filtered_motiondata(motionsensor_motiondata_t * mdata)
 	mdata->temperature = motiondata.temperature;
 }
 
+motionsensor_angle_t motionsensor_get_angle_acceleration(void)
+{
+	return acceleration_angle_y;
+}
+
+double motionsensor_get_angle_acceleration_magnitude(void)
+{
+	return acceleration_angle_y_magnitude;
+}
+
 void motionsensor_init(void)
 {
 	//init under laying hardware
@@ -426,7 +375,4 @@ void motionsensor_init(void)
 
 	complementary_filter_angularvelocity_factor = MOTIONSENSOR_COMPLEMTARY_FILTER_RATIO_BASE;
 	complementary_filter_acceleraton_factor = 0;
-
-	printformat = MOTIONSENSOR_PRINT_FORMAT_NICE;
-	printdata   = MOTIONSENSOR_PRINT_DATA_ACCEL_ANGLE;
 }

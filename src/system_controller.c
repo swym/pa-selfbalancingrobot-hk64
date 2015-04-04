@@ -96,6 +96,7 @@ static void system_controller_print_ticker(void);
 static void system_controller_print_data_anglepid(void);
 static void system_controller_print_data_all_raw(void);
 static void system_controller_print_data_all_filtered(void);
+static void system_controller_print_data_really_all_filtered(void);
 
 
 /* *** FUNCTION DEFINITIONS ************************************************** */
@@ -366,6 +367,10 @@ void system_controller_state_init_controller_environment(void)
 			print_data_fptr = &system_controller_print_data_all_filtered;
 		break;
 
+		case PRINT_DATA_REALLY_ALL_FILTERED:
+			print_data_fptr = &system_controller_print_data_really_all_filtered;
+		break;
+
 		case PRINT_TICKER:
 		default:
 			print_data_fptr = &system_controller_print_ticker;
@@ -442,7 +447,7 @@ void system_controller_state_run_controller(void)
 			}
 
 			//negate pid output
-			pid_output = -pid_Controller(pid_setpoint, current_angle, &pid_controller_data);
+			pid_output = pid_Controller(pid_setpoint, current_angle, &pid_controller_data);
 			PORT_LEDS &= ~_BV(LED6);
 
 
@@ -528,9 +533,7 @@ static void system_controller_print_data_all_filtered(void)
 {
 	uint8_t buf_idx = 0;
 	motionsensor_motiondata_t motiondata;
-
 	motionsensor_get_filtered_motiondata(&motiondata);
-	motionsensor_get_raw_motiondata(&motiondata);
 
 	//header: type: f
 	//header: size payload: 10
@@ -543,6 +546,43 @@ static void system_controller_print_data_all_filtered(void)
 	print_data_buffer[buf_idx++] = (uint8_t)(motiondata.acceleration.z & 0x00FF);
 	print_data_buffer[buf_idx++] = (uint8_t)(motiondata.angularvelocity.y >> 8);
 	print_data_buffer[buf_idx++] = (uint8_t)(motiondata.angularvelocity.y & 0x00FF);
+	print_data_buffer[buf_idx++] = (uint8_t)(current_angle >> 8);
+	print_data_buffer[buf_idx++] = (uint8_t)(current_angle & 0x00FF);
+	print_data_buffer[buf_idx++] = (uint8_t)(pid_output >> 8);
+	print_data_buffer[buf_idx++] = (uint8_t)(pid_output & 0x00FF);
+
+	//marshall packet with base64
+	base64_encode(print_data_buffer, buf_idx);
+
+	//send trough usart
+	printf("%s\n",base64_encode_buffer);
+}
+
+static void system_controller_print_data_really_all_filtered(void)
+{
+	uint8_t buf_idx = 0;
+
+	motionsensor_motiondata_t motiondata;
+	motionsensor_get_filtered_motiondata(&motiondata);
+
+	motionsensor_angle_t angle_accel = motionsensor_get_angle_acceleration();
+	double magnitude = motionsensor_get_angle_acceleration_magnitude();
+
+
+	//header: type: A
+	//header: size payload: 10
+	//payload [accel.x H,accel.x L,accel.z H,accel.z L,angular.y H,angular.y L,magnitude,angle_accel H, angle_accel L, angle H,angle L,pid H,pid L]
+	print_data_buffer[buf_idx++] = 'A';
+	print_data_buffer[buf_idx++] = 13;
+	print_data_buffer[buf_idx++] = (uint8_t)(motiondata.acceleration.x >> 8);
+	print_data_buffer[buf_idx++] = (uint8_t)(motiondata.acceleration.x & 0x00FF);
+	print_data_buffer[buf_idx++] = (uint8_t)(motiondata.acceleration.z >> 8);
+	print_data_buffer[buf_idx++] = (uint8_t)(motiondata.acceleration.z & 0x00FF);
+	print_data_buffer[buf_idx++] = (uint8_t)(motiondata.angularvelocity.y >> 8);
+	print_data_buffer[buf_idx++] = (uint8_t)(motiondata.angularvelocity.y & 0x00FF);
+	print_data_buffer[buf_idx++] = (uint8_t)(magnitude * 100.0);
+	print_data_buffer[buf_idx++] = (uint8_t)(angle_accel >> 8);
+	print_data_buffer[buf_idx++] = (uint8_t)(angle_accel & 0x00FF);
 	print_data_buffer[buf_idx++] = (uint8_t)(current_angle >> 8);
 	print_data_buffer[buf_idx++] = (uint8_t)(current_angle & 0x00FF);
 	print_data_buffer[buf_idx++] = (uint8_t)(pid_output >> 8);
