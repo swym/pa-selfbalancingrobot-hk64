@@ -37,6 +37,9 @@ void filter_moving_generic_average_put_element(
 
 	// iterate over the (weights - 1) to aging existing elements
 	for(i = average->weights_count - 1; i > 0; i--) {
+		//skip current iteration, if weight is zero
+		//if(average->weights[i] == 0) { continue; }
+
 		// move elements to left (aging them; drop last element)
 		average->elements[i] = average->elements[i - 1];
 		// elements_sum them up with their weight
