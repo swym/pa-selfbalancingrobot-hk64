@@ -139,7 +139,7 @@ float motionsensor_get_angle_y(void)
 		PORT_LEDS &= ~_BV(LED2);
 	}
 
-	return angle_y * 1000.0;
+	return angle_y * (float)angle_scalingfactor;
 }
 
 void motionsensor_read_motiondata(motionsensor_motiondata_t * mdata)
