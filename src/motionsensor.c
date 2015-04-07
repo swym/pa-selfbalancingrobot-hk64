@@ -88,8 +88,9 @@ static float acceleration_angle_y;
 static float acceleration_angle_y_magnitude;
 
 static int16_t angle_scalingfactor;
-static uint16_t complementary_filter_angularvelocity_factor;
-static uint16_t complementary_filter_acceleraton_factor;
+
+static float complementary_filter_angularvelocity_factor;
+static float complementary_filter_acceleraton_factor;
 
 
 /* * local function declarations * */
@@ -306,7 +307,7 @@ uint16_t motionsensor_get_complementary_filter_ratio(void)
 
 
 //angularvelocity_factor == b; acceleration_factor == 1-b
-void motionsensor_set_complementary_filter_ratio(uint16_t ratio)
+void motionsensor_set_complementary_filter_ratio(float ratio)
 {
 	if(ratio > MOTIONSENSOR_COMPLEMTARY_FILTER_RATIO_BASE) {
 		ratio = MOTIONSENSOR_COMPLEMTARY_FILTER_RATIO_BASE;
