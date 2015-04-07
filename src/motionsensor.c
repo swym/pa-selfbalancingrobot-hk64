@@ -129,7 +129,8 @@ float motionsensor_get_angle_y(void)
 	//## fuse angles
 	//##############
 	//apply complementary filter
-	angle_y = angle_y * 0.98 + acceleration_angle_y * 0.02;
+	angle_y = angle_y * complementary_filter_angularvelocity_factor +
+			  acceleration_angle_y * complementary_filter_acceleraton_factor;
 
 	//return
 	return angle_y * 1000.0;
