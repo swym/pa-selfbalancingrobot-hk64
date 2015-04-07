@@ -37,7 +37,8 @@
 // gryo * dt = gyro * 4 / 1000 = gyro / 250
 // correction value = 1/979.86 (empirisch gesucht) sollte 1000 sein ?!?!?
 // gyro / 250 * 1/979.86 = gyro / 244965.240
-#define NORMALIZATION_ANGULARVELOCITY_ANGLE	244965.240  //  * ,123478261 (2^13 / 2300)
+//#define NORMALIZATION_ANGULARVELOCITY_ANGLE	244965.240  //  * ,123478261 (2^13 / 2300)
+#define NORMALIZATION_ANGULARVELOCITY_ANGLE 250000.0
 
 
 
@@ -69,9 +70,9 @@ static filter_moving_generic_average_t angularvelocity_filter_x;
 static filter_moving_generic_average_t angularvelocity_filter_y;
 static filter_moving_generic_average_t angularvelocity_filter_z;
 
-//static uint8_t acceleration_filter_mask[] = {1, 1, 1, 1, 1, 1, 1, 1};
+static uint8_t acceleration_filter_mask[] = {1, 1, 1, 1, 1, 1, 1, 1};
 //static uint8_t acceleration_filter_mask[] = {4, 2, 2, 2, 1, 1, 1, 1};
-static uint8_t acceleration_filter_mask[] = {1, 0, 0, 0, 0, 0, 0, 0};
+//static uint8_t acceleration_filter_mask[] = {1, 0, 0, 0, 0, 0, 0, 0};
 //static uint8_t acceleration_filter_mask[] = {4, 2, 2, 1, 1, 1, 0, 0};
 static filter_moving_generic_average_t acceleration_filter_x;
 static filter_moving_generic_average_t acceleration_filter_y;
@@ -100,8 +101,8 @@ static void motionsensor_read_motiondata(motionsensor_motiondata_t * mdata);
 
 float motionsensor_get_angle_y(void)
 {
-	int32_t accel_x_squared;
-	int32_t accel_z_squared;
+	float accel_x_float;
+	float accel_z_float;
 
 	//get sensordata data
 	motionsensor_read_motiondata(&motiondata);
@@ -109,17 +110,16 @@ float motionsensor_get_angle_y(void)
 	//## get acceleration_angle of y
 	//##############################
 	//determine angle using acceleration vectors and atan and normalize
-	//acceleration_angle_y = (int16_t)(atan2(acceleration_vector.x, -acceleration_vector.z) * NORMALIZATION_ACCELERATION_ANGLE);
-	accel_x_squared = (int32_t)motiondata.acceleration.x * (int32_t)motiondata.acceleration.x;
-	accel_z_squared = (int32_t)motiondata.acceleration.z * (int32_t)motiondata.acceleration.z;
-	acceleration_angle_y_magnitude = (sqrt(accel_x_squared + accel_z_squared) / ((float)MOTIONSENSOR_ACCELERATION_1G)); //calculate magnitude and norm it to 1
+	accel_x_float = motiondata.acceleration.x;
+	accel_z_float = motiondata.acceleration.z;
+
+	accel_x_float = accel_x_float*accel_x_float;
+	accel_z_float = accel_z_float*accel_z_float;
+	acceleration_angle_y_magnitude = sqrt(accel_x_float + accel_z_float) / MOTIONSENSOR_ACCELERATION_1G_FLOAT;
 
 	//calculate angle with acceleration using atan2 and respect magnitude
 	acceleration_angle_y  = atan2(motiondata.acceleration.x, motiondata.acceleration.z) / acceleration_angle_y_magnitude;
 	acceleration_angle_y = -acceleration_angle_y;
-
-	//filter angle to reduce high frequency noise
-	//filter_moving_average_put_element(&acceleration_angle_average, acceleration_angle_y);
 
 	//## get angularvelocity of y
 	//###########################
@@ -128,28 +128,18 @@ float motionsensor_get_angle_y(void)
 
 	//## fuse angles
 	//##############
-	//apply complementary filter
-	angle_y = angle_y * complementary_filter_angularvelocity_factor +
-			  acceleration_angle_y * complementary_filter_acceleraton_factor;
-
-	//return
-	return angle_y * 1000.0;
-
-	//## fuse angles
-	//##############
 	//compensate gyro integral error using acceleration_angle
 	//grad der qualität des winkels des beschleunigungssensors bewerten
-//	if(acceleration_angle_y_magnitude < 1.05 && acceleration_angle_y_magnitude > 0.95) {
-//		//fuse sensor data with complementary filter
-//		PORT_LEDS |= _BV(LED2);
-//		fused_angles  = ((int32_t)angle_y) * complementary_filter_angularvelocity_factor;
-//		fused_angles += ((int32_t)acceleration_angle_average.avg) * complementary_filter_acceleraton_factor;
-//		angle_y = (motionsensor_angle_t)(fused_angles / MOTIONSENSOR_COMPLEMTARY_FILTER_RATIO_BASE);
-//	} else {
-//		PORT_LEDS &= ~_BV(LED2);
-//	}
-//
-//	return (angle_y / angle_scalingfactor);
+	if(acceleration_angle_y_magnitude < 1.25 && acceleration_angle_y_magnitude > 0.75) {
+		//fuse sensor data with complementary filter
+		PORT_LEDS |= _BV(LED2);
+		angle_y = angle_y * complementary_filter_angularvelocity_factor +
+				  acceleration_angle_y * complementary_filter_acceleraton_factor;
+	} else {
+		PORT_LEDS &= ~_BV(LED2);
+	}
+
+	return angle_y * 1000.0;
 }
 
 void motionsensor_read_motiondata(motionsensor_motiondata_t * mdata)

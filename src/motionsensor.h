@@ -19,6 +19,7 @@
 /* *** DECLARATIONS ********************************************************** */
 
 #define MOTIONSENSOR_ACCELERATION_1G				16384
+#define MOTIONSENSOR_ACCELERATION_1G_FLOAT			16384.0
 #define MOTIONSENSOR_COMPLEMTARY_FILTER_RATIO_BASE	1.0
 
 /* * external type and constants * */
