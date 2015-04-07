@@ -271,7 +271,7 @@ void system_controller_state_init_controller_environment(void)
 	acceleration_vector_t acceleration_vector;
 	angularvelocity_vector_t angularvelocity_vector;
 	uint16_t angle_scalingfactor;
-	uint16_t complementary_filter_ratio;
+	float complementary_filter_ratio;
 
 	/* **** DO ***** */
 
@@ -339,7 +339,7 @@ void system_controller_state_init_controller_environment(void)
 	//restore parameters for complementary filter
 	complementary_filter_ratio = configuration_storage_get_complementary_filter_ratio();
 	motionsensor_set_complementary_filter_ratio(complementary_filter_ratio);
-	printf("complementary_filter_ratio\n  angularvelocity: %d, acceleration: %d\n",
+	printf("complementary_filter_ratio\n  angularvelocity: %f, acceleration: %f\n",
 			complementary_filter_ratio,
 			MOTIONSENSOR_COMPLEMTARY_FILTER_RATIO_BASE - complementary_filter_ratio);
 

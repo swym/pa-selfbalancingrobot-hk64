@@ -13,6 +13,7 @@
 /* * system headers              * */
 #include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include <string.h>
 #include <avr/pgmspace.h>
 #include <util/delay.h>
@@ -74,7 +75,7 @@ static const char string_terminal_edge_pid_i[] PROGMEM = "pid_edge.i: %i";
 static const char string_terminal_edge_pid_d[] PROGMEM = "pid_edge.d: %i";
 static const char string_terminal_edge_pid_s[] PROGMEM = "pid_edge.scalingfactor: %u";
 static const char string_terminal_edge_angle[] PROGMEM = "pid_edge_angle: %u";
-static const char string_terminal_complementary_filter_ratio[] PROGMEM = "complementary_filter.ratio: %i";
+static const char string_terminal_complementary_filter_ratio[] PROGMEM = "complementary_filter.ratio: %f";
 static const char string_terminal_angle_scaling[] PROGMEM = "motionsensor.angle_scalingfactor: %u";
 static const char string_terminal_motionsensor_offset_accel_x[] PROGMEM = "motionsensor.acceleration_offset.x: %i";
 static const char string_terminal_motionsensor_offset_accel_y[] PROGMEM = "motionsensor.acceleration_offset.y: %i";
@@ -129,7 +130,8 @@ static void configuration_terminal_state_reset_configuration(void);
 static void configuration_terminal_state_save_configuration(void);
 
 
-static bool parse_input2int16(int16_t *value, int16_t min, int16_t max);
+static bool parse_input2int16(int16_t *value, const int16_t min, const int16_t max);
+static bool parse_input2float(float *value, const float min, const float max);
 
 /* *** FUNCTION DEFINITIONS ************************************************* */
 
@@ -394,11 +396,13 @@ void configuration_terminal_state_set_pid_edge_parameter(void)
 void configuration_terminal_state_set_filter_parameter(void)
 {
 	int16_t tmp_int16 = 0;
+	float tmp_float = 0;
 
 	switch (input_buffer[INPUT_BUFFER_COMMAND_INDEX]) {
 		case 'c':
-			if(parse_input2int16(&tmp_int16, 0, MOTIONSENSOR_COMPLEMTARY_FILTER_RATIO_BASE)) {
-				configuration_storage_set_complementary_filter_ratio(tmp_int16);
+			//if(parse_input2int16(&tmp_int16, 0, MOTIONSENSOR_COMPLEMTARY_FILTER_RATIO_BASE)) {
+			if(parse_input2float(&tmp_float, 0, MOTIONSENSOR_COMPLEMTARY_FILTER_RATIO_BASE)) {
+				configuration_storage_set_complementary_filter_ratio(tmp_float);
 				printf_P(string_OK);
 			} else {
 				printf_P(string_INVALID_NUMBER);
@@ -510,7 +514,7 @@ void configuration_terminal_state_save_configuration(void)
 	next_state = STATE_FINAL;
 }
 
-bool parse_input2int16(int16_t *value, int16_t min, int16_t max)
+bool parse_input2int16(int16_t *value, const int16_t min, const int16_t max)
 {
 	char *input_ptr = input_buffer;		//set intput_ptr to begin of input_buffer
 	char value_buffer[VALUE_BUFFER_MAX];
@@ -550,5 +554,47 @@ bool parse_input2int16(int16_t *value, int16_t min, int16_t max)
 		}
 	}
 	//if strlen() mismatch or parsing of sscanf() fails return false;
+	return false;
+}
+
+
+
+bool parse_input2float(float *value, const float min, const float max)
+{
+	char *input_ptr = input_buffer;		//set intput_ptr to begin of input_buffer
+	char value_buffer[VALUE_BUFFER_MAX];
+	uint8_t i = 0;
+
+	//try parsing only string witch is long enough, has a seperator at the right index
+	if(strlen(input_buffer) > INPUT_BUFFER_PARSE_MINLEN &&
+		input_buffer[INPUT_BUFFER_SEPERATOR_INDEX] == INPUT_BUFFER_SEPERATOR) {
+
+		input_ptr += INPUT_BUFFER_PARSE_MINLEN; //move pointer to begin of number
+
+		//iterate over input buffer and copy chars to value_buffer
+		while(*input_ptr != '\0' && i < VALUE_BUFFER_MAX) {
+			value_buffer[i] = *input_ptr;
+			input_ptr++;
+			i++;
+		}
+
+		//add endmark
+		value_buffer[i] = '\0';
+
+		//try to convert to float
+		*value = atof(value_buffer);
+
+		//respect max
+		if(*value >= max) {
+			*value = max;
+		}
+
+		//respect min
+		if(*value < min) {
+			*value = min;
+		}
+
+		return true;
+	}
 	return false;
 }

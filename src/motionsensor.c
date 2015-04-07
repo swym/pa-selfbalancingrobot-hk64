@@ -299,7 +299,7 @@ void motionsensor_set_angle_scalingfactor(uint16_t s)
 }
 
 
-uint16_t motionsensor_get_complementary_filter_ratio(void)
+float motionsensor_get_complementary_filter_ratio(void)
 {
 	//angularvelocity_factor == b; acceleration_factor == 1-b
 	return complementary_filter_angularvelocity_factor;
