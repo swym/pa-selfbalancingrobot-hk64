@@ -423,7 +423,6 @@ void system_controller_state_run_controller(void)
 			timer_current_majorslot = TIMER_MAJORSLOT_NONE;
 
 			//read angle
-
 			PORT_LEDS |= _BV(LED7);
 			current_angle = (motionsensor_angle_t)motionsensor_get_angle_y();
 			PORT_LEDS &= ~_BV(LED7);
@@ -447,7 +446,8 @@ void system_controller_state_run_controller(void)
 			}
 
 			//calculate PID value
-			pid_output = pid_Controller(pid_setpoint, current_angle, &pid_controller_data);
+			pid_output =  pid_Controller(pid_setpoint, current_angle, &pid_controller_data);
+			pid_output = -pid_output;
 			PORT_LEDS &= ~_BV(LED6);
 
 
