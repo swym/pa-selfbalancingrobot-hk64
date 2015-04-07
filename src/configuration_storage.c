@@ -84,7 +84,7 @@ void configuration_storage_reset_configuration(void)
 	configuration.motionsensor.angularvelocity_offset_vector.y = 0;
 	configuration.motionsensor.angularvelocity_offset_vector.z = 0;
 
-	configuration.motionsensor.complementary_filter_ratio = 1000;
+	configuration.motionsensor.complementary_filter_ratio = 1.0;
 
 	configuration.motionsensor.angle_scalingfactor = 1;
 
@@ -231,14 +231,14 @@ void configuration_storage_set_angularvelocity_offset_vector(angularvelocity_vec
 	configuration.has_changed = true;
 }
 
-uint16_t configuration_storage_get_complementary_filter_ratio(void)
+float configuration_storage_get_complementary_filter_ratio(void)
 {
 	return configuration.motionsensor.complementary_filter_ratio;
 }
 
-void configuration_storage_set_complementary_filter_ratio(uint16_t factor)
+void configuration_storage_set_complementary_filter_ratio(float factor)
 {
-	if(factor <= 1000) {
+	if(factor <= 1.0) {
 		configuration.motionsensor.complementary_filter_ratio = factor;
 
 		configuration.has_changed = true;
