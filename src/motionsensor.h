@@ -64,7 +64,7 @@ typedef struct {
  *   - integrated_gyro to int:
  * @return
  */
-extern motionsensor_angle_t motionsensor_get_angle_y(void);
+extern float motionsensor_get_angle_y(void);
 
 extern void motionsensor_init(void);
 
@@ -89,8 +89,8 @@ extern void motionsensor_set_angle_scalingfactor(uint16_t s);
 extern void motionsensor_get_raw_motiondata(motionsensor_motiondata_t * mdata);
 extern void motionsensor_get_filtered_motiondata(motionsensor_motiondata_t * mdata);
 
-extern motionsensor_angle_t motionsensor_get_angle_acceleration(void);
-extern double motionsensor_get_angle_acceleration_magnitude(void);
+extern float motionsensor_get_angle_acceleration(void);
+extern float motionsensor_get_angle_acceleration_magnitude(void);
 
 /*
 extern double motionsensor_get_complementary_filter_angularvelocity_factor(void);

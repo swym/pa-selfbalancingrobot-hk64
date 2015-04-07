@@ -27,11 +27,19 @@
 //#define NORMALIZATION_ACCELERATION_ANGLE	2000
 //#define NORMALIZATION_ACCELERATION_ANGLE	7321
 //#define NORMALIZATION_ACCELERATION_ANGLE  5215  //convert rad from atan (+-pi/2) to 2^13 => (2^13 / (pi/2)) = 5215.189
-#define NORMALIZATION_ACCELERATION_ANGLE    1640
-//#define NORMALIZATION_ANGULARVELOCITY_ANGLE	4  //  * ,123478261 (2^13 / 2300)
+//#define NORMALIZATION_ACCELERATION_ANGLE    1640
 
 
 #define ANGULARVELOCITY_DELTA_TIME_MS		250			// gyro * dt =  angular * 4 / 1000
+//integrate angular velocity to angle over time (dt = 4 ms)
+// gyro * dt * correction;
+// dt = 4 * 1000;
+// gryo * dt = gyro * 4 / 1000 = gyro / 250
+// correction value = 1/979.86 (empirisch gesucht) sollte 1000 sein ?!?!?
+// gyro / 250 * 1/979.86 = gyro / 244965.240
+#define NORMALIZATION_ANGULARVELOCITY_ANGLE	244965.240  //  * ,123478261 (2^13 / 2300)
+
+
 
 /* *** DECLARATIONS ********************************************************* */
 
@@ -62,8 +70,9 @@ static filter_moving_generic_average_t angularvelocity_filter_y;
 static filter_moving_generic_average_t angularvelocity_filter_z;
 
 //static uint8_t acceleration_filter_mask[] = {1, 1, 1, 1, 1, 1, 1, 1};
-static uint8_t acceleration_filter_mask[] = {1, 0, 0, 0, 0, 0, 0, 0};
 //static uint8_t acceleration_filter_mask[] = {4, 2, 2, 2, 1, 1, 1, 1};
+static uint8_t acceleration_filter_mask[] = {1, 0, 0, 0, 0, 0, 0, 0};
+//static uint8_t acceleration_filter_mask[] = {4, 2, 2, 1, 1, 1, 0, 0};
 static filter_moving_generic_average_t acceleration_filter_x;
 static filter_moving_generic_average_t acceleration_filter_y;
 static filter_moving_generic_average_t acceleration_filter_z;
@@ -74,9 +83,9 @@ static uint8_t calibrate_zero_point_filter_mask[] = {1, 1, 1, 1, 1, 1, 1, 1};
 
 
 // variables used in get_angle_y -> module internal - so print function can read them
-static motionsensor_angle_t angle_y;
-static motionsensor_angle_t acceleration_angle_y;
-static double acceleration_angle_y_magnitude;
+static float angle_y;
+static float acceleration_angle_y;
+static float acceleration_angle_y_magnitude;
 
 static int16_t angle_scalingfactor;
 static uint16_t complementary_filter_angularvelocity_factor;
@@ -88,12 +97,8 @@ static void motionsensor_read_motiondata(motionsensor_motiondata_t * mdata);
 
 /* *** FUNCTION DEFINITIONS ************************************************* */
 
-motionsensor_angle_t motionsensor_get_angle_y(void)
+float motionsensor_get_angle_y(void)
 {
-	int32_t fused_angles;
-	int32_t angle_accel_tmp;
-	int32_t angle_tmp;
-
 	int32_t accel_x_squared;
 	int32_t accel_z_squared;
 
@@ -106,40 +111,43 @@ motionsensor_angle_t motionsensor_get_angle_y(void)
 	//acceleration_angle_y = (int16_t)(atan2(acceleration_vector.x, -acceleration_vector.z) * NORMALIZATION_ACCELERATION_ANGLE);
 	accel_x_squared = (int32_t)motiondata.acceleration.x * (int32_t)motiondata.acceleration.x;
 	accel_z_squared = (int32_t)motiondata.acceleration.z * (int32_t)motiondata.acceleration.z;
-	acceleration_angle_y_magnitude = (sqrt(accel_x_squared + accel_z_squared) / ((double)MOTIONSENSOR_ACCELERATION_1G)); //calculate magnitude and norm it to 1
+	acceleration_angle_y_magnitude = (sqrt(accel_x_squared + accel_z_squared) / ((float)MOTIONSENSOR_ACCELERATION_1G)); //calculate magnitude and norm it to 1
 
 	//calculate angle with acceleration using atan2 and respect magnitude
-	acceleration_angle_y  = (motionsensor_angle_t)(
-							(atan2(motiondata.acceleration.x , motiondata.acceleration.z)
-							 / acceleration_angle_y_magnitude)
-							 * NORMALIZATION_ACCELERATION_ANGLE);
-
-	//invert
+	acceleration_angle_y  = atan2(motiondata.acceleration.x, motiondata.acceleration.z) / acceleration_angle_y_magnitude;
 	acceleration_angle_y = -acceleration_angle_y;
 
 	//filter angle to reduce high frequency noise
-	filter_moving_average_put_element(&acceleration_angle_average, acceleration_angle_y);
+	//filter_moving_average_put_element(&acceleration_angle_average, acceleration_angle_y);
 
 	//## get angularvelocity of y
 	//###########################
-	//integrate angular velocity to angle over time (dt = 4 ms) (no normalization needed)
-	angle_y += motiondata.angularvelocity.y / ANGULARVELOCITY_DELTA_TIME_MS; // gyro * dt =  angular * 4 / 1000
+	//integrate (sum) to angle_y
+	angle_y += motiondata.angularvelocity.y / NORMALIZATION_ANGULARVELOCITY_ANGLE;
+
+	//## fuse angles
+	//##############
+	//apply complementary filter
+	angle_y = angle_y * 0.98 + acceleration_angle_y * 0.02;
+
+	//return
+	return angle_y * 1000.0;
 
 	//## fuse angles
 	//##############
 	//compensate gyro integral error using acceleration_angle
 	//grad der qualität des winkels des beschleunigungssensors bewerten
-	if(acceleration_angle_y_magnitude < 1.05 && acceleration_angle_y_magnitude > 0.95) {
-		//fuse sensor data with complementary filter
-		PORT_LEDS |= _BV(LED2);
-		fused_angles  = ((int32_t)angle_y) * complementary_filter_angularvelocity_factor;
-		fused_angles += ((int32_t)acceleration_angle_average.avg) * complementary_filter_acceleraton_factor;
-		angle_y = (motionsensor_angle_t)(fused_angles / MOTIONSENSOR_COMPLEMTARY_FILTER_RATIO_BASE);
-	} else {
-		PORT_LEDS &= ~_BV(LED2);
-	}
-
-	return (angle_y / angle_scalingfactor);
+//	if(acceleration_angle_y_magnitude < 1.05 && acceleration_angle_y_magnitude > 0.95) {
+//		//fuse sensor data with complementary filter
+//		PORT_LEDS |= _BV(LED2);
+//		fused_angles  = ((int32_t)angle_y) * complementary_filter_angularvelocity_factor;
+//		fused_angles += ((int32_t)acceleration_angle_average.avg) * complementary_filter_acceleraton_factor;
+//		angle_y = (motionsensor_angle_t)(fused_angles / MOTIONSENSOR_COMPLEMTARY_FILTER_RATIO_BASE);
+//	} else {
+//		PORT_LEDS &= ~_BV(LED2);
+//	}
+//
+//	return (angle_y / angle_scalingfactor);
 }
 
 void motionsensor_read_motiondata(motionsensor_motiondata_t * mdata)
@@ -336,12 +344,12 @@ void motionsensor_get_filtered_motiondata(motionsensor_motiondata_t * mdata)
 	mdata->temperature = motiondata.temperature;
 }
 
-motionsensor_angle_t motionsensor_get_angle_acceleration(void)
+float motionsensor_get_angle_acceleration(void)
 {
 	return acceleration_angle_y;
 }
 
-double motionsensor_get_angle_acceleration_magnitude(void)
+float motionsensor_get_angle_acceleration_magnitude(void)
 {
 	return acceleration_angle_y_magnitude;
 }
