@@ -20,7 +20,7 @@
 /* *** DECLARATIONS ********************************************************** */
 
 /* * external type and constants * */
-#define CONFIGURATION_STORAGE_VERSION			110
+#define CONFIGURATION_STORAGE_VERSION			111
 #define CONFIGURATION_STORAGE_COMMENT_LENGTH	20
 
 #define CONFIGURATION_STORAGE_RUN_MODE_NORMAL	0
@@ -38,7 +38,7 @@ typedef struct {
 typedef struct {
 	acceleration_vector_t acceleration_offset_vector;
 	angularvelocity_vector_t angularvelocity_offset_vector;
-	uint16_t complementary_filter_ratio;
+	float complementary_filter_ratio;
 	uint16_t angle_scalingfactor;
 } motionsensor_config_t;
 
@@ -107,8 +107,8 @@ extern void configuration_storage_set_acceleration_offset_vector(acceleration_ve
 extern void configuration_storage_get_angularvelocity_offset_vector(angularvelocity_vector_t * accel_v);
 extern void configuration_storage_set_angularvelocity_offset_vector(angularvelocity_vector_t * angular_v);
 
-extern uint16_t configuration_storage_get_complementary_filter_ratio(void);
-extern void configuration_storage_set_complementary_filter_ratio(uint16_t ratio);
+extern float configuration_storage_get_complementary_filter_ratio(void);
+extern void configuration_storage_set_complementary_filter_ratio(float ratio);
 
 extern uint16_t configuration_storage_get_angle_scalingfactor(void);
 extern void configuration_storage_set_angle_scalingfactor(uint16_t);
