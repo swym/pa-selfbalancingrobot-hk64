@@ -295,12 +295,12 @@ void mpu9150_init()
 			MPU9150_TWI_ADDRESS, MPU9150_REGISTER_SMPRT_DIV, 0x1F);
 
 	//change resolution of gyro and accel
-	twi_master_write_register_bit(
-			MPU9150_TWI_ADDRESS, MPU9150_REGISTER_GYRO_CONFIG,
-			MPU9150_BIT_GYRO_FS_SEL_0, true);
-	twi_master_write_register_bit(
-			MPU9150_TWI_ADDRESS, MPU9150_REGISTER_GYRO_CONFIG,
-			MPU9150_BIT_GYRO_FS_SEL_1, true);
+//	twi_master_write_register_bit(
+//			MPU9150_TWI_ADDRESS, MPU9150_REGISTER_GYRO_CONFIG,
+//			MPU9150_BIT_GYRO_FS_SEL_0, true);
+//	twi_master_write_register_bit(
+//			MPU9150_TWI_ADDRESS, MPU9150_REGISTER_GYRO_CONFIG,
+//			MPU9150_BIT_GYRO_FS_SEL_1, true);
 
 //	twi_master_write_register_bit(
 //			MPU9150_TWI_ADDRESS, MPU9150_REGISTER_ACCEL_CONFIG,

@@ -450,6 +450,8 @@ void system_controller_state_run_controller(void)
 			pid_output = -pid_output;
 			PORT_LEDS &= ~_BV(LED6);
 
+			motionsensor_set_pwm_compensation(pid_output);
+
 
 			//prepare new motor speed
 			PORT_LEDS |= _BV(LED5);

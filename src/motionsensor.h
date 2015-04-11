@@ -93,6 +93,8 @@ extern void motionsensor_get_filtered_motiondata(motionsensor_motiondata_t * mda
 extern float motionsensor_get_angle_acceleration(void);
 extern float motionsensor_get_angle_acceleration_magnitude(void);
 
+extern void motionsensor_set_pwm_compensation(float compensation);
+
 /*
 extern double motionsensor_get_complementary_filter_angularvelocity_factor(void);
 extern void motionsensor_set_complementary_filter_angularvelocity_factor(double factor);
