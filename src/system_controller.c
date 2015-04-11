@@ -65,15 +65,23 @@ static system_controller_state_t current_state;
 static system_controller_state_t next_state;
 
 static motionsensor_angle_t current_angle;
-static int16_t pid_output;
+static int16_t pid_output_balance;
+static int16_t pid_output_position_m1;
+static int16_t pid_output_position_m2;
+
 static motor_contol_speed_t new_motor_speed;
 
 static pid_config_t				pid_center;
 static pid_config_t				pid_edge;
 static motionsensor_angle_t		pid_edge_angle;
 
-static pidData_t pid_controller_data;
-static int8_t    pid_setpoint;
+static pidData_t pid_state_balance;
+static pidData_t pid_state_position_m1;
+static pidData_t pid_state_position_m2;
+
+static int8_t    pid_setpoint_balance;
+static int8_t	 pid_setpoint_position_m1;
+static int8_t	 pid_setpoint_position_m2;
 
 static void (*print_data_fptr)(void);
 static uint8_t print_ticker_cnt;
@@ -308,12 +316,22 @@ void system_controller_state_init_controller_environment(void)
 			 pid_center.i_factor,
 			 pid_center.d_factor,
 			 pid_center.pid_scalingfactor,
-			 &pid_controller_data);
+			 &pid_state_balance);
+
+
+	pid_Init(10, 0, 0, 128,
+			&pid_state_position_m1);
+
+	pid_Init(10, 0, 0, 128,
+			&pid_state_position_m2);
 
 	//set setpoint
-	pid_setpoint = 0;
+	pid_setpoint_balance = 0;
 
-	printf("pid setpoint: %d\n", pid_setpoint);
+	pid_setpoint_position_m1 = 0;
+	pid_setpoint_position_m2 = 0;
+
+	printf("pid setpoint: %d\n", pid_setpoint_balance);
 
 	//restore scaling factor
 	angle_scalingfactor = configuration_storage_get_angle_scalingfactor();
@@ -434,27 +452,28 @@ void system_controller_state_run_controller(void)
 			if(abs(current_angle) > pid_edge_angle) {
 				PORT_LEDS |=  _BV(LED1);
 				PORT_LEDS &= ~_BV(LED0);
-				pid_controller_data.P_Factor = pid_edge.p_factor;
-				pid_controller_data.I_Factor = pid_edge.i_factor;
-				pid_controller_data.D_Factor = pid_edge.d_factor;
+				pid_state_balance.P_Factor = pid_edge.p_factor;
+				pid_state_balance.I_Factor = pid_edge.i_factor;
+				pid_state_balance.D_Factor = pid_edge.d_factor;
 			} else {
 				PORT_LEDS |=  _BV(LED0);
 				PORT_LEDS &= ~_BV(LED1);
-				pid_controller_data.P_Factor = pid_center.p_factor;
-				pid_controller_data.I_Factor = pid_center.i_factor;
-				pid_controller_data.D_Factor = pid_center.d_factor;
+				pid_state_balance.P_Factor = pid_center.p_factor;
+				pid_state_balance.I_Factor = pid_center.i_factor;
+				pid_state_balance.D_Factor = pid_center.d_factor;
 			}
 
 			//calculate PID value
-			pid_output =  pid_Controller(pid_setpoint, current_angle, &pid_controller_data);
-			pid_output = -pid_output;
+			pid_output_balance =  pid_Controller(pid_setpoint_balance, current_angle, &pid_state_balance);
+			pid_output_balance = -pid_output_balance;
+
 			PORT_LEDS &= ~_BV(LED6);
 
 
 			//prepare new motor speed
 			PORT_LEDS |= _BV(LED5);
-			new_motor_speed.motor_1 = pid_output;
-			new_motor_speed.motor_2 = pid_output;
+			new_motor_speed.motor_1 = pid_output_balance;
+			new_motor_speed.motor_2 = pid_output_balance;
 			motor_control_prepare_new_speed(&new_motor_speed);
 			PORT_LEDS &= ~_BV(LED5);
 
@@ -496,7 +515,7 @@ void system_controller_print_ticker(void)
 
 void system_controller_print_data_anglepid(void)
 {
-	printf("p:%d:%d\n",current_angle, pid_output);
+	printf("p:%d:%d\n",current_angle, pid_output_balance);
 }
 
 
@@ -520,8 +539,8 @@ void system_controller_print_data_all_raw(void)
 	print_data_buffer[buf_idx++] = (uint8_t)(motiondata.angularvelocity.y & 0x00FF);
 	print_data_buffer[buf_idx++] = (uint8_t)(current_angle >> 8);
 	print_data_buffer[buf_idx++] = (uint8_t)(current_angle & 0x00FF);
-	print_data_buffer[buf_idx++] = (uint8_t)(pid_output >> 8);
-	print_data_buffer[buf_idx++] = (uint8_t)(pid_output & 0x00FF);
+	print_data_buffer[buf_idx++] = (uint8_t)(pid_output_balance >> 8);
+	print_data_buffer[buf_idx++] = (uint8_t)(pid_output_balance & 0x00FF);
 
 	//marshall packet with base64
 	base64_encode(print_data_buffer, buf_idx);
@@ -548,8 +567,8 @@ static void system_controller_print_data_all_filtered(void)
 	print_data_buffer[buf_idx++] = (uint8_t)(motiondata.angularvelocity.y & 0x00FF);
 	print_data_buffer[buf_idx++] = (uint8_t)(current_angle >> 8);
 	print_data_buffer[buf_idx++] = (uint8_t)(current_angle & 0x00FF);
-	print_data_buffer[buf_idx++] = (uint8_t)(pid_output >> 8);
-	print_data_buffer[buf_idx++] = (uint8_t)(pid_output & 0x00FF);
+	print_data_buffer[buf_idx++] = (uint8_t)(pid_output_balance >> 8);
+	print_data_buffer[buf_idx++] = (uint8_t)(pid_output_balance & 0x00FF);
 
 	//marshall packet with base64
 	base64_encode(print_data_buffer, buf_idx);
@@ -584,8 +603,8 @@ static void system_controller_print_data_really_all_filtered(void)
 	print_data_buffer[buf_idx++] = (uint8_t)(angle_accel & 0x00FF);
 	print_data_buffer[buf_idx++] = (uint8_t)(current_angle >> 8);
 	print_data_buffer[buf_idx++] = (uint8_t)(current_angle & 0x00FF);
-	print_data_buffer[buf_idx++] = (uint8_t)(pid_output >> 8);
-	print_data_buffer[buf_idx++] = (uint8_t)(pid_output & 0x00FF);
+	print_data_buffer[buf_idx++] = (uint8_t)(pid_output_balance >> 8);
+	print_data_buffer[buf_idx++] = (uint8_t)(pid_output_balance & 0x00FF);
 
 	//marshall packet with base64
 	base64_encode(print_data_buffer, buf_idx);
