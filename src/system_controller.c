@@ -28,6 +28,7 @@
 
 #include "motionsensor.h"
 #include "motor_control.h"
+#include "encoder.h"
 #include "pid.h"
 #include "timer.h"
 #include "base64.h"
@@ -82,6 +83,9 @@ static pidData_t pid_state_position_m2;
 static int8_t    pid_setpoint_balance;
 static int8_t	 pid_setpoint_position_m1;
 static int8_t	 pid_setpoint_position_m2;
+
+static int16_t	current_position_m1;
+static int16_t	current_position_m2;
 
 static void (*print_data_fptr)(void);
 static uint8_t print_ticker_cnt;
@@ -318,7 +322,6 @@ void system_controller_state_init_controller_environment(void)
 			 pid_center.pid_scalingfactor,
 			 &pid_state_balance);
 
-
 	pid_Init(10, 0, 0, 128,
 			&pid_state_position_m1);
 
@@ -412,8 +415,10 @@ void system_controller_state_init_remaining_hardware(void)
 	printf("init motor control...\n");
 	motor_acceleration = configuration_storage_get_motor_acceleration();
 	printf("motor acceleration: %d\n", motor_acceleration);
-
 	motor_control_init(motor_acceleration);
+
+	printf("init encoders...\n");
+	encoder_init();
 
 	printf("init timers...\n");
 	timer_init();							/* Init Timer */
@@ -440,9 +445,13 @@ void system_controller_state_run_controller(void)
 		if(timer_current_majorslot == TIMER_MAJORSLOT_0) {
 			timer_current_majorslot = TIMER_MAJORSLOT_NONE;
 
-			//read angle
+			//read current angle
 			PORT_LEDS |= _BV(LED7);
 			current_angle = (motionsensor_angle_t)motionsensor_get_angle_y();
+
+			//read encoders and integrate to position
+			current_position_m1 -= encoder_read_delta(ENCODER_M1);//invert encoder signal, because m2 turns invers to m1
+			current_position_m2 += encoder_read_delta(ENCODER_M2);
 			PORT_LEDS &= ~_BV(LED7);
 
 			//calculate pid
@@ -463,17 +472,25 @@ void system_controller_state_run_controller(void)
 				pid_state_balance.D_Factor = pid_center.d_factor;
 			}
 
-			//calculate PID value
-			pid_output_balance =  pid_Controller(pid_setpoint_balance, current_angle, &pid_state_balance);
-			pid_output_balance = -pid_output_balance;
+			//calculate PID value for balance and negate pid value to drive to the correct direction
+			pid_output_balance = -(pid_Controller(pid_setpoint_balance, current_angle, &pid_state_balance));
 
+
+			//calculate PID values for position
+			pid_output_position_m1 = pid_Controller(pid_setpoint_position_m1,
+					current_position_m1,
+					&pid_state_position_m1);
+
+			pid_output_position_m2 = pid_Controller(pid_setpoint_position_m2,
+					current_position_m2,
+					&pid_state_position_m2);
 			PORT_LEDS &= ~_BV(LED6);
 
 
 			//prepare new motor speed
 			PORT_LEDS |= _BV(LED5);
-			new_motor_speed.motor_1 = pid_output_balance;
-			new_motor_speed.motor_2 = pid_output_balance;
+			new_motor_speed.motor_1 = pid_output_balance + pid_output_position_m1;
+			new_motor_speed.motor_2 = pid_output_balance + pid_output_position_m2;
 			motor_control_prepare_new_speed(&new_motor_speed);
 			PORT_LEDS &= ~_BV(LED5);
 
@@ -515,7 +532,10 @@ void system_controller_print_ticker(void)
 
 void system_controller_print_data_anglepid(void)
 {
-	printf("p:%d:%d\n",current_angle, pid_output_balance);
+
+
+	printf("%ld:%ld\n",pid_state_balance.sumError,
+					   pid_state_balance.sumError >> 8);
 }
 
 
