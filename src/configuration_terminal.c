@@ -7,6 +7,13 @@
  */
 
 
+/* *** TODOS **************************************************************** */
+/*
+ *  - parser nach vt100 verschieben
+ *  - aufruf von char_received() über vt100 kapseln
+ */
+
+
 /* *** INCLUDES ************************************************************* */
 #include "configuration_terminal.h"
 
