@@ -1,7 +1,0 @@
-<map id="main.c" name="main.c">
-<area shape="rect" id="node2" href="$main_8h.html" title="main.h" alt="" coords="24,83,85,111"/>
-<area shape="rect" id="node7" href="$uart_8h.html" title="Initialisierung einer seriellen Konsole. " alt="" coords="661,83,733,111"/>
-<area shape="rect" id="node9" href="$twi__master_8h.html" title="lib/twi_master.h" alt="" coords="210,83,323,111"/>
-<area shape="rect" id="node12" href="$acceleration__t_8h.html" title="acceleration_t.h" alt="" coords="500,161,615,189"/>
-<area shape="rect" id="node14" href="$bma020_8h.html" title="This modul implements a low level driver for the bma020 acceleration sensor. All registers and flags ..." alt="" coords="397,83,477,111"/>
-</map>
