@@ -116,6 +116,7 @@ float motionsensor_get_angle_y(void)
 	accel_x_float = accel_x_float*accel_x_float;
 	accel_z_float = accel_z_float*accel_z_float;
 	acceleration_angle_y_magnitude = sqrt(accel_x_float + accel_z_float) / MOTIONSENSOR_ACCELERATION_1G_FLOAT;
+	//acceleration_angle_y_magnitude = sqrt(accel_x_float + accel_z_float + 1.0) / MOTIONSENSOR_ACCELERATION_1G_FLOAT;
 
 	//calculate angle with acceleration using atan2 and respect magnitude
 	acceleration_angle_y  = atan2(motiondata.acceleration.x, motiondata.acceleration.z) / acceleration_angle_y_magnitude;
