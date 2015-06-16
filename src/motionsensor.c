@@ -78,7 +78,7 @@ static filter_moving_generic_average_t acceleration_filter_x;
 static filter_moving_generic_average_t acceleration_filter_y;
 static filter_moving_generic_average_t acceleration_filter_z;
 
-static filter_moving_average_t acceleration_angle_average;
+static filter_moving_average_float_t acceleration_angle_average;
 
 static uint8_t calibrate_zero_point_filter_mask[] = {1, 1, 1, 1, 1, 1, 1, 1};
 
@@ -115,12 +115,15 @@ float motionsensor_get_angle_y(void)
 
 	accel_x_float = accel_x_float*accel_x_float;
 	accel_z_float = accel_z_float*accel_z_float;
-	//acceleration_angle_y_magnitude = sqrt(accel_x_float + accel_z_float) / MOTIONSENSOR_ACCELERATION_1G_FLOAT;
-	acceleration_angle_y_magnitude = sqrt(accel_x_float + accel_z_float + 1.0) / MOTIONSENSOR_ACCELERATION_1G_FLOAT;
+	//accel_y not used and should always near 1.0
+	acceleration_angle_y_magnitude = sqrt(accel_x_float + 1.0 + accel_z_float) / MOTIONSENSOR_ACCELERATION_1G_FLOAT;
 
 	//calculate angle with acceleration using atan2 and respect magnitude
 	acceleration_angle_y  = atan2(motiondata.acceleration.x, motiondata.acceleration.z) / acceleration_angle_y_magnitude;
 	acceleration_angle_y = -acceleration_angle_y;
+
+	//filter acceleration angle
+	filter_moving_average_float_init(&acceleration_angle_average, acceleration_angle_y);
 
 	//## get angularvelocity of y
 	//###########################
@@ -135,7 +138,7 @@ float motionsensor_get_angle_y(void)
 		//fuse sensor data with complementary filter
 		//PORT_LEDS |= _BV(LED2);
 		angle_y = angle_y * complementary_filter_angularvelocity_factor +
-				  acceleration_angle_y * complementary_filter_acceleraton_factor;
+				  acceleration_angle_average.avg * complementary_filter_acceleraton_factor;
 	} else {
 		//PORT_LEDS &= ~_BV(LED2);
 	}
@@ -369,7 +372,7 @@ void motionsensor_init(void)
 	filter_moving_generic_average_init(&angularvelocity_filter_y, angularvelocity_filter_mask, 0);
 	filter_moving_generic_average_init(&angularvelocity_filter_z, angularvelocity_filter_mask, 0);
 
-	filter_moving_average_init(&acceleration_angle_average, 0);
+	filter_moving_average_float_init(&acceleration_angle_average, 0.0);
 
 	angle_scalingfactor = 1;
 
