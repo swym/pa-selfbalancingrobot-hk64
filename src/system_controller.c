@@ -69,7 +69,7 @@ static motionsensor_angle_t current_angle;
 static int16_t current_speed_m1;
 static int16_t current_speed_m2;
 
-static int16_t pid_balance_output;
+static int16_t pid_balance_output;		//speed for motors
 static int16_t pid_speed_m1_output;
 static int16_t pid_speed_m2_output;
 
@@ -477,8 +477,8 @@ void system_controller_state_run_controller(void)
 			//read encoders and integrate to position
 			//current_m1 -= encoder_read_delta(ENCODER_M1);//invert encoder signal, because m2 turns invers to m1
 			//current_m2 += encoder_read_delta(ENCODER_M2);
-			current_speed.motor_1 = encoder_read_delta(ENCODER_M1);
-			current_speed.motor_2 = encoder_read_delta(ENCODER_M2);
+			current_speed.motor_1 = -encoder_read_delta(ENCODER_M1);
+			current_speed.motor_2 =  encoder_read_delta(ENCODER_M2);
 
 
 			//switch pid set
@@ -501,14 +501,25 @@ void system_controller_state_run_controller(void)
 			//pid_output_m1 = pid_Controller(pid_output,  current_m1, &pid_m1);
 			//pid_output_m2 = pid_Controller(pid_output,  current_m2, &pid_m2);
 
+			//calculate pid_speed_m1 and pid_speed_m2
+			pid_speed_m1_output = pid_Controller(pid_balance_output,
+												 current_speed.motor_1,
+												 &pid_speed_m1_data);
+
+			pid_speed_m2_output = pid_Controller(pid_balance_output,
+												 current_speed.motor_2,
+												 &pid_speed_m2_data);
+
 			//prepare new motor speed
 			//new_motor_speed.motor_1 = pid_output + pid_output_m1;
 			//new_motor_speed.motor_2 = pid_output + pid_output_m2;
 			//new_motor_speed.motor_1 = pid_output_m1;
 			//new_motor_speed.motor_2 = pid_output_m2;
 
-			new_motor_speed.motor_1 = pid_balance_output;
-			new_motor_speed.motor_2 = pid_balance_output;
+			//new_motor_speed.motor_1 = pid_balance_output;
+			//new_motor_speed.motor_2 = pid_balance_output;
+			new_motor_speed.motor_1 = pid_speed_m1_output;
+			new_motor_speed.motor_2 = pid_speed_m2_output;
 
 			motor_control_prepare_new_speed(&new_motor_speed);
 
