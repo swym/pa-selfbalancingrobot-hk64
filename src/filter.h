@@ -19,8 +19,9 @@
 /* *** DECLARATIONS ********************************************************** */
 
 /* * external type and constants * */
-#define FILTER_MOVING_GENERIC_WEIGHTS_COUNT		8
-#define FILTER_MOVING_AVERAGE_ELEMENT_COUNT		8
+#define FILTER_MOVING_GENERIC_WEIGHTS_COUNT				8
+#define FILTER_MOVING_AVERAGE_ELEMENT_COUNT				8
+#define FILTER_MOVING_AVERAGE_FLOAT_ELEMENT_COUNT		64
 
 typedef struct {
 	int16_t avg;
@@ -28,6 +29,13 @@ typedef struct {
 	int8_t  index;
 	int32_t elements_sum;
 } filter_moving_average_t;
+
+typedef struct {
+	float avg;
+	float elements[FILTER_MOVING_AVERAGE_ELEMENT_COUNT];
+	int8_t  index;
+	float elements_sum;
+} filter_moving_average_float_t;
 
 typedef struct {
 	int16_t avg;
@@ -48,5 +56,8 @@ extern void filter_moving_average_put_element(filter_moving_average_t *average, 
 extern void filter_moving_average_init(filter_moving_average_t *average, int16_t init_value);
 extern void filter_moving_average_flush(filter_moving_average_t *average);
 
+extern void filter_moving_average_float_put_element(filter_moving_average_float_t *average, float new_value);
+extern void filter_moving_average_float_init(filter_moving_average_float_t *average, float init_value);
+extern void filter_moving_average_flaot_flush(filter_moving_average_float_t *average);
 
 #endif /* FILTER_H_ */
