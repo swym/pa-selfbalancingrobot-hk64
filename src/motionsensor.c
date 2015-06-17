@@ -61,7 +61,8 @@ static mpu9150_data_t raw_imudata;
 //static acceleration_vector_t acceleration_offset_vector;
 //static angularvelocity_vector_t angularvelocity_offset_vector; //TODO: replace with temp. sensitive solution
 
-
+static float valid_acceleration_magnitude_upper_limit;
+static float valid_acceleration_magnitude_lower_limit;
 
 // - FILTER
 //static uint8_t angularvelocity_filter_mask[] = {64, 1, 0, 0, 0, 0, 0, 0};
@@ -134,7 +135,10 @@ float motionsensor_get_angle_y(void)
 	//##############
 	//compensate gyro integral error using acceleration_angle
 	//grad der qualität des winkels des beschleunigungssensors bewerten
-	if(acceleration_angle_y_magnitude < 1.25 && acceleration_angle_y_magnitude > 0.75) {
+	//if(acceleration_angle_y_magnitude < 1.25 && acceleration_angle_y_magnitude > 0.75) {
+	if(acceleration_angle_y_magnitude < valid_acceleration_magnitude_upper_limit &&
+	   acceleration_angle_y_magnitude > valid_acceleration_magnitude_lower_limit) {
+
 		//fuse sensor data with complementary filter
 		//PORT_LEDS |= _BV(LED2);
 		angle_y = angle_y * complementary_filter_angularvelocity_factor +
@@ -311,6 +315,19 @@ void motionsensor_set_complementary_filter_ratio(float ratio)
 	complementary_filter_acceleraton_factor     = MOTIONSENSOR_COMPLEMTARY_FILTER_RATIO_BASE - ratio;
 }
 
+float motionsensor_get_valid_acceleration_magnitude(void)
+{
+	//return only threshold
+	return valid_acceleration_magnitude_upper_limit - 1.0;
+}
+void motionsensor_set_valid_acceleration_magnitude(float valid_magnitude)
+{
+	//normal == 1 G == 1.0
+	//set upper and lower limit
+	valid_acceleration_magnitude_upper_limit = 1.0 + valid_magnitude;
+	valid_acceleration_magnitude_lower_limit = 1.0 - valid_magnitude;
+}
+
 void motionsensor_get_raw_motiondata(motionsensor_motiondata_t * mdata)
 {
 
@@ -378,4 +395,8 @@ void motionsensor_init(void)
 
 	complementary_filter_angularvelocity_factor = MOTIONSENSOR_COMPLEMTARY_FILTER_RATIO_BASE;
 	complementary_filter_acceleraton_factor = 0;
+
+	valid_acceleration_magnitude_upper_limit = 1.50;
+	valid_acceleration_magnitude_lower_limit = 0.50;
+
 }

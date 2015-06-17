@@ -32,6 +32,7 @@
 #include "timer.h"
 #include "base64.h"
 #include "leds.h"
+#include "encoder.h"
 
 
 /* *** DECLARATIONS ********************************************************** */
@@ -65,15 +66,30 @@ static system_controller_state_t current_state;
 static system_controller_state_t next_state;
 
 static motionsensor_angle_t current_angle;
-static int16_t pid_output;
+
+static int16_t pid_robot_pos_output;	//angle setpoint
+static int16_t pid_balance_output;		//speed for motors
+static int16_t pid_speed_m1_output;		//pwm for drivers
+static int16_t pid_speed_m2_output;		//pwm for drivers
+
+static motor_contol_speed_t current_speed;
 static motor_contol_speed_t new_motor_speed;
 
-static pid_config_t				pid_center;
-static pid_config_t				pid_edge;
-static motionsensor_angle_t		pid_edge_angle;
+static pid_config_t				pid_robot_pos_config;
+static pid_config_t				pid_balance_config;
+static pid_config_t				pid_speed_motor_config;
 
-static pidData_t pid_controller_data;
-static int8_t    pid_setpoint;
+static motionsensor_angle_t		angle_stable;
+
+static pidData_t pid_robot_pos_data;
+static pidData_t pid_balance_data;
+static pidData_t pid_speed_m1_data;
+static pidData_t pid_speed_m2_data;
+
+static int16_t	 pid_robot_pos_setpoint;
+static int16_t   pid_balance_setpoint;
+static int16_t	 pid_speed_m1_setpoint;
+static int16_t	 pid_speed_m2_setpoint;
 
 static void (*print_data_fptr)(void);
 static uint8_t print_ticker_cnt;
@@ -272,53 +288,95 @@ void system_controller_state_init_controller_environment(void)
 	angularvelocity_vector_t angularvelocity_vector;
 	uint16_t angle_scalingfactor;
 	float complementary_filter_ratio;
+	float valid_accel_magnitude;
 
 	/* **** DO ***** */
 
 	//initialize PID Controller with saved values
-	pid_center.p_factor = configuration_storage_get_pid_center_p_factor();
-	pid_center.i_factor = configuration_storage_get_pid_center_i_factor();
-	pid_center.d_factor = configuration_storage_get_pid_center_d_factor();
-	pid_center.pid_scalingfactor = configuration_storage_get_pid_center_scalingfactor();
-
-	pid_edge.p_factor = configuration_storage_get_pid_edge_p_factor();
-	pid_edge.i_factor = configuration_storage_get_pid_edge_i_factor();
-	pid_edge.d_factor = configuration_storage_get_pid_edge_d_factor();
-	pid_edge.pid_scalingfactor = configuration_storage_get_pid_edge_scalingfactor();
-
-	pid_edge_angle = configuration_storage_get_pid_edge_angle();
-
-	printf("center pid: p:%6d i:%6d d:%6d s:%6d\n",
-			pid_center.p_factor,
-			pid_center.i_factor,
-			pid_center.d_factor,
-			pid_center.pid_scalingfactor);
-
-	printf("edge pid  : p:%6d i:%6d d:%6d s:%6d\n",
-			pid_edge.p_factor,
-			pid_edge.i_factor,
-			pid_edge.d_factor,
-			pid_edge.pid_scalingfactor);
-
-	printf("edge angle: %u\n", pid_edge_angle);
+	pid_robot_pos_config.p_factor = configuration_storage_get_pid_robot_pos_p_factor();
+	pid_robot_pos_config.i_factor = configuration_storage_get_pid_robot_pos_i_factor();
+	pid_robot_pos_config.d_factor = configuration_storage_get_pid_robot_pos_d_factor();
+	pid_robot_pos_config.pid_scalingfactor = configuration_storage_get_pid_robot_pos_scalingfactor();
 
 
-	//init pid with parameters for center pid
-	pid_Init(pid_center.p_factor,
-			 pid_center.i_factor,
-			 pid_center.d_factor,
-			 pid_center.pid_scalingfactor,
-			 &pid_controller_data);
+	pid_balance_config.p_factor = configuration_storage_get_pid_balance_p_factor();
+	pid_balance_config.i_factor = configuration_storage_get_pid_balance_i_factor();
+	pid_balance_config.d_factor = configuration_storage_get_pid_balance_d_factor();
+	pid_balance_config.pid_scalingfactor = configuration_storage_get_pid_balance_scalingfactor();
+
+//	pid_balance_edge_config.p_factor = configuration_storage_get_pid_edge_p_factor();
+//	pid_balance_edge_config.i_factor = configuration_storage_get_pid_edge_i_factor();
+//	pid_balance_edge_config.d_factor = configuration_storage_get_pid_edge_d_factor();
+//	pid_balance_edge_config.pid_scalingfactor = configuration_storage_get_pid_edge_scalingfactor();
+//
+//	pid_balance_edge_angle = configuration_storage_get_pid_edge_angle();
+
+	//TODO: HACK FIXME define variables in configuration storage
+	pid_speed_motor_config.p_factor = configuration_storage_get_pid_speed_motor_p_factor();
+	pid_speed_motor_config.i_factor = configuration_storage_get_pid_speed_motor_i_factor();
+	pid_speed_motor_config.d_factor = configuration_storage_get_pid_speed_motor_d_factor();
+	pid_speed_motor_config.pid_scalingfactor = configuration_storage_get_pid_speed_motor_scalingfactor();
+
+	printf("robot pos: p:%6d i:%6d d:%6d s:%6d\n",
+			pid_robot_pos_config.p_factor,
+			pid_robot_pos_config.i_factor,
+			pid_robot_pos_config.d_factor,
+			pid_robot_pos_config.pid_scalingfactor);
+
+	printf("balance: p:%6d i:%6d d:%6d s:%6d\n",
+			pid_balance_config.p_factor,
+			pid_balance_config.i_factor,
+			pid_balance_config.d_factor,
+			pid_balance_config.pid_scalingfactor);
+
+	printf("motor speed: p:%6d i:%6d d:%6d s:%6d\n",
+			pid_speed_motor_config.p_factor,
+			pid_speed_motor_config.i_factor,
+			pid_speed_motor_config.d_factor,
+			pid_speed_motor_config.pid_scalingfactor);
+
+	printf("angle stable: %u\n\n", angle_stable);
+
+
+
+	//init robot_speed pid
+	pid_Init( pid_robot_pos_config.p_factor,
+			  pid_robot_pos_config.i_factor,
+			  pid_robot_pos_config.d_factor,
+			  pid_robot_pos_config.pid_scalingfactor,
+			 &pid_robot_pos_data);
+
+	//init balance pid
+	pid_Init( pid_balance_config.p_factor,
+			  pid_balance_config.i_factor,
+			  pid_balance_config.d_factor,
+			  pid_balance_config.pid_scalingfactor,
+			 &pid_balance_data);
+
+	//init motor pids
+	pid_Init( pid_speed_motor_config.p_factor,
+			  pid_speed_motor_config.i_factor,
+			  pid_speed_motor_config.d_factor,
+			  pid_speed_motor_config.pid_scalingfactor,
+			 &pid_speed_m1_data);
+
+	pid_Init( pid_speed_motor_config.p_factor,
+			  pid_speed_motor_config.i_factor,
+			  pid_speed_motor_config.d_factor,
+			  pid_speed_motor_config.pid_scalingfactor,
+			 &pid_speed_m2_data);
+
 
 	//set setpoint
-	pid_setpoint = 0;
+	pid_robot_pos_setpoint	 = 0;
+	pid_balance_setpoint  	 = 0;
+	pid_speed_m1_setpoint    = 0;
+	pid_speed_m2_setpoint    = 0;
 
-	printf("pid setpoint: %d\n", pid_setpoint);
-
-	//restore scaling factor
-	angle_scalingfactor = configuration_storage_get_angle_scalingfactor();
-	motionsensor_set_angle_scalingfactor(angle_scalingfactor);
-	printf("angle_scalingfactor: %d\n", angle_scalingfactor);
+	printf("pid_robot_speed setpoint: %d\n", pid_robot_pos_setpoint);
+	printf("pid_balance     setpoint: %d\n", pid_balance_setpoint);
+	printf("pid_speed_m1    setpoint: %d\n", pid_speed_m1_setpoint);
+	printf("pid_speed_m2    setpoint: %d\n", pid_speed_m2_setpoint);
 
 	//restore acceleration offset
 	configuration_storage_get_acceleration_offset_vector(&acceleration_vector);
@@ -343,6 +401,15 @@ void system_controller_state_init_controller_environment(void)
 			complementary_filter_ratio,
 			MOTIONSENSOR_COMPLEMTARY_FILTER_RATIO_BASE - complementary_filter_ratio);
 
+	//restore scaling factor
+	angle_scalingfactor = configuration_storage_get_angle_scalingfactor();
+	motionsensor_set_angle_scalingfactor(angle_scalingfactor);
+	printf("angle_scalingfactor: %d\n", angle_scalingfactor);
+
+	//restore maximal acceleration magnitude
+	valid_accel_magnitude = configuration_storage_get_valid_acceleration_magnitude();
+	motionsensor_set_valid_acceleration_magnitude(valid_accel_magnitude);
+	printf("valid_accel_magnitude: %f\n", valid_accel_magnitude);
 
 	//init print_data_fptr
 
@@ -393,9 +460,12 @@ void system_controller_state_init_remaining_hardware(void)
 	//init motor controller
 	printf("init motor control...\n");
 	motor_acceleration = configuration_storage_get_motor_acceleration();
-	printf("motor acceleration: %d\n", motor_acceleration);
 
+	printf("motor acceleration: %d\n", motor_acceleration);
 	motor_control_init(motor_acceleration);
+
+	printf("init motor encoders...\n");
+	encoder_init();
 
 	printf("init timers...\n");
 	timer_init();							/* Init Timer */
@@ -410,6 +480,8 @@ void system_controller_state_run_controller(void)
 	printf("run controller...\n");
 	PORT_LEDS = 0x00;
 
+	int64_t robot_pos = 0; //temporary integrator
+
 	/* **** DO ***** */
 
 	while(true) {
@@ -417,7 +489,6 @@ void system_controller_state_run_controller(void)
 		/*
 		 * - Read sensor values and calculate current angle
 		 * - determine pid output
-		 * - limit pid output and prepare as new motor speed
 		 */
 		if(timer_current_majorslot == TIMER_MAJORSLOT_0) {
 			timer_current_majorslot = TIMER_MAJORSLOT_NONE;
@@ -425,25 +496,60 @@ void system_controller_state_run_controller(void)
 			//read angle
 			current_angle = (motionsensor_angle_t)motionsensor_get_angle_y();
 
-			//calculate pid
+			//read encoder speed
+			current_speed.motor_1 = -encoder_read_delta(ENCODER_M1); //invert encoder signal, because m2 turns invers to m1
+			current_speed.motor_2 =  encoder_read_delta(ENCODER_M2);
+
+			//integrate to position
+			//TODO: implement overflow protection!!!
+			//robot_pos += (current_speed.motor_2 - current_speed.motor_1) / 2;
+			//robot_pos = -robot_pos;
+
 			//switch pid set
-			if(abs(current_angle) > pid_edge_angle) {
-				pid_controller_data.P_Factor = pid_edge.p_factor;
-				pid_controller_data.I_Factor = pid_edge.i_factor;
-				pid_controller_data.D_Factor = pid_edge.d_factor;
+//			if(abs(current_angle) > pid_edge_angle) {
+//				pid_controller_data.P_Factor = pid_edge.p_factor;
+//				pid_controller_data.I_Factor = pid_edge.i_factor;
+//				pid_controller_data.D_Factor = pid_edge.d_factor;
+//			} else {
+//				pid_controller_data.P_Factor = pid_center.p_factor;
+//				pid_controller_data.I_Factor = pid_center.i_factor;
+//				pid_controller_data.D_Factor = pid_center.d_factor;
+//			}
+
+			//calculate PID robot pos
+			pid_robot_pos_output = pid_Controller(pid_robot_pos_setpoint,
+													robot_pos,
+													&pid_robot_pos_data);
+
+			//TODO: Implement heartbeat and switch mode
+			if(abs(current_angle) > angle_stable) {
+			//if(true) {
+				pid_balance_setpoint = pid_robot_pos_output;
 			} else {
-				pid_controller_data.P_Factor = pid_center.p_factor;
-				pid_controller_data.I_Factor = pid_center.i_factor;
-				pid_controller_data.D_Factor = pid_center.d_factor;
+				robot_pos = 0;			//reset robot_pos integral
+				pid_balance_setpoint = 0;
 			}
 
-			//calculate PID value
-			pid_output =  pid_Controller(pid_setpoint, current_angle, &pid_controller_data);
-			pid_output = -pid_output;
+			//calculate PID balance
+			pid_balance_output =  pid_Controller(pid_balance_setpoint,
+												current_angle,
+												&pid_balance_data);
+			pid_speed_m1_setpoint = -pid_balance_output;
+			pid_speed_m2_setpoint = -pid_balance_output;
+
+			//calculate PID motor speed
+			pid_speed_m1_output = pid_Controller(pid_speed_m1_setpoint,
+												 current_speed.motor_1,
+												 &pid_speed_m1_data);
+
+			pid_speed_m2_output = pid_Controller(pid_speed_m2_setpoint,
+												 current_speed.motor_2,
+												 &pid_speed_m2_data);
 
 			//prepare new motor speed
-			new_motor_speed.motor_1 = pid_output;
-			new_motor_speed.motor_2 = pid_output;
+			new_motor_speed.motor_1 = pid_speed_m1_output;
+			new_motor_speed.motor_2 = pid_speed_m2_output;
+
 			motor_control_prepare_new_speed(&new_motor_speed);
 
 		} //end TIMER_MAJORSLOT_0
@@ -459,11 +565,12 @@ void system_controller_state_run_controller(void)
 
 			//print pid and angle
 			if(print_data_fptr != NULL) {
-				//print_data_fptr();
+				print_data_fptr();
 			}
 
 			//display speed on leds
-			PORT_LEDS = (uint8_t)(abs(pid_output));
+			//PORT_LEDS = (uint8_t)(abs(pid_balance_output));
+			PORT_LEDS = (uint8_t)(abs(pid_robot_pos_output));
 
 		} // end TIMER_MAJORSLOT_1
 
@@ -485,7 +592,7 @@ void system_controller_print_ticker(void)
 
 void system_controller_print_data_anglepid(void)
 {
-	printf("p:%d:%d\n",current_angle, pid_output);
+	printf("p:%d:%d\n",current_angle, pid_balance_output);
 }
 
 
@@ -509,8 +616,8 @@ void system_controller_print_data_all_raw(void)
 	print_data_buffer[buf_idx++] = (uint8_t)(motiondata.angularvelocity.y & 0x00FF);
 	print_data_buffer[buf_idx++] = (uint8_t)(current_angle >> 8);
 	print_data_buffer[buf_idx++] = (uint8_t)(current_angle & 0x00FF);
-	print_data_buffer[buf_idx++] = (uint8_t)(pid_output >> 8);
-	print_data_buffer[buf_idx++] = (uint8_t)(pid_output & 0x00FF);
+	print_data_buffer[buf_idx++] = (uint8_t)(pid_balance_output >> 8);
+	print_data_buffer[buf_idx++] = (uint8_t)(pid_balance_output & 0x00FF);
 
 	//marshall packet with base64
 	base64_encode(print_data_buffer, buf_idx);
@@ -537,8 +644,8 @@ static void system_controller_print_data_all_filtered(void)
 	print_data_buffer[buf_idx++] = (uint8_t)(motiondata.angularvelocity.y & 0x00FF);
 	print_data_buffer[buf_idx++] = (uint8_t)(current_angle >> 8);
 	print_data_buffer[buf_idx++] = (uint8_t)(current_angle & 0x00FF);
-	print_data_buffer[buf_idx++] = (uint8_t)(pid_output >> 8);
-	print_data_buffer[buf_idx++] = (uint8_t)(pid_output & 0x00FF);
+	print_data_buffer[buf_idx++] = (uint8_t)(pid_balance_output >> 8);
+	print_data_buffer[buf_idx++] = (uint8_t)(pid_balance_output & 0x00FF);
 
 	//marshall packet with base64
 	base64_encode(print_data_buffer, buf_idx);
@@ -558,7 +665,7 @@ static void system_controller_print_data_really_all_filtered(void)
 	int8_t magnitude    = (int8_t)(motionsensor_get_angle_acceleration_magnitude() * 100.0);
 
 	//header: type: A
-	//header: size payload: 10
+	//header: size payload: 13
 	//payload [accel.x H,accel.x L,accel.z H,accel.z L,angular.y H,angular.y L,magnitude,angle_accel H, angle_accel L, angle H,angle L,pid H,pid L]
 	print_data_buffer[buf_idx++] = 'A';
 	print_data_buffer[buf_idx++] = 13;
@@ -573,8 +680,8 @@ static void system_controller_print_data_really_all_filtered(void)
 	print_data_buffer[buf_idx++] = (uint8_t)(angle_accel & 0x00FF);
 	print_data_buffer[buf_idx++] = (uint8_t)(current_angle >> 8);
 	print_data_buffer[buf_idx++] = (uint8_t)(current_angle & 0x00FF);
-	print_data_buffer[buf_idx++] = (uint8_t)(pid_output >> 8);
-	print_data_buffer[buf_idx++] = (uint8_t)(pid_output & 0x00FF);
+	print_data_buffer[buf_idx++] = (uint8_t)(pid_balance_output >> 8);
+	print_data_buffer[buf_idx++] = (uint8_t)(pid_balance_output & 0x00FF);
 
 	//marshall packet with base64
 	base64_encode(print_data_buffer, buf_idx);
