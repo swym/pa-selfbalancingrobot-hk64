@@ -64,17 +64,23 @@ void configuration_storage_save_configuration(void)
 
 void configuration_storage_reset_configuration(void)
 {
-	configuration.pid_center.p_factor = 0;
-	configuration.pid_center.i_factor = 0;
-	configuration.pid_center.d_factor = 0;
-	configuration.pid_center.pid_scalingfactor = 1;
+	configuration.pid_robot_pos.p_factor = 1;
+	configuration.pid_robot_pos.i_factor = 0;
+	configuration.pid_robot_pos.d_factor = 0;
+	configuration.pid_robot_pos.pid_scalingfactor = 1;
 
-	configuration.pid_edge.p_factor = 0;
-	configuration.pid_edge.i_factor = 0;
-	configuration.pid_edge.d_factor = 0;
-	configuration.pid_edge.pid_scalingfactor = 1;
+	configuration.pid_balance.p_factor = 1;
+	configuration.pid_balance.i_factor = 0;
+	configuration.pid_balance.d_factor = 0;
+	configuration.pid_balance.pid_scalingfactor = 1;
 
-	configuration.pid_edge_angle = INT16_MAX;
+	configuration.pid_speed_motor.p_factor = 1;
+	configuration.pid_speed_motor.i_factor = 0;
+	configuration.pid_speed_motor.d_factor = 0;
+	configuration.pid_speed_motor.pid_scalingfactor = 1;
+
+	//configuration.pid_edge_angle = INT16_MAX;
+	configuration.angle_stable = INT16_MAX;
 
 	configuration.motionsensor.acceleration_offset_vector.x = 0;
 	configuration.motionsensor.acceleration_offset_vector.y = 0;
@@ -85,7 +91,7 @@ void configuration_storage_reset_configuration(void)
 	configuration.motionsensor.angularvelocity_offset_vector.z = 0;
 
 	configuration.motionsensor.complementary_filter_ratio = 1.0;
-
+	configuration.motionsensor.valid_acceleration_magnitude = 1.0;
 	configuration.motionsensor.angle_scalingfactor = 1;
 
 	configuration.motor_acceleration = 15;
@@ -96,102 +102,155 @@ void configuration_storage_reset_configuration(void)
 	configuration.has_changed = true;
 }
 
-int16_t configuration_storage_get_pid_center_p_factor(void)
+// #-----------
+
+int16_t configuration_storage_get_pid_robot_pos_p_factor(void)
 {
-	return configuration.pid_center.p_factor;
+	return configuration.pid_robot_pos.p_factor;
 }
 
-void configuration_storage_set_pid_center_p_factor(int16_t p_factor)
+void configuration_storage_set_pid_robot_pos_p_factor(int16_t p_factor)
 {
-	configuration.pid_center.p_factor =  p_factor;
+	configuration.pid_robot_pos.p_factor =  p_factor;
 	configuration.has_changed = true;
 }
 
-int16_t configuration_storage_get_pid_center_i_factor(void)
+int16_t configuration_storage_get_pid_robot_pos_i_factor(void)
 {
-	return configuration.pid_center.i_factor;
+	return configuration.pid_robot_pos.i_factor;
 }
 
-void configuration_storage_set_pid_center_i_factor(int16_t i_factor)
+void configuration_storage_set_pid_robot_pos_i_factor(int16_t i_factor)
 {
-	configuration.pid_center.i_factor =  i_factor;
+	configuration.pid_robot_pos.i_factor =  i_factor;
 	configuration.has_changed = true;
 }
 
-int16_t configuration_storage_get_pid_center_d_factor(void)
+int16_t configuration_storage_get_pid_robot_pos_d_factor(void)
 {
-	return configuration.pid_center.d_factor;
+	return configuration.pid_robot_pos.d_factor;
 }
 
-void configuration_storage_set_pid_center_d_factor(int16_t d_factor)
+void configuration_storage_set_pid_robot_pos_d_factor(int16_t d_factor)
 {
-	configuration.pid_center.d_factor =  d_factor;
+	configuration.pid_robot_pos.d_factor =  d_factor;
 	configuration.has_changed = true;
 }
 
-uint16_t configuration_storage_get_pid_center_scalingfactor(void)
+uint16_t configuration_storage_get_pid_robot_pos_scalingfactor(void)
 {
-	return configuration.pid_center.pid_scalingfactor;
+	return configuration.pid_robot_pos.pid_scalingfactor;
 }
 
-void configuration_storage_set_pid_center_scalingfactor(uint16_t pid_scalingfactor)
+void configuration_storage_set_pid_robot_pos_scalingfactor(uint16_t pid_scalingfactor)
 {
-	configuration.pid_center.pid_scalingfactor = pid_scalingfactor;
+	configuration.pid_robot_pos.pid_scalingfactor = pid_scalingfactor;
 	configuration.has_changed = true;
 }
 
-int16_t configuration_storage_get_pid_edge_p_factor(void)
+// #-----------
+
+int16_t configuration_storage_get_pid_balance_p_factor(void)
 {
-	return configuration.pid_edge.p_factor;
+	return configuration.pid_balance.p_factor;
 }
 
-void configuration_storage_set_pid_edge_p_factor(int16_t p_factor)
+void configuration_storage_set_pid_balance_p_factor(int16_t p_factor)
 {
-	configuration.pid_edge.p_factor =  p_factor;
+	configuration.pid_balance.p_factor =  p_factor;
 	configuration.has_changed = true;
 }
 
-int16_t configuration_storage_get_pid_edge_i_factor(void)
+int16_t configuration_storage_get_pid_balance_i_factor(void)
 {
-	return configuration.pid_edge.i_factor;
+	return configuration.pid_balance.i_factor;
 }
 
-void configuration_storage_set_pid_edge_i_factor(int16_t i_factor)
+void configuration_storage_set_pid_balance_i_factor(int16_t i_factor)
 {
-	configuration.pid_edge.i_factor =  i_factor;
+	configuration.pid_balance.i_factor =  i_factor;
 	configuration.has_changed = true;
 }
 
-int16_t configuration_storage_get_pid_edge_d_factor(void)
+int16_t configuration_storage_get_pid_balance_d_factor(void)
 {
-	return configuration.pid_edge.d_factor;
+	return configuration.pid_balance.d_factor;
 }
 
-void configuration_storage_set_pid_edge_d_factor(int16_t d_factor)
+void configuration_storage_set_pid_balance_d_factor(int16_t d_factor)
 {
-	configuration.pid_edge.d_factor =  d_factor;
+	configuration.pid_balance.d_factor =  d_factor;
 	configuration.has_changed = true;
 }
 
-uint16_t configuration_storage_get_pid_edge_scalingfactor(void)
+uint16_t configuration_storage_get_pid_balance_scalingfactor(void)
 {
-	return configuration.pid_edge.pid_scalingfactor;
+	return configuration.pid_balance.pid_scalingfactor;
 }
 
-void configuration_storage_set_pid_edge_scalingfactor(uint16_t pid_scalingfactor)
+void configuration_storage_set_pid_balance_scalingfactor(uint16_t pid_scalingfactor)
 {
-	configuration.pid_edge.pid_scalingfactor = pid_scalingfactor;
+	configuration.pid_balance.pid_scalingfactor = pid_scalingfactor;
 	configuration.has_changed = true;
 }
 
-uint16_t configuration_storage_get_pid_edge_angle(void)
+// #-----------
+
+int16_t configuration_storage_get_pid_speed_motor_p_factor(void)
 {
-	return configuration.pid_edge_angle;
+	return configuration.pid_speed_motor.p_factor;
 }
 
-void configuration_storage_set_pid_edge_angle(uint16_t angle)
+void configuration_storage_set_pid_speed_motor_p_factor(int16_t p_factor)
 {
-	configuration.pid_edge_angle = angle;
+	configuration.pid_speed_motor.p_factor =  p_factor;
+	configuration.has_changed = true;
+}
+
+int16_t configuration_storage_get_pid_speed_motor_i_factor(void)
+{
+	return configuration.pid_speed_motor.i_factor;
+}
+
+void configuration_storage_set_pid_speed_motor_i_factor(int16_t i_factor)
+{
+	configuration.pid_speed_motor.i_factor =  i_factor;
+	configuration.has_changed = true;
+}
+
+int16_t configuration_storage_get_pid_speed_motor_d_factor(void)
+{
+	return configuration.pid_speed_motor.d_factor;
+}
+
+void configuration_storage_set_pid_speed_motor_d_factor(int16_t d_factor)
+{
+	configuration.pid_speed_motor.d_factor =  d_factor;
+	configuration.has_changed = true;
+}
+
+uint16_t configuration_storage_get_pid_speed_motor_scalingfactor(void)
+{
+	return configuration.pid_speed_motor.pid_scalingfactor;
+}
+
+void configuration_storage_set_pid_speed_motor_scalingfactor(uint16_t pid_scalingfactor)
+{
+	configuration.pid_speed_motor.pid_scalingfactor = pid_scalingfactor;
+	configuration.has_changed = true;
+}
+
+// #-----------
+
+
+motionsensor_angle_t configuration_storage_get_angle_stable(void)
+{
+	return configuration.angle_stable;
+}
+
+void configuration_storage_set_angle_stable(motionsensor_angle_t angle)
+{
+	configuration.angle_stable = angle;
 	configuration.has_changed = true;
 }
 
@@ -243,6 +302,17 @@ void configuration_storage_set_complementary_filter_ratio(float factor)
 
 		configuration.has_changed = true;
 	}
+}
+
+float configuration_storage_get_valid_acceleration_magnitude(void)
+{
+	return configuration.motionsensor.valid_acceleration_magnitude;
+}
+
+void configuration_storage_set_valid_acceleration_magnitude(float magnitude)
+{
+	configuration.motionsensor.valid_acceleration_magnitude = magnitude;
+	configuration.has_changed = true;
 }
 
 uint16_t configuration_storage_get_angle_scalingfactor(void)

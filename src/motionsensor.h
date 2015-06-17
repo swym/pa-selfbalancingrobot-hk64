@@ -84,6 +84,9 @@ extern void motionsensor_set_angularvelocity_offset_vector(angularvelocity_vecto
 extern float motionsensor_get_complementary_filter_ratio(void);
 extern void motionsensor_set_complementary_filter_ratio(float ratio);
 
+extern float motionsensor_get_valid_acceleration_magnitude(void);
+extern void motionsensor_set_valid_acceleration_magnitude(float valid_magnitude);
+
 extern uint16_t motionsensor_get_angle_scalingfactor(void);
 extern void motionsensor_set_angle_scalingfactor(uint16_t s);
 
