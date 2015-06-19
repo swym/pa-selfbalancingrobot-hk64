@@ -2,10 +2,11 @@
 #define UART_H
 #include <inttypes.h>
 
-extern uint8_t UART_char_received(void);
-extern void UART_clr_rx_buf(void);
-extern void UART_init(void);
-//extern void UART_init(uint32_t baudrate);
+extern uint8_t uart_char_received(void);
+extern void uart_clr_rx_buf(void);
+extern void uart_init(uint32_t baudrate);
+
+extern uint8_t uart_getstring(char* Buffer, uint8_t MaxLen);
 
 
 #endif /*UART_H*/

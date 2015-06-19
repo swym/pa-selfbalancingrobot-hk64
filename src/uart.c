@@ -93,12 +93,12 @@
    F_CPU_nicht_definiert = Hier_ist_ein_Fehler;
 #endif /*F_CPU*/
 
-#define USE_U2X		1
-#define RX_BUFSIZE	80
-#define SEND_CR		0
+#define USE_U2X    1
+#define RX_BUFSIZE 80
 
-static int uart_putchar(char c, FILE *stream);
-static int uart_getchar(FILE *stream);
+
+static uint8_t uart_putchar(char c);
+static char uart_getchar();
 
 /* **************************************************************************
     M O D U L I N T E R N E   V A R I A B L E N
@@ -110,38 +110,15 @@ static FILE stderr_str = FDEV_SETUP_STREAM(uart_putchar, NULL, _FDEV_SETUP_WRITE
 /* **************************************************************************
     G L O B A L E   F U N K T I O N E N
 *****************************************************************************/
-uint8_t UART_char_received(void)
+
+void uart_init(uint32_t baudrate)
 {
-    return (MYUCSRA & (1<<MYRXC)) ? !0 : 0;
-}
-
-
-void UART_clr_rx_buf(void)
-{
-    uint8_t tmp;
-
-    while (MYUCSRA & (1<<MYRXC)) {
-        tmp = MYUDR;
-    }
-    tmp = tmp + 0;
-}
-
-
-void UART_init(void)
-{
-
-/* TODO: Better: calc error rate with and without U2X and decide which is smaller
 #if F_CPU < 2000000UL && defined(MYUSE_U2X)
-    MYUCSRA = _BV(U2X); // improve baud rate error by using 2x clk
+    MYUCSRA = _BV(U2X); /* improve baud rate error by using 2x clk */
     MYUBRRL = (F_CPU / (8UL * baudrate)) - 1;
 #else
     MYUBRRL = (F_CPU / (16UL * baudrate)) - 1;
 #endif
-*/
-    MYUCSRA = _BV(U2X); /* improve baud rate error by using 2x clk */
-    //MYUBRRL = (F_CPU / (8UL * baudrate)) - 1;
-    //MYUBRRL = 16;		//115200
-    MYUBRRL =  8;		//230400
     MYUCSRB = _BV(MYTXEN) | _BV(MYRXEN); /* tx/rx enable */
 
     stdout = stdin = &uart_str;
@@ -149,27 +126,78 @@ void UART_init(void)
 }
 
 
+uint8_t uart_char_received(void)
+{
+    return (MYUCSRA & (1<<MYRXC)) ? !0 : 0;
+}
+
+
+void uart_clr_rx_buf(void)
+{
+    uint8_t tmp;
+
+    while (MYUCSRA & (1<<MYRXC)) {
+        tmp = MYUDR;
+    }
+
+    //suppress compiler warning
+    tmp = tmp + 0;
+}
+
+
+uint8_t uart_getstring( char* buffer, uint8_t max_chars )
+{
+	char new_char;
+	uint8_t string_len = 0;
+
+	new_char = uart_getchar();    // Warte auf und empfange das nächste Zeichen
+
+								  // Sammle solange Zeichen, bis:
+								  // * entweder das String Ende Zeichen kam
+								  // * oder das aufnehmende Array voll ist
+	while( new_char != '\n' && string_len < max_chars - 1 ) {
+
+		//skip linefeed
+		if(new_char != '\r') {
+			*buffer++ = new_char;
+			string_len++;
+		}
+
+		new_char = uart_getchar();
+	}
+
+	// Noch ein '\0' anhängen um einen Standard
+	// C-String daraus zu machen
+	*buffer = '\0';
+
+	return string_len;
+}
+
+
 /* **************************************************************************
     M O D U L I N T E R N E   F U N K T I O N E N
 *****************************************************************************/
-
-static int uart_putchar(char c, FILE *stream)
+static uint8_t uart_putchar(char c)
 {
-    /*XXX: Hier kann jemand einen Summer, Licht oder sonstwas aktivieren.*/
-    if (c == '\a') {
-        return 0;
-    }
+//    /*XXX: Hier kann jemand einen Summer, Licht oder sonstwas aktivieren.*/
+//    if (c == '\a') {
+//        return 0;
+//    }
 
-#if SEND_CR
-    if (c == '\n') {
-    	uart_putchar('\r', stream);
-    }
-#endif
+//    if (c == '\n') {
+//        uart_putchar('\r', stream);
+//    }
 
     loop_until_bit_is_set(MYUCSRA, MYUDRE);
     MYUDR = c;
 
     return 0;
+}
+
+static char uart_getchar()
+{
+	loop_until_bit_is_set(MYUCSRA, MYRXC);   // warten bis Zeichen verfuegbar
+    return MYUDR;                  			 // Zeichen aus UDR an Aufrufer zurueckgeben
 }
 
 
@@ -206,90 +234,92 @@ static int uart_putchar(char c, FILE *stream)
  * Successive calls to uart_getchar() will be satisfied from the
  * internal buffer until that buffer is emptied again.
  */
-static int uart_getchar(FILE *stream)
-{
-    uint8_t c;
-    char *cp, *cp2;
-    static char b[RX_BUFSIZE];
-    static char *rxp;
 
-    if (rxp == 0) {
-        for (cp = b;;) {
-            loop_until_bit_is_set(MYUCSRA, MYRXC);
-            if (MYUCSRA & _BV(MYFE))
-                return _FDEV_EOF;
-            if (MYUCSRA & _BV(MYDOR))
-                return _FDEV_ERR;
-            c = MYUDR;
-            /* behaviour similar to Unix stty ICRNL */
-            if (c == '\r')
-                c = '\n';
-            if (c == '\n') {
-                *cp = c;
-                uart_putchar(c, stream);
-                rxp = b;
-                break;
-            }
-            else if (c == '\t') {
-                c = ' ';
-            }
-
-            if ((c >= (uint8_t)' ' && c <= (uint8_t)'\x7e') ||
-                c >= (uint8_t)'\xa0')
-            {
-                if (cp == b + RX_BUFSIZE - 1)
-                    uart_putchar('\a', stream);
-                else {
-                    *cp++ = c;
-                    uart_putchar(c, stream);
-                }
-                continue;
-            }
-
-            switch (c) {
-            case 'c' & 0x1f:
-                return -1;
-
-            case '\b':
-            case '\x7f':
-                if (cp > b) {
-                    uart_putchar('\b', stream);
-                    uart_putchar(' ', stream);
-                    uart_putchar('\b', stream);
-                    cp--;
-                }
-                break;
-
-            case 'r' & 0x1f:
-                uart_putchar('\r', stream);
-                for (cp2 = b; cp2 < cp; cp2++)
-                    uart_putchar(*cp2, stream);
-                break;
-
-            case 'u' & 0x1f:
-                while (cp > b) {
-                    uart_putchar('\b', stream);
-                    uart_putchar(' ', stream);
-                    uart_putchar('\b', stream);
-                    cp--;
-                }
-                break;
-
-            case 'w' & 0x1f:
-                while (cp > b && cp[-1] != ' ') {
-                    uart_putchar('\b', stream);
-                    uart_putchar(' ', stream);
-                    uart_putchar('\b', stream);
-                    cp--;
-                }
-                break;
-            } /*switch (c)*/
-        } /*for (cp = b;;)*/
-    } /*if (rxp == 0)*/
-
-    c = *rxp++;
-    if (c == '\n')
-        rxp = 0;
-
-    return c;
-}
+//
+//static int uart_getchar(FILE *stream)
+//{
+//    uint8_t c;
+//    char *cp, *cp2;
+//    static char b[RX_BUFSIZE];
+//    static char *rxp;
+//
+//    if (rxp == 0) {
+//        for (cp = b;;) {
+//            loop_until_bit_is_set(MYUCSRA, MYRXC);
+//            if (MYUCSRA & _BV(MYFE))
+//                return _FDEV_EOF;
+//            if (MYUCSRA & _BV(MYDOR))
+//                return _FDEV_ERR;
+//            c = MYUDR;
+//            /* behaviour similar to Unix stty ICRNL */
+//            if (c == '\r')
+//                c = '\n';
+//            if (c == '\n') {
+//                *cp = c;
+//                //uart_putchar(c, stream);
+//                rxp = b;
+//                break;
+//            }
+//            else if (c == '\t') {
+//                c = ' ';
+//            }
+//
+//            if ((c >= (uint8_t)' ' && c <= (uint8_t)'\x7e') ||
+//                c >= (uint8_t)'\xa0')
+//            {
+//                if (cp == b + RX_BUFSIZE - 1)
+//                    uart_putchar('\a', stream);
+//                else {
+//                    *cp++ = c;
+//                    //uart_putchar(c, stream);
+//                }
+//                continue;
+//            }
+//
+//            switch (c) {
+//            case 'c' & 0x1f:
+//                return -1;
+//
+//            case '\b':
+//            case '\x7f':
+//                if (cp > b) {
+//                    uart_putchar('\b', stream);
+//                    uart_putchar(' ', stream);
+//                    uart_putchar('\b', stream);
+//                    cp--;
+//                }
+//                break;
+//
+//            case 'r' & 0x1f:
+//                uart_putchar('\r', stream);
+//                for (cp2 = b; cp2 < cp; cp2++)
+//                    uart_putchar(*cp2, stream);
+//                break;
+//
+//            case 'u' & 0x1f:
+//                while (cp > b) {
+//                    uart_putchar('\b', stream);
+//                    uart_putchar(' ', stream);
+//                    uart_putchar('\b', stream);
+//                    cp--;
+//                }
+//                break;
+//
+//            case 'w' & 0x1f:
+//                while (cp > b && cp[-1] != ' ') {
+//                    uart_putchar('\b', stream);
+//                    uart_putchar(' ', stream);
+//                    uart_putchar('\b', stream);
+//                    cp--;
+//                }
+//                break;
+//            } /*switch (c)*/
+//        } /*for (cp = b;;)*/
+//    } /*if (rxp == 0)*/
+//
+//    c = *rxp++;
+//    if (c == '\n')
+//        rxp = 0;
+//
+//    return c;
+//}
