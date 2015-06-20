@@ -91,6 +91,7 @@ Date        Description
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
+#include <stdbool.h>
 #include "uart.h"
 
 
@@ -553,6 +554,51 @@ int uart_available(void)
         return (UART_RX_BUFFER_MASK + UART_RxHead - UART_RxTail) % UART_RX_BUFFER_MASK;
 }/* uart_available */
 
+
+/*************************************************************************
+Function: uart_rx_buffer_size()
+Purpose:  Determine the number of bytes waiting in the receive buffer, alias for uart_available
+Input:    None
+Returns:  Integer number of bytes in the receive buffer
+**************************************************************************/
+int uart_rx_buffer_size(void)
+{
+	return uart_available();
+}
+
+
+/*************************************************************************
+Function: uart_tx_buffer_size()
+Purpose:  Determine the number of bytes waiting in the transmit buffer
+Input:    None
+Returns:  Integer number of bytes in the transmit buffer
+**************************************************************************/
+int uart_tx_buffer_size(void)
+{
+	return (UART_TX_BUFFER_MASK + UART_TxHead - UART_TxTail) % UART_TX_BUFFER_MASK;
+}
+
+
+/*************************************************************************
+Function: uart_enable_rxtx()
+Purpose:  This function allows to enable or disable the irqs and control
+          bits of the uart.
+          TODO: Implementation should reflect all cpu models
+Input:    Boolean to enable or disable rx and tx
+Returns:  None
+**************************************************************************/
+void uart_enable_rxtx(bool enable)
+{
+	if(enable) {
+		//enables irqs
+		UART0_CONTROL  = _BV(RXCIE0)|(1<<RXEN0)|(1<<TXEN0);
+	} else {
+		//wait until tx buffer is empty
+		while(uart_tx_buffer_size()) {};
+		//disable irqs
+		UART0_CONTROL &= ~(_BV(RXCIE0)|(1<<RXEN0)|(1<<TXEN0));
+	}
+}
 
 
 /*************************************************************************

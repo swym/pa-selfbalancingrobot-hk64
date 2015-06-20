@@ -217,6 +217,28 @@ extern void uart_puts_p(const char *s );
 extern int uart_available(void);
 
 /**
+ *  @brief   Return number of bytes waiting in the receive buffer
+ *  @param   none
+ *  @return  bytes waiting in the receive buffer
+ */
+extern int uart_rx_buffer_size(void);
+
+
+/**
+ *  @brief   Return number of bytes waiting in the transmit buffer
+ *  @param   none
+ *  @return  bytes waiting in the transmit buffer
+ */
+extern int uart_tx_buffer_size(void);
+
+/**
+ *  @brief   This function allows to enable or disable the irqs and control bits of the uart.
+ *  @param   Boolean to enable or disable rx and tx
+ *  @return  none
+ */
+extern void uart_enable_rxtx(bool enable);
+
+/**
  *  @brief   Flush bytes waiting in receive buffer
  *  @param   none
  *  @return  none
