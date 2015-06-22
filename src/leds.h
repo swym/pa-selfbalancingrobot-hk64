@@ -31,8 +31,6 @@
 #define LED6	PINA6
 #define LED7	PINA7
 
-#define LEDS_VALUE_MAX			0x07
-
 /* * external objects            * */
 
 /* * external functions          * */

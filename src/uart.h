@@ -139,7 +139,7 @@ Date        Description
    @param   baudrate Specify baudrate using macro UART_BAUD_SELECT()
    @return  none
 */
-extern void uart_init(unsigned int baudrate);
+extern void uart_init(uint32_t baudrate);
 
 
 /**

@@ -13,12 +13,14 @@
 #include <util/delay.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 #include <avr/pgmspace.h>
 
 /* * local headers               * */
 #include "../leds.h"
 #include "../uart.h"
 #include "../vt100.h"
+//#include "../serialport.h"
 
 
 /* *** DEFINES ************************************************************** */
@@ -44,126 +46,176 @@ void test_command_parser(void)
 	test_command_parser_run();
 }
 
-#define BUFFER_SIZE		40
-static char input_buffer[BUFFER_SIZE];
-static char* buf_ptr;
+#define STRING_BUFFER_SIZE		40
 
+static FILE uart_str = FDEV_SETUP_STREAM(uart_putc, uart_getc, _FDEV_SETUP_RW);
+static FILE stderr_str = FDEV_SETUP_STREAM(uart_putc, NULL, _FDEV_SETUP_WRITE);
+
+static char string_buffer[STRING_BUFFER_SIZE];
+static uint8_t string_buffer_index;
+
+
+
+
+bool test_command_gets(char * target, uint8_t target_size)
+{
+	char new_char;
+	bool str_completed = false;
+	uint8_t copy_index = 0;
+
+	while(uart_available()) {
+
+		//read charater from uart fifo
+		new_char = (char)uart_getc();
+
+		//read into string buffer until newline or buffer full
+		if(new_char != '\n' && string_buffer_index < STRING_BUFFER_SIZE - 1) {
+
+			//skip if linefeed
+			if(new_char != '\r') {
+				string_buffer[string_buffer_index++] = new_char;
+			}
+
+		} else {
+			//add string end-mark and reset counter
+			string_buffer[string_buffer_index] = '\0';
+			string_buffer_index = 0;
+
+			//mark string as completed
+			str_completed = true;
+
+			//flush uart fifo
+			//implies termination of while loop
+			uart_flush();
+		}
+	}
+
+	//if string completed: copy string to target
+	if(str_completed) {
+		while(string_buffer[copy_index] != '\0' && copy_index < target_size - 1) {
+			target[copy_index] = string_buffer[copy_index];
+			copy_index++;
+		}
+	}
+
+	//add string end-mark to target string‚
+	target[copy_index] = '\0';
+
+	return str_completed;
+}
+
+#define OUTPUT_SIZE 50
 void test_command_parser_run(void)
 {
-//	int16_t motor_l;
-//	uint8_t leds;
-//
 
-    unsigned int c;
-    char buffer[7];
-    int  num=134;
+	char output[OUTPUT_SIZE];
 
-
-    /*
-     *  Transmit string to UART
-     *  The string is buffered by the uart library in a circular buffer
-     *  and one character at a time is transmitted to the UART using interrupts.
-     *  uart_puts() blocks if it can not write the whole string to the circular
-     *  buffer
-     */
-    uart_puts("String stored in SRAM\n");
-
-    /*
-     * Transmit string from program memory to UART
-     */
-    uart_puts_P("String stored in FLASH\n");
-
-    /*
-     * Use standard avr-libc functions to convert numbers into string
-     * before transmitting via UART
-     */
-//    itoa( num, buffer, 10);   // convert interger into string (decimal format)
-//    uart_puts(buffer);        // and transmit string to UART
-
-    printf("> ");
-
-    printf("hallo alex! %s\n", input_buffer);
-
-    //buf_ptr = input_buffer;
-
-    uint8_t index;
 
     uart_flush();
+    bool ret;
+
+    printf("hallo!\n");
 
     for(;;) {
 
 
 
-    	if(uart_available()) {
-    		while(uart_available()) {
-    			index = 0;
-    			c = (char)uart_getc();
+    	PORT_LEDS = 0x0F;
+    	ret = test_command_gets(output, OUTPUT_SIZE);
+    	PORT_LEDS = 0x00;
 
-    			if(c != '\r' && c != '\n' && index < BUFFER_SIZE) {
-    				input_buffer[index++] = c;
-    			}
-    			input_buffer[index] = '\0';
-    		}
+    	if(ret) {
+    		PORT_LEDS = 0xF0;
+    		printf("%s\n", output);
 
-
-        	printf("%s", input_buffer);
-        	uart_flush();
     	}
 
-    	_delay_ms(4);
-    	leds_inc();
-    }
 
-    for(;;)
-    {
-        /*
-         * Get received character from ringbuffer
-         * uart_getc() returns in the lower byte the received character and
-         * in the higher byte (bitmask) the last receive error
-         * UART_NO_DATA is returned when no data is available.
-         *
-         */
-        c = uart_getc();
-        if ( c & UART_NO_DATA )
-        {
-            /*
-             * no data available from UART
-             */
-        }
-        else
-        {
-            /*
-             * new data available from UART
-             * check for Frame or Overrun error
-             */
-            if ( c & UART_FRAME_ERROR )
-            {
-                /* Framing Error detected, i.e no stop bit detected */
-                uart_puts_P("UART Frame Error: ");
-            }
-            if ( c & UART_OVERRUN_ERROR )
-            {
-                /*
-                 * Overrun, a character already present in the UART UDR register was
-                 * not read by the interrupt handler before the next character arrived,
-                 * one or more received characters have been dropped
-                 */
-                uart_puts_P("UART Overrun Error: ");
-            }
-            if ( c & UART_BUFFER_OVERFLOW )
-            {
-                /*
-                 * We are not reading the receive buffer fast enough,
-                 * one or more received character have been dropped
-                 */
-                uart_puts_P("Buffer overflow error: ");
-            }
-            /*
-             * send received character back
-             */
-            uart_putc( (unsigned char)c );
-        }
+
+//    	if(uart_available() > MIN_CHARS) {
+//
+//
+//
+//
+//    		while(uart_available()) {
+//
+//    			c = (char)uart_getc();
+//    			uart_putc('.');
+//
+//    			//skip if linefeed
+//    			if(c != '\r') {
+//    				continue;
+//    			}
+//
+//    			if(c != '\n' &&	input_buffer_index < BUFFER_SIZE) {
+//    				input_buffer[input_buffer_index++] = c;
+//    			} else {
+//    				input_buffer[input_buffer_index] = '\0';
+//    				uart_flush();
+//    				input_buffer_index = 0;
+//    			}
+//    		}
+//
+//			uart_flush();
+//
+//        	printf("\"%s\"", input_buffer);
+//
+//    	}
+
+    	_delay_ms(250);
+
     }
+//
+//    for(;;)
+//    {
+//        /*
+//         * Get received character from ringbuffer
+//         * uart_getc() returns in the lower byte the received character and
+//         * in the higher byte (bitmask) the last receive error
+//         * UART_NO_DATA is returned when no data is available.
+//         *
+//         */
+//        c = uart_getc();
+//        if ( c & UART_NO_DATA )
+//        {
+//            /*
+//             * no data available from UART
+//             */
+//        }
+//        else
+//        {
+//            /*
+//             * new data available from UART
+//             * check for Frame or Overrun error
+//             */
+//            if ( c & UART_FRAME_ERROR )
+//            {
+//                /* Framing Error detected, i.e no stop bit detected */
+//                uart_puts_P("UART Frame Error: ");
+//            }
+//            if ( c & UART_OVERRUN_ERROR )
+//            {
+//                /*
+//                 * Overrun, a character already present in the UART UDR register was
+//                 * not read by the interrupt handler before the next character arrived,
+//                 * one or more received characters have been dropped
+//                 */
+//                uart_puts_P("UART Overrun Error: ");
+//            }
+//            if ( c & UART_BUFFER_OVERFLOW )
+//            {
+//                /*
+//                 * We are not reading the receive buffer fast enough,
+//                 * one or more received character have been dropped
+//                 */
+//                uart_puts_P("Buffer overflow error: ");
+//            }
+//            /*
+//             * send received character back
+//             */
+//            uart_putc( (unsigned char)c );
+//        }
+//    }
 
 
 
@@ -218,14 +270,13 @@ void test_command_parser_run(void)
 	*/
 }
 
-static FILE uart_str = FDEV_SETUP_STREAM(uart_putc, uart_getc, _FDEV_SETUP_RW);
-static FILE stderr_str = FDEV_SETUP_STREAM(uart_putc, NULL, _FDEV_SETUP_WRITE);
+
 
 
 void test_command_parser_init(void)
 {
 	//uart_init(14400);
-	//leds_init();
+	leds_init();
     /*
      *  Initialize UART library, pass baudrate and AVR cpu clock
      *  with the macro
@@ -233,11 +284,22 @@ void test_command_parser_init(void)
      *  or
      *  UART_BAUD_SELECT_DOUBLE_SPEED() ( double speed mode)
      */
-	uart_init( UART_BAUD_SELECT(9600,F_CPU) );
+	//serialport_init(9600);
+    /*
+     *  Initialize UART library, pass baudrate and AVR cpu clock
+     *  with the macro
+     *  UART_BAUD_SELECT() (normal speed mode )
+     *  or
+     *  UART_BAUD_SELECT_DOUBLE_SPEED() ( double speed mode)
+     */
+
+//	if(USE_DOUBLESPEED) {
+
+//	}
+	uart_init(UART_BAUD_SELECT(9600,F_CPU));
 
     stdout = stdin = &uart_str;
     stderr = &stderr_str;
-
 
 	sei();
 

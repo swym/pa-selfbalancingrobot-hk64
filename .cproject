@@ -98,7 +98,7 @@
 								<inputType id="de.innot.avreclipse.tool.assembler.input.1150571092" superClass="de.innot.avreclipse.tool.assembler.input"/>
 							</tool>
 							<tool id="de.innot.avreclipse.tool.compiler.winavr.app.release.111721374" name="AVR Compiler" superClass="de.innot.avreclipse.tool.compiler.winavr.app.release.1995655344">
-								<option id="de.innot.avreclipse.compiler.option.undef.328650894" name="Undefine Syms (-U)" superClass="de.innot.avreclipse.compiler.option.undef" valueType="undefDefinedSymbols"/>
+								<option id="de.innot.avreclipse.compiler.option.undef.328650894" name="Undefine Syms (-U)" superClass="de.innot.avreclipse.compiler.option.undef"/>
 								<inputType id="de.innot.avreclipse.compiler.winavr.input.1077559035" name="C Source Files" superClass="de.innot.avreclipse.compiler.winavr.input"/>
 							</tool>
 							<tool id="de.innot.avreclipse.tool.cppcompiler.app.release.731621755" name="AVR C++ Compiler" superClass="de.innot.avreclipse.tool.cppcompiler.app.release.1059284439"/>
@@ -114,9 +114,9 @@
 					</folderInfo>
 					<sourceEntries>
 						<entry excluding="lib|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
-						<entry excluding="test|lib|src|bma020.c|bma020.h|md25.c|md25.h|simplex-protocol.c|simplex-protocol.h" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src"/>
+						<entry excluding="lib|test|base64.c|base64.h|configuration_storage.c|configuration_storage.h|configuration_terminal.c|configuration_terminal.h|encoder.c|encoder.h|filter.c|filter.h|l6205.c|l6205.h|motionsensor.c|motionsensor.h|motor_control.c|motor_control.h|mpu9150.c|mpu9150.h|pid.c|pid.h|system_controller.c|system_controller.h|timer.c|timer.h|vt100.c|vt100.h" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src"/>
 						<entry excluding="rfm12lib/|hamming.c|hamming.h|rfm12_config.h|rfm12.c|rfm12.h" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/lib"/>
-						<entry excluding="test_acceleration.c|test_acceleration.h|test_base64.c|test_base64.h|test_bma020.c|test_bma020.h|test_configuration_storage.c|test_configuration_storage.h|test_configuration_terminal.c|test_configuration_terminal.h|test_filters.c|test_filters.h|test_md25.c|test_md25.h|test_motionsensor.c|test_motionsensor.h|test_mpu9150.c|test_mpu9150.h|test_twi_master.c|test_twi_master.h|test_motor_control.h|test_motor_control.c" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/test"/>
+						<entry excluding="test_acceleration.c|test_acceleration.h|test_base64.c|test_base64.h|test_bma020.c|test_bma020.h|test_configuration_storage.c|test_configuration_storage.h|test_configuration_terminal.c|test_configuration_terminal.h|test_encoder.c|test_encoder.h|test_filters.c|test_filters.h|test_md25.c|test_md25.h|test_motionsensor.c|test_motionsensor.h|test_motor_control.c|test_motor_control.h|test_motor-driver.c|test_motor-driver.h|test_mpu9150.c|test_mpu9150.h|test_plot_data.c|test_plot_data.h|test_twi_master.c|test_twi_master.h|test_uart.c|test_uart.h" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/test"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

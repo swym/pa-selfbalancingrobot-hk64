@@ -25,8 +25,8 @@
 /* * external objects            * */
 
 /* * external functions          * */
-extern void serialport_init(unsigned int baudrate);
-extern void serialport_set_baudrate(unsigned int baudrate);
+extern void serialport_init(uint32_t baudrate);
+extern void serialport_set_baudrate(uint32_t baudrate);
 extern void serialport_enable_port(bool enable);
 
 extern bool serialport_get_string(char * target, uint8_t target_size);

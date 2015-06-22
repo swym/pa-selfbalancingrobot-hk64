@@ -114,6 +114,9 @@ static void system_controller_print_data_all_raw(void);
 static void system_controller_print_data_all_filtered(void);
 static void system_controller_print_data_really_all_filtered(void);
 
+//parse command
+static void system_controller_parse_command(void);
+
 
 /* *** FUNCTION DEFINITIONS ************************************************** */
 void system_controller_state_machine(void)
@@ -169,7 +172,7 @@ void system_controller_state_init_basic_hardware(void)
 
 
 	/* **** DO ***** */
-	UART_init();							/* Init USART */
+	uart_init();							/* Init USART */
 	printf("usart inited\n");
 
 	printf("init LED Port...\n");
@@ -225,13 +228,13 @@ void system_controller_state_waiting_for_user_interrupt(void)
 
 	/* **** DO ***** */
 
-	UART_clr_rx_buf();
+	uart_clr_rx_buf();
 	while(waiting_time > 0 && !user_irq_received) {
 
 		//if user send any byte over usart then show configuration main menu
-		if(UART_char_received()) {
+		if(uart_char_received()) {
 			user_irq_received = true;
-			UART_clr_rx_buf();
+			uart_clr_rx_buf();
 			break;
 		}
 
@@ -561,16 +564,18 @@ void system_controller_state_run_controller(void)
 		if(timer_current_majorslot == TIMER_MAJORSLOT_1) {
 			timer_current_majorslot = TIMER_MAJORSLOT_NONE;
 
-			motor_control_set_new_speed();
+			//motor_control_set_new_speed();
 
 			//print pid and angle
 			if(print_data_fptr != NULL) {
 				print_data_fptr();
 			}
 
+			//system_controller_parse_command();
+
 			//display speed on leds
 			//PORT_LEDS = (uint8_t)(abs(pid_balance_output));
-			PORT_LEDS = (uint8_t)(abs(pid_robot_pos_output));
+			//PORT_LEDS = (uint8_t)(abs(pid_robot_pos_output));
 
 		} // end TIMER_MAJORSLOT_1
 
@@ -588,6 +593,39 @@ void system_controller_print_ticker(void)
 		print_ticker_cnt = 0;
 		printf(".\n");
 	}
+}
+
+static int8_t m1 = 0;
+static int8_t m2 = 0;
+static int8_t leds = 0;
+
+#define CMD_BUFFER_MAX 20
+static char command_buffer[CMD_BUFFER_MAX];
+
+
+void system_controller_parse_command(void)
+{
+
+	//UART_char_received();
+	//fgets(command_buffer, CMD_BUFFER_MAX, stdin);
+
+	//PORT_LEDS = leds++;
+
+	//printf("hello world\n");
+
+	/*
+
+	if(UART_char_received()) {
+		fgets(command_buffer, CMD_BUFFER_MAX, stdin);
+
+		PORT_LEDS = strlen(command_buffer);
+
+		fflush(stdin);
+		UART_clr_rx_buf();
+		//vt100_clear_input_buffer();
+		command_buffer[0] = '\0';
+	}
+	*/
 }
 
 void system_controller_print_data_anglepid(void)

@@ -386,7 +386,7 @@ Purpose:  initialize UART and set baudrate
 Input:    baudrate using macro UART_BAUD_SELECT()
 Returns:  none
 **************************************************************************/
-void uart_init(unsigned int baudrate)
+void uart_init(uint32_t baudrate)
 {
     UART_TxHead = 0;
     UART_TxTail = 0;

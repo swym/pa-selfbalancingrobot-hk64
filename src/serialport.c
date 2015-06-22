@@ -87,7 +87,7 @@ bool serialport_get_string(char * target, uint8_t target_size)
 }
 
 
-void serialport_init(unsigned int baudrate)
+void serialport_init(uint32_t baudrate)
 {
 	serialport_set_baudrate(baudrate);
 
@@ -104,7 +104,8 @@ void serialport_enable_port(bool enable)
 }
 
 
-void serialport_set_baudrate(unsigned int baudrate)
+void serialport_set_baudrate(uint32_t baudrate)
 {
-	uart_init(UART_BAUD_SELECT(baudrate,F_CPU));
+	//uart_init(UART_BAUD_SELECT(baudrate,F_CPU));
+	uart_init(UART_BAUD_SELECT_DOUBLE_SPEED(baudrate, F_CPU));
 }
