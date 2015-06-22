@@ -423,23 +423,15 @@ void system_controller_state_run_controller(void)
 			timer_current_majorslot = TIMER_MAJORSLOT_NONE;
 
 			//read angle
-			PORT_LEDS |= _BV(LED7);
 			current_angle = (motionsensor_angle_t)motionsensor_get_angle_y();
-			PORT_LEDS &= ~_BV(LED7);
 
 			//calculate pid
-			PORT_LEDS |= _BV(LED6);
-
 			//switch pid set
 			if(abs(current_angle) > pid_edge_angle) {
-				PORT_LEDS |=  _BV(LED1);
-				PORT_LEDS &= ~_BV(LED0);
 				pid_controller_data.P_Factor = pid_edge.p_factor;
 				pid_controller_data.I_Factor = pid_edge.i_factor;
 				pid_controller_data.D_Factor = pid_edge.d_factor;
 			} else {
-				PORT_LEDS |=  _BV(LED0);
-				PORT_LEDS &= ~_BV(LED1);
 				pid_controller_data.P_Factor = pid_center.p_factor;
 				pid_controller_data.I_Factor = pid_center.i_factor;
 				pid_controller_data.D_Factor = pid_center.d_factor;
@@ -448,15 +440,11 @@ void system_controller_state_run_controller(void)
 			//calculate PID value
 			pid_output =  pid_Controller(pid_setpoint, current_angle, &pid_controller_data);
 			pid_output = -pid_output;
-			PORT_LEDS &= ~_BV(LED6);
-
 
 			//prepare new motor speed
-			PORT_LEDS |= _BV(LED5);
 			new_motor_speed.motor_1 = pid_output;
 			new_motor_speed.motor_2 = pid_output;
 			motor_control_prepare_new_speed(&new_motor_speed);
-			PORT_LEDS &= ~_BV(LED5);
 
 		} //end TIMER_MAJORSLOT_0
 
@@ -466,16 +454,17 @@ void system_controller_state_run_controller(void)
 		 */
 		if(timer_current_majorslot == TIMER_MAJORSLOT_1) {
 			timer_current_majorslot = TIMER_MAJORSLOT_NONE;
-			PORT_LEDS |= _BV(LED4);
+
 			motor_control_set_new_speed();
-			PORT_LEDS&= ~_BV(LED4);
 
 			//print pid and angle
-			PORT_LEDS |= _BV(LED3);
 			if(print_data_fptr != NULL) {
-				print_data_fptr();
+				//print_data_fptr();
 			}
-			PORT_LEDS&= ~_BV(LED3);
+
+			//display speed on leds
+			PORT_LEDS = (uint8_t)(abs(pid_output));
+
 		} // end TIMER_MAJORSLOT_1
 
 	} // end while(true)

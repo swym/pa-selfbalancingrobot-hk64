@@ -115,7 +115,8 @@ float motionsensor_get_angle_y(void)
 
 	accel_x_float = accel_x_float*accel_x_float;
 	accel_z_float = accel_z_float*accel_z_float;
-	acceleration_angle_y_magnitude = sqrt(accel_x_float + accel_z_float) / MOTIONSENSOR_ACCELERATION_1G_FLOAT;
+	//acceleration_angle_y_magnitude = sqrt(accel_x_float + accel_z_float) / MOTIONSENSOR_ACCELERATION_1G_FLOAT;
+	acceleration_angle_y_magnitude = sqrt(accel_x_float + accel_z_float + 1.0) / MOTIONSENSOR_ACCELERATION_1G_FLOAT;
 
 	//calculate angle with acceleration using atan2 and respect magnitude
 	acceleration_angle_y  = atan2(motiondata.acceleration.x, motiondata.acceleration.z) / acceleration_angle_y_magnitude;
@@ -132,11 +133,11 @@ float motionsensor_get_angle_y(void)
 	//grad der qualität des winkels des beschleunigungssensors bewerten
 	if(acceleration_angle_y_magnitude < 1.25 && acceleration_angle_y_magnitude > 0.75) {
 		//fuse sensor data with complementary filter
-		PORT_LEDS |= _BV(LED2);
+		//PORT_LEDS |= _BV(LED2);
 		angle_y = angle_y * complementary_filter_angularvelocity_factor +
 				  acceleration_angle_y * complementary_filter_acceleraton_factor;
 	} else {
-		PORT_LEDS &= ~_BV(LED2);
+		//PORT_LEDS &= ~_BV(LED2);
 	}
 
 	return angle_y * (float)angle_scalingfactor;
@@ -164,7 +165,6 @@ void motionsensor_read_motiondata(motionsensor_motiondata_t * mdata)
 	mdata->acceleration.y = acceleration_filter_y.avg + offset.acceleration.y;
 	mdata->acceleration.z = acceleration_filter_z.avg + offset.acceleration.z;
 
-	//TODO: Use temperature offset
 	mdata->angularvelocity.x = raw_imudata.angularvelocity.x + offset.angularvelocity.x;
 	mdata->angularvelocity.y = raw_imudata.angularvelocity.y + offset.angularvelocity.y;
 	mdata->angularvelocity.z = raw_imudata.angularvelocity.z + offset.angularvelocity.z;

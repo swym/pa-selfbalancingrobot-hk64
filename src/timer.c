@@ -19,7 +19,8 @@
 
 /* *** DEFINES ************************************************************** */
 
-#define SYSTEMTICKS_MAX			4
+#define SYSTEMTICKS_MAX			3
+#define SYSTEMTICKS_COUNT		(SYSTEMTICKS_MAX+1) 	// Systemticker counts from 0 .. 3 == 4
 
 /* *** DECLARATIONS ********************************************************* */
 
@@ -64,8 +65,8 @@ void timer_init_pwm(void)
 
 	TCCR1A |= _BV(WGM10);				// Mode Select: 1 - PWM, Phase Correct; TOP is 0x00FF
 
-	TCCR1A |= _BV(COM1B1);				// Compare Output Mode for PWM3: Set on upcountung
-	TCCR1A |= _BV(COM1C1);				// Compare Output Mode for PWM4: Set on upcountung
+	TCCR1A |= _BV(COM1B1);				// Compare Output Mode for PWM3: Set on up counting
+	TCCR1A |= _BV(COM1C1);				// Compare Output Mode for PWM4: Set on up counting
 
 	TCCR1B |= _BV(CS10);				// Clock Select: clk/1
 
@@ -81,18 +82,21 @@ void timer_init()
 
 ISR(TIMER0_COMP_vect)
 {
-	if(timer_systemticks == 1) {
+	//set TIMER Flags
+	if(timer_systemticks == 0) {
 		timer_current_majorslot = TIMER_MAJORSLOT_0;
-		timer_systemticks++;
-	} else if (timer_systemticks >  SYSTEMTICKS_MAX) {
+	} else if (timer_systemticks == 2) {
 		timer_current_majorslot = TIMER_MAJORSLOT_1;
-
-		timer_systemticks = 0;
 	}
-	timer_current_minorslot = TIMER_MINORSLOT_0;
 
-	timer_systemticks++;
+	//increment systemticker or reset cycle on max
+	if (timer_systemticks >= SYSTEMTICKS_MAX) {
+		timer_systemticks = 0;
+	} else {
+		timer_systemticks++;
+	}
 
+	//update external handlers
 	l6205_update_pwm();
 	encoder_handler();
 }
