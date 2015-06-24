@@ -19,7 +19,7 @@
 #include <util/delay.h>
 
 /* * local headers               * */
-#include "lib/uart.h"
+//#include "uart.h"
 
 #include "lib/twi_master.h"
 
@@ -241,7 +241,7 @@ void configuration_terminal_state_read_input(void)
 	//DO
 
 	vt100_clear_input_buffer();
-	UART_char_received();
+	uart_char_received();
 
 	printf_P(string_input);
 

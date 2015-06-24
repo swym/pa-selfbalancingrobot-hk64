@@ -44,7 +44,6 @@ void vt100_clear_screen(void)
 
 void vt100_clear_input_buffer(void)
 {
-
 	//den eventuell noch gefüllten Sendebuffer des PC lesen und verwerfen
 	while(strlen(vt100_input_buffer) >= VT100_INPUT_BUFFER_SIZE - 1) {
 		fgets(vt100_input_buffer, VT100_INPUT_BUFFER_SIZE, stdin);

@@ -34,13 +34,7 @@ static uint8_t leds_value;
 
 void leds_inc(void)
 {
-	leds_value++;
-	if(leds_value > LEDS_VALUE_MAX) {
-		leds_value = 0;
-	}
-
-	PORT_LEDS &= ~(LEDS_VALUE_MAX);
-	PORT_LEDS |= leds_value;
+	PORT_LEDS = leds_value++;
 }
 
 void leds_init(void)
