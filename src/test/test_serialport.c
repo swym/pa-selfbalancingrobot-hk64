@@ -19,7 +19,7 @@
 
 /* * local headers               * */
 #include "../leds.h"
-#include "../serialport.h"
+#include "../uart.h"
 
 
 /* *** DEFINES ************************************************************** */
@@ -48,7 +48,9 @@ void test_serialport(void)
 
 void test_serialport_init(void)
 {
-	serialport_init(9600);
+	uart_init(UART_BAUDRATE_9600);
+	uart_init_stdio();
+
 	leds_init();
 
 	sei();
@@ -66,21 +68,24 @@ void test_serialport_run(void)
 
     for(;;) {
 
-    	PORT_LEDS = 0x0F;
-    	ret = serialport_get_string(output, OUTPUT_SIZE);
-    	PORT_LEDS = 0x00;
+    	while(uart_available()) {
+        	//PORT_LEDS = 0x0F;
+        	ret = uart_gets(output, OUTPUT_SIZE);
+        	//PORT_LEDS = 0x00;
 
-    	if(ret) {
-    		PORT_LEDS = 0xF0;
-    		printf("%s\n", output);
-
+        	if(ret) {
+        		//PORT_LEDS = 0xF0;
+        		printf("%s\n", output);
+        	}
     	}
 
+    	uart_init(UART_BAUDRATE_9600);
     	printf("disable!\n");
-    	serialport_enable_port(false);
+    	uart_enable_rxtx(false);
     	_delay_ms(2000);
-    	serialport_enable_port(true);
+    	uart_enable_rxtx(true);
+    	uart_init(UART_BAUDRATE_250k);
     	printf("enable!\n");
-    	_delay_ms(2000);
+    	_delay_ms(5000);
     }
 }

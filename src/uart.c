@@ -92,8 +92,8 @@ Date        Description
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include "uart.h"
-
 
 /*
  *  constants and macros
@@ -295,6 +295,12 @@ Date        Description
 /*
  *  module global variables
  */
+static char string_buffer[UART_STRING_BUFFER_SIZE];
+static uint8_t string_buffer_index;
+
+static FILE uart_str = FDEV_SETUP_STREAM(uart_putc, uart_getc, _FDEV_SETUP_RW);
+static FILE stderr_str = FDEV_SETUP_STREAM(uart_putc, NULL, _FDEV_SETUP_WRITE);
+
 static volatile unsigned char UART_TxBuf[UART_TX_BUFFER_SIZE];
 static volatile unsigned char UART_RxBuf[UART_RX_BUFFER_SIZE];
 static volatile unsigned char UART_TxHead;
@@ -386,29 +392,27 @@ Purpose:  initialize UART and set baudrate
 Input:    baudrate using macro UART_BAUD_SELECT()
 Returns:  none
 **************************************************************************/
-void uart_init(uint32_t baudrate)
+void uart_init(uart_baudrate_t baudrate)
 {
     UART_TxHead = 0;
     UART_TxTail = 0;
     UART_RxHead = 0;
     UART_RxTail = 0;
-    
+
 #if defined( AT90_UART )
     /* set baud rate */
-    UBRR = (unsigned char)baudrate; 
+    UBRR = (unsigned char)baudrate;
 
     /* enable UART receiver and transmmitter and receive complete interrupt */
     UART0_CONTROL = _BV(RXCIE)|_BV(RXEN)|_BV(TXEN);
 
 #elif defined (ATMEGA_USART)
     /* Set baud rate */
-    if ( baudrate & 0x8000 )
-    {
-    	 UART0_STATUS = (1<<U2X);  //Enable 2x speed 
-    	 baudrate &= ~0x8000;
+    if(UART_USE2X == 1) {
+    	UART0_STATUS = (1<<U2X0);  //Enable 2x speed
     }
-    UBRRH = (unsigned char)(baudrate>>8);
-    UBRRL = (unsigned char) baudrate;
+    UBRR0H = (unsigned char)(baudrate>>8);
+    UBRR0L = (unsigned char) baudrate;
    
     /* Enable USART receiver and transmitter and receive complete interrupt */
     UART0_CONTROL = _BV(RXCIE)|(1<<RXEN)|(1<<TXEN);
@@ -421,12 +425,12 @@ void uart_init(uint32_t baudrate)
     #endif 
     
 #elif defined (ATMEGA_USART0 )
+
+
     /* Set baud rate */
-    if ( baudrate & 0x8000 ) 
-    {
-   		UART0_STATUS = (1<<U2X0);  //Enable 2x speed 
-   		baudrate &= ~0x8000;
-   	}
+    if(UART_USE2X == 1) {
+    	UART0_STATUS = (1<<U2X0);  //Enable 2x speed
+    }
     UBRR0H = (unsigned char)(baudrate>>8);
     UBRR0L = (unsigned char) baudrate;
 
@@ -441,22 +445,27 @@ void uart_init(uint32_t baudrate)
     #endif 
 
 #elif defined ( ATMEGA_UART )
-    /* set baud rate */
-    if ( baudrate & 0x8000 ) 
-    {
-    	UART0_STATUS = (1<<U2X);  //Enable 2x speed 
-    	baudrate &= ~0x8000;
+    /* Set baud rate */
+    if(UART_USE2X == 1) {
+    	UART0_STATUS = (1<<U2X0);  //Enable 2x speed
     }
-    UBRRHI = (unsigned char)(baudrate>>8);
-    UBRR   = (unsigned char) baudrate;
-
+    UBRR0H = (unsigned char)(baudrate>>8);
+    UBRR0L = (unsigned char) baudrate;
     /* Enable UART receiver and transmitter and receive complete interrupt */
     UART0_CONTROL = _BV(RXCIE)|(1<<RXEN)|(1<<TXEN);
 
 #endif
 
+	uart_flush();
+
 }/* uart_init */
 
+
+void uart_init_stdio(void)
+{
+	stdout = stdin = &uart_str;
+	stderr = &stderr_str;
+}
 
 /*************************************************************************
 Function: uart_getc()
@@ -485,6 +494,67 @@ unsigned int uart_getc(void)
 
 }/* uart_getc */
 
+
+/*************************************************************************
+Function: uart_gets()
+Purpose:  return string from string buffer, call will move bytes from
+		  buffer to string buffer. is a newline found, a complete string
+		  will return
+Input:	  char * to target string; max size of target string
+Returns:  string length. zero if no string could completed
+**************************************************************************/
+uint8_t uart_gets(char * target, uint8_t target_size)
+{
+	char new_char;
+	bool string_completed = false;
+	uint8_t string_len = 0;
+	uint8_t copy_index = 0;
+
+	//read uart_fifo until its empty or the string is completed
+	while(uart_available() && !string_completed) {
+
+		//read charater from uart fifo
+		new_char = (char)uart_getc();
+
+		//read into string buffer until newline or buffer full
+		if(new_char != '\n' && string_buffer_index < UART_STRING_BUFFER_SIZE - 1) {
+
+			//skip if linefeed
+			if(new_char != '\r') {
+				string_buffer[string_buffer_index++] = new_char;
+			}
+
+		} else {
+			//add string end-mark
+			string_buffer[string_buffer_index] = '\0';
+			//prepare return value string_len
+			string_len = string_buffer_index;
+			//reset index
+			string_buffer_index = 0;
+
+			//mark string as completed
+			//implies termination of while loop
+			string_completed = true;
+
+			//flush uart fifo
+			//uart_flush();
+		}
+	}
+
+	//if string completed: copy string to target
+	if(string_completed) {
+		while(string_buffer[copy_index] != '\0' && copy_index < target_size - 1) {
+			target[copy_index] = string_buffer[copy_index];
+			copy_index++;
+		}
+	}
+
+	//add string end-mark to target string‚
+	target[copy_index] = '\0';
+
+	return string_len;
+
+} /* uart_gets() */
 
 /*************************************************************************
 Function: uart_putc()

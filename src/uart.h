@@ -48,8 +48,8 @@ were adapted from the Arduino HardwareSerial.h library by Tim Sharpe on
 ************************************************************************/
 
 /************************************************************************
-Changelog for modifications made by Tim Sharpe, starting with the current
-  library version on his Web site as of 05/01/2009. 
+Changelog for modifications from 05/01/2009 by Tim Sharpe
+Changelog for modifications from 01/072015 by Alexander Mertens
 
 Date        Description
 =========================================================================
@@ -58,6 +58,8 @@ Date        Description
 			that it would be as close as possible to Peter Fleury's original
 			library, but has scoping issues accessing internal variables from
 			another program.  Go C!
+01/07/2015  Added enable_rxtx() to disable or enable temporary interrupts
+            Added gets() to get string directly from RX fifo
 
 ************************************************************************/
 
@@ -94,18 +96,38 @@ Date        Description
 ** constants and macros
 */
 
-/** @brief  UART Baudrate Expression
+/** @brief  Deprecated! UART Baudrate Expression
  *  @param  xtalcpu  system clock in Mhz, e.g. 4000000L for 4Mhz          
  *  @param  baudrate baudrate in bps, e.g. 1200, 2400, 9600     
  */
-#define UART_BAUD_SELECT(baudRate,xtalCpu) ((xtalCpu)/((baudRate)*16l)-1)
+//#define UART_BAUD_SELECT(baudRate,xtalCpu) ((xtalCpu)/((baudRate)*16l)-1)
 
-/** @brief  UART Baudrate Expression for ATmega double speed mode
+/** @brief  Deprecated! UART Baudrate Expression for ATmega double speed mode
  *  @param  xtalcpu  system clock in Mhz, e.g. 4000000L for 4Mhz           
  *  @param  baudrate baudrate in bps, e.g. 1200, 2400, 9600     
  */
-#define UART_BAUD_SELECT_DOUBLE_SPEED(baudRate,xtalCpu) (((xtalCpu)/((baudRate)*8l)-1)|0x8000)
+//#define UART_BAUD_SELECT_DOUBLE_SPEED(baudRate,xtalCpu) (((xtalCpu)/((baudRate)*8l)-1)|0x8000)
 
+/**
+ * precalculated UBBR Values
+ * @param baudrate
+ */
+#define UART_USE2X 0
+
+#if (UART_USE2X == 1)
+
+typedef enum {
+	UART_BAUDRATE_9600 = 207,
+	UART_BAUDRATE_115k = 16,
+	UART_BAUDRATE_250k = 7
+} uart_baudrate_t;
+#else
+typedef enum {
+	UART_BAUDRATE_9600 = 103,
+	UART_BAUDRATE_115k = 8,
+	UART_BAUDRATE_250k = 3
+} uart_baudrate_t;
+#endif
 
 /** Size of the circular receive buffer, must be power of 2 */
 #ifndef UART_RX_BUFFER_SIZE
@@ -114,6 +136,11 @@ Date        Description
 /** Size of the circular transmit buffer, must be power of 2 */
 #ifndef UART_TX_BUFFER_SIZE
 #define UART_TX_BUFFER_SIZE 32
+#endif
+
+/** Size of string buffer, should be grater than RX Buffer */
+#ifndef UART_STRING_BUFFER_SIZE
+#define UART_STRING_BUFFER_SIZE 40
 #endif
 
 /* test if the size of the circular buffers fits into SRAM */
@@ -137,10 +164,14 @@ Date        Description
 /**
    @brief   Initialize UART and set baudrate 
    @param   baudrate Specify baudrate using macro UART_BAUD_SELECT()
+   	   	    boolean to enable or disable 2X mode; depending on baud rate error
+   	   	    boolean to enable stdio (printf)
    @return  none
 */
-extern void uart_init(uint32_t baudrate);
+extern void uart_init(uart_baudrate_t baudrate);
 
+
+extern void uart_init_stdio(void);
 
 /**
  *  @brief   Get received byte from ringbuffer
@@ -169,6 +200,15 @@ extern void uart_init(uint32_t baudrate);
  */
 extern unsigned int uart_getc(void);
 
+/**
+ *
+ * @brief	tries to get a string from RX Fifo
+ *
+ * @param target
+ * @param target_size
+ * @return string size. if zero, no completed string was in RX Fito
+ */
+extern uint8_t uart_gets(char * target, uint8_t target_size);
 
 /**
  *  @brief   Put byte to ringbuffer for transmitting via UART
