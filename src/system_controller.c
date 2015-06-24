@@ -459,7 +459,7 @@ void system_controller_state_run_controller(void)
 
 			//print pid and angle
 			if(print_data_fptr != NULL) {
-				//print_data_fptr();
+				print_data_fptr();
 			}
 
 			//display speed on leds
