@@ -150,7 +150,8 @@ void filter_moving_average_float_put_element(
 	average->avg = average->elements_sum / (float)FILTER_MOVING_AVERAGE_FLOAT_ELEMENT_COUNT;
 
 	//move index to next element
-	if(average->index < FILTER_MOVING_AVERAGE_ELEMENT_COUNT - 1) {
+	//TODO: Bug
+	if(average->index < 8 - 1) {
 		average->index++;
 	} else {
 		average->index = 0;

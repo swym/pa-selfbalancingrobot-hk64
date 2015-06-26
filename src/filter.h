@@ -20,7 +20,7 @@
 
 /* * external type and constants * */
 #define FILTER_MOVING_GENERIC_WEIGHTS_COUNT				8
-#define FILTER_MOVING_AVERAGE_ELEMENT_COUNT				8
+#define FILTER_MOVING_AVERAGE_ELEMENT_COUNT				128
 #define FILTER_MOVING_AVERAGE_FLOAT_ELEMENT_COUNT		64
 
 typedef struct {
@@ -32,7 +32,7 @@ typedef struct {
 
 typedef struct {
 	float avg;
-	float elements[FILTER_MOVING_AVERAGE_ELEMENT_COUNT];
+	float elements[8]; 	//TODO: Bug - Filter funktioniert nicht korrekt, wenn FLOAT_ELEMENT_COUNT != 8 ist
 	int8_t  index;
 	float elements_sum;
 } filter_moving_average_float_t;
