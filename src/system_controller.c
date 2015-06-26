@@ -19,12 +19,12 @@
 
 #include <util/delay.h>
 
-#include "lib/uart.h"
+#include "uart.h"
 #include "lib/twi_master.h"
 
 #include "configuration_terminal.h"
 #include "configuration_storage.h"
-#include "vt100.h"
+//#include "vt100.h"
 
 #include "motionsensor.h"
 #include "motor_control.h"
@@ -172,17 +172,21 @@ void system_controller_state_init_basic_hardware(void)
 
 
 	/* **** DO ***** */
-	uart_init();							/* Init USART */
-	printf("usart inited\n");
-
-	printf("init LED Port...\n");
+	//printf("init LED Port...\n");
 	leds_init();
+	PORT_LEDS = 1;
 
 
-	printf("init TWI interface...\n");
+	uart_init(UART_BAUDRATE_9600);			/* Init USART */
+	uart_init_stdio();
+	//printf("usart inited\n");
+
+
+
+	//printf("init TWI interface...\n");
 	twi_master_init(TWI_TWBR_VALUE_400);	/* Init TWI/I2C Schnittstelle */
 
-	printf("enable interrupts...\n");
+	//printf("enable interrupts...\n");
 	sei();
 
 	//init motionsensor
@@ -196,6 +200,7 @@ void system_controller_state_init_basic_hardware(void)
 
 void system_controller_state_load_configuration(void)
 {
+	PORT_LEDS = 2;
 	printf("load configuration...\n");
 
 	/* *** ENTRY *** */
@@ -214,6 +219,7 @@ void system_controller_state_load_configuration(void)
 
 void system_controller_state_waiting_for_user_interrupt(void)
 {
+	PORT_LEDS = 3;
 	printf("waiting for user interrupt...\n");
 
 	/* *** ENTRY *** */
@@ -228,13 +234,13 @@ void system_controller_state_waiting_for_user_interrupt(void)
 
 	/* **** DO ***** */
 
-	uart_clr_rx_buf();
+	uart_flush();
 	while(waiting_time > 0 && !user_irq_received) {
 
 		//if user send any byte over usart then show configuration main menu
-		if(uart_char_received()) {
+		if(uart_available()) {
 			user_irq_received = true;
-			uart_clr_rx_buf();
+			uart_flush();
 			break;
 		}
 
@@ -260,7 +266,7 @@ void system_controller_state_waiting_for_user_interrupt(void)
 	} else {
 		next_state = STATE_INIT_CONTROLLER_ENVIRONMENT;
 	}
-	vt100_clear_input_buffer();
+	uart_flush();
 }
 
 
@@ -473,6 +479,12 @@ void system_controller_state_init_remaining_hardware(void)
 	printf("init timers...\n");
 	timer_init();							/* Init Timer */
 
+	printf("will change uart speed to 250k...\n");
+	while(uart_tx_buffer_size() > 0) {
+		//wait, til tx buffer is empty
+	}
+	uart_init(UART_BAUDRATE_250k);
+
 	/* *** EXIT **** */
 	next_state = STATE_RUN_CONTROLLER;
 }
@@ -606,26 +618,10 @@ static char command_buffer[CMD_BUFFER_MAX];
 void system_controller_parse_command(void)
 {
 
-	//UART_char_received();
-	//fgets(command_buffer, CMD_BUFFER_MAX, stdin);
 
-	//PORT_LEDS = leds++;
-
-	//printf("hello world\n");
-
-	/*
-
-	if(UART_char_received()) {
-		fgets(command_buffer, CMD_BUFFER_MAX, stdin);
-
-		PORT_LEDS = strlen(command_buffer);
-
-		fflush(stdin);
-		UART_clr_rx_buf();
-		//vt100_clear_input_buffer();
-		command_buffer[0] = '\0';
+		PORT_LEDS = leds;
+		uart_flush();
 	}
-	*/
 }
 
 void system_controller_print_data_anglepid(void)
