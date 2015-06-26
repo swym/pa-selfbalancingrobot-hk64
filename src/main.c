@@ -16,13 +16,9 @@
 #include <stdbool.h>
 
 /* local headers               */
-//#include "system_controller.h"
+#include "system_controller.h"
 
 /* Tests */
-//#include "test/test_encoder.h"
-//#include "test/test_plot_data.h"
-//#include "test/test_command_parser.h"
-#include "test/test_serialport.h"
 
 /* *** DECLARATIONS ********************************************************** */
 
@@ -39,13 +35,7 @@
 int main(void)
 {
 	// main program
-
-	//test_encoder_run();
-	//test_data_plot();
-
-	//system_controller_state_machine();
-	//test_command_parser();
-	test_serialport();
+	system_controller_state_machine();
 
 	//never reached
 	return 0;
