@@ -19,14 +19,14 @@
 #include <util/delay.h>
 
 /* * local headers               * */
-//#include "uart.h"
+#include "uart.h"
 
 #include "lib/twi_master.h"
 
 #include "configuration_storage.h"
 #include "motionsensor.h"
 #include "l6205.h"
-#include "vt100.h"
+//#include "vt100.h"
 
 /* *** DEFINES ************************************************************** */
 #define INPUT_BUFFER_MAX				40
@@ -240,13 +240,14 @@ void configuration_terminal_state_read_input(void)
 	//ENTRY
 	//DO
 
-	vt100_clear_input_buffer();
-	uart_char_received();
-
+	// get user input
+	uart_flush();
 	printf_P(string_input);
 
-	vt100_clear_input_buffer();
-	vt100_get_string(input_buffer,INPUT_BUFFER_MAX);
+	while(uart_gets(input_buffer, INPUT_BUFFER_MAX) == 0) {
+		//wait for completed string
+	}
+	uart_flush();
 
 	switch (input_buffer[INPUT_BUFFER_GROUP_INDEX]) {
 		case 'r':
@@ -292,8 +293,6 @@ void configuration_terminal_state_read_input(void)
 			next_state = STATE_READ_INPUT;
 			break;
 	}
-
-	vt100_clear_input_buffer();
 }
 
 
@@ -721,12 +720,14 @@ void configuration_terminal_state_set_print_data_mode(void)
 void configuration_terminal_state_reset_configuration(void)
 {
 	configuration_storage_reset_configuration();
+	printf(string_OK);
 	next_state = STATE_READ_INPUT;
 }
 
 void configuration_terminal_state_save_configuration(void)
 {
 	configuration_storage_save_configuration();
+	printf(string_OK);
 	next_state = STATE_FINAL;
 }
 
