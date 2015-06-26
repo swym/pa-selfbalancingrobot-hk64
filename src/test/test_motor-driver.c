@@ -105,7 +105,7 @@ void test_motor_driver_init(void)
 	timer_init();
 	l6205_init(L6205_ACCELERATION_DEFAULT);
 
-	UART_init();
+	uart_init();
 
 	DDRA = 0xFF;
 	tickcnt = 0;

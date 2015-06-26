@@ -19,7 +19,7 @@
 #include "../timer.h"
 #include "../leds.h"
 #include "../encoder.h"
-#include "../lib/uart.h"
+#include "../uart.h"
 
 /* *** DEFINES ************************************************************** */
 
@@ -103,7 +103,7 @@ void test_encoder_init(void)
 	timer_init();
 	l6205_init(1);
 	encoder_init();
-	UART_init();
+	init();
 
 	sei();
 

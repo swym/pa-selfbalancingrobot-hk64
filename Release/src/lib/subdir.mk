@@ -4,16 +4,13 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../src/lib/twi_master.c \
-../src/lib/uart.c 
+../src/lib/twi_master.c 
 
 OBJS += \
-./src/lib/twi_master.o \
-./src/lib/uart.o 
+./src/lib/twi_master.o 
 
 C_DEPS += \
-./src/lib/twi_master.d \
-./src/lib/uart.d 
+./src/lib/twi_master.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

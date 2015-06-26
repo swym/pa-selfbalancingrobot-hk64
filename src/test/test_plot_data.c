@@ -62,7 +62,7 @@ void test_data_plot(void)
 void test_data_plot_init(void)
 {
 	timer_init();
-	UART_init();
+	uart_init();
 
 	sei();
 
