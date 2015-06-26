@@ -91,7 +91,6 @@ Date        Description
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
-#include <stdbool.h>
 #include <stdio.h>
 #include "uart.h"
 
@@ -661,12 +660,12 @@ void uart_enable_rxtx(bool enable)
 {
 	if(enable) {
 		//enables irqs
-		UART0_CONTROL  = _BV(RXCIE0)|(1<<RXEN0)|(1<<TXEN0);
+		UART0_CONTROL  =  (_BV(RXCIE0) | (1<<RXEN0) | (1<<TXEN0));
 	} else {
 		//wait until tx buffer is empty
-		while(uart_tx_buffer_size()) {};
+		//while(uart_tx_buffer_size()) {};
 		//disable irqs
-		UART0_CONTROL &= ~(_BV(RXCIE0)|(1<<RXEN0)|(1<<TXEN0));
+		UART0_CONTROL &= ~(_BV(RXCIE0) | (1<<RXEN0) | (1<<TXEN0));
 	}
 }
 
