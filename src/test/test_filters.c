@@ -53,6 +53,7 @@ float test_floats[] = {1000.0, 0.0, -2333.0, 23.0, 544.0,
 uint8_t test_values_counter = 20;
 
 uint8_t weights_8_mean[] = {1, 1, 1, 1, 1, 1, 1, 1};
+uint8_t weights_16_mean[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 uint8_t weights_4_mean[] = {1, 1, 1, 1, 0, 0, 0, 0};
 uint8_t weights_smooth[] = {64, 1, 0, 0, 0, 0, 0, 0};
 uint8_t weights_curve[]  = {8, 6, 4, 2, 1, 1, 0, 0};
@@ -84,7 +85,7 @@ void test_filters_run()
 		printf("test new weighted mean...\n");
 		_delay_ms(1000);
 
-		filter_weighted_moving_average_create(&mov_avg, weights_8_mean, 4, 0);
+		filter_weighted_moving_average_create(&mov_avg, weights_16_mean, 16, 0);
 
 
 		//printf("wcnt:%d wsum:%d\n",gen_avg.weights_count, gen_avg.weights_sum);
@@ -130,7 +131,7 @@ void test_filters_run()
 		printf("\n\n\n");
 
 		// ####################################################################################
-#if 1
+#if 0
 		printf("test new int mean...\n");
 		_delay_ms(1000);
 
