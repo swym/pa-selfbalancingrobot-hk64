@@ -89,50 +89,7 @@ void filter_moving_generic_average_flush(
 		filter_moving_generic_average_put_element(average, 0);
 	}
 }
-//
-//void filter_moving_average_put_element(
-//		filter_moving_average_t *average,
-//		int16_t new_value)
-//{
-//	//remove oldest value from sum and add newest one
-//	average->elements_sum -= average->elements[average->index];
-//	average->elements_sum += new_value;
-//
-//	//add new value in elements array
-//	average->elements[average->index] = new_value;
-//
-//	//calculate new average
-//	average->avg = average->elements_sum / FILTER_MOVING_AVERAGE_ELEMENT_COUNT;
-//
-//	//move index to next element
-//	if(average->index < FILTER_MOVING_AVERAGE_ELEMENT_COUNT - 1) {
-//		average->index++;
-//	} else {
-//		average->index = 0;
-//	}
-//}
-//
-//void filter_moving_average_init(
-//		filter_moving_average_t *average,
-//		int16_t init_value)
-//{
-//	uint8_t i;
-//
-//	for(i = 0;i < FILTER_MOVING_AVERAGE_ELEMENT_COUNT;i++) {
-//		filter_moving_average_put_element(average, init_value);
-//	}
-//}
-//
-//void filter_moving_average_flush(
-//		filter_moving_average_t *average)
-//{
-//	uint8_t i;
-//
-//	for(i = 0;i < FILTER_MOVING_AVERAGE_ELEMENT_COUNT;i++) {
-//		filter_moving_average_put_element(average, 0);
-//	}
-//}
-//
+
 
 void filter_moving_average_create(filter_moving_average_t *average, uint8_t elem_cnt, int16_t init_value)
 {
@@ -183,7 +140,6 @@ void filter_moving_average_insert(filter_moving_average_t *average, int16_t new_
 	}
 }
 
-
 void filter_moving_average_flush(filter_moving_average_t *average)
 {
 	uint8_t i;
@@ -196,6 +152,7 @@ void filter_moving_average_flush(filter_moving_average_t *average)
 	average->sum = 0;
 	average->index = 0;
 }
+
 extern void filter_moving_average_destroy(filter_moving_average_t *average)
 {
 	filter_moving_average_flush(average);
@@ -275,47 +232,6 @@ void filter_moving_average_float_destroy(filter_moving_average_float_t *average)
 	average->elements_count = 0;
 }
 
-// FLOAT
-//
-//void filter_moving_average_float_put_element(
-//		filter_moving_average_float_t *average,
-//		float new_value)
-//{
-//	//remove oldest value from sum and add newest one
-//	average->elements_sum -= average->elements[average->index];
-//	average->elements_sum += new_value;
-//
-//	//add new value in elements array
-//	average->elements[average->index] = new_value;
-//
-//	//calculate new average
-//	average->avg = average->elements_sum / (float)FILTER_MOVING_AVERAGE_FLOAT_ELEMENT_COUNT;
-//
-//	//move index to next element
-//	//TODO: Bug
-//	if(average->index < FILTER_MOVING_AVERAGE_FLOAT_ELEMENT_COUNT - 1) {
-//		average->index++;
-//	} else {
-//		average->index = 0;
-//	}
-//}
-//
-//void filter_moving_average_float_init(
-//		filter_moving_average_float_t *average,
-//		float init_value)
-//{
-//	uint8_t i;
-//
-//	for(i = 0;i < FILTER_MOVING_AVERAGE_FLOAT_ELEMENT_COUNT;i++) {
-//		filter_moving_average_float_put_element(average, init_value);
-//	}
-//}
-//
-//void filter_moving_average_float_flush(
-//		filter_moving_average_float_t *average)
-//{
-//	filter_moving_average_float_init(average, 0.0);
-//}
 
 
 //TODO: implement a generic filter based on shift operations
