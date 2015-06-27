@@ -10,6 +10,7 @@
 #include "filter.h"
 
 /* * system headers              * */
+#include <stdlib.h>
 
 /* * local headers               * */
 
@@ -88,50 +89,122 @@ void filter_moving_generic_average_flush(
 		filter_moving_generic_average_put_element(average, 0);
 	}
 }
+//
+//void filter_moving_average_put_element(
+//		filter_moving_average_t *average,
+//		int16_t new_value)
+//{
+//	//remove oldest value from sum and add newest one
+//	average->elements_sum -= average->elements[average->index];
+//	average->elements_sum += new_value;
+//
+//	//add new value in elements array
+//	average->elements[average->index] = new_value;
+//
+//	//calculate new average
+//	average->avg = average->elements_sum / FILTER_MOVING_AVERAGE_ELEMENT_COUNT;
+//
+//	//move index to next element
+//	if(average->index < FILTER_MOVING_AVERAGE_ELEMENT_COUNT - 1) {
+//		average->index++;
+//	} else {
+//		average->index = 0;
+//	}
+//}
+//
+//void filter_moving_average_init(
+//		filter_moving_average_t *average,
+//		int16_t init_value)
+//{
+//	uint8_t i;
+//
+//	for(i = 0;i < FILTER_MOVING_AVERAGE_ELEMENT_COUNT;i++) {
+//		filter_moving_average_put_element(average, init_value);
+//	}
+//}
+//
+//void filter_moving_average_flush(
+//		filter_moving_average_t *average)
+//{
+//	uint8_t i;
+//
+//	for(i = 0;i < FILTER_MOVING_AVERAGE_ELEMENT_COUNT;i++) {
+//		filter_moving_average_put_element(average, 0);
+//	}
+//}
+//
 
-void filter_moving_average_put_element(
-		filter_moving_average_t *average,
-		int16_t new_value)
+void filter_moving_average_create(filter_moving_average_t *average, int8_t elem_cnt, int16_t init_value)
 {
+	uint8_t i;
+
+	//destroy average first
+	filter_moving_average_destroy(average);
+
+	//check elements_count and limit
+	if(elem_cnt < FILTER_MOVING_AVERAGE_ELEMENTS_COUNT_MIN) {
+		elem_cnt = FILTER_MOVING_AVERAGE_ELEMENTS_COUNT_MIN;
+	}
+
+	if(elem_cnt > FILTER_MOVING_AVERAGE_ELEMENTS_COUNT_MAX) {
+		elem_cnt = FILTER_MOVING_AVERAGE_ELEMENTS_COUNT_MAX;
+	}
+
+	//set elements_count in average struct
+	average->elements_count = elem_cnt;
+
+	//allocate ero inited memory for elements
+	average->elements = (int16_t *)calloc(average->elements_count, sizeof(int16_t));
+
+	//fill average with init_value
+	for(i = 0; i < average->elements_count; i++) {
+		filter_moving_average_insert(average, init_value);
+	}
+}
+
+
+void filter_moving_average_insert(filter_moving_average_t *average, int16_t new_value)
+{
+	uint8_t i;
+
 	//remove oldest value from sum and add newest one
-	average->elements_sum -= average->elements[average->index];
-	average->elements_sum += new_value;
+	average->sum -= average->elements[average->index];
+	average->sum += new_value;
 
 	//add new value in elements array
 	average->elements[average->index] = new_value;
 
 	//calculate new average
-	average->avg = average->elements_sum / FILTER_MOVING_AVERAGE_ELEMENT_COUNT;
+	average->avg = average->sum / average->elements_count;
 
 	//move index to next element
-	if(average->index < FILTER_MOVING_AVERAGE_ELEMENT_COUNT - 1) {
+	if(average->index < average->elements_count - 1) {
 		average->index++;
 	} else {
 		average->index = 0;
 	}
 }
 
-void filter_moving_average_init(
-		filter_moving_average_t *average,
-		int16_t init_value)
+
+void filter_moving_average_flush(filter_moving_average_t *average)
 {
 	uint8_t i;
 
-	for(i = 0;i < FILTER_MOVING_AVERAGE_ELEMENT_COUNT;i++) {
-		filter_moving_average_put_element(average, init_value);
+	for(i = 0; i < average->elements_count; i++) {
+		average->elements[i] = 0;
 	}
-}
 
-void filter_moving_average_flush(
-		filter_moving_average_t *average)
+	average->avg = 0;
+	average->sum = 0;
+	average->index = 0;
+}
+extern void filter_moving_average_destroy(filter_moving_average_t *average)
 {
-	uint8_t i;
+	filter_moving_average_flush(average);
+	free(average->elements);
 
-	for(i = 0;i < FILTER_MOVING_AVERAGE_ELEMENT_COUNT;i++) {
-		filter_moving_average_put_element(average, 0);
-	}
+	average->elements_count = 0;
 }
-
 
 // FLOAT
 
@@ -151,7 +224,7 @@ void filter_moving_average_float_put_element(
 
 	//move index to next element
 	//TODO: Bug
-	if(average->index < 8 - 1) {
+	if(average->index < FILTER_MOVING_AVERAGE_FLOAT_ELEMENT_COUNT - 1) {
 		average->index++;
 	} else {
 		average->index = 0;
