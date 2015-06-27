@@ -261,19 +261,19 @@ void test_filters_run()
 */
 		// ####################################################################################
 
-		printf("test float_avg...\n");
-		_delay_ms(1000);
-
-		filter_moving_average_float_init(&float_avg, 0.0);
-
-		for(i = 0; i < test_values_counter; i++) {
-			PORT_LEDS = 0xF0;
-			filter_moving_average_float_put_element(&float_avg, test_values[i]);
-			PORT_LEDS = 0x00;
-			printf("%7f", float_avg.avg);
-			_delay_ms(5);
-		}
-		printf("\n\n\n");
+//		printf("test float_avg...\n");
+//		_delay_ms(1000);
+//
+//		filter_moving_average_float_init(&float_avg, 0.0);
+//
+//		for(i = 0; i < test_values_counter; i++) {
+//			PORT_LEDS = 0xF0;
+//			filter_moving_average_float_put_element(&float_avg, test_values[i]);
+//			PORT_LEDS = 0x00;
+//			printf("%7f", float_avg.avg);
+//			_delay_ms(5);
+//		}
+//		printf("\n\n\n");
 
 		// ####################################################################################
 

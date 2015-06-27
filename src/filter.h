@@ -24,7 +24,7 @@
 #define FILTER_MOVING_AVERAGE_FLOAT_ELEMENT_COUNT		8
 
 #define FILTER_MOVING_AVERAGE_ELEMENTS_COUNT_MIN		2
-#define FILTER_MOVING_AVERAGE_ELEMENTS_COUNT_MAX		64
+#define FILTER_MOVING_AVERAGE_ELEMENTS_COUNT_MAX		UINT8_MAX
 
 //typedef struct {
 //	int16_t avg;
@@ -37,15 +37,17 @@ typedef struct {
 	int16_t avg;
 	int32_t sum;
 	int16_t * elements;
-	int8_t elements_count;
-	int8_t index;
+	uint8_t elements_count;
+	uint8_t index;
 } filter_moving_average_t;
 
 typedef struct {
 	float avg;
-	float elements[8]; 	//TODO: Bug - Filter funktioniert nicht korrekt, wenn FLOAT_ELEMENT_COUNT != 8 ist
-	int8_t  index;
-	float elements_sum;
+	float sum;
+	float divisor;
+	float * elements;
+	uint8_t elements_count;
+	uint8_t index;
 } filter_moving_average_float_t;
 
 typedef struct {
@@ -70,14 +72,18 @@ extern void filter_moving_generic_average_flush(filter_moving_generic_average_t 
 //extern void filter_moving_average_init(filter_moving_average_t *average, int16_t init_value);
 //extern void filter_moving_average_flush(filter_moving_average_t *average);
 
-extern void filter_moving_average_create(filter_moving_average_t *average, int8_t elem_cnt, int16_t init_value);
+extern void filter_moving_average_create(filter_moving_average_t *average, uint8_t elem_cnt, int16_t init_value);
 extern void filter_moving_average_insert(filter_moving_average_t *average, int16_t new_value); /* moving_average_t *mean, int16_t value */
 extern void filter_moving_average_flush(filter_moving_average_t *average);
 extern void filter_moving_average_destroy(filter_moving_average_t *average);
 
+extern void filter_moving_average_float_create(filter_moving_average_float_t *average, uint8_t elem_cnt, float init_value);
+extern void filter_moving_average_float_insert(filter_moving_average_float_t *average, float new_value); /* moving_average_t *mean, int16_t value */
+extern void filter_moving_average_float_flush(filter_moving_average_float_t *average);
+extern void filter_moving_average_float_destroy(filter_moving_average_float_t *average);
 
-extern void filter_moving_average_float_put_element(filter_moving_average_float_t *average, float new_value);
-extern void filter_moving_average_float_init(filter_moving_average_float_t *average, float init_value);
-extern void filter_moving_average_flaot_flush(filter_moving_average_float_t *average);
+//extern void filter_moving_average_float_put_element(filter_moving_average_float_t *average, float new_value);
+//extern void filter_moving_average_float_init(filter_moving_average_float_t *average, float init_value);
+//extern void filter_moving_average_flaot_flush(filter_moving_average_float_t *average);
 
 #endif /* FILTER_H_ */
