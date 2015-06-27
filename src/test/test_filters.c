@@ -36,9 +36,7 @@
 //moving_average_t   mavg;
 
 filter_moving_generic_average_t gen_avg;
-
 filter_moving_average_float_t float_avg;
-
 filter_moving_average_t int_avg;
 
 int16_t test_values[] = {1000, 0, -2333, 23, 544,
@@ -85,7 +83,7 @@ void test_filters_run()
 		printf("test generic_8_mean...\n");
 		_delay_ms(1000);
 
-		filter_moving_generic_average_init(&gen_avg, weights_4_mean, 0);
+		filter_moving_generic_average_init(&gen_avg, weights_8_mean, 0);
 
 		//printf("wcnt:%d wsum:%d\n",gen_avg.weights_count, gen_avg.weights_sum);
 
@@ -120,6 +118,7 @@ void test_filters_run()
 		for(i = 0; i < test_values_counter; i++) {
 			PORT_LEDS = 0x0F;
 			filter_moving_average_insert(&int_avg, test_values[i]);
+			PORT_LEDS = 0x00;
 
 			printf("n:%7d -> ", test_values[i]);
 
@@ -132,7 +131,7 @@ void test_filters_run()
 
 			printf("\n");
 
-			PORT_LEDS = 0x00;
+
 
 			_delay_ms(5);
 		}
@@ -142,6 +141,7 @@ void test_filters_run()
 		for(i = 0; i < test_values_counter; i++) {
 			PORT_LEDS = 0x0F;
 			filter_moving_average_insert(&int_avg, test_values[i]);
+			PORT_LEDS = 0x00;
 
 			printf("n:%7d -> ", test_values[i]);
 
@@ -154,7 +154,6 @@ void test_filters_run()
 
 			printf("\n");
 
-			PORT_LEDS = 0x00;
 
 			_delay_ms(5);
 		}
@@ -164,8 +163,10 @@ void test_filters_run()
 		filter_moving_average_flush(&int_avg);
 
 		for(i = 0; i < test_values_counter; i++) {
+
 			PORT_LEDS = 0x0F;
 			filter_moving_average_insert(&int_avg, test_values[i]);
+			PORT_LEDS = 0x00;
 
 			printf("n:%7d -> ", test_values[i]);
 
@@ -178,11 +179,54 @@ void test_filters_run()
 
 			printf("\n");
 
-			PORT_LEDS = 0x00;
 
 			_delay_ms(5);
 		}
 		printf("\n\n\n");
+
+
+		// ####################################################################################
+
+		printf("test new float mean...\n");
+		_delay_ms(1000);
+
+		filter_moving_average_float_create(&float_avg, 16, 0.0F);
+
+		//printf("wcnt:%d wsum:%d\n",gen_avg.weights_count, gen_avg.weights_sum);
+		printf("ecnt: %d\n", float_avg.elements_count);
+		printf("sum: %f\n", float_avg.sum);
+		printf("ecnt: %f\n", float_avg.avg);
+
+		for(i = 0;i < float_avg.elements_count;i++) {
+			printf("%f ", float_avg.elements[i]);
+		}
+		printf("\n");
+
+		printf("insert %d values...\n", test_values_counter);
+
+		for(i = 0; i < test_values_counter; i++) {
+			PORT_LEDS = 0xF0;
+			filter_moving_average_float_insert(&float_avg, test_floats[i]);
+			PORT_LEDS = 0x00;
+
+			printf("n:%7f -> ", test_floats[i]);
+
+			for(j = 0; j < float_avg.elements_count;j++) {
+				printf("%d:%7f ", j, float_avg.elements[j]);
+			}
+
+			printf(" sum%7f ", float_avg.sum);
+			printf(" avg%7f ", float_avg.avg);
+
+			printf("\n");
+
+
+
+			_delay_ms(5);
+		}
+
+		printf("\n\n\n");
+
 
 
 
