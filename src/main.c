@@ -16,10 +16,10 @@
 #include <stdbool.h>
 
 /* local headers               */
-#include "system_controller.h"
+//#include "system_controller.h"
 
 /* Tests */
-
+#include "test/test_filters.h"
 /* *** DECLARATIONS ********************************************************** */
 
 /* local type and constants     */
@@ -35,7 +35,8 @@
 int main(void)
 {
 	// main program
-	system_controller_state_machine();
+	//system_controller_state_machine();
+	test_filters_run();
 
 	//never reached
 	return 0;
