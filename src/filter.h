@@ -44,13 +44,28 @@ typedef struct {
 	uint8_t index;
 } filter_moving_average_float_t;
 
+//typedef struct {
+//	int16_t avg;
+//	int16_t elements[FILTER_MOVING_GENERIC_WEIGHTS_COUNT];
+//	uint8_t weights[FILTER_MOVING_GENERIC_WEIGHTS_COUNT];
+//	uint8_t weights_count;
+//	uint8_t weights_sum;
+//} filter_moving_generic_average_t;
+
+typedef struct {
+	uint8_t * w;
+	uint8_t count;
+	uint16_t sum;
+} filter_weights_t;
+
+
 typedef struct {
 	int16_t avg;
-	int16_t elements[FILTER_MOVING_GENERIC_WEIGHTS_COUNT];
-	uint8_t weights[FILTER_MOVING_GENERIC_WEIGHTS_COUNT];
-	uint8_t weights_count;
-	uint8_t weights_sum;
-} filter_moving_generic_average_t;
+	int16_t * elements;
+	uint8_t elements_count;
+	filter_weights_t * weights;
+
+} filter_weighted_moving_average_t;
 
 
 
@@ -58,9 +73,11 @@ typedef struct {
 /* * external objects            * */
 
 /* * external functions          * */
-extern void filter_moving_generic_average_put_element(filter_moving_generic_average_t * average, int16_t new_value);
-extern void filter_moving_generic_average_init(filter_moving_generic_average_t * average, uint8_t * weights, int16_t init_value);
-extern void filter_moving_generic_average_flush(filter_moving_generic_average_t * average);
+
+
+//extern void filter_moving_generic_average_put_element(filter_moving_generic_average_t * average, int16_t new_value);
+//extern void filter_moving_generic_average_init(filter_moving_generic_average_t * average, uint8_t * weights, int16_t init_value);
+//extern void filter_moving_generic_average_flush(filter_moving_generic_average_t * average);
 
 extern void filter_moving_average_create(filter_moving_average_t *average, uint8_t elem_cnt, int16_t init_value);
 extern void filter_moving_average_insert(filter_moving_average_t *average, int16_t new_value); /* moving_average_t *mean, int16_t value */
@@ -71,5 +88,10 @@ extern void filter_moving_average_float_create(filter_moving_average_float_t *av
 extern void filter_moving_average_float_insert(filter_moving_average_float_t *average, float new_value); /* moving_average_t *mean, int16_t value */
 extern void filter_moving_average_float_flush(filter_moving_average_float_t *average);
 extern void filter_moving_average_float_destroy(filter_moving_average_float_t *average);
+
+extern void filter_weighted_moving_average_create(filter_weighted_moving_average_t * average, uint8_t * weights, uint8_t elem_cnt, int16_t init_value);
+extern void filter_weighted_moving_average_insert(filter_weighted_moving_average_t * average, int16_t new_value);
+extern void filter_weighted_moving_average_flush(filter_weighted_moving_average_t * average);
+extern void filter_weighted_moving_average_destroy(filter_weighted_moving_average_t * average);
 
 #endif /* FILTER_H_ */
