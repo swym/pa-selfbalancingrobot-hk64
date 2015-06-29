@@ -354,6 +354,7 @@ void system_controller_state_init_controller_environment(void)
 			  pid_robot_pos_config.d_factor,
 			  pid_robot_pos_config.pid_scalingfactor,
 			 &pid_robot_pos_data);
+	pid_Reset_Integrator(&pid_robot_pos_data);
 
 	//init balance pid
 	pid_Init( pid_balance_config.p_factor,
@@ -361,6 +362,7 @@ void system_controller_state_init_controller_environment(void)
 			  pid_balance_config.d_factor,
 			  pid_balance_config.pid_scalingfactor,
 			 &pid_balance_data);
+	pid_Reset_Integrator(&pid_balance_data);
 
 	//init motor pids
 	pid_Init( pid_speed_motor_config.p_factor,
@@ -368,12 +370,14 @@ void system_controller_state_init_controller_environment(void)
 			  pid_speed_motor_config.d_factor,
 			  pid_speed_motor_config.pid_scalingfactor,
 			 &pid_speed_m1_data);
+	pid_Reset_Integrator(&pid_speed_m1_data);
 
 	pid_Init( pid_speed_motor_config.p_factor,
 			  pid_speed_motor_config.i_factor,
 			  pid_speed_motor_config.d_factor,
 			  pid_speed_motor_config.pid_scalingfactor,
 			 &pid_speed_m2_data);
+	pid_Reset_Integrator(&pid_speed_m2_data);
 
 
 	//set setpoint
@@ -560,6 +564,7 @@ void system_controller_state_run_controller(void)
 
 			//calculate PID balance
 			//pid_balance_setpoint = pid_robot_pos_output;
+			pid_balance_setpoint = 0;
 			pid_balance_output   = pid_Controller(pid_balance_setpoint,
 												  current_angle,
 												  &pid_balance_data);
@@ -773,7 +778,7 @@ static void system_controller_print_data_really_all_filtered(void)
 	motionsensor_motiondata_t motiondata;
 	motionsensor_get_filtered_motiondata(&motiondata);
 
-	int16_t angle_accel = (int16_t)(motionsensor_get_angle_acceleration() * 1000.0);
+	int16_t angle_accel = (int16_t)(motionsensor_get_angle_acceleration() * 10000.0);
 	int8_t magnitude    = (int8_t)(motionsensor_get_angle_acceleration_magnitude() * 100.0);
 
 	//header: type: A

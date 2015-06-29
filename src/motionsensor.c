@@ -41,6 +41,7 @@
 #define NORMALIZATION_ANGULARVELOCITY_ANGLE 250000.0
 
 
+#define ROUNDS_ZERO_POINT 64
 
 /* *** DECLARATIONS ********************************************************* */
 
@@ -66,22 +67,26 @@ static float valid_acceleration_magnitude_lower_limit;
 
 // - FILTER
 //static uint8_t angularvelocity_filter_mask[] = {64, 1, 0, 0, 0, 0, 0, 0};
-static uint8_t angularvelocity_filter_mask[] = {1, 0, 0, 0, 0, 0, 0, 0};
-static filter_moving_generic_average_t angularvelocity_filter_x;
-static filter_moving_generic_average_t angularvelocity_filter_y;
-static filter_moving_generic_average_t angularvelocity_filter_z;
+//static uint8_t angularvelocity_filter_mask[] = {1, 0, 0, 0, 0, 0, 0, 0};
+//static filter_moving_generic_average_t angularvelocity_filter_x;
+//static filter_moving_generic_average_t angularvelocity_filter_y;
+//static filter_moving_generic_average_t angularvelocity_filter_z;
 
-static uint8_t acceleration_filter_mask[] = {1, 1, 1, 1, 1, 1, 1, 1};
+//static uint8_t acceleration_filter_mask[] = {1, 1, 1, 1, 1, 1, 1, 1};
 //static uint8_t acceleration_filter_mask[] = {4, 2, 2, 2, 1, 1, 1, 1};
 //static uint8_t acceleration_filter_mask[] = {1, 0, 0, 0, 0, 0, 0, 0};
 //static uint8_t acceleration_filter_mask[] = {4, 2, 2, 1, 1, 1, 0, 0};
-static filter_moving_generic_average_t acceleration_filter_x;
-static filter_moving_generic_average_t acceleration_filter_y;
-static filter_moving_generic_average_t acceleration_filter_z;
+static uint8_t filter_width = 8;
+static filter_moving_average_t acceleration_filter_x;
+static filter_moving_average_t acceleration_filter_z;
+
+//static filter_moving_generic_average_t acceleration_filter_x;
+//static filter_moving_generic_average_t acceleration_filter_y;
+//static filter_moving_generic_average_t acceleration_filter_z;
 
 static filter_moving_average_float_t acceleration_angle_average;
 
-static uint8_t calibrate_zero_point_filter_mask[] = {1, 1, 1, 1, 1, 1, 1, 1};
+//static uint8_t calibrate_zero_point_filter_mask[] = {1, 1, 1, 1, 1, 1, 1, 1};
 
 
 // variables used in get_angle_y -> module internal - so print function can read them
@@ -124,7 +129,7 @@ float motionsensor_get_angle_y(void)
 	acceleration_angle_y = -acceleration_angle_y;
 
 	//filter acceleration angle
-	filter_moving_average_float_init(&acceleration_angle_average, acceleration_angle_y);
+	filter_moving_average_float_insert(&acceleration_angle_average, acceleration_angle_y);
 
 	//## get angularvelocity of y
 	//###########################
@@ -142,7 +147,7 @@ float motionsensor_get_angle_y(void)
 		//fuse sensor data with complementary filter
 		//PORT_LEDS |= _BV(LED2);
 		angle_y = angle_y * complementary_filter_angularvelocity_factor +
-				  acceleration_angle_average.avg * complementary_filter_acceleraton_factor;
+				  (acceleration_angle_average.avg / 8) * complementary_filter_acceleraton_factor;
 	} else {
 		//PORT_LEDS &= ~_BV(LED2);
 	}
@@ -157,19 +162,22 @@ void motionsensor_read_motiondata(motionsensor_motiondata_t * mdata)
 	//raw_imudata.acceleration.z = -raw_imudata.acceleration.z;	//invert z-axis to correct sign; yt heck?!
 
 	//apply filter
-	filter_moving_generic_average_put_element(&acceleration_filter_x, raw_imudata.acceleration.x);
-	filter_moving_generic_average_put_element(&acceleration_filter_y, raw_imudata.acceleration.y);
-	filter_moving_generic_average_put_element(&acceleration_filter_z, raw_imudata.acceleration.z);
+//	filter_moving_generic_average_put_element(&acceleration_filter_x, raw_imudata.acceleration.x);
+//	filter_moving_generic_average_put_element(&acceleration_filter_y, raw_imudata.acceleration.y);
+//	filter_moving_generic_average_put_element(&acceleration_filter_z, raw_imudata.acceleration.z);
 
-	filter_moving_generic_average_put_element(&angularvelocity_filter_x, raw_imudata.angularvelocity.x);
-	filter_moving_generic_average_put_element(&angularvelocity_filter_y, raw_imudata.angularvelocity.y);
-	filter_moving_generic_average_put_element(&angularvelocity_filter_z, raw_imudata.angularvelocity.z);
+//	filter_moving_generic_average_put_element(&angularvelocity_filter_x, raw_imudata.angularvelocity.x);
+//	filter_moving_generic_average_put_element(&angularvelocity_filter_y, raw_imudata.angularvelocity.y);
+//	filter_moving_generic_average_put_element(&angularvelocity_filter_z, raw_imudata.angularvelocity.z);
+
+	filter_moving_average_insert(&acceleration_filter_x, raw_imudata.acceleration.x);
+	filter_moving_average_insert(&acceleration_filter_z, raw_imudata.acceleration.z);
 
 	mdata->temperature = raw_imudata.temperature;
 
 	//apply offset
 	mdata->acceleration.x = acceleration_filter_x.avg + offset.acceleration.x;
-	mdata->acceleration.y = acceleration_filter_y.avg + offset.acceleration.y;
+	mdata->acceleration.y = raw_imudata.acceleration.y + offset.acceleration.y;
 	mdata->acceleration.z = acceleration_filter_z.avg + offset.acceleration.z;
 
 	mdata->angularvelocity.x = raw_imudata.angularvelocity.x + offset.angularvelocity.x;
@@ -192,16 +200,16 @@ void motionsensor_calibrate_zero_point(void)
 	offset.angularvelocity.z = 0;
 
 	//reset filters - use
-	filter_moving_generic_average_init(&acceleration_filter_x, calibrate_zero_point_filter_mask, 0);
-	filter_moving_generic_average_init(&acceleration_filter_y, calibrate_zero_point_filter_mask, 0);
-	filter_moving_generic_average_init(&acceleration_filter_z, calibrate_zero_point_filter_mask, 0);
+//	filter_moving_generic_average_init(&acceleration_filter_x, calibrate_zero_point_filter_mask, 0);
+//	filter_moving_generic_average_init(&acceleration_filter_y, calibrate_zero_point_filter_mask, 0);
+//	filter_moving_generic_average_init(&acceleration_filter_z, calibrate_zero_point_filter_mask, 0);
 
-	filter_moving_generic_average_init(&angularvelocity_filter_x, calibrate_zero_point_filter_mask, 0);
-	filter_moving_generic_average_init(&angularvelocity_filter_y, calibrate_zero_point_filter_mask, 0);
-	filter_moving_generic_average_init(&angularvelocity_filter_z, calibrate_zero_point_filter_mask, 0);
+//	filter_moving_generic_average_init(&angularvelocity_filter_x, calibrate_zero_point_filter_mask, 0);
+//	filter_moving_generic_average_init(&angularvelocity_filter_y, calibrate_zero_point_filter_mask, 0);
+//	filter_moving_generic_average_init(&angularvelocity_filter_z, calibrate_zero_point_filter_mask, 0);
 
 	//loop: read rawdata + filter them...
-	for(i = 0;i < FILTER_MOVING_GENERIC_WEIGHTS_COUNT * 8;i++) {
+	for(i = 0;i < ROUNDS_ZERO_POINT;i++) {
 		motionsensor_read_motiondata(&motiondata);
 	}
 
@@ -216,16 +224,19 @@ void motionsensor_calibrate_zero_point(void)
 	offset.angularvelocity.z = -motiondata.angularvelocity.z;
 
 	//restore filter profiles
-	filter_moving_generic_average_init(&acceleration_filter_x, acceleration_filter_mask, 0);
-	filter_moving_generic_average_init(&acceleration_filter_y, acceleration_filter_mask, 0);
-	filter_moving_generic_average_init(&acceleration_filter_z, acceleration_filter_mask, MOTIONSENSOR_ACCELERATION_1G);
+	filter_moving_average_create(&acceleration_filter_x, filter_width, 0);
+	filter_moving_average_create(&acceleration_filter_z, filter_width, MOTIONSENSOR_ACCELERATION_1G);
 
-	filter_moving_generic_average_init(&angularvelocity_filter_x, angularvelocity_filter_mask, 0);
-	filter_moving_generic_average_init(&angularvelocity_filter_y, angularvelocity_filter_mask, 0);
-	filter_moving_generic_average_init(&angularvelocity_filter_z, angularvelocity_filter_mask, 0);
+//	filter_moving_generic_average_init(&acceleration_filter_x, acceleration_filter_mask, 0);
+//	filter_moving_generic_average_init(&acceleration_filter_y, acceleration_filter_mask, 0);
+//	filter_moving_generic_average_init(&acceleration_filter_z, acceleration_filter_mask, MOTIONSENSOR_ACCELERATION_1G);
+
+//	filter_moving_generic_average_init(&angularvelocity_filter_x, angularvelocity_filter_mask, 0);
+//	filter_moving_generic_average_init(&angularvelocity_filter_y, angularvelocity_filter_mask, 0);
+//	filter_moving_generic_average_init(&angularvelocity_filter_z, angularvelocity_filter_mask, 0);
 
 	//read dummy data to fill up filters again
-	for(i = 0;i < FILTER_MOVING_GENERIC_WEIGHTS_COUNT * 8;i++) {
+	for(i = 0;i < ROUNDS_ZERO_POINT;i++) {
 		motionsensor_read_motiondata(&motiondata);
 	}
 }
@@ -381,15 +392,23 @@ void motionsensor_init(void)
 	offset.angularvelocity.z = 0;
 
 	//init filters
-	filter_moving_generic_average_init(&acceleration_filter_x, acceleration_filter_mask, 0);
-	filter_moving_generic_average_init(&acceleration_filter_y, acceleration_filter_mask, 0);
-	filter_moving_generic_average_init(&acceleration_filter_z, acceleration_filter_mask, MOTIONSENSOR_ACCELERATION_1G);
+	filter_moving_average_create(&acceleration_filter_x, 16, 0);
+	filter_moving_average_create(&acceleration_filter_z, 16, MOTIONSENSOR_ACCELERATION_1G);
 
-	filter_moving_generic_average_init(&angularvelocity_filter_x, angularvelocity_filter_mask, 0);
-	filter_moving_generic_average_init(&angularvelocity_filter_y, angularvelocity_filter_mask, 0);
-	filter_moving_generic_average_init(&angularvelocity_filter_z, angularvelocity_filter_mask, 0);
+	filter_moving_average_float_create(&acceleration_angle_average, 8, 0.0);
 
-	filter_moving_average_float_init(&acceleration_angle_average, 0.0);
+
+//	filter_moving_average_create(acceleration_filter_y, filter_width, 0);
+
+//	filter_moving_generic_average_init(&acceleration_filter_x, acceleration_filter_mask, 0);
+//	filter_moving_generic_average_init(&acceleration_filter_y, acceleration_filter_mask, 0);
+//	filter_moving_generic_average_init(&acceleration_filter_z, acceleration_filter_mask, MOTIONSENSOR_ACCELERATION_1G);
+
+//	filter_moving_generic_average_init(&angularvelocity_filter_x, angularvelocity_filter_mask, 0);
+//	filter_moving_generic_average_init(&angularvelocity_filter_y, angularvelocity_filter_mask, 0);
+//	filter_moving_generic_average_init(&angularvelocity_filter_z, angularvelocity_filter_mask, 0);
+
+
 
 	angle_scalingfactor = 1;
 
