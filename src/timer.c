@@ -30,6 +30,8 @@
 volatile timer_slot_t timer_current_majorslot;
 volatile timer_slot_t timer_current_minorslot;
 
+volatile uint16_t timer_command_timeout;
+
 
 /* * local objects               * */
 static volatile uint8_t timer_systemticks;
@@ -94,6 +96,11 @@ ISR(TIMER0_COMP_vect)
 		timer_systemticks = 0;
 	} else {
 		timer_systemticks++;
+	}
+
+	//decrement command_timeout
+	if(timer_command_timeout > 0) {
+		timer_command_timeout--;
 	}
 
 	//update external handlers
