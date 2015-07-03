@@ -114,13 +114,14 @@ Date        Description
  * precalculated UBBR Values
  * @param baudrate
  */
-#define UART_USE2X 0
+#define UART_USE2X 1
 
 #if (UART_USE2X == 1)
 
 typedef enum {
 	UART_BAUDRATE_9600 = 207,
 	UART_BAUDRATE_115k = 16,
+	UART_BAUDRATE_230k = 8,
 	UART_BAUDRATE_250k = 7
 } uart_baudrate_t;
 #else

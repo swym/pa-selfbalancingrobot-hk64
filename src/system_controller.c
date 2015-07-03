@@ -70,12 +70,13 @@ static system_controller_state_t next_state;
 static motionsensor_angle_t current_angle;
 
 static int16_t pid_robot_pos_output;	//angle setpoint
+static int16_t pid_robot_slowing_output;
 static int16_t pid_balance_output;		//speed for motors
 static int16_t pid_speed_m1_output;		//pwm for drivers
 static int16_t pid_speed_m2_output;		//pwm for drivers
 
-static motor_contol_speed_t current_speed;
-static motor_contol_speed_t new_motor_speed;
+static motor_control_speed_t current_speed;
+static motor_control_speed_t new_motor_speed;
 
 static pid_config_t				pid_robot_pos_config;
 static pid_config_t				pid_balance_config;
@@ -84,11 +85,13 @@ static pid_config_t				pid_speed_motor_config;
 static motionsensor_angle_t		angle_stable;
 
 static pidData_t pid_robot_pos_data;
+static pidData_t pid_robot_slowing_data;
 static pidData_t pid_balance_data;
 static pidData_t pid_speed_m1_data;
 static pidData_t pid_speed_m2_data;
 
 static int16_t	 pid_robot_pos_setpoint;
+static int16_t	 pid_robot_slowing_setpoint;
 static int16_t   pid_balance_setpoint;
 static int16_t	 pid_speed_m1_setpoint;
 static int16_t	 pid_speed_m2_setpoint;
@@ -110,6 +113,8 @@ static void system_controller_state_run_configuration_terminal(void);
 static void system_controller_state_init_controller_environment(void);
 static void system_controller_state_init_remaining_hardware(void);
 static void system_controller_state_run_controller(void);
+
+static void system_controller_halt_motors(void);
 
 // print functions
 static void system_controller_print_ticker(void);
@@ -178,7 +183,7 @@ void system_controller_state_init_basic_hardware(void)
 	/* **** DO ***** */
 	//printf("init LED Port...\n");
 	leds_init();
-	PORT_LEDS = 1;
+	leds_set(1);
 
 
 	uart_init(UART_BAUDRATE_9600);			/* Init USART */
@@ -204,7 +209,7 @@ void system_controller_state_init_basic_hardware(void)
 
 void system_controller_state_load_configuration(void)
 {
-	PORT_LEDS = 2;
+	leds_set(2);
 	printf("load configuration...\n");
 
 	/* *** ENTRY *** */
@@ -223,7 +228,7 @@ void system_controller_state_load_configuration(void)
 
 void system_controller_state_waiting_for_user_interrupt(void)
 {
-	PORT_LEDS = 3;
+	leds_set(3);
 	printf("waiting for user interrupt...\n");
 
 	/* *** ENTRY *** */
@@ -257,7 +262,7 @@ void system_controller_state_waiting_for_user_interrupt(void)
 			printf(".");
 			parts_of_seconds_counter--;
 		}
-		PORT_LEDS ^= _BV(LED0);
+		leds_toggle(0x80);
 		_delay_ms(delay);
 	}
 
@@ -279,14 +284,14 @@ void system_controller_state_run_configuration_terminal(void)
 	/* *** ENTRY *** */
 
 	printf("run configuration terminal...\n");
-	PORT_LEDS =    _BV(LED6) | _BV(LED7);
+	leds_set(LED6 | LED7);
 	/* **** DO ***** */
 
 	//start sub state machine "configuration terminal"
 	configuration_terminal_state_machine();
 
 	/* *** EXIT **** */
-	PORT_LEDS &= ~(_BV(LED6) | _BV(LED7));
+	leds_set(0);
 	next_state = STATE_WAITING_FOR_USER_INTERRUPT;
 }
 
@@ -351,13 +356,16 @@ void system_controller_state_init_controller_environment(void)
 	printf("angle stable: %u\n\n", angle_stable);
 
 
+	//init pid
+	pid_Init(5, 0, 3, 200,
+			 &pid_robot_pos_data);
 
-	//init robot_speed pid
+
 	pid_Init( pid_robot_pos_config.p_factor,
 			  pid_robot_pos_config.i_factor,
 			  pid_robot_pos_config.d_factor,
 			  pid_robot_pos_config.pid_scalingfactor,
-			 &pid_robot_pos_data);
+			 &pid_robot_slowing_data);
 
 	//init balance pid
 	pid_Init( pid_balance_config.p_factor,
@@ -381,10 +389,11 @@ void system_controller_state_init_controller_environment(void)
 
 
 	//set setpoint
-	pid_robot_pos_setpoint	 = 0;
-	pid_balance_setpoint  	 = 0;
-	pid_speed_m1_setpoint    = 0;
-	pid_speed_m2_setpoint    = 0;
+	pid_robot_pos_setpoint	 	= 0;
+	pid_robot_slowing_setpoint	= 0;
+	pid_balance_setpoint  	 	= 0;
+	pid_speed_m1_setpoint    	= 0;
+	pid_speed_m2_setpoint    	= 0;
 
 	printf("pid_robot_speed setpoint: %d\n", pid_robot_pos_setpoint);
 	printf("pid_balance     setpoint: %d\n", pid_balance_setpoint);
@@ -485,40 +494,42 @@ void system_controller_state_init_remaining_hardware(void)
 
 	printf("will change uart speed to 250k...\n");
 	while(uart_tx_buffer_size() > 0) {
-		//wait, til tx buffer is empty
+		//wait, until tx buffer is empty
 	}
-	uart_init(UART_BAUDRATE_250k);
+	uart_init(UART_BAUDRATE_230k);
 
 	/* *** EXIT **** */
 	next_state = STATE_RUN_CONTROLLER;
 }
 
-#define ROBOT_POS_MAX 0x7ff00000L
-#define ROBOT_POS_MIN (-0x7ff00000L - 1L)
-
 #define COMMAND_BUFFER_MAX	20
 #define COMMAND_TIMEOUT		5000
 
+#define PID_ROBOT_POS_OUTPUT_MAX 12
+#define PID_ROBOT_POS_OUTPUT_MIN -PID_ROBOT_POS_OUTPUT_MAX
 
 static bool system_controller_exec_control;
-static motor_contol_speed_t speed_remote_control;
+static motor_control_speed_t speed_remote_control;
 static int16_t robot_speed;
-
+static int32_t robot_pos;
+static int32_t robot_real_pos;
 
 static char command_buffer[COMMAND_BUFFER_MAX];
 static int8_t leds = 0;
-static command_pid_balance_setpoint;
-
+static int16_t command_pid_balance_setpoint;
 
 void system_controller_state_run_controller(void)
 {
 	/* *** ENTRY *** */
 	printf("run controller...\n");
-	PORT_LEDS = 0x00;
+	leds_set(0);
+	leds_color(LEDS_COLOR_BLACK);
 
-	int32_t robot_pos = 0; //temporary integrator
+
 	system_controller_exec_control = true;
 	print_data_enabled = false;
+	robot_pos = 0;
+	robot_real_pos = 0;
 
 	/* **** DO ***** */
 
@@ -534,46 +545,70 @@ void system_controller_state_run_controller(void)
 			//read angle
 			current_angle = (motionsensor_angle_t)motionsensor_get_angle_y();
 
-			//TODO: motor_control move to
-			//read encoder speed
-			current_speed.motor_1 = -encoder_read_delta(ENCODER_M1); //invert encoder signal, because m2 turns invers to m1
-			current_speed.motor_2 =  encoder_read_delta(ENCODER_M2);
+			//read speed and position
+			robot_pos = motor_control_get_robot_position();
+			robot_speed = motor_control_get_robot_speed();
+			robot_real_pos = motor_control_get_real_robot_position();
 
-			//integrate to position
-			//TODO: Check sign
-			robot_speed = (current_speed.motor_1 + current_speed.motor_2) / 2;
-			//robot_speed = -robot_speed;
 
-			if(robot_pos > ROBOT_POS_MIN && robot_pos < ROBOT_POS_MAX) {
-				robot_pos += robot_speed;
+			//calculate PID robot pos if not in halt zone
+			if(robot_pos != 0) {
+				leds_color(LEDS_COLOR_YELLOW);
+				pid_robot_pos_output = pid_Controller(pid_robot_pos_setpoint,
+													  robot_pos,
+													  &pid_robot_pos_data);
+
+				//limit pid output
+				if(pid_robot_pos_output > PID_ROBOT_POS_OUTPUT_MAX) {
+					pid_robot_pos_output = PID_ROBOT_POS_OUTPUT_MAX;
+				}
+
+				if(pid_robot_pos_output < PID_ROBOT_POS_OUTPUT_MIN) {
+					pid_robot_pos_output = PID_ROBOT_POS_OUTPUT_MIN;
+				}
+
+				pid_robot_slowing_output = 0;
+
+			} else {
+				//if in halt zone slow down robot
+				pid_robot_slowing_output = pid_Controller(pid_robot_slowing_setpoint,
+														  robot_speed,
+														  &pid_robot_slowing_data);
+
+				pid_robot_slowing_output = -(robot_speed);
+				leds_color(LEDS_COLOR_GREEN);
+
+				//limit pid output
+				if(pid_robot_slowing_output > 16) {
+					pid_robot_slowing_output = 16;
+				}
+
+				if(pid_robot_slowing_output < -16) {
+					pid_robot_slowing_output = -16;
+				}
 			}
-
-			//calculate PID robot pos
-			pid_robot_pos_output = pid_Controller(pid_robot_pos_setpoint,
-											      robot_pos,
-												  &pid_robot_pos_data);
 
 			//test if robot is remote controlled
 			if(timer_command_timeout == 0) {
 				//if timeouted, use pid_robot_pos_output as setpnt
-				pid_balance_setpoint = pid_robot_pos_output;
+				pid_balance_setpoint = pid_robot_pos_output + pid_robot_slowing_output;
 			} else {
 				//remote controlled; use command_pid_balance_setpoint and reset robot_pos integral
 				pid_balance_setpoint = command_pid_balance_setpoint;
-				robot_pos = 0;
+				leds_color(LEDS_COLOR_BLUE);
 			}
 
 			//calculate PID balance
-			//pid_balance_setpoint = pid_robot_pos_output;
-			pid_balance_output   = pid_Controller(pid_balance_setpoint,
-												  current_angle,
-												  &pid_balance_data);
+			pid_balance_output = pid_Controller(pid_balance_setpoint,
+												current_angle,
+												&pid_balance_data);
+			pid_balance_output = -pid_balance_output;
+
+			pid_speed_m1_setpoint = pid_balance_output;
+			pid_speed_m2_setpoint = pid_balance_output;
 
 
 			//calculate PID motor speed
-			pid_speed_m1_setpoint = -pid_balance_output;
-			pid_speed_m2_setpoint = -pid_balance_output;
-
 			pid_speed_m1_output = pid_Controller(pid_speed_m1_setpoint,
 												 current_speed.motor_1,
 												 &pid_speed_m1_data);
@@ -585,23 +620,14 @@ void system_controller_state_run_controller(void)
 			//prepare new motor speed
 			new_motor_speed.motor_1 = pid_speed_m1_output;
 			new_motor_speed.motor_2 = pid_speed_m2_output;
-			//new_motor_speed.motor_1 = 0;
-			//new_motor_speed.motor_2 = 0;
-
-			//disable speed pids
-			//new_motor_speed.motor_1 = -pid_balance_output;
-			//new_motor_speed.motor_2 = -pid_balance_output;
 
 			//remote control
 			new_motor_speed.motor_1 += speed_remote_control.motor_1;
 			new_motor_speed.motor_2 += speed_remote_control.motor_2;
 
 
-
 			motor_control_prepare_new_speed(&new_motor_speed);
 
-			//disable uart receive and transmit, until new motor speed is set to driver board
-			//uart_enable_rxtx(false);
 		} //end TIMER_MAJORSLOT_0
 
 		/*
@@ -612,10 +638,7 @@ void system_controller_state_run_controller(void)
 		if(timer_current_majorslot == TIMER_MAJORSLOT_1) {
 			timer_current_majorslot = TIMER_MAJORSLOT_NONE;
 
-			//motor_control_set_new_speed();
-
-			//reenable uart receive and transmit
-			//uart_enable_rxtx(true);
+			motor_control_set_new_speed();
 
 			//print pid and angle
 			if(print_data_enabled && print_data_fptr != NULL) {
@@ -625,8 +648,13 @@ void system_controller_state_run_controller(void)
 			system_controller_parse_command();
 
 			//display speed on leds
+			//leds_set((uint8_t)abs(pid_balance_setpoint));
 			//PORT_LEDS = (uint8_t)(abs(pid_balance_output));
 			//PORT_LEDS = (uint8_t)(abs(pid_robot_pos_output));
+
+			if(motor_control_motors_runaway()) {
+				system_controller_exec_control = false;
+			}
 
 		} // end TIMER_MAJORSLOT_1
 
@@ -636,12 +664,40 @@ void system_controller_state_run_controller(void)
 	/* *** EXIT **** */
 
 	//stop motors
-	new_motor_speed.motor_1 = 0;
-	new_motor_speed.motor_2 = 0;
-	motor_control_prepare_new_speed(&new_motor_speed);
-	motor_control_set_new_speed();
+	leds_color(LEDS_COLOR_RED);
 
-	next_state = STATE_WAITING_FOR_USER_INTERRUPT;
+	system_controller_halt_motors();
+
+	leds_color(LEDS_COLOR_BLACK);
+	next_state = STATE_LOAD_CONFIGURATON;
+}
+
+void system_controller_halt_motors(void)
+{
+	motor_control_speed_t speed;
+	motor_control_get_new_speed(&speed);
+
+	while(speed.motor_1 != 0 && speed.motor_2 != 0) {
+		if(speed.motor_1 < 0) {
+			speed.motor_1++;
+		}
+
+		if(speed.motor_1 > 0) {
+			speed.motor_1--;
+		}
+
+		if(speed.motor_2 < 0) {
+			speed.motor_2++;
+		}
+
+		if(speed.motor_2 > 0) {
+			speed.motor_2--;
+		}
+
+		motor_control_prepare_new_speed(&speed);
+		motor_control_set_new_speed();
+		_delay_ms(2);
+	}
 }
 
 void system_controller_print_ticker(void)
@@ -665,12 +721,12 @@ void system_controller_parse_command(void)
 			switch (command_buffer[1]) {
 				case 'F':
 					leds++;
-					command_pid_balance_setpoint += 1;
+					command_pid_balance_setpoint += 2;
 
 					break;
 				case 'B':
 					leds--;
-					command_pid_balance_setpoint -= 1;
+					command_pid_balance_setpoint -= 2;
 
 					break;
 				case 'H':
@@ -681,13 +737,13 @@ void system_controller_parse_command(void)
 					break;
 				case 'R':
 					leds = 0xF0;
-					speed_remote_control.motor_1+=5;
-					speed_remote_control.motor_2-=5;
+					speed_remote_control.motor_1+=10;
+					speed_remote_control.motor_2-=10;
 					break;
 				case 'L':
 					leds = 0x0F;
-					speed_remote_control.motor_1-=5;
-					speed_remote_control.motor_2+=5;
+					speed_remote_control.motor_1-=10;
+					speed_remote_control.motor_2+=10;
 					break;
 				default:
 					break;
@@ -717,7 +773,7 @@ void system_controller_parse_command(void)
 		command_pid_balance_setpoint = 0;
 	}
 
-	PORT_LEDS = leds;
+	//leds_set(leds);
 }
 
 void system_controller_print_data_anglepid(void)
@@ -797,7 +853,24 @@ static void system_controller_print_data_really_all_filtered(void)
 	//header: type: A
 	//header: size payload: 13
 	//payload [accel.x H,accel.x L,accel.z H,accel.z L,angular.y H,angular.y L,magnitude,angle_accel H, angle_accel L, angle H,angle L,pid H,pid L]
-	print_data_buffer[buf_idx++] = 'A';
+	print_data_buffer[buf_idx++] = 'B';
+	print_data_buffer[buf_idx++] = 13;
+	print_data_buffer[buf_idx++] = (uint8_t)(robot_speed >> 8);
+	print_data_buffer[buf_idx++] = (uint8_t)(robot_speed & 0x00FF);
+	print_data_buffer[buf_idx++] = (uint8_t)(robot_pos >> 8);
+	print_data_buffer[buf_idx++] = (uint8_t)(robot_pos & 0x00FF);
+	print_data_buffer[buf_idx++] = (uint8_t)(pid_robot_pos_output >> 8);
+	print_data_buffer[buf_idx++] = (uint8_t)(pid_robot_pos_output & 0x00FF);
+	print_data_buffer[buf_idx++] = (uint8_t)(magnitude);
+	print_data_buffer[buf_idx++] = (uint8_t)(angle_accel >> 8);
+	print_data_buffer[buf_idx++] = (uint8_t)(angle_accel & 0x00FF);
+	print_data_buffer[buf_idx++] = (uint8_t)(current_angle >> 8);
+	print_data_buffer[buf_idx++] = (uint8_t)(current_angle & 0x00FF);
+	print_data_buffer[buf_idx++] = (uint8_t)(pid_robot_slowing_output >> 8);
+	print_data_buffer[buf_idx++] = (uint8_t)(pid_robot_slowing_output & 0x00FF);
+
+/*
+ * 	print_data_buffer[buf_idx++] = 'A';
 	print_data_buffer[buf_idx++] = 13;
 	print_data_buffer[buf_idx++] = (uint8_t)(motiondata.acceleration.x >> 8);
 	print_data_buffer[buf_idx++] = (uint8_t)(motiondata.acceleration.x & 0x00FF);
@@ -812,7 +885,8 @@ static void system_controller_print_data_really_all_filtered(void)
 	print_data_buffer[buf_idx++] = (uint8_t)(current_angle & 0x00FF);
 	print_data_buffer[buf_idx++] = (uint8_t)(pid_balance_output >> 8);
 	print_data_buffer[buf_idx++] = (uint8_t)(pid_balance_output & 0x00FF);
-
+ *
+ */
 	//marshall packet with base64
 	base64_encode(print_data_buffer, buf_idx);
 

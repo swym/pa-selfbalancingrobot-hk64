@@ -15,6 +15,7 @@
 /* * local headers               * */
 #include "l6205.h"
 #include "encoder.h"
+#include "motor_control.h"
 
 
 /* *** DEFINES ************************************************************** */
@@ -28,9 +29,9 @@
 
 /* * local used ext. module objs * */
 volatile timer_slot_t timer_current_majorslot;
-volatile timer_slot_t timer_current_minorslot;
 
 volatile uint16_t timer_command_timeout;
+volatile uint8_t  timer_20ms_ticker;
 
 
 /* * local objects               * */
@@ -45,9 +46,9 @@ void timer_init_pwm(void);
 void timer_init_systemtick(void)
 {
 	timer_current_majorslot = TIMER_MAJORSLOT_NONE;
-	timer_current_minorslot = TIMER_MINORSLOT_NONE;
 
 	timer_systemticks = 0;
+	timer_20ms_ticker = 0;
 
 
 	// IRQ Timer with Timer0 as "system ticker" (Generate interrupt every 1 ms)
@@ -104,6 +105,14 @@ ISR(TIMER0_COMP_vect)
 	}
 
 	//update external handlers
-	l6205_update_pwm();
+	l6205_handler();
 	encoder_handler();
+
+	//update only every 20 ms
+	timer_20ms_ticker++;
+	if(timer_20ms_ticker >= 20) {
+		timer_20ms_ticker = 0;
+		motor_control_handler();
+
+	}
 }
