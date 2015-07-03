@@ -32,7 +32,8 @@
 #include "timer.h"
 #include "base64.h"
 #include "leds.h"
-#include "encoder.h"
+
+#include "filter.h"
 
 
 /* *** DECLARATIONS ********************************************************** */
@@ -50,6 +51,16 @@ volatile uint16_t timer_command_timeout;
 #define STATE_WAITING_FOR_USER_INTERRUPT_PARTS   	4
 
 #define PRINT_DATA_BUFFER_SIZE 	20
+
+#define COMMAND_BUFFER_MAX	20
+#define COMMAND_TIMEOUT		5000
+
+#define PID_ROBOT_POS_OUTPUT_MAX 16
+#define PID_ROBOT_POS_OUTPUT_MIN (-PID_ROBOT_POS_OUTPUT_MAX)
+
+#define PID_ROBOT_SLOWING_OUTPUT_MAX 24
+#define PID_ROBOT_SLOWING_OUTPUT_MIN (-PID_ROBOT_SLOWING_OUTPUT_MAX)
+
 
 typedef enum {
 	STATE_INIT_BASIC_HARDWARE,
@@ -233,6 +244,7 @@ void system_controller_state_waiting_for_user_interrupt(void)
 
 	/* *** ENTRY *** */
 	bool user_irq_received = false;
+	char user_input_char;
 
 	uint8_t waiting_time = STATE_WAITING_FOR_USER_INTERRUPT_TIMEOUT;
 	double delay = 1000.0/(STATE_WAITING_FOR_USER_INTERRUPT_PARTS + 1);
@@ -246,11 +258,15 @@ void system_controller_state_waiting_for_user_interrupt(void)
 	uart_flush();
 	while(waiting_time > 0 && !user_irq_received) {
 
-		//if user send any byte over usart then show configuration main menu
-		if(uart_available()) {
-			user_irq_received = true;
-			uart_flush();
-			break;
+		//if user sends a space over usart then show configuration main menu
+		while(uart_available()) {
+			user_input_char = uart_getc();
+			if(user_input_char == ' ') {
+				user_irq_received = true;
+				uart_flush();
+				user_input_char = 0;
+				break;
+			}
 		}
 
 		//Display Counter and decreae timeout
@@ -486,9 +502,6 @@ void system_controller_state_init_remaining_hardware(void)
 	printf("motor acceleration: %d\n", motor_acceleration);
 	motor_control_init(motor_acceleration);
 
-	printf("init motor encoders...\n");
-	encoder_init();
-
 	printf("init timers...\n");
 	timer_init();							/* Init Timer */
 
@@ -496,23 +509,19 @@ void system_controller_state_init_remaining_hardware(void)
 	while(uart_tx_buffer_size() > 0) {
 		//wait, until tx buffer is empty
 	}
-	uart_init(UART_BAUDRATE_230k);
+	uart_init(UART_BAUDRATE_250k);
 
 	/* *** EXIT **** */
 	next_state = STATE_RUN_CONTROLLER;
 }
-
-#define COMMAND_BUFFER_MAX	20
-#define COMMAND_TIMEOUT		5000
-
-#define PID_ROBOT_POS_OUTPUT_MAX 12
-#define PID_ROBOT_POS_OUTPUT_MIN -PID_ROBOT_POS_OUTPUT_MAX
 
 static bool system_controller_exec_control;
 static motor_control_speed_t speed_remote_control;
 static int16_t robot_speed;
 static int32_t robot_pos;
 static int32_t robot_real_pos;
+
+static filter_moving_average_t robot_speed_avg;
 
 static char command_buffer[COMMAND_BUFFER_MAX];
 static int8_t leds = 0;
@@ -530,6 +539,7 @@ void system_controller_state_run_controller(void)
 	print_data_enabled = false;
 	robot_pos = 0;
 	robot_real_pos = 0;
+	filter_moving_average_init(&robot_speed_avg, 0);
 
 	/* **** DO ***** */
 
@@ -550,6 +560,8 @@ void system_controller_state_run_controller(void)
 			robot_speed = motor_control_get_robot_speed();
 			robot_real_pos = motor_control_get_real_robot_position();
 
+			filter_moving_average_put_element(&robot_speed_avg, robot_speed);
+
 
 			//calculate PID robot pos if not in halt zone
 			if(robot_pos != 0) {
@@ -567,34 +579,31 @@ void system_controller_state_run_controller(void)
 					pid_robot_pos_output = PID_ROBOT_POS_OUTPUT_MIN;
 				}
 
-				pid_robot_slowing_output = 0;
+				pid_balance_setpoint = pid_robot_pos_output;
 
 			} else {
 				//if in halt zone slow down robot
-				pid_robot_slowing_output = pid_Controller(pid_robot_slowing_setpoint,
-														  robot_speed,
-														  &pid_robot_slowing_data);
+				pid_robot_slowing_output = -(4 * robot_speed_avg.avg);
 
-				pid_robot_slowing_output = -(robot_speed);
 				leds_color(LEDS_COLOR_GREEN);
 
 				//limit pid output
-				if(pid_robot_slowing_output > 16) {
-					pid_robot_slowing_output = 16;
+				if(pid_robot_slowing_output > PID_ROBOT_SLOWING_OUTPUT_MAX) {
+					pid_robot_slowing_output = PID_ROBOT_SLOWING_OUTPUT_MAX;
 				}
 
-				if(pid_robot_slowing_output < -16) {
-					pid_robot_slowing_output = -16;
+				if(pid_robot_slowing_output < PID_ROBOT_SLOWING_OUTPUT_MIN) {
+					pid_robot_slowing_output = PID_ROBOT_SLOWING_OUTPUT_MIN;
 				}
+
+				pid_balance_setpoint = pid_robot_slowing_output;
 			}
 
 			//test if robot is remote controlled
-			if(timer_command_timeout == 0) {
-				//if timeouted, use pid_robot_pos_output as setpnt
-				pid_balance_setpoint = pid_robot_pos_output + pid_robot_slowing_output;
-			} else {
+			if(timer_command_timeout != 0) {
 				//remote controlled; use command_pid_balance_setpoint and reset robot_pos integral
 				pid_balance_setpoint = command_pid_balance_setpoint;
+				motor_control_reset_position();
 				leds_color(LEDS_COLOR_BLUE);
 			}
 
@@ -648,7 +657,7 @@ void system_controller_state_run_controller(void)
 			system_controller_parse_command();
 
 			//display speed on leds
-			//leds_set((uint8_t)abs(pid_balance_setpoint));
+			leds_set((uint8_t)abs(pid_balance_setpoint));
 			//PORT_LEDS = (uint8_t)(abs(pid_balance_output));
 			//PORT_LEDS = (uint8_t)(abs(pid_robot_pos_output));
 
@@ -665,10 +674,9 @@ void system_controller_state_run_controller(void)
 
 	//stop motors
 	leds_color(LEDS_COLOR_RED);
-
 	system_controller_halt_motors();
-
 	leds_color(LEDS_COLOR_BLACK);
+
 	next_state = STATE_LOAD_CONFIGURATON;
 }
 
@@ -737,13 +745,13 @@ void system_controller_parse_command(void)
 					break;
 				case 'R':
 					leds = 0xF0;
-					speed_remote_control.motor_1+=10;
-					speed_remote_control.motor_2-=10;
+					speed_remote_control.motor_1+=5;
+					speed_remote_control.motor_2-=5;
 					break;
 				case 'L':
 					leds = 0x0F;
-					speed_remote_control.motor_1-=10;
-					speed_remote_control.motor_2+=10;
+					speed_remote_control.motor_1-=5;
+					speed_remote_control.motor_2+=5;
 					break;
 				default:
 					break;

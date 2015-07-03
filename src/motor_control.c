@@ -56,6 +56,7 @@ void motor_control_init(uint8_t motor_acceleration)
 
 	motor_control_reset_position();
 
+	encoder_init();
 	l6205_init(motor_acceleration);
 }
 

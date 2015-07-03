@@ -114,7 +114,7 @@ Date        Description
  * precalculated UBBR Values
  * @param baudrate
  */
-#define UART_USE2X 1
+#define UART_USE2X 0
 
 #if (UART_USE2X == 1)
 
