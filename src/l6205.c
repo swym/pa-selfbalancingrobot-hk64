@@ -39,6 +39,8 @@
 #define PWM4			PB7
 
 
+
+
 /* * local objects               * */
 static motor_t motor_1;
 static motor_t motor_2;
@@ -97,11 +99,17 @@ void l6205_set_speed(motor_id_t motor, int16_t new_speed)
 
 	if(m != NULL) {
 
-		if( new_speed > MOTOR_SPEED_MAX) {
-			new_speed = MOTOR_SPEED_MAX;
+		if(new_speed > 0) {
+			new_speed += L6205_DEADZONE_OFFSET;
+		} else if(new_speed < 0) {
+			new_speed -= L6205_DEADZONE_OFFSET;
 		}
-		if( new_speed < MOTOR_SPEED_MIN) {
-			new_speed = MOTOR_SPEED_MIN;
+
+		if( new_speed > L6205_MOTOR_SPEED_MAX) {
+			new_speed = L6205_MOTOR_SPEED_MAX;
+		}
+		if( new_speed < L6205_MOTOR_SPEED_MIN) {
+			new_speed = L6205_MOTOR_SPEED_MIN;
 		}
 
 		m->speed_setpoint = new_speed;
