@@ -121,6 +121,7 @@ Date        Description
 typedef enum {
 	UART_BAUDRATE_9600 = 207,
 	UART_BAUDRATE_115k = 16,
+	UART_BAUDRATE_230k = 8,
 	UART_BAUDRATE_250k = 7
 } uart_baudrate_t;
 #else

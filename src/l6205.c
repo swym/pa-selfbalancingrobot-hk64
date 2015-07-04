@@ -39,10 +39,6 @@
 #define PWM4			PB7
 
 
-
-#define MOTOR_SPEED_MIN				(-255)
-#define MOTOR_SPEED_MAX				  255
-
 /* * local objects               * */
 static motor_t motor_1;
 static motor_t motor_2;
@@ -112,7 +108,7 @@ void l6205_set_speed(motor_id_t motor, int16_t new_speed)
 	}
 }
 
-void l6205_update_pwm(void)
+void l6205_handler(void)
 {
 	l6205_update_pwm_of_motor(&motor_1);
 	l6205_update_pwm_of_motor(&motor_2);
