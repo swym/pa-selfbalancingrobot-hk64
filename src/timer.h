@@ -26,8 +26,6 @@
 #define TIMER_MAJORSLOT_0			1
 #define TIMER_MAJORSLOT_1			2
 
-#define TIMER_MINORSLOT_NONE		0
-#define TIMER_MINORSLOT_0			1
 
 typedef uint8_t timer_slot_t;
 

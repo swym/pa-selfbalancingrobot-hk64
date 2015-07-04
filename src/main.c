@@ -10,8 +10,6 @@
 #include "main.h"
 
 /* system headers              */
-#include <avr/io.h>
-
 #include <stdio.h>
 #include <stdbool.h>
 
@@ -28,12 +26,9 @@
 
 /* *** FUNCTION DEFINITIONS ************************************************** */
 
-/**
- * @details Does something important
- * @return
- */
 int main(void)
 {
+
 	// main program
 	system_controller_state_machine();
 
