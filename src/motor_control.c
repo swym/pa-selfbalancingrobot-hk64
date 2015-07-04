@@ -24,9 +24,8 @@
 #define ROBOT_POS_HALTZONE	405
 
 #define MOTOR_RUNAWAY_MAX_COUNT 750
-#define MOTOR_RUNAWAY_MAX		(2 * MOTOR_SPEED_MAX)
-#define MOTOR_RUNAWAY_MIN		(2 * MOTOR_SPEED_MIN)
-
+#define MOTOR_RUNAWAY_MAX		(2 * L6205_MOTOR_SPEED_MAX)
+#define MOTOR_RUNAWAY_MIN		(2 * L6205_MOTOR_SPEED_MIN)
 
 static motor_control_speed_t current_speed;
 static motor_control_speed_t new_speed;
@@ -70,22 +69,6 @@ void motor_control_prepare_new_speed(motor_control_speed_t *s)
 {
 	new_speed.motor_1 = s->motor_1;
 	new_speed.motor_2 = s->motor_2;
-
-	if(new_speed.motor_1 > MOTOR_SPEED_MAX) {
-		new_speed.motor_1 = MOTOR_SPEED_MAX;
-	}
-
-	if(new_speed.motor_2 > MOTOR_SPEED_MAX) {
-		new_speed.motor_2 = MOTOR_SPEED_MAX;
-	}
-
-	if(new_speed.motor_1 < MOTOR_SPEED_MIN) {
-		new_speed.motor_1 = MOTOR_SPEED_MIN;
-	}
-
-	if(new_speed.motor_2 < MOTOR_SPEED_MIN) {
-		new_speed.motor_2 = MOTOR_SPEED_MIN;
-	}
 }
 
 /**
