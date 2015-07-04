@@ -80,12 +80,6 @@ static system_controller_state_t next_state;
 
 static motionsensor_angle_t current_angle;
 
-static int16_t pid_robot_pos_output;	//angle setpoint
-static int16_t pid_robot_slowing_output;
-static int16_t pid_balance_output;		//speed for motors
-static int16_t pid_speed_m1_output;		//pwm for drivers
-static int16_t pid_speed_m2_output;		//pwm for drivers
-
 static motor_control_speed_t current_speed;
 static motor_control_speed_t new_motor_speed;
 
@@ -96,16 +90,25 @@ static pid_config_t				pid_speed_motor_config;
 static motionsensor_angle_t		angle_stable;
 
 static pidData_t pid_robot_pos_data;
-static pidData_t pid_robot_slowing_data;
+static pidData_t pid_robot_speed_data;
 static pidData_t pid_balance_data;
 static pidData_t pid_speed_m1_data;
 static pidData_t pid_speed_m2_data;
+static pidData_t pid_steering_data;
 
 static int16_t	 pid_robot_pos_setpoint;
-static int16_t	 pid_robot_slowing_setpoint;
+static int16_t	 pid_robot_speed_setpoint;
 static int16_t   pid_balance_setpoint;
 static int16_t	 pid_speed_m1_setpoint;
 static int16_t	 pid_speed_m2_setpoint;
+
+static int16_t	pid_robot_pos_output;		//angle setpoint
+static int16_t	pid_robot_speed_output;
+static int16_t	pid_balance_output;			//speed for motors
+static int16_t	pid_speed_m1_output;		//pwm for drivers
+static int16_t	pid_speed_m2_output;		//pwm for drivers
+
+static int16_t	turning_offset;
 
 static print_data_enum_t print_mode;
 static bool print_data_enabled;
@@ -247,11 +250,11 @@ void system_controller_state_waiting_for_user_interrupt(void)
 	char user_input_char;
 
 	uint8_t waiting_time = STATE_WAITING_FOR_USER_INTERRUPT_TIMEOUT;
-	double delay = 1000.0/(STATE_WAITING_FOR_USER_INTERRUPT_PARTS + 1);
+	float delay = 1000.0/(STATE_WAITING_FOR_USER_INTERRUPT_PARTS + 1);
 
 	uint8_t parts_of_seconds_counter = 0;
 
-	printf("press any key for entering configuration menu...\n");
+	printf("press space for entering configuration menu...\n");
 
 	/* **** DO ***** */
 
@@ -263,9 +266,9 @@ void system_controller_state_waiting_for_user_interrupt(void)
 			user_input_char = uart_getc();
 			if(user_input_char == ' ') {
 				user_irq_received = true;
-				uart_flush();
+
 				user_input_char = 0;
-				break;
+				uart_flush();
 			}
 		}
 
@@ -381,7 +384,7 @@ void system_controller_state_init_controller_environment(void)
 			  pid_robot_pos_config.i_factor,
 			  pid_robot_pos_config.d_factor,
 			  pid_robot_pos_config.pid_scalingfactor,
-			 &pid_robot_slowing_data);
+			 &pid_robot_speed_data);
 
 	//init balance pid
 	pid_Init( pid_balance_config.p_factor,
@@ -403,10 +406,13 @@ void system_controller_state_init_controller_environment(void)
 			  pid_speed_motor_config.pid_scalingfactor,
 			 &pid_speed_m2_data);
 
+	//init steering
+	pid_Init(40, 0, 5, 10, &pid_steering_data);
+
 
 	//set setpoint
 	pid_robot_pos_setpoint	 	= 0;
-	pid_robot_slowing_setpoint	= 0;
+	pid_robot_speed_setpoint	= 0;
 	pid_balance_setpoint  	 	= 0;
 	pid_speed_m1_setpoint    	= 0;
 	pid_speed_m2_setpoint    	= 0;
@@ -516,7 +522,7 @@ void system_controller_state_init_remaining_hardware(void)
 }
 
 static bool system_controller_exec_control;
-static motor_control_speed_t speed_remote_control;
+//static motor_control_speed_t speed_remote_control;
 static int16_t robot_speed;
 static int32_t robot_pos;
 static int32_t robot_real_pos;
@@ -524,8 +530,9 @@ static int32_t robot_real_pos;
 static filter_moving_average_t robot_speed_avg;
 
 static char command_buffer[COMMAND_BUFFER_MAX];
-static int8_t leds = 0;
-static int16_t command_pid_balance_setpoint;
+static int16_t command_speed;
+static int16_t command_turn;
+//static int16_t command_pid_balance_setpoint;
 
 void system_controller_state_run_controller(void)
 {
@@ -539,6 +546,7 @@ void system_controller_state_run_controller(void)
 	print_data_enabled = false;
 	robot_pos = 0;
 	robot_real_pos = 0;
+	turning_offset = 0;
 	filter_moving_average_init(&robot_speed_avg, 0);
 
 	/* **** DO ***** */
@@ -562,7 +570,24 @@ void system_controller_state_run_controller(void)
 
 			filter_moving_average_put_element(&robot_speed_avg, robot_speed);
 
+#if 1
+			pid_robot_speed_output = pid_Controller(pid_robot_speed_setpoint,
+													robot_speed_avg.avg,
+													&pid_robot_speed_data);
 
+			if(pid_robot_speed_output > 24) {
+				pid_robot_speed_output = 24;
+			}
+
+			if(pid_robot_speed_output < -24) {
+				pid_robot_speed_output = -24;
+			}
+
+			pid_balance_setpoint = pid_robot_speed_output;
+
+
+
+#else
 			//calculate PID robot pos if not in halt zone
 			if(robot_pos != 0) {
 				leds_color(LEDS_COLOR_YELLOW);
@@ -583,21 +608,22 @@ void system_controller_state_run_controller(void)
 
 			} else {
 				//if in halt zone slow down robot
-				pid_robot_slowing_output = -(4 * robot_speed_avg.avg);
+				pid_robot_speed_output = -(4 * robot_speed_avg.avg);
 
 				leds_color(LEDS_COLOR_GREEN);
 
 				//limit pid output
-				if(pid_robot_slowing_output > PID_ROBOT_SLOWING_OUTPUT_MAX) {
-					pid_robot_slowing_output = PID_ROBOT_SLOWING_OUTPUT_MAX;
+				if(pid_robot_speed_output > PID_ROBOT_SLOWING_OUTPUT_MAX) {
+					pid_robot_speed_output = PID_ROBOT_SLOWING_OUTPUT_MAX;
 				}
 
-				if(pid_robot_slowing_output < PID_ROBOT_SLOWING_OUTPUT_MIN) {
-					pid_robot_slowing_output = PID_ROBOT_SLOWING_OUTPUT_MIN;
+				if(pid_robot_speed_output < PID_ROBOT_SLOWING_OUTPUT_MIN) {
+					pid_robot_speed_output = PID_ROBOT_SLOWING_OUTPUT_MIN;
 				}
 
-				pid_balance_setpoint = pid_robot_slowing_output;
+				pid_balance_setpoint = pid_robot_speed_output;
 			}
+
 
 			//test if robot is remote controlled
 			if(timer_command_timeout != 0) {
@@ -605,6 +631,20 @@ void system_controller_state_run_controller(void)
 				pid_balance_setpoint = command_pid_balance_setpoint;
 				motor_control_reset_position();
 				leds_color(LEDS_COLOR_BLUE);
+			}
+
+#endif
+
+			if(timer_command_timeout > 0) {
+				leds_color(LEDS_COLOR_BLUE);
+				//remote controlled; use command_pid_balance_setpoint and reset robot_pos integral
+				motor_control_reset_position();
+
+			} else {
+				leds_color(LEDS_COLOR_GREEN);
+
+				command_speed = 0;
+				command_turn = 0;
 			}
 
 			//calculate PID balance
@@ -631,8 +671,8 @@ void system_controller_state_run_controller(void)
 			new_motor_speed.motor_2 = pid_speed_m2_output;
 
 			//remote control
-			new_motor_speed.motor_1 += speed_remote_control.motor_1;
-			new_motor_speed.motor_2 += speed_remote_control.motor_2;
+			new_motor_speed.motor_1 += turning_offset;
+			new_motor_speed.motor_2 -= turning_offset;
 
 
 			motor_control_prepare_new_speed(&new_motor_speed);
@@ -708,61 +748,65 @@ void system_controller_halt_motors(void)
 	}
 }
 
-void system_controller_print_ticker(void)
-{
-	if(print_ticker_cnt++ >= 250) {
-		print_ticker_cnt = 0;
-		printf(".\n");
-	}
-}
-
 
 void system_controller_parse_command(void)
 {
 	uint8_t cmd_len = uart_gets(command_buffer, COMMAND_BUFFER_MAX);
-	if(cmd_len) {
+	int16_t speed_diff;
 
+	if(cmd_len) {
 		if(command_buffer[0] == 'S') {
 			//reset timeout
 			timer_command_timeout = COMMAND_TIMEOUT;
 
 			switch (command_buffer[1]) {
 				case 'F':
-					leds++;
-					command_pid_balance_setpoint += 2;
 
+					if(command_speed < 16) {
+						command_speed += 2;
+					}
 					break;
+
 				case 'B':
-					leds--;
-					command_pid_balance_setpoint -= 2;
 
+					if(command_speed > -16) {
+						command_speed -= 2;
+					}
 					break;
+
 				case 'H':
-					leds = 0;
-					speed_remote_control.motor_1 = 0;
-					speed_remote_control.motor_2 = 0;
-					command_pid_balance_setpoint = 0;
+
+					command_speed = 0;
+					command_turn = 0;
 					break;
+
 				case 'R':
-					leds = 0xF0;
-					speed_remote_control.motor_1+=5;
-					speed_remote_control.motor_2-=5;
+
+					if(command_turn < 21) {
+						command_turn += 3;
+					}
 					break;
+
 				case 'L':
-					leds = 0x0F;
-					speed_remote_control.motor_1-=5;
-					speed_remote_control.motor_2+=5;
+
+					if(command_turn > -21) {
+						command_turn -= 3;
+					}
 					break;
+
 				default:
 					break;
 			}
-		} else if((command_buffer[0] == 'C') && (command_buffer[1] == 'T')) {
+		} else if((command_buffer[0] == 'K') && (command_buffer[1] == 'A')) {
+			timer_command_timeout = COMMAND_TIMEOUT;
+		} else if((command_buffer[0] == 'X') && (command_buffer[1] == '0')) {
 			system_controller_exec_control = false;
 		} else if((command_buffer[0] == 'D') && (command_buffer[1] == '1')) {
 			print_data_enabled = true;
 		} else if((command_buffer[0] == 'D') && (command_buffer[1] == '0')) {
 			print_data_enabled = false;
 		} else if((command_buffer[0] == 'R') && (command_buffer[1] == 'I')) {
+			//TODO:
 			pid_Reset_Integrator(&pid_robot_pos_data);
 			pid_Reset_Integrator(&pid_balance_data);
 			pid_Reset_Integrator(&pid_speed_m1_data);
@@ -773,15 +817,29 @@ void system_controller_parse_command(void)
 		uart_flush();
 	}
 
-	// if timeout reached; halt robot
-	if(timer_command_timeout == 0) {
-		leds = 0;
-		speed_remote_control.motor_1 = 0;
-		speed_remote_control.motor_2 = 0;
-		command_pid_balance_setpoint = 0;
+	//Update setpoints and speeds
+	speed_diff = command_speed - pid_robot_speed_setpoint;
+	if(speed_diff > 0) {
+		pid_robot_speed_setpoint++;
+	} else if(speed_diff < 0) {
+		pid_robot_speed_setpoint--;
 	}
 
-	//leds_set(leds);
+	speed_diff = command_turn - turning_offset;
+	if(speed_diff > 0) {
+		turning_offset++;
+	} else if(speed_diff < 0) {
+		turning_offset--;
+	}
+}
+
+
+void system_controller_print_ticker(void)
+{
+	if(print_ticker_cnt++ >= 250) {
+		print_ticker_cnt = 0;
+		printf(".\n");
+	}
 }
 
 void system_controller_print_data_anglepid(void)
@@ -863,8 +921,8 @@ static void system_controller_print_data_really_all_filtered(void)
 	//payload [accel.x H,accel.x L,accel.z H,accel.z L,angular.y H,angular.y L,magnitude,angle_accel H, angle_accel L, angle H,angle L,pid H,pid L]
 	print_data_buffer[buf_idx++] = 'B';
 	print_data_buffer[buf_idx++] = 13;
-	print_data_buffer[buf_idx++] = (uint8_t)(robot_speed >> 8);
-	print_data_buffer[buf_idx++] = (uint8_t)(robot_speed & 0x00FF);
+	print_data_buffer[buf_idx++] = (uint8_t)(turning_offset >> 8);
+	print_data_buffer[buf_idx++] = (uint8_t)(turning_offset & 0x00FF);
 	print_data_buffer[buf_idx++] = (uint8_t)(robot_pos >> 8);
 	print_data_buffer[buf_idx++] = (uint8_t)(robot_pos & 0x00FF);
 	print_data_buffer[buf_idx++] = (uint8_t)(pid_robot_pos_output >> 8);
@@ -874,8 +932,8 @@ static void system_controller_print_data_really_all_filtered(void)
 	print_data_buffer[buf_idx++] = (uint8_t)(angle_accel & 0x00FF);
 	print_data_buffer[buf_idx++] = (uint8_t)(current_angle >> 8);
 	print_data_buffer[buf_idx++] = (uint8_t)(current_angle & 0x00FF);
-	print_data_buffer[buf_idx++] = (uint8_t)(pid_robot_slowing_output >> 8);
-	print_data_buffer[buf_idx++] = (uint8_t)(pid_robot_slowing_output & 0x00FF);
+	print_data_buffer[buf_idx++] = (uint8_t)(pid_robot_speed_output >> 8);
+	print_data_buffer[buf_idx++] = (uint8_t)(pid_robot_speed_output & 0x00FF);
 
 /*
  * 	print_data_buffer[buf_idx++] = 'A';
