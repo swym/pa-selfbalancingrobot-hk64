@@ -49,12 +49,8 @@ typedef enum {
 	STATE_READ_INPUT,
 	STATE_PRINT_HELP,
 	STATE_PRINT_CONFIG,
-	STATE_SWITCH_PID,
+	STATE_READ_PID_SELECTION,
 	STATE_SET_PID,
-	STATE_SET_PID_ROBOT_POS_PARAMETER,
-	STATE_SET_PID_BALANCE_PARAMETER,
-	STATE_SET_PID_SPEED_MOTOR_PARAMETER,
-	STATE_SET_ANGLE_STABLE,
 	STATE_SET_FILTER_PARAMETER,
 	STATE_SET_MOTOR_PARAMETER,
 	STATE_SET_OFFSET,
@@ -72,23 +68,48 @@ static configuration_terminal_state_t next_state;
 
 static char input_buffer[INPUT_BUFFER_MAX];
 
+static const char string_terminal_name_pid_robot_position[] PROGMEM = "pid_robot_position";
+static const char string_terminal_name_pid_speed[] PROGMEM = "pid_robot_speed";
+static const char string_terminal_name_pid_balance[] PROGMEM = "pid_balance";
+static const char string_terminal_name_pid_motor_one[] PROGMEM = "pid_motor_1";
+static const char string_terminal_name_pid_motor_two[] PROGMEM = "pid_motor_2";
+
 //string const
-static const char string_terminal_pid_robot_pos_p[] PROGMEM = "pid_robot_pos.p: %i";
-static const char string_terminal_pid_robot_pos_i[] PROGMEM = "pid_robot_pos.i: %i";
-static const char string_terminal_pid_robot_pos_d[] PROGMEM = "pid_robot_pos.d: %i";
-static const char string_terminal_pid_robot_pos_s[] PROGMEM = "pid_robot_pos.scalingfactor: %u";
+static const char string_terminal_pid_p[] PROGMEM = "pid.p: %i";
+static const char string_terminal_pid_i[] PROGMEM = "pid.i: %i";
+static const char string_terminal_pid_d[] PROGMEM = "pid.d: %i";
+static const char string_terminal_pid_s[] PROGMEM = "pid.scalingfactor: %i";
+static const char string_terminal_pid_l[] PROGMEM = "pid.limit: %i";
 
-static const char string_terminal_pid_balance_p[] PROGMEM = "pid_balance.p: %i";
-static const char string_terminal_pid_balance_i[] PROGMEM = "pid_balance.i: %i";
-static const char string_terminal_pid_balance_d[] PROGMEM = "pid_balance.d: %i";
-static const char string_terminal_pid_balance_s[] PROGMEM = "pid_balance.scalingfactor: %u";
+//static const char string_terminal_pid_robot_position_p[] PROGMEM = "pid_robot_position.p: %i";
+//static const char string_terminal_pid_robot_position_i[] PROGMEM = "pid_robot_position.i: %i";
+//static const char string_terminal_pid_robot_position_d[] PROGMEM = "pid_robot_position.d: %i";
+//static const char string_terminal_pid_robot_position_s[] PROGMEM = "pid_robot_position.scalingfactor: %i";
+//static const char string_terminal_pid_robot_position_l[] PROGMEM = "pid_robot_position.limit: %i";
 
-static const char string_terminal_pid_speed_motor_p[] PROGMEM = "pid_speed_motor.p: %i";
-static const char string_terminal_pid_speed_motor_i[] PROGMEM = "pid_speed_motor.i: %i";
-static const char string_terminal_pid_speed_motor_d[] PROGMEM = "pid_speed_motor.d: %i";
-static const char string_terminal_pid_speed_motor_s[] PROGMEM = "pid_speed_motor.scalingfactor: %u";
-
-static const char string_terminal_angle_stable[] PROGMEM = "angle_stable: %u";
+//static const char string_terminal_pid_robot_speed_p[] PROGMEM = "pid_robot_speed.p: %i";
+//static const char string_terminal_pid_robot_speed_i[] PROGMEM = "pid_robot_speed.i: %i";
+//static const char string_terminal_pid_robot_speed_d[] PROGMEM = "pid_robot_speed.d: %i";
+//static const char string_terminal_pid_robot_speed_s[] PROGMEM = "pid_robot_speed.scalingfactor: %i";
+//static const char string_terminal_pid_robot_speed_l[] PROGMEM = "pid_robot_speed.limit: %i";
+//
+//static const char string_terminal_pid_balance_p[] PROGMEM = "pid_balance.p: %i";
+//static const char string_terminal_pid_balance_i[] PROGMEM = "pid_balance.i: %i";
+//static const char string_terminal_pid_balance_d[] PROGMEM = "pid_balance.d: %i";
+//static const char string_terminal_pid_balance_s[] PROGMEM = "pid_balance.scalingfactor: %i";
+//static const char string_terminal_pid_balance_l[] PROGMEM = "pid_robot_pos.limit: %i";
+//
+//static const char string_terminal_pid_speed_motor_one_p[] PROGMEM = "pid_speed_motor_1.p: %i";
+//static const char string_terminal_pid_speed_motor_one_i[] PROGMEM = "pid_speed_motor_1.i: %i";
+//static const char string_terminal_pid_speed_motor_one_d[] PROGMEM = "pid_speed_motor_1.d: %i";
+//static const char string_terminal_pid_speed_motor_one_s[] PROGMEM = "pid_speed_motor_1.scalingfactor: %i";
+//static const char string_terminal_pid_speed_motor_one_l[] PROGMEM = "pid_speed_motor_1.limit: %i";
+//
+//static const char string_terminal_pid_speed_motor_two_p[] PROGMEM = "pid_speed_motor_2.p: %i";
+//static const char string_terminal_pid_speed_motor_two_i[] PROGMEM = "pid_speed_motor_2.i: %i";
+//static const char string_terminal_pid_speed_motor_two_d[] PROGMEM = "pid_speed_motor_2.d: %i";
+//static const char string_terminal_pid_speed_motor_two_s[] PROGMEM = "pid_speed_motor_2.scalingfactor: %i";
+//static const char string_terminal_pid_speed_motor_two_l[] PROGMEM = "pid_speed_motor_2.limit: %i";
 
 static const char string_terminal_complementary_filter_ratio[] PROGMEM = "complementary_filter.ratio: %f";
 static const char string_terminal_valid_acceleration_magnitude[] PROGMEM = "valid_acceleration_magnitude: %f";
@@ -107,20 +128,20 @@ static const char string_terminal_help[] PROGMEM = "enter '?' for help";
 
 // ---
 
-static const char string_print_help_pid_robot_pos_p[] PROGMEM = "rp,<0..%d> - set P factor of robot position PID controller";
-static const char string_print_help_pid_robot_pos_i[] PROGMEM = "ri,<0..%d> - set I factor of robot position PID controller";
-static const char string_print_help_pid_robot_pos_d[] PROGMEM = "rd,<0..%d> - set D factor of robot position PID controller";
-static const char string_print_help_pid_robot_pos_s[] PROGMEM = "rs,<0..%d> - set the result divider of the robot position PID controller";
-
-static const char string_print_help_pid_balance_p[] PROGMEM = "bp,<0..%d> - set P factor of balance PID controller";
-static const char string_print_help_pid_balance_i[] PROGMEM = "bi,<0..%d> - set I factor of balance PID controller";
-static const char string_print_help_pid_balance_d[] PROGMEM = "bd,<0..%d> - set D factor of balance PID controller";
-static const char string_print_help_pid_balance_s[] PROGMEM = "bs,<0..%d> - set the result divider of the balance PID controller";
-
-static const char string_print_help_pid_speed_motor_p[] PROGMEM = "sp,<0..%d> - set P factor of speed_motor PID controller";
-static const char string_print_help_pid_speed_motor_i[] PROGMEM = "si,<0..%d> - set I factor of speed_motor PID controller";
-static const char string_print_help_pid_speed_motor_d[] PROGMEM = "sd,<0..%d> - set D factor of speed_motor PID controller";
-static const char string_print_help_pid_speed_motor_s[] PROGMEM = "ss,<0..%d> - set the result divider of the speed_motor PID controller";
+//static const char string_print_help_pid_robot_pos_p[] PROGMEM = "rp,<0..%d> - set P factor of robot position PID controller";
+//static const char string_print_help_pid_robot_pos_i[] PROGMEM = "ri,<0..%d> - set I factor of robot position PID controller";
+//static const char string_print_help_pid_robot_pos_d[] PROGMEM = "rd,<0..%d> - set D factor of robot position PID controller";
+//static const char string_print_help_pid_robot_pos_s[] PROGMEM = "rs,<0..%d> - set the result divider of the robot position PID controller";
+//
+//static const char string_print_help_pid_balance_p[] PROGMEM = "bp,<0..%d> - set P factor of balance PID controller";
+//static const char string_print_help_pid_balance_i[] PROGMEM = "bi,<0..%d> - set I factor of balance PID controller";
+//static const char string_print_help_pid_balance_d[] PROGMEM = "bd,<0..%d> - set D factor of balance PID controller";
+//static const char string_print_help_pid_balance_s[] PROGMEM = "bs,<0..%d> - set the result divider of the balance PID controller";
+//
+//static const char string_print_help_pid_speed_motor_p[] PROGMEM = "sp,<0..%d> - set P factor of speed_motor PID controller";
+//static const char string_print_help_pid_speed_motor_i[] PROGMEM = "si,<0..%d> - set I factor of speed_motor PID controller";
+//static const char string_print_help_pid_speed_motor_d[] PROGMEM = "sd,<0..%d> - set D factor of speed_motor PID controller";
+//static const char string_print_help_pid_speed_motor_s[] PROGMEM = "ss,<0..%d> - set the result divider of the speed_motor PID controller";
 
 static const char string_print_help_angle_stable[] PROGMEM = "as,<0,%d> - set angle is defined as stables";
 
@@ -154,10 +175,7 @@ static const char string_INVALID_NUMBER[] PROGMEM = "invalid number!\n";
 static void configuration_terminal_state_read_input(void);
 static void configuration_terminal_state_print_help(void);
 static void configuration_terminal_state_print_config(void);
-static void configuration_terminal_state_set_pid_robot_pos_parameter(void);
-static void configuration_terminal_state_set_pid_balance_parameter(void);
-static void configuration_terminal_state_set_pid_speed_motor_parameter(void);
-static void configuration_terminal_state_set_angle_stable(void);
+static void configuration_terminal_state_set_pid_parameter(void);
 static void configuration_terminal_state_set_motor_parameter(void);
 static void configuration_terminal_state_set_filter_parameter(void);
 static void configuration_terminal_state_set_offset(void);
@@ -165,7 +183,7 @@ static void configuration_terminal_state_set_print_data_mode(void);
 static void configuration_terminal_state_reset_configuration(void);
 static void configuration_terminal_state_save_configuration(void);
 
-static void configuration_terminal_state_switch_pid(void);
+static void configuration_terminal_state_read_pid_selection_pid(void);
 
 static bool parse_input2int16(int16_t *value, const int16_t min, const int16_t max);
 static bool parse_input2float(float *value, const float min, const float max);
@@ -184,6 +202,10 @@ void configuration_terminal_state_machine(void)
 				configuration_terminal_state_read_input();
 				break;
 
+			case STATE_READ_PID_SELECTION:
+				configuration_terminal_state_read_pid_selection_pid();
+				break;
+
 			case STATE_PRINT_HELP:
 				configuration_terminal_state_print_help();
 				break;
@@ -192,24 +214,8 @@ void configuration_terminal_state_machine(void)
 				configuration_terminal_state_print_config();
 				break;
 
-			case STATE_SWITCH_PID:
-				configuration_terminal_state_switch_pid();
-				break;
-
-			case STATE_SET_PID_ROBOT_POS_PARAMETER:
-				configuration_terminal_state_set_pid_robot_pos_parameter();
-				break;
-
-			case STATE_SET_PID_BALANCE_PARAMETER:
-				configuration_terminal_state_set_pid_balance_parameter();
-				break;
-
-			case STATE_SET_PID_SPEED_MOTOR_PARAMETER:
-				configuration_terminal_state_set_pid_speed_motor_parameter();
-				break;
-
-			case STATE_SET_ANGLE_STABLE:
-				configuration_terminal_state_set_angle_stable();
+			case STATE_SET_PID:
+				configuration_terminal_state_set_pid_parameter();
 				break;
 
 			case STATE_SET_FILTER_PARAMETER:
@@ -260,20 +266,8 @@ void configuration_terminal_state_read_input(void)
 	uart_flush();
 
 	switch (input_buffer[INPUT_BUFFER_GROUP_INDEX]) {
-//		case 'r':
-//			next_state = STATE_SET_PID_ROBOT_POS_PARAMETER;
-//			break;
-//		case 'b':
-//			next_state = STATE_SET_PID_BALANCE_PARAMETER;
-//			break;
-//		case 's':
-//			next_state = STATE_SET_PID_SPEED_MOTOR_PARAMETER;
-//			break;
 		case 'P':
-			next_state = STATE_SWITCH_PID;
-			break;
-		case 'a':
-			next_state = STATE_SET_ANGLE_STABLE;
+			next_state = STATE_READ_PID_SELECTION;
 			break;
 		case 'f':
 			next_state = STATE_SET_FILTER_PARAMETER;
@@ -284,7 +278,7 @@ void configuration_terminal_state_read_input(void)
 		case 'z':
 			next_state = STATE_SET_OFFSET;
 			break;
-		case 'p':
+		case 'd':
 			next_state = STATE_SET_PRINT_DATA_MODE;
 			break;
 		case '?':
@@ -308,23 +302,42 @@ void configuration_terminal_state_read_input(void)
 	}
 }
 
+//This state reuses input buffer to have two input bytes again for deciding selected parameter and value
+void configuration_terminal_state_read_pid_selection_pid(void)
+{
+	// get user input
+	uart_flush();
+
+	printf_P(string_LF);
+	printf_P("PID: >");
+
+	while(uart_gets(input_buffer, INPUT_BUFFER_MAX) == 0) {
+		//wait for completed string
+	}
+	uart_flush();
+
+
+	next_state = STATE_SET_PID;
+}
+
+
 
 void configuration_terminal_state_print_help(void)
 {
-	printf_P(string_print_help_pid_robot_pos_p, INT16_MAX);		printf_P(string_LF);
-	printf_P(string_print_help_pid_robot_pos_i, INT16_MAX);		printf_P(string_LF);
-	printf_P(string_print_help_pid_robot_pos_d, INT16_MAX);		printf_P(string_LF);
-	printf_P(string_print_help_pid_robot_pos_s, INT16_MAX);		printf_P(string_LF); printf_P(string_LF);
-
-	printf_P(string_print_help_pid_balance_p, INT16_MAX);		printf_P(string_LF);
-	printf_P(string_print_help_pid_balance_i, INT16_MAX);		printf_P(string_LF);
-	printf_P(string_print_help_pid_balance_d, INT16_MAX);		printf_P(string_LF);
-	printf_P(string_print_help_pid_balance_s, INT16_MAX);		printf_P(string_LF); printf_P(string_LF);
-
-	printf_P(string_print_help_pid_speed_motor_p, INT16_MAX);	printf_P(string_LF);
-	printf_P(string_print_help_pid_speed_motor_i, INT16_MAX);	printf_P(string_LF);
-	printf_P(string_print_help_pid_speed_motor_d, INT16_MAX);	printf_P(string_LF);
-	printf_P(string_print_help_pid_speed_motor_s, INT16_MAX);	printf_P(string_LF); printf_P(string_LF);
+//	printf_P(string_print_help_pid_robot_pos_p, INT16_MAX);		printf_P(string_LF);
+//	printf_P(string_print_help_pid_robot_pos_i, INT16_MAX);		printf_P(string_LF);
+//	printf_P(string_print_help_pid_robot_pos_d, INT16_MAX);		printf_P(string_LF);
+//	printf_P(string_print_help_pid_robot_pos_s, INT16_MAX);		printf_P(string_LF); printf_P(string_LF);
+//
+//	printf_P(string_print_help_pid_balance_p, INT16_MAX);		printf_P(string_LF);
+//	printf_P(string_print_help_pid_balance_i, INT16_MAX);		printf_P(string_LF);
+//	printf_P(string_print_help_pid_balance_d, INT16_MAX);		printf_P(string_LF);
+//	printf_P(string_print_help_pid_balance_s, INT16_MAX);		printf_P(string_LF); printf_P(string_LF);
+//
+//	printf_P(string_print_help_pid_speed_motor_p, INT16_MAX);	printf_P(string_LF);
+//	printf_P(string_print_help_pid_speed_motor_i, INT16_MAX);	printf_P(string_LF);
+//	printf_P(string_print_help_pid_speed_motor_d, INT16_MAX);	printf_P(string_LF);
+//	printf_P(string_print_help_pid_speed_motor_s, INT16_MAX);	printf_P(string_LF); printf_P(string_LF);
 
 	printf_P(string_print_help_angle_stable, INT16_MAX);		printf_P(string_LF); printf_P(string_LF);
 
@@ -356,19 +369,41 @@ void configuration_terminal_state_print_config(void)
 	angularvelocity_vector_t angular_offset;
 	configuration_storage_get_angularvelocity_offset_vector(&angular_offset);
 
-	printf_P(string_terminal_pid_robot_pos_p, configuration_storage_get_pid_robot_pos_p_factor());			printf_P(string_LF);
-	printf_P(string_terminal_pid_robot_pos_i, configuration_storage_get_pid_robot_pos_i_factor());			printf_P(string_LF);
-	printf_P(string_terminal_pid_robot_pos_d, configuration_storage_get_pid_robot_pos_d_factor());			printf_P(string_LF);
-	printf_P(string_terminal_pid_robot_pos_s, configuration_storage_get_pid_robot_pos_scalingfactor());		printf_P(string_LF);
-	printf_P(string_terminal_pid_balance_p, configuration_storage_get_pid_balance_p_factor());				printf_P(string_LF);
-	printf_P(string_terminal_pid_balance_i, configuration_storage_get_pid_balance_i_factor());				printf_P(string_LF);
-	printf_P(string_terminal_pid_balance_d, configuration_storage_get_pid_balance_d_factor());				printf_P(string_LF);
-	printf_P(string_terminal_pid_balance_s, configuration_storage_get_pid_balance_scalingfactor());			printf_P(string_LF);
-	printf_P(string_terminal_pid_speed_motor_p, configuration_storage_get_pid_speed_motor_p_factor());		printf_P(string_LF);
-	printf_P(string_terminal_pid_speed_motor_i, configuration_storage_get_pid_speed_motor_i_factor());		printf_P(string_LF);
-	printf_P(string_terminal_pid_speed_motor_d, configuration_storage_get_pid_speed_motor_d_factor());		printf_P(string_LF);
-	printf_P(string_terminal_pid_speed_motor_s, configuration_storage_get_pid_speed_motor_scalingfactor());	printf_P(string_LF);
-	printf_P(string_terminal_angle_stable, configuration_storage_get_angle_stable());						printf_P(string_LF);
+	printf_P(string_terminal_name_pid_robot_position); printf_P(string_LF);
+	printf_P(string_terminal_pid_p, configuration_storage_get_pid_p_factor(PID_ROBOT_POSITION));			printf_P(string_LF);
+	printf_P(string_terminal_pid_i, configuration_storage_get_pid_i_factor(PID_ROBOT_POSITION));			printf_P(string_LF);
+	printf_P(string_terminal_pid_d, configuration_storage_get_pid_d_factor(PID_ROBOT_POSITION));			printf_P(string_LF);
+	printf_P(string_terminal_pid_s, configuration_storage_get_pid_scalingfactor(PID_ROBOT_POSITION));		printf_P(string_LF);
+	printf_P(string_terminal_pid_l, configuration_storage_get_pid_limit(PID_ROBOT_POSITION));				printf_P(string_LF);
+
+	printf_P(string_terminal_name_pid_speed); printf_P(string_LF);
+	printf_P(string_terminal_pid_p, configuration_storage_get_pid_p_factor(PID_ROBOT_SPEED));			printf_P(string_LF);
+	printf_P(string_terminal_pid_i, configuration_storage_get_pid_i_factor(PID_ROBOT_SPEED));			printf_P(string_LF);
+	printf_P(string_terminal_pid_d, configuration_storage_get_pid_d_factor(PID_ROBOT_SPEED));			printf_P(string_LF);
+	printf_P(string_terminal_pid_s, configuration_storage_get_pid_scalingfactor(PID_ROBOT_SPEED));		printf_P(string_LF);
+	printf_P(string_terminal_pid_l, configuration_storage_get_pid_limit(PID_ROBOT_SPEED));				printf_P(string_LF);
+
+	printf_P(string_terminal_name_pid_balance); printf_P(string_LF);
+	printf_P(string_terminal_pid_p, configuration_storage_get_pid_p_factor(PID_BALANCE));			printf_P(string_LF);
+	printf_P(string_terminal_pid_i, configuration_storage_get_pid_i_factor(PID_BALANCE));			printf_P(string_LF);
+	printf_P(string_terminal_pid_d, configuration_storage_get_pid_d_factor(PID_BALANCE));			printf_P(string_LF);
+	printf_P(string_terminal_pid_s, configuration_storage_get_pid_scalingfactor(PID_BALANCE));		printf_P(string_LF);
+	printf_P(string_terminal_pid_l, configuration_storage_get_pid_limit(PID_BALANCE));				printf_P(string_LF);
+
+	printf_P(string_terminal_name_pid_motor_one); printf_P(string_LF);
+	printf_P(string_terminal_pid_p, configuration_storage_get_pid_p_factor(PID_MOTOR_1));			printf_P(string_LF);
+	printf_P(string_terminal_pid_i, configuration_storage_get_pid_i_factor(PID_MOTOR_1));			printf_P(string_LF);
+	printf_P(string_terminal_pid_d, configuration_storage_get_pid_d_factor(PID_MOTOR_1));			printf_P(string_LF);
+	printf_P(string_terminal_pid_s, configuration_storage_get_pid_scalingfactor(PID_MOTOR_1));		printf_P(string_LF);
+	printf_P(string_terminal_pid_l, configuration_storage_get_pid_limit(PID_MOTOR_1));				printf_P(string_LF);
+
+	printf_P(string_terminal_name_pid_motor_two); printf_P(string_LF);
+	printf_P(string_terminal_pid_p, configuration_storage_get_pid_p_factor(PID_MOTOR_2));			printf_P(string_LF);
+	printf_P(string_terminal_pid_i, configuration_storage_get_pid_i_factor(PID_MOTOR_2));			printf_P(string_LF);
+	printf_P(string_terminal_pid_d, configuration_storage_get_pid_d_factor(PID_MOTOR_2));			printf_P(string_LF);
+	printf_P(string_terminal_pid_s, configuration_storage_get_pid_scalingfactor(PID_MOTOR_2));		printf_P(string_LF);
+	printf_P(string_terminal_pid_l, configuration_storage_get_pid_limit(PID_MOTOR_2));				printf_P(string_LF);
+
 	printf_P(string_terminal_complementary_filter_ratio, configuration_storage_get_complementary_filter_ratio());		printf_P(string_LF);
 	printf_P(string_terminal_valid_acceleration_magnitude, configuration_storage_get_valid_acceleration_magnitude());	printf_P(string_LF);
 	printf_P(string_terminal_angle_scaling, configuration_storage_get_angle_scalingfactor());				printf_P(string_LF);
@@ -384,25 +419,6 @@ void configuration_terminal_state_print_config(void)
 
 	next_state = STATE_READ_INPUT;
 }
-
-//This state reuses input buffer to have two input bytes again for deciding selected parameter and value
-void configuration_terminal_state_switch_pid(void)
-{
-	// get user input
-	uart_flush();
-
-	printf_P(string_LF);
-	printf_P("PID: >");
-
-	while(uart_gets(input_buffer, INPUT_BUFFER_MAX) == 0) {
-		//wait for completed string
-	}
-	uart_flush();
-
-
-	next_state = STATE_SET_PID;
-}
-
 
 void configuration_terminal_state_set_pid_parameter(void)
 {
@@ -452,235 +468,16 @@ void configuration_terminal_state_set_pid_parameter(void)
 			default:
 				break;
 		}
+
+		printf_P(string_OK);
 	}
-
-	next_state = STATE_READ_INPUT;
-}
-
-
-void configuration_terminal_state_set_pid_robot_pos_parameter(void)
-{
-	int16_t pid_value = 0;
-	bool parsed_value = parse_input2int16(&pid_value, 0, INT16_MAX);
-
-	switch (input_buffer[INPUT_BUFFER_COMMAND_INDEX]) {
-		case 'p':
-			if(parsed_value) {
-				configuration_storage_set_pid_robot_pos_p_factor(pid_value);
-				printf_P(string_OK);
-			} else {
-				printf("rp,%u\n",configuration_storage_get_pid_robot_pos_p_factor());
-			}
-
-			break;
-		// -----
-		case 'i':
-			if(parsed_value) {
-				configuration_storage_set_pid_robot_pos_i_factor(pid_value);
-				printf_P(string_OK);
-			} else {
-				printf("ri,%u\n",configuration_storage_get_pid_robot_pos_i_factor());
-			}
-			break;
-		// -----
-		case 'd':
-			if(parsed_value) {
-				configuration_storage_set_pid_robot_pos_d_factor(pid_value);
-				printf_P(string_OK);
-			} else {
-				printf("rd,%u\n",configuration_storage_get_pid_robot_pos_d_factor());
-			}
-
-			break;
-		// -----
-		case 's':
-			if(parsed_value) {
-				configuration_storage_set_pid_robot_pos_scalingfactor(pid_value);
-				printf_P(string_OK);
-			} else {
-				printf("rs,%u\n",configuration_storage_get_pid_robot_pos_scalingfactor());
-			}
-
-			break;
-		// -----
-		default:
-			printf_P(string_INVALID_SELECT);
-			break;
-	}
-
-	next_state = STATE_READ_INPUT;
-}
-
-void configuration_terminal_state_set_pid_balance_parameter(void)
-{
-	int16_t pid_value = 0;
-	bool parsed_value = parse_input2int16(&pid_value, 0, INT16_MAX);
-
-	switch (input_buffer[INPUT_BUFFER_COMMAND_INDEX]) {
-		case 'p':
-			if(parsed_value) {
-				configuration_storage_set_pid_balance_p_factor(pid_value);
-				printf_P(string_OK);
-			} else {
-				printf("bp,%u\n",configuration_storage_get_pid_balance_p_factor());
-			}
-
-			break;
-		// -----
-		case 'i':
-			if(parsed_value) {
-				configuration_storage_set_pid_balance_i_factor(pid_value);
-				printf_P(string_OK);
-			} else {
-				printf("bi,%u\n",configuration_storage_get_pid_balance_i_factor());
-			}
-			break;
-		// -----
-		case 'd':
-			if(parsed_value) {
-				configuration_storage_set_pid_balance_d_factor(pid_value);
-				printf_P(string_OK);
-			} else {
-				printf("bd,%u\n",configuration_storage_get_pid_balance_d_factor());
-			}
-
-			break;
-		// -----
-		case 's':
-			if(parsed_value) {
-				configuration_storage_set_pid_balance_scalingfactor(pid_value);
-				printf_P(string_OK);
-			} else {
-				printf("bs,%u\n",configuration_storage_get_pid_balance_scalingfactor());
-			}
-
-			break;
-		// -----
-		default:
-			printf_P(string_INVALID_SELECT);
-			break;
-	}
-
-	next_state = STATE_READ_INPUT;
-}
-
-void configuration_terminal_state_set_pid_speed_motor_parameter(void)
-{
-	int16_t pid_value = 0;
-	bool parsed_value = parse_input2int16(&pid_value, 0, INT16_MAX);
-
-	switch (input_buffer[INPUT_BUFFER_COMMAND_INDEX]) {
-		case 'p':
-			if(parsed_value) {
-				configuration_storage_set_pid_speed_motor_p_factor(pid_value);
-				printf_P(string_OK);
-			} else {
-				printf("sp,%u\n",configuration_storage_get_pid_speed_motor_p_factor());
-			}
-
-			break;
-		// -----
-		case 'i':
-			if(parsed_value) {
-				configuration_storage_set_pid_speed_motor_i_factor(pid_value);
-				printf_P(string_OK);
-			} else {
-				printf("si,%u\n",configuration_storage_get_pid_speed_motor_i_factor());
-			}
-			break;
-		// -----
-		case 'd':
-			if(parsed_value) {
-				configuration_storage_set_pid_speed_motor_d_factor(pid_value);
-				printf_P(string_OK);
-			} else {
-				printf("sd,%u\n",configuration_storage_get_pid_speed_motor_d_factor());
-			}
-
-			break;
-		// -----
-		case 's':
-			if(parsed_value) {
-				configuration_storage_set_pid_speed_motor_scalingfactor(pid_value);
-				printf_P(string_OK);
-			} else {
-				printf("ss,%u\n",configuration_storage_get_pid_speed_motor_scalingfactor());
-			}
-
-			break;
-		// -----
-		default:
-			printf_P(string_INVALID_SELECT);
-			break;
-	}
-
-	next_state = STATE_READ_INPUT;
-}
-
-
-void configuration_terminal_state_set_angle_stable(void)
-{
-	int16_t tmp_int16 = 0;
-
-	switch (input_buffer[INPUT_BUFFER_COMMAND_INDEX]) {
-
-	case 's':
-		if(parse_input2int16(&tmp_int16, 0, INT16_MAX)) {
-			configuration_storage_set_angle_stable((motionsensor_angle_t)tmp_int16);
-			printf_P(string_OK);
-		} else {
-			printf("as,%d\n",configuration_storage_get_angle_stable());
-		}
-		break;
-
-	default:
+	else {
 		printf_P(string_INVALID_SELECT);
-		break;
 	}
 
 	next_state = STATE_READ_INPUT;
 }
 
-
-//
-//void configuration_terminal_state_set_pid_edge_parameter(void)
-//{
-//	int16_t pid_value = 0;
-//
-//	//parsing string to integer
-//	if(parse_input2int16(&pid_value, 0, INT16_MAX)) {
-//
-//		switch (input_buffer[INPUT_BUFFER_COMMAND_INDEX]) {
-//			case 'p':
-//				configuration_storage_set_pid_edge_p_factor(pid_value);
-//				printf_P(string_OK);
-//				break;
-//			case 'i':
-//				configuration_storage_set_pid_edge_i_factor(pid_value);
-//				printf_P(string_OK);
-//				break;
-//			case 'd':
-//				configuration_storage_set_pid_edge_d_factor(pid_value);
-//				printf_P(string_OK);
-//				break;
-//			case 's':
-//				configuration_storage_set_pid_edge_scalingfactor(pid_value);
-//				printf_P(string_OK);
-//				break;
-//			case 'a':
-//				configuration_storage_set_pid_edge_angle(pid_value);
-//				printf_P(string_OK);
-//				break;
-//			default:
-//				printf_P(string_INVALID_SELECT);
-//				break;
-//		}
-//	} else {
-//		printf_P(string_INVALID_NUMBER);
-//	}
-//
-//	next_state = STATE_READ_INPUT;
-//}
 
 // command: 'f'
 void configuration_terminal_state_set_filter_parameter(void)
@@ -699,7 +496,6 @@ void configuration_terminal_state_set_filter_parameter(void)
 			break;
 
 		case 'c':
-			//if(parse_input2int16(&tmp_int16, 0, MOTIONSENSOR_COMPLEMTARY_FILTER_RATIO_BASE)) {
 			if(parse_input2float(&tmp_float, 0, MOTIONSENSOR_COMPLEMTARY_FILTER_RATIO_BASE)) {
 				configuration_storage_set_complementary_filter_ratio(tmp_float);
 				printf_P(string_OK);
