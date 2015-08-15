@@ -66,7 +66,7 @@ static system_controller_state_t next_state;
 
 static motionsensor_angle_t current_angle;
 static int16_t pid_output;
-static motor_contol_speed_t new_motor_speed;
+static motor_control_speed_t new_motor_speed;
 
 static pid_config_t				pid_center;
 static pid_config_t				pid_edge;
@@ -550,29 +550,46 @@ static void system_controller_print_data_all_filtered(void)
 static void system_controller_print_data_really_all_filtered(void)
 {
 	uint8_t buf_idx = 0;
+	int16_t robot_pos;
 
-	motionsensor_motiondata_t motiondata;
-	motionsensor_get_filtered_motiondata(&motiondata);
-
-	int16_t angle_accel = (int16_t)(motionsensor_get_angle_acceleration() * 1000.0);
-	int8_t magnitude    = (int8_t)(motionsensor_get_angle_acceleration_magnitude() * 100.0);
+	motor_control_speed_t current_speed;
+	motor_control_get_current_speed(&current_speed);
+	robot_pos = (int16_t)motor_control_get_real_robot_position();
 
 	//header: type: A
 	//header: size payload: 10
 	//payload [accel.x H,accel.x L,accel.z H,accel.z L,angular.y H,angular.y L,magnitude,angle_accel H, angle_accel L, angle H,angle L,pid H,pid L]
+
+	//type
 	print_data_buffer[buf_idx++] = 'A';
+
+	//length
 	print_data_buffer[buf_idx++] = 13;
-	print_data_buffer[buf_idx++] = (uint8_t)(motiondata.acceleration.x >> 8);
-	print_data_buffer[buf_idx++] = (uint8_t)(motiondata.acceleration.x & 0x00FF);
-	print_data_buffer[buf_idx++] = (uint8_t)(motiondata.acceleration.z >> 8);
-	print_data_buffer[buf_idx++] = (uint8_t)(motiondata.acceleration.z & 0x00FF);
-	print_data_buffer[buf_idx++] = (uint8_t)(motiondata.angularvelocity.y >> 8);
-	print_data_buffer[buf_idx++] = (uint8_t)(motiondata.angularvelocity.y & 0x00FF);
-	print_data_buffer[buf_idx++] = (uint8_t)(magnitude);
-	print_data_buffer[buf_idx++] = (uint8_t)(angle_accel >> 8);
-	print_data_buffer[buf_idx++] = (uint8_t)(angle_accel & 0x00FF);
+
+	//accel_x
+	print_data_buffer[buf_idx++] = (uint8_t)(current_speed.motor_1 >> 8);
+	print_data_buffer[buf_idx++] = (uint8_t)(current_speed.motor_1 & 0x00FF);
+
+	//accel_y
+	print_data_buffer[buf_idx++] = (uint8_t)(current_speed.motor_2 >> 8);
+	print_data_buffer[buf_idx++] = (uint8_t)(current_speed.motor_2 & 0x00FF);
+
+	//gyro_y
+	print_data_buffer[buf_idx++] = (uint8_t)(robot_pos >> 8);
+	print_data_buffer[buf_idx++] = (uint8_t)(robot_pos & 0x00FF);
+
+	//magnetude
+	print_data_buffer[buf_idx++] = 0;
+
+	//angle_accel
+	print_data_buffer[buf_idx++] = 0;
+	print_data_buffer[buf_idx++] = 0;
+
+	//angle
 	print_data_buffer[buf_idx++] = (uint8_t)(current_angle >> 8);
 	print_data_buffer[buf_idx++] = (uint8_t)(current_angle & 0x00FF);
+
+	//pid
 	print_data_buffer[buf_idx++] = (uint8_t)(pid_output >> 8);
 	print_data_buffer[buf_idx++] = (uint8_t)(pid_output & 0x00FF);
 
