@@ -56,6 +56,8 @@ typedef enum {
 	STATE_SET_OFFSET_ACCELERATION,
 	STATE_SET_OFFSET_ANGULARVELOCITY,
 	STATE_SET_OFFSET_AUTOMATIC,
+	STATE_SET_SPEED_STRAIGHT_LIMITS,
+	STATE_SET_SPEED_TURN_LIMITS,
 	STATE_SET_PRINT_DATA_MODE,
 	STATE_RESET_CONFIG,
 	STATE_SAVE_CONFIG,
@@ -88,6 +90,9 @@ static const char string_terminal_complementary_filter_ratio[] PROGMEM = "comple
 static const char string_terminal_valid_acceleration_magnitude[] PROGMEM = "valid_acceleration_magnitude: %f";
 static const char string_terminal_angle_scaling[] PROGMEM = "motionsensor.angle_scalingfactor: %u";
 
+static const char string_terminal_speed_limits_straight[] PROGMEM = "max speed  straight   limit: %4i   step: %4i";
+static const char string_terminal_speed_limits_turn[] PROGMEM =     "max speed  turn       limit: %4i   step: %4i";
+
 static const char string_terminal_motionsensor_offset_accel_x[] PROGMEM = "motionsensor.acceleration_offset.x: %i";
 static const char string_terminal_motionsensor_offset_accel_y[] PROGMEM = "motionsensor.acceleration_offset.y: %i";
 static const char string_terminal_motionsensor_offset_accel_z[] PROGMEM = "motionsensor.acceleration_offset.z: %i";
@@ -109,7 +114,12 @@ static const char string_print_help_pid_6[] PROGMEM = "          1 - motor_1";
 static const char string_print_help_pid_7[] PROGMEM = "          2 - motor_2";
 
 static const char string_print_offset_acceleration[] PROGMEM = "a?,<0..max> - manual offset for acceleration where '?' is axis";
-static const char string_print_offset_angularvelocity[] PROGMEM = "v?,<0..max> - manual offset for angularvelocity where '?' is axis"";
+static const char string_print_offset_angularvelocity[] PROGMEM = "v?,<0..max> - manual offset for angularvelocity where '?' is axis";
+
+static const char string_print_limits_1[] PROGMEM = "sl,<0..max> - speed straight limit";
+static const char string_print_limits_2[] PROGMEM = "ss,<0..max> - speed straight step";
+static const char string_print_limits_3[] PROGMEM = "tl,<0..max> - speed turn limit";
+static const char string_print_limits_4[] PROGMEM = "ts,<0..max> - speed turn step";
 
 static const char string_print_help_complementary_filter_ratio[] PROGMEM = "fc,<0..%f> - set the ratio of complementary filter";
 static const char string_print_help_valid_acceleration_magnitude[] PROGMEM = "fm,<0..%f> - set validacceleration magnitude";
@@ -145,6 +155,8 @@ static void configuration_terminal_state_set_filter_parameter(void);
 static void configuration_terminal_state_set_offset_acceleration(void);
 static void configuration_terminal_state_set_offset_angularvelocity(void);
 static void configuration_terminal_state_set_offset_automatic(void);
+static void configuration_terminal_state_set_speed_straight_limits(void);
+static void configuration_terminal_state_set_speed_turn_limits(void);
 static void configuration_terminal_state_set_print_data_mode(void);
 static void configuration_terminal_state_reset_configuration(void);
 static void configuration_terminal_state_save_configuration(void);
@@ -203,6 +215,14 @@ void configuration_terminal_state_machine(void)
 				configuration_terminal_state_set_offset_automatic();
 				break;
 
+			case STATE_SET_SPEED_STRAIGHT_LIMITS:
+				configuration_terminal_state_set_speed_straight_limits();
+				break;
+
+			case STATE_SET_SPEED_TURN_LIMITS:
+				configuration_terminal_state_set_speed_turn_limits();
+				break;
+
 			case STATE_SET_PRINT_DATA_MODE:
 				configuration_terminal_state_set_print_data_mode();
 				break;
@@ -256,6 +276,12 @@ void configuration_terminal_state_read_input(void)
 			break;
 		case 'z':
 			next_state = STATE_SET_OFFSET_AUTOMATIC;
+			break;
+		case 's':
+			next_state = STATE_SET_SPEED_STRAIGHT_LIMITS;
+			break;
+		case 't':
+			next_state = STATE_SET_SPEED_TURN_LIMITS;
 			break;
 		case 'd':
 			next_state = STATE_SET_PRINT_DATA_MODE;
@@ -322,6 +348,11 @@ void configuration_terminal_state_print_help(void)
 	printf_P(string_print_help_print_data_mode_1, FINAL_print_data_enum_t_ENTRY - 1);					printf_P(string_LF);
 	printf_P(string_print_help_print_data_mode_2);														printf_P(string_LF);
 	printf_P(string_print_help_print_data_mode_3);														printf_P(string_LF); printf_P(string_LF);
+
+	printf_P(string_print_limits_1);	printf_P(string_LF);
+	printf_P(string_print_limits_2);	printf_P(string_LF);
+	printf_P(string_print_limits_3);	printf_P(string_LF);
+	printf_P(string_print_limits_4);	printf_P(string_LF);
 
 	printf_P(string_print_help_print_data_new_offsets);			printf_P(string_LF); printf_P(string_LF);
 
@@ -395,6 +426,15 @@ void configuration_terminal_state_print_config(void)
 	printf_P(string_terminal_motionsensor_offset_angular_x, angular_offset.x);								printf_P(string_LF);
 	printf_P(string_terminal_motionsensor_offset_angular_y, angular_offset.y);								printf_P(string_LF);
 	printf_P(string_terminal_motionsensor_offset_angular_z, angular_offset.z);								printf_P(string_LF);
+
+	printf_P(string_terminal_speed_limits_straight,
+			 configuration_storage_get_speed_straight_limit(),
+			 configuration_storage_get_speed_straight_step()); printf_P(string_LF);
+
+	printf_P(string_terminal_speed_limits_turn,
+			 configuration_storage_get_speed_turn_limit(),
+			 configuration_storage_get_speed_turn_step()); printf_P(string_LF);
+
 	printf_P(string_terminal_motor_acceleration, configuration_storage_get_motor_acceleration());			printf_P(string_LF);
 	printf_P(string_terminal_print_data_mode, configuration_storage_get_print_data_mode());					printf_P(string_LF); 	printf_P(string_LF);
 	printf_P(string_terminal_help);																			printf_P(string_LF);	printf_P(string_LF);
@@ -535,21 +575,21 @@ void configuration_terminal_state_set_offset_acceleration(void)
 
 	switch (input_buffer[INPUT_BUFFER_COMMAND_INDEX]) {
 		case 'x':
-			if(parse_input2int16(&tmp_int16, 0, INT16_MAX)) {
+			if(parse_input2int16(&tmp_int16, INT16_MIN, INT16_MAX)) {
 				configuration_storage_set_acceleration_offset_value(AXIS_X, tmp_int16);
 				printf_P(string_OK);
 			}
 			break;
 
 		case 'y':
-			if(parse_input2int16(&tmp_int16, 0, INT16_MAX)) {
+			if(parse_input2int16(&tmp_int16, INT16_MIN, INT16_MAX)) {
 				configuration_storage_set_acceleration_offset_value(AXIS_Y, tmp_int16);
 				printf_P(string_OK);
 			}
 			break;
 
 		case 'z':
-			if(parse_input2int16(&tmp_int16, 0, INT16_MAX)) {
+			if(parse_input2int16(&tmp_int16, INT16_MIN, INT16_MAX)) {
 				configuration_storage_set_acceleration_offset_value(AXIS_Z, tmp_int16);
 				printf_P(string_OK);
 			}
@@ -570,21 +610,21 @@ void configuration_terminal_state_set_offset_angularvelocity(void)
 
 	switch (input_buffer[INPUT_BUFFER_COMMAND_INDEX]) {
 		case 'x':
-			if(parse_input2int16(&tmp_int16, 0, INT16_MAX)) {
+			if(parse_input2int16(&tmp_int16, INT16_MIN, INT16_MAX)) {
 				configuration_storage_set_angularvelocity_offset_value(AXIS_X, tmp_int16);
 				printf_P(string_OK);
 			}
 			break;
 
 		case 'y':
-			if(parse_input2int16(&tmp_int16, 0, INT16_MAX)) {
+			if(parse_input2int16(&tmp_int16, INT16_MIN, INT16_MAX)) {
 				configuration_storage_set_angularvelocity_offset_value(AXIS_Y, tmp_int16);
 				printf_P(string_OK);
 			}
 			break;
 
 		case 'z':
-			if(parse_input2int16(&tmp_int16, 0, INT16_MAX)) {
+			if(parse_input2int16(&tmp_int16, INT16_MIN, INT16_MAX)) {
 				configuration_storage_set_angularvelocity_offset_value(AXIS_Z, tmp_int16);
 				printf_P(string_OK);
 			}
@@ -626,6 +666,61 @@ void configuration_terminal_state_set_offset_automatic(void)
 
 	motionsensor_get_angularvelocity_offset_vector(&angularvelocity_offset);
 	configuration_storage_set_angularvelocity_offset_vector(&angularvelocity_offset);
+
+	next_state = STATE_READ_INPUT;
+}
+
+void configuration_terminal_state_set_speed_straight_limits(void)
+{
+
+	int16_t tmp_int16 = 0;
+
+	switch (input_buffer[INPUT_BUFFER_COMMAND_INDEX]) {
+		case 'l':
+			if(parse_input2int16(&tmp_int16, 0, INT16_MAX)) {
+				configuration_storage_set_speed_straight_limit(tmp_int16);
+				printf_P(string_OK);
+			}
+			break;
+
+		case 's':
+			if(parse_input2int16(&tmp_int16, 0, INT16_MAX)) {
+				configuration_storage_set_speed_straight_step(tmp_int16);
+				printf_P(string_OK);
+			}
+			break;
+
+		default:
+			printf_P(string_INVALID_SELECT);
+			break;
+	}
+
+	next_state = STATE_READ_INPUT;
+}
+
+void configuration_terminal_state_set_speed_turn_limits(void)
+{
+	int16_t tmp_int16 = 0;
+
+	switch (input_buffer[INPUT_BUFFER_COMMAND_INDEX]) {
+		case 'l':
+			if(parse_input2int16(&tmp_int16, 0, INT16_MAX)) {
+				configuration_storage_set_speed_turn_limit(tmp_int16);
+				printf_P(string_OK);
+			}
+			break;
+
+		case 's':
+			if(parse_input2int16(&tmp_int16, 0, INT16_MAX)) {
+				configuration_storage_set_speed_turn_step(tmp_int16);
+				printf_P(string_OK);
+			}
+			break;
+
+		default:
+			printf_P(string_INVALID_SELECT);
+			break;
+	}
 
 	next_state = STATE_READ_INPUT;
 }
@@ -690,7 +785,7 @@ bool parse_input2int16(int16_t *value, const int16_t min, const int16_t max)
 
 		//try to parse string in value_buffer to int16_t
 		// greater 0 - success; else failure
-		if(sscanf(value_buffer, "%d", value)) {
+		if(sscanf(value_buffer, "%i", value)) {
 
 			//respect max
 			if(*value >= max) {
