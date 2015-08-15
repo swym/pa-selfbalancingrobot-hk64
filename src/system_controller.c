@@ -199,7 +199,7 @@ void system_controller_state_init_basic_hardware(void)
 	leds_set(1);
 
 
-	uart_init(UART_BAUDRATE_9600);			/* Init USART */
+	uart_init(UART_BAUDRATE_115k);			/* Init USART */
 	uart_init_stdio();
 	//printf("usart inited\n");
 
@@ -509,8 +509,8 @@ void system_controller_state_init_controller_environment(void)
 
 	/* *** EXIT **** */
 
-	next_state = STATE_FINAL;
-	//next_state = STATE_INIT_REMAINING_HARDWARE;
+	//next_state = STATE_FINAL;
+	next_state = STATE_INIT_REMAINING_HARDWARE;
 }
 
 void system_controller_state_init_remaining_hardware(void)
@@ -538,7 +538,8 @@ void system_controller_state_init_remaining_hardware(void)
 	uart_init(UART_BAUDRATE_250k);
 
 	/* *** EXIT **** */
-	next_state = STATE_RUN_CONTROLLER;
+	//next_state = STATE_RUN_CONTROLLER;
+	next_state = STATE_FINAL;
 }
 
 static bool system_controller_exec_control;
