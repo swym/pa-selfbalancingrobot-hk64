@@ -105,7 +105,7 @@ ISR(TIMER0_COMP_vect)
 	}
 
 	//update external handlers
-	l6205_handler();
+	l6205_update_pwm();
 	encoder_handler();
 
 	//update only every 20 ms

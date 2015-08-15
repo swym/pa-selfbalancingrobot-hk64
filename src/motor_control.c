@@ -24,8 +24,8 @@
 #define ROBOT_POS_HALTZONE	405
 
 #define MOTOR_RUNAWAY_MAX_COUNT 750
-#define MOTOR_RUNAWAY_MAX		(2 * L6205_MOTOR_SPEED_MAX)
-#define MOTOR_RUNAWAY_MIN		(2 * L6205_MOTOR_SPEED_MIN)
+#define MOTOR_RUNAWAY_MAX		(2 * 255)
+#define MOTOR_RUNAWAY_MIN		(2 * 255)
 
 static motor_control_speed_t current_speed;
 static motor_control_speed_t new_speed;
