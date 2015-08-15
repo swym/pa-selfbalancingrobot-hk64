@@ -106,6 +106,11 @@ void configuration_storage_reset_configuration(void)
 	configuration.motionsensor.valid_acceleration_magnitude = 1.0;
 	configuration.motionsensor.angle_scalingfactor = 1;
 
+	configuration.speed_straight_limit = 10;
+	configuration.speed_straight_step = 1;
+	configuration.speed_turn_limit = 10;
+	configuration.speed_turn_step = 1;
+
 	configuration.motor_acceleration = 15;
 
 	configuration.version = CONFIGURATION_STORAGE_VERSION;
@@ -517,6 +522,60 @@ void configuration_storage_set_angle_scalingfactor(uint16_t as)
 	configuration.motionsensor.angle_scalingfactor = as;
 	configuration.has_changed = true;
 }
+
+// ----
+
+uint8_t configuration_storage_get_speed_straight_limit(void)
+{
+	return configuration.speed_straight_limit;
+}
+
+void configuration_storage_set_speed_straight_limit(uint8_t limit)
+{
+	configuration.speed_straight_limit = limit;
+	configuration.has_changed = true;
+}
+
+// ----
+
+uint8_t configuration_storage_get_speed_straight_step(void)
+{
+	return configuration.speed_straight_step;
+}
+
+void configuration_storage_set_speed_straight_step(uint8_t step)
+{
+	configuration.speed_straight_step = step;
+	configuration.has_changed = true;
+}
+
+// ----
+
+uint8_t configuration_storage_get_speed_turn_limit(void)
+{
+	return configuration.speed_turn_limit;
+}
+
+void configuration_storage_set_speed_turn_limit(uint8_t limit)
+{
+	configuration.speed_turn_limit = limit;
+	configuration.has_changed = true;
+}
+
+// ----
+
+uint8_t configuration_storage_get_speed_turn_step(void)
+{
+	return configuration.speed_turn_step;
+}
+
+void configuration_storage_set_speed_turn_step(uint8_t step)
+{
+	configuration.speed_turn_step = step;
+	configuration.has_changed = true;
+}
+
+// ----
 
 
 uint8_t configuration_storage_get_motor_acceleration(void)

@@ -431,10 +431,10 @@ void system_controller_state_init_controller_environment(void)
 
 	//set setpoint
 	pid_robot_position_setpoint	 	= 0;
-	pid_robot_speed_setpoint	= 0;
-	pid_balance_setpoint  	 	= 0;
-	pid_motor1_setpoint    	= 0;
-	pid_motor2_setpoint    	= 0;
+	pid_robot_speed_setpoint		= 0;
+	pid_balance_setpoint  	 		= 0;
+	pid_motor1_setpoint    			= 0;
+	pid_motor2_setpoint    			= 0;
 
 	printf("pid_robot_speed setpoint: %d\n", pid_robot_position_setpoint);
 	printf("pid_balance     setpoint: %d\n", pid_balance_setpoint);

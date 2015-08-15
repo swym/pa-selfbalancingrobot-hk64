@@ -20,7 +20,7 @@
 /* *** DECLARATIONS ********************************************************** */
 
 /* * external type and constants * */
-#define CONFIGURATION_STORAGE_VERSION			113
+#define CONFIGURATION_STORAGE_VERSION			114
 
 
 /* * external objects            * */
@@ -52,7 +52,7 @@ typedef enum  {
 	AXIS_X,
 	AXIS_Y,
 	AXIS_Z,
-	FINAL_pids_enum_t_ENTRY
+	FINAL_axis_enum_t_ENTRY
 } axis_enum_t;
 
 typedef struct {
@@ -80,6 +80,12 @@ typedef struct {
 
 	motionsensor_config_t motionsensor;
 	uint8_t		 motor_acceleration;
+
+	uint8_t		 speed_straight_limit;
+	uint8_t		 speed_straight_step;
+	uint8_t		 speed_turn_limit;
+	uint8_t		 speed_turn_step;
+
 	uint8_t version;
 	print_data_enum_t print_data_mode;
 	bool has_changed;
@@ -130,6 +136,20 @@ extern void configuration_storage_set_valid_acceleration_magnitude(float magnitu
 
 extern uint16_t configuration_storage_get_angle_scalingfactor(void);
 extern void configuration_storage_set_angle_scalingfactor(uint16_t);
+
+// #- SPEED LIMITS and STEPS ----------
+
+extern uint8_t configuration_storage_get_speed_straight_limit(void);
+extern void configuration_storage_set_speed_straight_limit(uint8_t);
+
+extern uint8_t configuration_storage_get_speed_straight_step(void);
+extern void configuration_storage_set_speed_straight_step(uint8_t);
+
+extern uint8_t configuration_storage_get_speed_turn_limit(void);
+extern void configuration_storage_set_speed_turn_limit(uint8_t);
+
+extern uint8_t configuration_storage_get_speed_turn_step(void);
+extern void configuration_storage_set_speed_turn_step(uint8_t);
 
 // #- MISC ----------
 
