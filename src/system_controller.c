@@ -567,6 +567,7 @@ void system_controller_state_run_controller(void)
 			robot_pos = motor_control_get_robot_position();
 			robot_speed = motor_control_get_robot_speed();
 			robot_real_pos = motor_control_get_real_robot_position();
+			motor_control_get_current_speed(&current_speed);
 
 			filter_moving_average_put_element(&robot_speed_avg, robot_speed);
 
@@ -921,19 +922,19 @@ static void system_controller_print_data_really_all_filtered(void)
 	//payload [accel.x H,accel.x L,accel.z H,accel.z L,angular.y H,angular.y L,magnitude,angle_accel H, angle_accel L, angle H,angle L,pid H,pid L]
 	print_data_buffer[buf_idx++] = 'B';
 	print_data_buffer[buf_idx++] = 13;
-	print_data_buffer[buf_idx++] = (uint8_t)(turning_offset >> 8);
-	print_data_buffer[buf_idx++] = (uint8_t)(turning_offset & 0x00FF);
-	print_data_buffer[buf_idx++] = (uint8_t)(robot_pos >> 8);
-	print_data_buffer[buf_idx++] = (uint8_t)(robot_pos & 0x00FF);
-	print_data_buffer[buf_idx++] = (uint8_t)(pid_robot_pos_output >> 8);
-	print_data_buffer[buf_idx++] = (uint8_t)(pid_robot_pos_output & 0x00FF);
-	print_data_buffer[buf_idx++] = (uint8_t)(magnitude);
-	print_data_buffer[buf_idx++] = (uint8_t)(angle_accel >> 8);
-	print_data_buffer[buf_idx++] = (uint8_t)(angle_accel & 0x00FF);
+	print_data_buffer[buf_idx++] = (uint8_t)(current_speed.motor_1 >> 8);
+	print_data_buffer[buf_idx++] = (uint8_t)(current_speed.motor_1 & 0x00FF);
+	print_data_buffer[buf_idx++] = (uint8_t)(current_speed.motor_2 >> 8);
+	print_data_buffer[buf_idx++] = (uint8_t)(current_speed.motor_2 & 0x00FF);
+	print_data_buffer[buf_idx++] = (uint8_t)(robot_real_pos >> 8);
+	print_data_buffer[buf_idx++] = (uint8_t)(robot_real_pos & 0x00FF);
+	print_data_buffer[buf_idx++] = (uint8_t)(turning_offset);
+	print_data_buffer[buf_idx++] = (uint8_t)(pid_robot_speed_setpoint >> 8);
+	print_data_buffer[buf_idx++] = (uint8_t)(pid_robot_speed_setpoint & 0x00FF);
 	print_data_buffer[buf_idx++] = (uint8_t)(current_angle >> 8);
 	print_data_buffer[buf_idx++] = (uint8_t)(current_angle & 0x00FF);
-	print_data_buffer[buf_idx++] = (uint8_t)(pid_robot_speed_output >> 8);
-	print_data_buffer[buf_idx++] = (uint8_t)(pid_robot_speed_output & 0x00FF);
+	print_data_buffer[buf_idx++] = (uint8_t)(pid_balance_output >> 8);
+	print_data_buffer[buf_idx++] = (uint8_t)(pid_balance_output & 0x00FF);
 
 /*
  * 	print_data_buffer[buf_idx++] = 'A';

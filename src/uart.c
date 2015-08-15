@@ -519,7 +519,7 @@ uint8_t uart_gets(char * target, uint8_t target_size)
 		if(new_char != '\n' && string_buffer_index < UART_STRING_BUFFER_SIZE - 1) {
 
 			//skip if linefeed
-			if(new_char != '\r') {
+			if(new_char != '\r' ) {
 				string_buffer[string_buffer_index++] = new_char;
 			}
 
