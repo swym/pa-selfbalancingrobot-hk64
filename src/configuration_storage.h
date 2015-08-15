@@ -36,12 +36,23 @@ typedef enum  {
 
 } print_data_enum_t;
 
+typedef enum  {
+	PID_NONE,
+	PID_ROBOT_POSITION,
+	PID_ROBOT_SPEED,
+	PID_BALANCE,
+	PID_MOTOR_1,
+	PID_MOTOR_2,
+	FINAL_pids_enum_t_ENTRY
+
+} pid_types_enum_t;
+
 typedef struct {
 	int16_t p_factor;
 	int16_t i_factor;
 	int16_t d_factor;
-	uint16_t pid_scalingfactor;
-	int16_t pid_limit;
+	int16_t scalingfactor;
+	int16_t limit;
 } pid_config_t;
 
 typedef struct {
@@ -75,94 +86,112 @@ extern void configuration_storage_reset_configuration(void);
 
 // getter/setter
 
-// #- PID ROBOT POSITION ----------
+// #- GENERIC PID ----------
 
-extern int16_t configuration_storage_get_pid_robot_position_p_factor(void);
-extern void configuration_storage_set_pid_robot_position_p_factor(int16_t);
+extern int16_t configuration_storage_get_pid_p_factor(pid_types_enum_t type);
+extern void    configuration_storage_set_pid_p_factor(pid_types_enum_t type, int16_t value);
 
-extern int16_t configuration_storage_get_pid_robot_position_i_factor(void);
-extern void configuration_storage_set_pid_robot_position_i_factor(int16_t);
+extern int16_t configuration_storage_get_pid_i_factor(pid_types_enum_t type);
+extern void    configuration_storage_set_pid_i_factor(pid_types_enum_t type, int16_t value);
 
-extern int16_t configuration_storage_get_pid_robot_position_d_factor(void);
-extern void configuration_storage_set_pid_robot_position_d_factor(int16_t);
+extern int16_t configuration_storage_get_pid_d_factor(pid_types_enum_t type);
+extern void    configuration_storage_set_pid_d_factor(pid_types_enum_t type, int16_t value);
 
-extern uint16_t configuration_storage_get_pid_robot_position_scalingfactor(void);
-extern void configuration_storage_set_pid_robot_position_scalingfactor(uint16_t);
+extern int16_t configuration_storage_get_pid_scalingfactor(pid_types_enum_t type);
+extern void    configuration_storage_set_pid_scalingfactor(pid_types_enum_t type, int16_t value);
 
-extern uint16_t configuration_storage_get_pid_robot_position_limit(void);
-extern void configuration_storage_set_pid_robot_position_limit(uint16_t);
-
-
-// #- PID ROBOT SPEED ----------
-
-extern int16_t configuration_storage_get_pid_robot_speed_p_factor(void);
-extern void configuration_storage_set_pid_robot_speed_p_factor(int16_t);
-
-extern int16_t configuration_storage_get_pid_robot_speed_i_factor(void);
-extern void configuration_storage_set_pid_robot_speed_i_factor(int16_t);
-
-extern int16_t configuration_storage_get_pid_robot_speed_d_factor(void);
-extern void configuration_storage_set_pid_robot_speed_d_factor(int16_t);
-
-extern uint16_t configuration_storage_get_pid_robot_speed_scalingfactor(void);
-extern void configuration_storage_set_pid_robot_speed_scalingfactor(uint16_t);
-
-extern uint16_t configuration_storage_get_pid_robot_speed_limit(void);
-extern void configuration_storage_set_pid_robot_speed_limit(uint16_t);
+extern int16_t configuration_storage_get_pid_limit(pid_types_enum_t type);
+extern void    configuration_storage_set_pid_limit(pid_types_enum_t type, int16_t value);
 
 
-// #- PID BALANCE ----------
-
-extern int16_t configuration_storage_get_pid_balance_p_factor(void);
-extern void configuration_storage_set_pid_balance_p_factor(int16_t);
-
-extern int16_t configuration_storage_get_pid_balance_i_factor(void);
-extern void configuration_storage_set_pid_balance_i_factor(int16_t);
-
-extern int16_t configuration_storage_get_pid_balance_d_factor(void);
-extern void configuration_storage_set_pid_balance_d_factor(int16_t);
-
-extern uint16_t configuration_storage_get_pid_balance_scalingfactor(void);
-extern void configuration_storage_set_pid_balance_scalingfactor(uint16_t);
-
-extern uint16_t configuration_storage_get_pid_balance_limit(void);
-extern void configuration_storage_set_pid_balance_limit(uint16_t);
-
-
-// #- PID MOTOR SPEED 1 ----------
-
-extern int16_t configuration_storage_get_pid_motor_one_speed_p_factor(void);
-extern void configuration_storage_set_pid_motor_one_speed_p_factor(int16_t);
-
-extern int16_t configuration_storage_get_pid_motor_one_speed_i_factor(void);
-extern void configuration_storage_set_pid_motor_one_speed_i_factor(int16_t);
-
-extern int16_t configuration_storage_get_pid_motor_one_speed_d_factor(void);
-extern void configuration_storage_set_pid_motor_one_speed_d_factor(int16_t);
-
-extern uint16_t configuration_storage_get_pid_motor_one_speed_scalingfactor(void);
-extern void configuration_storage_set_pid_motor_one_speed_scalingfactor(uint16_t);
-
-extern uint16_t configuration_storage_get_pid_motor_one_speed_limit(void);
-extern void configuration_storage_set_pid_motor_one_speed_limit(uint16_t);
-
-
-// #- PID MOTOR SPEED 2 ----------
-
-extern int16_t configuration_storage_get_pid_motor_two_speed_p_factor(void);
-extern void configuration_storage_set_pid_motor_two_speed_p_factor(int16_t);
-
-extern int16_t configuration_storage_get_pid_motor_two_speed_i_factor(void);
-extern void configuration_storage_set_pid_motor_two_speed_i_factor(int16_t);
-
-extern int16_t configuration_storage_get_pid_motor_two_speed_d_factor(void);
-extern void configuration_storage_set_pid_motor_two_speed_d_factor(int16_t);
-
-extern uint16_t configuration_storage_get_pid_motor_two_speed_scalingfactor(void);
-extern void configuration_storage_set_pid_motor_two_speed_scalingfactor(uint16_t);
-
-extern uint16_t configuration_storage_get_pid_motor_two_speed_limit(void);
-extern void configuration_storage_set_pid_motor_two_speed_limit(uint16_t);
+//// #- PID ROBOT POSITION ----------
+//
+//extern int16_t configuration_storage_get_pid_robot_position_p_factor(void);
+//extern void configuration_storage_set_pid_robot_position_p_factor(int16_t);
+//
+//extern int16_t configuration_storage_get_pid_robot_position_i_factor(void);
+//extern void configuration_storage_set_pid_robot_position_i_factor(int16_t);
+//
+//extern int16_t configuration_storage_get_pid_robot_position_d_factor(void);
+//extern void configuration_storage_set_pid_robot_position_d_factor(int16_t);
+//
+//extern uint16_t configuration_storage_get_pid_robot_position_scalingfactor(void);
+//extern void configuration_storage_set_pid_robot_position_scalingfactor(uint16_t);
+//
+//extern uint16_t configuration_storage_get_pid_robot_position_limit(void);
+//extern void configuration_storage_set_pid_robot_position_limit(uint16_t);
+//
+//
+//// #- PID ROBOT SPEED ----------
+//
+//extern int16_t configuration_storage_get_pid_robot_speed_p_factor(void);
+//extern void configuration_storage_set_pid_robot_speed_p_factor(int16_t);
+//
+//extern int16_t configuration_storage_get_pid_robot_speed_i_factor(void);
+//extern void configuration_storage_set_pid_robot_speed_i_factor(int16_t);
+//
+//extern int16_t configuration_storage_get_pid_robot_speed_d_factor(void);
+//extern void configuration_storage_set_pid_robot_speed_d_factor(int16_t);
+//
+//extern uint16_t configuration_storage_get_pid_robot_speed_scalingfactor(void);
+//extern void configuration_storage_set_pid_robot_speed_scalingfactor(uint16_t);
+//
+//extern uint16_t configuration_storage_get_pid_robot_speed_limit(void);
+//extern void configuration_storage_set_pid_robot_speed_limit(uint16_t);
+//
+//
+//// #- PID BALANCE ----------
+//
+//extern int16_t configuration_storage_get_pid_balance_p_factor(void);
+//extern void configuration_storage_set_pid_balance_p_factor(int16_t);
+//
+//extern int16_t configuration_storage_get_pid_balance_i_factor(void);
+//extern void configuration_storage_set_pid_balance_i_factor(int16_t);
+//
+//extern int16_t configuration_storage_get_pid_balance_d_factor(void);
+//extern void configuration_storage_set_pid_balance_d_factor(int16_t);
+//
+//extern uint16_t configuration_storage_get_pid_balance_scalingfactor(void);
+//extern void configuration_storage_set_pid_balance_scalingfactor(uint16_t);
+//
+//extern uint16_t configuration_storage_get_pid_balance_limit(void);
+//extern void configuration_storage_set_pid_balance_limit(uint16_t);
+//
+//
+//// #- PID MOTOR SPEED 1 ----------
+//
+//extern int16_t configuration_storage_get_pid_motor_one_speed_p_factor(void);
+//extern void configuration_storage_set_pid_motor_one_speed_p_factor(int16_t);
+//
+//extern int16_t configuration_storage_get_pid_motor_one_speed_i_factor(void);
+//extern void configuration_storage_set_pid_motor_one_speed_i_factor(int16_t);
+//
+//extern int16_t configuration_storage_get_pid_motor_one_speed_d_factor(void);
+//extern void configuration_storage_set_pid_motor_one_speed_d_factor(int16_t);
+//
+//extern uint16_t configuration_storage_get_pid_motor_one_speed_scalingfactor(void);
+//extern void configuration_storage_set_pid_motor_one_speed_scalingfactor(uint16_t);
+//
+//extern uint16_t configuration_storage_get_pid_motor_one_speed_limit(void);
+//extern void configuration_storage_set_pid_motor_one_speed_limit(uint16_t);
+//
+//
+//// #- PID MOTOR SPEED 2 ----------
+//
+//extern int16_t configuration_storage_get_pid_motor_two_speed_p_factor(void);
+//extern void configuration_storage_set_pid_motor_two_speed_p_factor(int16_t);
+//
+//extern int16_t configuration_storage_get_pid_motor_two_speed_i_factor(void);
+//extern void configuration_storage_set_pid_motor_two_speed_i_factor(int16_t);
+//
+//extern int16_t configuration_storage_get_pid_motor_two_speed_d_factor(void);
+//extern void configuration_storage_set_pid_motor_two_speed_d_factor(int16_t);
+//
+//extern uint16_t configuration_storage_get_pid_motor_two_speed_scalingfactor(void);
+//extern void configuration_storage_set_pid_motor_two_speed_scalingfactor(uint16_t);
+//
+//extern uint16_t configuration_storage_get_pid_motor_two_speed_limit(void);
+//extern void configuration_storage_set_pid_motor_two_speed_limit(uint16_t);
 
 // #- MOTION SENSOR ----------
 

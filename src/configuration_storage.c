@@ -67,32 +67,32 @@ void configuration_storage_reset_configuration(void)
 	configuration.pid_robot_position.p_factor = 1;
 	configuration.pid_robot_position.i_factor = 0;
 	configuration.pid_robot_position.d_factor = 0;
-	configuration.pid_robot_position.pid_scalingfactor = 1;
-	configuration.pid_robot_position.pid_limit = INT16_MAX;
+	configuration.pid_robot_position.scalingfactor = 1;
+	configuration.pid_robot_position.limit = INT16_MAX;
 
 	configuration.pid_robot_speed.p_factor = 1;
 	configuration.pid_robot_speed.i_factor = 0;
 	configuration.pid_robot_speed.d_factor = 0;
-	configuration.pid_robot_speed.pid_scalingfactor = 1;
-	configuration.pid_robot_speed.pid_limit = INT16_MAX;
+	configuration.pid_robot_speed.scalingfactor = 1;
+	configuration.pid_robot_speed.limit = INT16_MAX;
 
 	configuration.pid_balance.p_factor = 1;
 	configuration.pid_balance.i_factor = 0;
 	configuration.pid_balance.d_factor = 0;
-	configuration.pid_balance.pid_scalingfactor = 1;
-	configuration.pid_balance.pid_limit = INT16_MAX;
+	configuration.pid_balance.scalingfactor = 1;
+	configuration.pid_balance.limit = INT16_MAX;
 
 	configuration.pid_motor_1_speed.p_factor = 1;
 	configuration.pid_motor_1_speed.i_factor = 0;
 	configuration.pid_motor_1_speed.d_factor = 0;
-	configuration.pid_motor_1_speed.pid_scalingfactor = 1;
-	configuration.pid_motor_1_speed.pid_limit = INT16_MAX;
+	configuration.pid_motor_1_speed.scalingfactor = 1;
+	configuration.pid_motor_1_speed.limit = INT16_MAX;
 
 	configuration.pid_motor_2_speed.p_factor = 1;
 	configuration.pid_motor_2_speed.i_factor = 0;
 	configuration.pid_motor_2_speed.d_factor = 0;
-	configuration.pid_motor_2_speed.pid_scalingfactor = 1;
-	configuration.pid_motor_2_speed.pid_limit = INT16_MAX;
+	configuration.pid_motor_2_speed.scalingfactor = 1;
+	configuration.pid_motor_2_speed.limit = INT16_MAX;
 
 	configuration.motionsensor.acceleration_offset_vector.x = 0;
 	configuration.motionsensor.acceleration_offset_vector.y = 0;
@@ -113,295 +113,592 @@ void configuration_storage_reset_configuration(void)
 	configuration.has_changed = true;
 }
 
-// #- PID ROBOT POSITION ----------
+// #- GENERIC PID ----------
 
-int16_t configuration_storage_get_pid_robot_position_p_factor(void)
+//should use a error type also
+int16_t configuration_storage_get_pid_p_factor(pid_types_enum_t type)
 {
-	return configuration.pid_robot_position.p_factor;
+	int16_t return_value = -1252;	//TODO: replace with real error value
+
+	switch (type) {
+		case PID_ROBOT_POSITION:
+			return_value = configuration.pid_robot_position.p_factor;
+			break;
+		case PID_ROBOT_SPEED:
+			return_value = configuration.pid_robot_speed.p_factor;
+			break;
+		case PID_BALANCE:
+			return_value = configuration.pid_balance.p_factor;
+			break;
+		case PID_MOTOR_1:
+			return_value = configuration.pid_motor_1_speed.p_factor;
+			break;
+		case PID_MOTOR_2:
+			return_value = configuration.pid_motor_2_speed.p_factor;
+			break;
+		default:
+			break;
+	}
+
+	return return_value;
 }
 
-void configuration_storage_set_pid_robot_position_p_factor(int16_t p_factor)
+void configuration_storage_set_pid_p_factor(pid_types_enum_t type, int16_t value)
 {
-	configuration.pid_robot_position.p_factor =  p_factor;
-	configuration.has_changed = true;
+	switch (type) {
+		case PID_ROBOT_POSITION:
+			configuration.pid_robot_position.p_factor =  value;
+			configuration.has_changed = true;
+			break;
+		case PID_ROBOT_SPEED:
+			configuration.pid_robot_speed.p_factor =  value;
+			configuration.has_changed = true;
+			break;
+		case PID_BALANCE:
+			configuration.pid_balance.p_factor =  value;
+			configuration.has_changed = true;
+			break;
+		case PID_MOTOR_1:
+			configuration.pid_motor_1_speed.p_factor =  value;
+			configuration.has_changed = true;
+			break;
+		case PID_MOTOR_2:
+			configuration.pid_motor_2_speed.p_factor =  value;
+			configuration.has_changed = true;
+			break;
+		default:
+			break;
+	}
 }
 
-int16_t configuration_storage_get_pid_robot_position_i_factor(void)
+// -----
+
+//should use a error type also
+int16_t configuration_storage_get_pid_i_factor(pid_types_enum_t type)
 {
-	return configuration.pid_robot_position.i_factor;
+	int16_t return_value = -1252;	//TODO: replace with real error value
+
+	switch (type) {
+		case PID_ROBOT_POSITION:
+			return_value = configuration.pid_robot_position.i_factor;
+			break;
+		case PID_ROBOT_SPEED:
+			return_value = configuration.pid_robot_speed.i_factor;
+			break;
+		case PID_BALANCE:
+			return_value = configuration.pid_balance.i_factor;
+			break;
+		case PID_MOTOR_1:
+			return_value = configuration.pid_motor_1_speed.i_factor;
+			break;
+		case PID_MOTOR_2:
+			return_value = configuration.pid_motor_2_speed.i_factor;
+			break;
+		default:
+			break;
+	}
+
+	return return_value;
 }
 
-void configuration_storage_set_pid_robot_position_i_factor(int16_t i_factor)
+void configuration_storage_set_pid_i_factor(pid_types_enum_t type, int16_t value)
 {
-	configuration.pid_robot_position.i_factor =  i_factor;
-	configuration.has_changed = true;
+	switch (type) {
+		case PID_ROBOT_POSITION:
+			configuration.pid_robot_position.i_factor =  value;
+			configuration.has_changed = true;
+			break;
+		case PID_ROBOT_SPEED:
+			configuration.pid_robot_speed.i_factor =  value;
+			configuration.has_changed = true;
+			break;
+		case PID_BALANCE:
+			configuration.pid_balance.i_factor =  value;
+			configuration.has_changed = true;
+			break;
+		case PID_MOTOR_1:
+			configuration.pid_motor_1_speed.i_factor =  value;
+			configuration.has_changed = true;
+			break;
+		case PID_MOTOR_2:
+			configuration.pid_motor_2_speed.i_factor =  value;
+			configuration.has_changed = true;
+			break;
+		default:
+			break;
+	}
 }
 
-int16_t configuration_storage_get_pid_robot_position_d_factor(void)
+// -----
+
+//should use a error type also
+int16_t configuration_storage_get_pid_d_factor(pid_types_enum_t type)
 {
-	return configuration.pid_robot_position.d_factor;
+	int16_t return_value = -1252;	//TODO: replace with real error value
+
+	switch (type) {
+		case PID_ROBOT_POSITION:
+			return_value = configuration.pid_robot_position.d_factor;
+			break;
+		case PID_ROBOT_SPEED:
+			return_value = configuration.pid_robot_speed.d_factor;
+			break;
+		case PID_BALANCE:
+			return_value = configuration.pid_balance.d_factor;
+			break;
+		case PID_MOTOR_1:
+			return_value = configuration.pid_motor_1_speed.d_factor;
+			break;
+		case PID_MOTOR_2:
+			return_value = configuration.pid_motor_2_speed.d_factor;
+			break;
+		default:
+			break;
+	}
+
+	return return_value;
 }
 
-void configuration_storage_set_pid_robot_position_d_factor(int16_t d_factor)
+void configuration_storage_set_pid_d_factor(pid_types_enum_t type, int16_t value)
 {
-	configuration.pid_robot_position.d_factor =  d_factor;
-	configuration.has_changed = true;
+	switch (type) {
+		case PID_ROBOT_POSITION:
+			configuration.pid_robot_position.d_factor =  value;
+			configuration.has_changed = true;
+			break;
+		case PID_ROBOT_SPEED:
+			configuration.pid_robot_speed.d_factor =  value;
+			configuration.has_changed = true;
+			break;
+		case PID_BALANCE:
+			configuration.pid_balance.d_factor =  value;
+			configuration.has_changed = true;
+			break;
+		case PID_MOTOR_1:
+			configuration.pid_motor_1_speed.d_factor =  value;
+			configuration.has_changed = true;
+			break;
+		case PID_MOTOR_2:
+			configuration.pid_motor_2_speed.d_factor =  value;
+			configuration.has_changed = true;
+			break;
+		default:
+			break;
+	}
 }
 
-uint16_t configuration_storage_get_pid_robot_position_scalingfactor(void)
+// -----
+
+//should use a error type also
+int16_t configuration_storage_get_pid_scalingfactor(pid_types_enum_t type)
 {
-	return configuration.pid_robot_position.pid_scalingfactor;
+	int16_t return_value = -1252;	//TODO: replace with real error value
+
+	switch (type) {
+		case PID_ROBOT_POSITION:
+			return_value = configuration.pid_robot_position.scalingfactor;
+			break;
+		case PID_ROBOT_SPEED:
+			return_value = configuration.pid_robot_speed.scalingfactor;
+			break;
+		case PID_BALANCE:
+			return_value = configuration.pid_balance.scalingfactor;
+			break;
+		case PID_MOTOR_1:
+			return_value = configuration.pid_motor_1_speed.scalingfactor;
+			break;
+		case PID_MOTOR_2:
+			return_value = configuration.pid_motor_2_speed.scalingfactor;
+			break;
+		default:
+			break;
+	}
+
+	return return_value;
 }
 
-void configuration_storage_set_pid_robot_position_scalingfactor(uint16_t pid_scalingfactor)
+void configuration_storage_set_pid_scalingfactor(pid_types_enum_t type, int16_t value)
 {
-	configuration.pid_robot_position.pid_scalingfactor = pid_scalingfactor;
-	configuration.has_changed = true;
+	switch (type) {
+		case PID_ROBOT_POSITION:
+			configuration.pid_robot_position.scalingfactor =  value;
+			configuration.has_changed = true;
+			break;
+		case PID_ROBOT_SPEED:
+			configuration.pid_robot_speed.scalingfactor =  value;
+			configuration.has_changed = true;
+			break;
+		case PID_BALANCE:
+			configuration.pid_balance.scalingfactor =  value;
+			configuration.has_changed = true;
+			break;
+		case PID_MOTOR_1:
+			configuration.pid_motor_1_speed.scalingfactor =  value;
+			configuration.has_changed = true;
+			break;
+		case PID_MOTOR_2:
+			configuration.pid_motor_2_speed.scalingfactor =  value;
+			configuration.has_changed = true;
+			break;
+		default:
+			break;
+	}
 }
 
-uint16_t configuration_storage_get_pid_robot_position_limit(void)
+// -----
+
+//should use a error type also
+int16_t configuration_storage_get_pid_limit(pid_types_enum_t type)
 {
-	return configuration.pid_robot_position.pid_limit;
+	int16_t return_value = -1252;	//TODO: replace with real error value
+
+	switch (type) {
+		case PID_ROBOT_POSITION:
+			return_value = configuration.pid_robot_position.limit;
+			break;
+		case PID_ROBOT_SPEED:
+			return_value = configuration.pid_robot_speed.limit;
+			break;
+		case PID_BALANCE:
+			return_value = configuration.pid_balance.limit;
+			break;
+		case PID_MOTOR_1:
+			return_value = configuration.pid_motor_1_speed.limit;
+			break;
+		case PID_MOTOR_2:
+			return_value = configuration.pid_motor_2_speed.limit;
+			break;
+		default:
+			break;
+	}
+
+	return return_value;
 }
 
-void configuration_storage_set_pid_robot_position_limit(uint16_t pid_limit)
+void configuration_storage_set_pid_limit(pid_types_enum_t type, int16_t value)
 {
-	configuration.pid_robot_position.pid_limit = pid_limit;
-	configuration.has_changed = true;
+	switch (type) {
+		case PID_ROBOT_POSITION:
+			configuration.pid_robot_position.limit =  value;
+			configuration.has_changed = true;
+			break;
+		case PID_ROBOT_SPEED:
+			configuration.pid_robot_speed.limit =  value;
+			configuration.has_changed = true;
+			break;
+		case PID_BALANCE:
+			configuration.pid_balance.limit =  value;
+			configuration.has_changed = true;
+			break;
+		case PID_MOTOR_1:
+			configuration.pid_motor_1_speed.limit =  value;
+			configuration.has_changed = true;
+			break;
+		case PID_MOTOR_2:
+			configuration.pid_motor_2_speed.limit =  value;
+			configuration.has_changed = true;
+			break;
+		default:
+			break;
+	}
 }
 
-
-// #- PID ROBOT SPEED ----------
-
-int16_t configuration_storage_get_pid_robot_speed_p_factor(void)
-{
-	return configuration.pid_robot_speed.p_factor;
-}
-
-void configuration_storage_set_pid_robot_speed_p_factor(int16_t p_factor)
-{
-	configuration.pid_robot_speed.p_factor =  p_factor;
-	configuration.has_changed = true;
-}
-
-int16_t configuration_storage_get_pid_robot_speed_i_factor(void)
-{
-	return configuration.pid_robot_speed.i_factor;
-}
-
-void configuration_storage_set_pid_robot_speed_i_factor(int16_t i_factor)
-{
-	configuration.pid_robot_speed.i_factor =  i_factor;
-	configuration.has_changed = true;
-}
-
-int16_t configuration_storage_get_pid_robot_speed_d_factor(void)
-{
-	return configuration.pid_robot_speed.d_factor;
-}
-
-void configuration_storage_set_pid_robot_speed_d_factor(int16_t d_factor)
-{
-	configuration.pid_robot_speed.d_factor =  d_factor;
-	configuration.has_changed = true;
-}
-
-uint16_t configuration_storage_get_pid_robot_speed_scalingfactor(void)
-{
-	return configuration.pid_robot_speed.pid_scalingfactor;
-}
-
-void configuration_storage_set_pid_robot_speed_scalingfactor(uint16_t pid_scalingfactor)
-{
-	configuration.pid_robot_speed.pid_scalingfactor = pid_scalingfactor;
-	configuration.has_changed = true;
-}
-
-uint16_t configuration_storage_get_pid_robot_speed_limit(void)
-{
-	return configuration.pid_robot_speed.pid_limit;
-}
-
-void configuration_storage_set_pid_robot_speed_limit(uint16_t pid_limit)
-{
-	configuration.pid_robot_speed.pid_limit = pid_limit;
-	configuration.has_changed = true;
-}
+// -----
 
 
-// #- PID BALANCE ----------
-
-int16_t configuration_storage_get_pid_balance_p_factor(void)
-{
-	return configuration.pid_balance.p_factor;
-}
-
-void configuration_storage_set_pid_balance_p_factor(int16_t p_factor)
-{
-	configuration.pid_balance.p_factor =  p_factor;
-	configuration.has_changed = true;
-}
-
-int16_t configuration_storage_get_pid_balance_i_factor(void)
-{
-	return configuration.pid_balance.i_factor;
-}
-
-void configuration_storage_set_pid_balance_i_factor(int16_t i_factor)
-{
-	configuration.pid_balance.i_factor =  i_factor;
-	configuration.has_changed = true;
-}
-
-int16_t configuration_storage_get_pid_balance_d_factor(void)
-{
-	return configuration.pid_balance.d_factor;
-}
-
-void configuration_storage_set_pid_balance_d_factor(int16_t d_factor)
-{
-	configuration.pid_balance.d_factor =  d_factor;
-	configuration.has_changed = true;
-}
-
-uint16_t configuration_storage_get_pid_balance_scalingfactor(void)
-{
-	return configuration.pid_balance.pid_scalingfactor;
-}
-
-void configuration_storage_set_pid_balance_scalingfactor(uint16_t pid_scalingfactor)
-{
-	configuration.pid_balance.pid_scalingfactor = pid_scalingfactor;
-	configuration.has_changed = true;
-}
-
-uint16_t configuration_storage_get_pid_balance_limit(void)
-{
-	return configuration.pid_balance.pid_limit;
-}
-
-void configuration_storage_set_pid_balance_limit(uint16_t pid_limit)
-{
-	configuration.pid_balance.pid_limit = pid_limit;
-	configuration.has_changed = true;
-}
-
-// #- PID MOTOR SPEED 1 ----------
-
-int16_t configuration_storage_get_pid_motor_one_speed_p_factor(void)
-{
-	return configuration.pid_motor_1_speed.p_factor;
-}
-
-void configuration_storage_set_pid_motor_one_speed_p_factor(int16_t p_factor)
-{
-	configuration.pid_motor_1_speed.p_factor =  p_factor;
-	configuration.has_changed = true;
-}
-
-int16_t configuration_storage_get_pid_motor_one_speed_i_factor(void)
-{
-	return configuration.pid_motor_1_speed.i_factor;
-}
-
-void configuration_storage_set_pid_motor_one_speed_i_factor(int16_t i_factor)
-{
-	configuration.pid_motor_1_speed.i_factor =  i_factor;
-	configuration.has_changed = true;
-}
-
-int16_t configuration_storage_get_pid_motor_one_speed_d_factor(void)
-{
-	return configuration.pid_motor_1_speed.d_factor;
-}
-
-void configuration_storage_set_pid_motor_one_speed_d_factor(int16_t d_factor)
-{
-	configuration.pid_motor_1_speed.d_factor =  d_factor;
-	configuration.has_changed = true;
-}
-
-uint16_t configuration_storage_get_pid_motor_one_speed_scalingfactor(void)
-{
-	return configuration.pid_motor_1_speed.pid_scalingfactor;
-}
-
-void configuration_storage_set_pid_motor_one_speed_scalingfactor(uint16_t pid_scalingfactor)
-{
-	configuration.pid_motor_1_speed.pid_scalingfactor = pid_scalingfactor;
-	configuration.has_changed = true;
-}
-
-uint16_t configuration_storage_get_pid_motor_one_speed_limit(void)
-{
-	return configuration.pid_motor_1_speed.pid_limit;
-}
-
-void configuration_storage_set_pid_motor_one_speed_limit(uint16_t pid_limit)
-{
-	configuration.pid_motor_1_speed.pid_limit = pid_limit;
-	configuration.has_changed = true;
-}
 
 
-// #- PID MOTOR SPEED 2 ----------
-
-int16_t configuration_storage_get_pid_motor_two_speed_p_factor(void)
-{
-	return configuration.pid_motor_2_speed.p_factor;
-}
-
-void configuration_storage_set_pid_motor_two_speed_p_factor(int16_t p_factor)
-{
-	configuration.pid_motor_2_speed.p_factor =  p_factor;
-	configuration.has_changed = true;
-}
-
-int16_t configuration_storage_get_pid_motor_two_speed_i_factor(void)
-{
-	return configuration.pid_motor_2_speed.i_factor;
-}
-
-void configuration_storage_set_pid_motor_two_speed_i_factor(int16_t i_factor)
-{
-	configuration.pid_motor_2_speed.i_factor =  i_factor;
-	configuration.has_changed = true;
-}
-
-int16_t configuration_storage_get_pid_motor_two_speed_d_factor(void)
-{
-	return configuration.pid_motor_2_speed.d_factor;
-}
-
-void configuration_storage_set_pid_motor_two_speed_d_factor(int16_t d_factor)
-{
-	configuration.pid_motor_2_speed.d_factor =  d_factor;
-	configuration.has_changed = true;
-}
-
-uint16_t configuration_storage_get_pid_motor_two_speed_scalingfactor(void)
-{
-	return configuration.pid_motor_2_speed.pid_scalingfactor;
-}
-
-void configuration_storage_set_pid_motor_two_speed_scalingfactor(uint16_t pid_scalingfactor)
-{
-	configuration.pid_motor_2_speed.pid_scalingfactor = pid_scalingfactor;
-	configuration.has_changed = true;
-}
-
-uint16_t configuration_storage_get_pid_motor_two_speed_limit(void)
-{
-	return configuration.pid_motor_2_speed.pid_limit;
-}
-
-void configuration_storage_set_pid_motor_two_speed_limit(uint16_t pid_limit)
-{
-	configuration.pid_motor_2_speed.pid_limit = pid_limit;
-	configuration.has_changed = true;
-}
-
-// #-----------
+//
+//
+//// #- PID ROBOT POSITION ----------
+//
+//int16_t configuration_storage_get_pid_robot_position_p_factor(void)
+//{
+//	return configuration.pid_robot_position.p_factor;
+//}
+//
+//void configuration_storage_set_pid_robot_position_p_factor(int16_t p_factor)
+//{
+//	configuration.pid_robot_position.p_factor =  p_factor;
+//	configuration.has_changed = true;
+//}
+//
+//int16_t configuration_storage_get_pid_robot_position_i_factor(void)
+//{
+//	return configuration.pid_robot_position.i_factor;
+//}
+//
+//void configuration_storage_set_pid_robot_position_i_factor(int16_t i_factor)
+//{
+//	configuration.pid_robot_position.i_factor =  i_factor;
+//	configuration.has_changed = true;
+//}
+//
+//int16_t configuration_storage_get_pid_robot_position_d_factor(void)
+//{
+//	return configuration.pid_robot_position.d_factor;
+//}
+//
+//void configuration_storage_set_pid_robot_position_d_factor(int16_t d_factor)
+//{
+//	configuration.pid_robot_position.d_factor =  d_factor;
+//	configuration.has_changed = true;
+//}
+//
+//uint16_t configuration_storage_get_pid_robot_position_scalingfactor(void)
+//{
+//	return configuration.pid_robot_position.pid_scalingfactor;
+//}
+//
+//void configuration_storage_set_pid_robot_position_scalingfactor(uint16_t pid_scalingfactor)
+//{
+//	configuration.pid_robot_position.pid_scalingfactor = pid_scalingfactor;
+//	configuration.has_changed = true;
+//}
+//
+//uint16_t configuration_storage_get_pid_robot_position_limit(void)
+//{
+//	return configuration.pid_robot_position.pid_limit;
+//}
+//
+//void configuration_storage_set_pid_robot_position_limit(uint16_t pid_limit)
+//{
+//	configuration.pid_robot_position.pid_limit = pid_limit;
+//	configuration.has_changed = true;
+//}
+//
+//
+//// #- PID ROBOT SPEED ----------
+//
+//int16_t configuration_storage_get_pid_robot_speed_p_factor(void)
+//{
+//	return configuration.pid_robot_speed.p_factor;
+//}
+//
+//void configuration_storage_set_pid_robot_speed_p_factor(int16_t p_factor)
+//{
+//	configuration.pid_robot_speed.p_factor =  p_factor;
+//	configuration.has_changed = true;
+//}
+//
+//int16_t configuration_storage_get_pid_robot_speed_i_factor(void)
+//{
+//	return configuration.pid_robot_speed.i_factor;
+//}
+//
+//void configuration_storage_set_pid_robot_speed_i_factor(int16_t i_factor)
+//{
+//	configuration.pid_robot_speed.i_factor =  i_factor;
+//	configuration.has_changed = true;
+//}
+//
+//int16_t configuration_storage_get_pid_robot_speed_d_factor(void)
+//{
+//	return configuration.pid_robot_speed.d_factor;
+//}
+//
+//void configuration_storage_set_pid_robot_speed_d_factor(int16_t d_factor)
+//{
+//	configuration.pid_robot_speed.d_factor =  d_factor;
+//	configuration.has_changed = true;
+//}
+//
+//uint16_t configuration_storage_get_pid_robot_speed_scalingfactor(void)
+//{
+//	return configuration.pid_robot_speed.pid_scalingfactor;
+//}
+//
+//void configuration_storage_set_pid_robot_speed_scalingfactor(uint16_t pid_scalingfactor)
+//{
+//	configuration.pid_robot_speed.pid_scalingfactor = pid_scalingfactor;
+//	configuration.has_changed = true;
+//}
+//
+//uint16_t configuration_storage_get_pid_robot_speed_limit(void)
+//{
+//	return configuration.pid_robot_speed.pid_limit;
+//}
+//
+//void configuration_storage_set_pid_robot_speed_limit(uint16_t pid_limit)
+//{
+//	configuration.pid_robot_speed.pid_limit = pid_limit;
+//	configuration.has_changed = true;
+//}
+//
+//
+//// #- PID BALANCE ----------
+//
+//int16_t configuration_storage_get_pid_balance_p_factor(void)
+//{
+//	return configuration.pid_balance.p_factor;
+//}
+//
+//void configuration_storage_set_pid_balance_p_factor(int16_t p_factor)
+//{
+//	configuration.pid_balance.p_factor =  p_factor;
+//	configuration.has_changed = true;
+//}
+//
+//int16_t configuration_storage_get_pid_balance_i_factor(void)
+//{
+//	return configuration.pid_balance.i_factor;
+//}
+//
+//void configuration_storage_set_pid_balance_i_factor(int16_t i_factor)
+//{
+//	configuration.pid_balance.i_factor =  i_factor;
+//	configuration.has_changed = true;
+//}
+//
+//int16_t configuration_storage_get_pid_balance_d_factor(void)
+//{
+//	return configuration.pid_balance.d_factor;
+//}
+//
+//void configuration_storage_set_pid_balance_d_factor(int16_t d_factor)
+//{
+//	configuration.pid_balance.d_factor =  d_factor;
+//	configuration.has_changed = true;
+//}
+//
+//uint16_t configuration_storage_get_pid_balance_scalingfactor(void)
+//{
+//	return configuration.pid_balance.pid_scalingfactor;
+//}
+//
+//void configuration_storage_set_pid_balance_scalingfactor(uint16_t pid_scalingfactor)
+//{
+//	configuration.pid_balance.pid_scalingfactor = pid_scalingfactor;
+//	configuration.has_changed = true;
+//}
+//
+//uint16_t configuration_storage_get_pid_balance_limit(void)
+//{
+//	return configuration.pid_balance.pid_limit;
+//}
+//
+//void configuration_storage_set_pid_balance_limit(uint16_t pid_limit)
+//{
+//	configuration.pid_balance.pid_limit = pid_limit;
+//	configuration.has_changed = true;
+//}
+//
+//// #- PID MOTOR SPEED 1 ----------
+//
+//int16_t configuration_storage_get_pid_motor_one_speed_p_factor(void)
+//{
+//	return configuration.pid_motor_1_speed.p_factor;
+//}
+//
+//void configuration_storage_set_pid_motor_one_speed_p_factor(int16_t p_factor)
+//{
+//	configuration.pid_motor_1_speed.p_factor =  p_factor;
+//	configuration.has_changed = true;
+//}
+//
+//int16_t configuration_storage_get_pid_motor_one_speed_i_factor(void)
+//{
+//	return configuration.pid_motor_1_speed.i_factor;
+//}
+//
+//void configuration_storage_set_pid_motor_one_speed_i_factor(int16_t i_factor)
+//{
+//	configuration.pid_motor_1_speed.i_factor =  i_factor;
+//	configuration.has_changed = true;
+//}
+//
+//int16_t configuration_storage_get_pid_motor_one_speed_d_factor(void)
+//{
+//	return configuration.pid_motor_1_speed.d_factor;
+//}
+//
+//void configuration_storage_set_pid_motor_one_speed_d_factor(int16_t d_factor)
+//{
+//	configuration.pid_motor_1_speed.d_factor =  d_factor;
+//	configuration.has_changed = true;
+//}
+//
+//uint16_t configuration_storage_get_pid_motor_one_speed_scalingfactor(void)
+//{
+//	return configuration.pid_motor_1_speed.pid_scalingfactor;
+//}
+//
+//void configuration_storage_set_pid_motor_one_speed_scalingfactor(uint16_t pid_scalingfactor)
+//{
+//	configuration.pid_motor_1_speed.pid_scalingfactor = pid_scalingfactor;
+//	configuration.has_changed = true;
+//}
+//
+//uint16_t configuration_storage_get_pid_motor_one_speed_limit(void)
+//{
+//	return configuration.pid_motor_1_speed.pid_limit;
+//}
+//
+//void configuration_storage_set_pid_motor_one_speed_limit(uint16_t pid_limit)
+//{
+//	configuration.pid_motor_1_speed.pid_limit = pid_limit;
+//	configuration.has_changed = true;
+//}
+//
+//
+//// #- PID MOTOR SPEED 2 ----------
+//
+//int16_t configuration_storage_get_pid_motor_two_speed_p_factor(void)
+//{
+//	return configuration.pid_motor_2_speed.p_factor;
+//}
+//
+//void configuration_storage_set_pid_motor_two_speed_p_factor(int16_t p_factor)
+//{
+//	configuration.pid_motor_2_speed.p_factor =  p_factor;
+//	configuration.has_changed = true;
+//}
+//
+//int16_t configuration_storage_get_pid_motor_two_speed_i_factor(void)
+//{
+//	return configuration.pid_motor_2_speed.i_factor;
+//}
+//
+//void configuration_storage_set_pid_motor_two_speed_i_factor(int16_t i_factor)
+//{
+//	configuration.pid_motor_2_speed.i_factor =  i_factor;
+//	configuration.has_changed = true;
+//}
+//
+//int16_t configuration_storage_get_pid_motor_two_speed_d_factor(void)
+//{
+//	return configuration.pid_motor_2_speed.d_factor;
+//}
+//
+//void configuration_storage_set_pid_motor_two_speed_d_factor(int16_t d_factor)
+//{
+//	configuration.pid_motor_2_speed.d_factor =  d_factor;
+//	configuration.has_changed = true;
+//}
+//
+//uint16_t configuration_storage_get_pid_motor_two_speed_scalingfactor(void)
+//{
+//	return configuration.pid_motor_2_speed.pid_scalingfactor;
+//}
+//
+//void configuration_storage_set_pid_motor_two_speed_scalingfactor(uint16_t pid_scalingfactor)
+//{
+//	configuration.pid_motor_2_speed.pid_scalingfactor = pid_scalingfactor;
+//	configuration.has_changed = true;
+//}
+//
+//uint16_t configuration_storage_get_pid_motor_two_speed_limit(void)
+//{
+//	return configuration.pid_motor_2_speed.pid_limit;
+//}
+//
+//void configuration_storage_set_pid_motor_two_speed_limit(uint16_t pid_limit)
+//{
+//	configuration.pid_motor_2_speed.pid_limit = pid_limit;
+//	configuration.has_changed = true;
+//}
+//
+//// #-----------
 
 void configuration_storage_get_acceleration_offset_vector(acceleration_vector_t * accel_v)
 {

@@ -38,7 +38,7 @@ typedef struct PID_DATA{
   //! The Derivative tuning constant, multiplied with SCALING_FACTOR
   int16_t D_Factor;
   //! Scaling Factor of the returing value
-  uint16_t scalingfactor;
+  int16_t scalingfactor;
   //! Maximum allowed error, avoid overflow
   int16_t maxError;
   //! Maximum allowed sumerror, avoid overflow

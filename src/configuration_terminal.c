@@ -37,6 +37,9 @@
 #define INPUT_BUFFER_SEPERATOR_INDEX	2
 #define INPUT_BUFFER_SEPERATOR			','
 
+#define INPUT_BUFFER_PID_TYPE_INDEX			0		//selected pid reuses input buffer
+#define INPUT_BUFFER_PID_PARAMETER_INDEX	1
+
 #define VALUE_BUFFER_MAX				10
 
 /* *** DECLARATIONS ********************************************************* */
@@ -46,6 +49,8 @@ typedef enum {
 	STATE_READ_INPUT,
 	STATE_PRINT_HELP,
 	STATE_PRINT_CONFIG,
+	STATE_SWITCH_PID,
+	STATE_SET_PID,
 	STATE_SET_PID_ROBOT_POS_PARAMETER,
 	STATE_SET_PID_BALANCE_PARAMETER,
 	STATE_SET_PID_SPEED_MOTOR_PARAMETER,
@@ -160,6 +165,7 @@ static void configuration_terminal_state_set_print_data_mode(void);
 static void configuration_terminal_state_reset_configuration(void);
 static void configuration_terminal_state_save_configuration(void);
 
+static void configuration_terminal_state_switch_pid(void);
 
 static bool parse_input2int16(int16_t *value, const int16_t min, const int16_t max);
 static bool parse_input2float(float *value, const float min, const float max);
@@ -184,6 +190,10 @@ void configuration_terminal_state_machine(void)
 
 			case STATE_PRINT_CONFIG:
 				configuration_terminal_state_print_config();
+				break;
+
+			case STATE_SWITCH_PID:
+				configuration_terminal_state_switch_pid();
 				break;
 
 			case STATE_SET_PID_ROBOT_POS_PARAMETER:
@@ -250,14 +260,17 @@ void configuration_terminal_state_read_input(void)
 	uart_flush();
 
 	switch (input_buffer[INPUT_BUFFER_GROUP_INDEX]) {
-		case 'r':
-			next_state = STATE_SET_PID_ROBOT_POS_PARAMETER;
-			break;
-		case 'b':
-			next_state = STATE_SET_PID_BALANCE_PARAMETER;
-			break;
-		case 's':
-			next_state = STATE_SET_PID_SPEED_MOTOR_PARAMETER;
+//		case 'r':
+//			next_state = STATE_SET_PID_ROBOT_POS_PARAMETER;
+//			break;
+//		case 'b':
+//			next_state = STATE_SET_PID_BALANCE_PARAMETER;
+//			break;
+//		case 's':
+//			next_state = STATE_SET_PID_SPEED_MOTOR_PARAMETER;
+//			break;
+		case 'P':
+			next_state = STATE_SWITCH_PID;
 			break;
 		case 'a':
 			next_state = STATE_SET_ANGLE_STABLE;
@@ -372,6 +385,77 @@ void configuration_terminal_state_print_config(void)
 	next_state = STATE_READ_INPUT;
 }
 
+//This state reuses input buffer to have two input bytes again for deciding selected parameter and value
+void configuration_terminal_state_switch_pid(void)
+{
+	// get user input
+	uart_flush();
+
+	printf_P(string_LF);
+	printf_P("PID: >");
+
+	while(uart_gets(input_buffer, INPUT_BUFFER_MAX) == 0) {
+		//wait for completed string
+	}
+	uart_flush();
+
+
+	next_state = STATE_SET_PID;
+}
+
+
+void configuration_terminal_state_set_pid_parameter(void)
+{
+	int16_t pid_value = 0;
+	bool parsed_value = parse_input2int16(&pid_value, 0, INT16_MAX);
+
+	pid_types_enum_t selected_pid = PID_NONE;
+
+	switch (input_buffer[INPUT_BUFFER_PID_TYPE_INDEX]) {
+		case'r':
+			selected_pid = PID_ROBOT_POSITION;
+			break;
+		case's':
+			selected_pid = PID_ROBOT_SPEED;
+			break;
+		case'b':
+			selected_pid = PID_BALANCE;
+			break;
+		case'1':
+			selected_pid = PID_MOTOR_1;
+			break;
+		case'2':
+			selected_pid = PID_MOTOR_2;
+			break;
+		default:
+			selected_pid = PID_NONE;
+			break;
+	}
+
+	if(selected_pid != PID_NONE) {
+		switch (input_buffer[INPUT_BUFFER_PID_PARAMETER_INDEX]) {
+			case 'p':
+				configuration_storage_set_pid_p_factor(selected_pid, parsed_value);
+				break;
+			case 'i':
+				configuration_storage_set_pid_i_factor(selected_pid, parsed_value);
+				break;
+			case 'd':
+				configuration_storage_set_pid_d_factor(selected_pid, parsed_value);
+				break;
+			case 's':
+				configuration_storage_set_pid_scalingfactor(selected_pid, parsed_value);
+				break;
+			case 'l':
+				configuration_storage_set_pid_limit(selected_pid, parsed_value);
+				break;
+			default:
+				break;
+		}
+	}
+
+	next_state = STATE_READ_INPUT;
+}
 
 
 void configuration_terminal_state_set_pid_robot_pos_parameter(void)

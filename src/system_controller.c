@@ -333,13 +333,13 @@ void system_controller_state_init_controller_environment(void)
 	pid_robot_pos_config.p_factor = configuration_storage_get_pid_robot_pos_p_factor();
 	pid_robot_pos_config.i_factor = configuration_storage_get_pid_robot_pos_i_factor();
 	pid_robot_pos_config.d_factor = configuration_storage_get_pid_robot_pos_d_factor();
-	pid_robot_pos_config.pid_scalingfactor = configuration_storage_get_pid_robot_pos_scalingfactor();
+	pid_robot_pos_config.scalingfactor = configuration_storage_get_pid_robot_pos_scalingfactor();
 
 
 	pid_balance_config.p_factor = configuration_storage_get_pid_balance_p_factor();
 	pid_balance_config.i_factor = configuration_storage_get_pid_balance_i_factor();
 	pid_balance_config.d_factor = configuration_storage_get_pid_balance_d_factor();
-	pid_balance_config.pid_scalingfactor = configuration_storage_get_pid_balance_scalingfactor();
+	pid_balance_config.scalingfactor = configuration_storage_get_pid_balance_scalingfactor();
 
 //	pid_balance_edge_config.p_factor = configuration_storage_get_pid_edge_p_factor();
 //	pid_balance_edge_config.i_factor = configuration_storage_get_pid_edge_i_factor();
@@ -352,25 +352,25 @@ void system_controller_state_init_controller_environment(void)
 	pid_speed_motor_config.p_factor = configuration_storage_get_pid_speed_motor_p_factor();
 	pid_speed_motor_config.i_factor = configuration_storage_get_pid_speed_motor_i_factor();
 	pid_speed_motor_config.d_factor = configuration_storage_get_pid_speed_motor_d_factor();
-	pid_speed_motor_config.pid_scalingfactor = configuration_storage_get_pid_speed_motor_scalingfactor();
+	pid_speed_motor_config.scalingfactor = configuration_storage_get_pid_speed_motor_scalingfactor();
 
 	printf("robot pos: p:%6d i:%6d d:%6d s:%6d\n",
 			pid_robot_pos_config.p_factor,
 			pid_robot_pos_config.i_factor,
 			pid_robot_pos_config.d_factor,
-			pid_robot_pos_config.pid_scalingfactor);
+			pid_robot_pos_config.scalingfactor);
 
 	printf("balance: p:%6d i:%6d d:%6d s:%6d\n",
 			pid_balance_config.p_factor,
 			pid_balance_config.i_factor,
 			pid_balance_config.d_factor,
-			pid_balance_config.pid_scalingfactor);
+			pid_balance_config.scalingfactor);
 
 	printf("motor speed: p:%6d i:%6d d:%6d s:%6d\n",
 			pid_speed_motor_config.p_factor,
 			pid_speed_motor_config.i_factor,
 			pid_speed_motor_config.d_factor,
-			pid_speed_motor_config.pid_scalingfactor);
+			pid_speed_motor_config.scalingfactor);
 
 	printf("angle stable: %u\n\n", angle_stable);
 
@@ -383,27 +383,27 @@ void system_controller_state_init_controller_environment(void)
 	pid_Init( pid_robot_pos_config.p_factor,
 			  pid_robot_pos_config.i_factor,
 			  pid_robot_pos_config.d_factor,
-			  pid_robot_pos_config.pid_scalingfactor,
+			  pid_robot_pos_config.scalingfactor,
 			 &pid_robot_speed_data);
 
 	//init balance pid
 	pid_Init( pid_balance_config.p_factor,
 			  pid_balance_config.i_factor,
 			  pid_balance_config.d_factor,
-			  pid_balance_config.pid_scalingfactor,
+			  pid_balance_config.scalingfactor,
 			 &pid_balance_data);
 
 	//init motor pids
 	pid_Init( pid_speed_motor_config.p_factor,
 			  pid_speed_motor_config.i_factor,
 			  pid_speed_motor_config.d_factor,
-			  pid_speed_motor_config.pid_scalingfactor,
+			  pid_speed_motor_config.scalingfactor,
 			 &pid_speed_m1_data);
 
 	pid_Init( pid_speed_motor_config.p_factor,
 			  pid_speed_motor_config.i_factor,
 			  pid_speed_motor_config.d_factor,
-			  pid_speed_motor_config.pid_scalingfactor,
+			  pid_speed_motor_config.scalingfactor,
 			 &pid_speed_m2_data);
 
 	//init steering
