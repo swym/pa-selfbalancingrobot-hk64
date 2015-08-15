@@ -509,7 +509,6 @@ void system_controller_state_init_controller_environment(void)
 
 	/* *** EXIT **** */
 
-	//next_state = STATE_FINAL;
 	next_state = STATE_INIT_REMAINING_HARDWARE;
 }
 
@@ -538,8 +537,7 @@ void system_controller_state_init_remaining_hardware(void)
 	uart_init(UART_BAUDRATE_250k);
 
 	/* *** EXIT **** */
-	//next_state = STATE_RUN_CONTROLLER;
-	next_state = STATE_FINAL;
+	next_state = STATE_RUN_CONTROLLER;
 }
 
 static bool system_controller_exec_control;
