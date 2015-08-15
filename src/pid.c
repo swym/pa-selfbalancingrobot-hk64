@@ -32,18 +32,27 @@
  *  \param d_factor  Derivate term.
  *  \param pid  Struct with PID status.
  */
-void pid_Init(int16_t p_factor, int16_t i_factor, int16_t d_factor, uint16_t scalingfactor, struct PID_DATA *pid)
+void pid_Init(int16_t p_factor, int16_t i_factor, int16_t d_factor, uint16_t scalingfactor, int16_t limit, struct PID_DATA *pid)
 // Set up PID controller parameters
 {
   // Start values for PID controller
   pid->sumError = 0;
   pid->lastProcessValue = 0;
+
   // Tuning constants for PID loop
   pid->P_Factor = p_factor;
   pid->I_Factor = i_factor;
   pid->D_Factor = d_factor;
+
   pid->scalingfactor = scalingfactor;
+
   // Limits to avoid overflow
+  if(limit > 0 && limit < MAX_INT) {
+	  pid->outputLimit = limit;
+  } else {
+	  pid->outputLimit = MAX_INT;
+  }
+
   pid->maxError = MAX_INT / (pid->P_Factor + 1);
   pid->maxSumError = MAX_I_TERM / (pid->I_Factor + 1);
 }
@@ -95,12 +104,15 @@ int16_t pid_Controller(int16_t setPoint, int16_t processValue, struct PID_DATA *
 
   pid_st->lastProcessValue = processValue;
 
+  //apply scaling factor
   ret = (p_term + i_term + d_term) / pid_st->scalingfactor;
-  if(ret > MAX_INT) {
-    ret = MAX_INT;
+
+  //limit output value
+  if(ret > pid_st->outputLimit) {
+    ret = pid_st->outputLimit;
   }
-  else if(ret < -MAX_INT) {
-    ret = -MAX_INT;
+  else if(ret < -pid_st->outputLimit) {
+    ret = -pid_st->outputLimit;
   }
 
   return((int16_t)ret);

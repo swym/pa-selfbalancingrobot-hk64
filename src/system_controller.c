@@ -400,13 +400,15 @@ void system_controller_state_init_controller_environment(void)
 			  pid_robot_position_config.i_factor,
 			  pid_robot_position_config.d_factor,
 			  pid_robot_position_config.scalingfactor,
+			  pid_robot_position_config.limit,
 			 &pid_robot_position_data);
 
-
+	//TODO: set Limit to 24 in configuration storage
 	pid_Init( pid_robot_speed_config.p_factor,
 			  pid_robot_speed_config.i_factor,
 			  pid_robot_speed_config.d_factor,
 			  pid_robot_speed_config.scalingfactor,
+			  pid_robot_speed_config.limit,
 			 &pid_robot_speed_data);
 
 	//init balance pid
@@ -414,6 +416,7 @@ void system_controller_state_init_controller_environment(void)
 			  pid_balance_config.i_factor,
 			  pid_balance_config.d_factor,
 			  pid_balance_config.scalingfactor,
+			  pid_balance_config.limit,
 			 &pid_balance_data);
 
 	//init motor pids
@@ -421,12 +424,14 @@ void system_controller_state_init_controller_environment(void)
 			  pid_motor1_config.i_factor,
 			  pid_motor1_config.d_factor,
 			  pid_motor1_config.scalingfactor,
+			  pid_motor1_config.limit,
 			 &pid_motor1_data);
 
 	pid_Init( pid_motor2_config.p_factor,
 			  pid_motor2_config.i_factor,
 			  pid_motor2_config.d_factor,
 			  pid_motor2_config.scalingfactor,
+			  pid_motor2_config.limit,
 			 &pid_motor2_data);
 
 	//set setpoint
@@ -595,13 +600,13 @@ void system_controller_state_run_controller(void)
 													robot_speed_avg.avg,
 													&pid_robot_speed_data);
 
-			if(pid_robot_speed_output > 24) {
-				pid_robot_speed_output = 24;
-			}
-
-			if(pid_robot_speed_output < -24) {
-				pid_robot_speed_output = -24;
-			}
+//			if(pid_robot_speed_output > 24) {
+//				pid_robot_speed_output = 24;
+//			}
+//
+//			if(pid_robot_speed_output < -24) {
+//				pid_robot_speed_output = -24;
+//			}
 
 			pid_balance_setpoint = pid_robot_speed_output;
 
