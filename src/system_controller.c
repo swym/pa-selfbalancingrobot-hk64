@@ -83,30 +83,29 @@ static motionsensor_angle_t current_angle;
 static motor_control_speed_t current_speed;
 static motor_control_speed_t new_motor_speed;
 
-static pid_config_t				pid_robot_pos_config;
+static pid_config_t				pid_robot_position_config;
+static pid_config_t				pid_robot_speed_config;
 static pid_config_t				pid_balance_config;
-static pid_config_t				pid_speed_motor_config;
+static pid_config_t				pid_motor1_config;
+static pid_config_t				pid_motor2_config;
 
-static motionsensor_angle_t		angle_stable;
-
-static pidData_t pid_robot_pos_data;
+static pidData_t pid_robot_position_data;
 static pidData_t pid_robot_speed_data;
 static pidData_t pid_balance_data;
-static pidData_t pid_speed_m1_data;
-static pidData_t pid_speed_m2_data;
-static pidData_t pid_steering_data;
+static pidData_t pid_motor1_data;
+static pidData_t pid_motor2_data;
 
-static int16_t	 pid_robot_pos_setpoint;
+static int16_t	 pid_robot_position_setpoint;
 static int16_t	 pid_robot_speed_setpoint;
 static int16_t   pid_balance_setpoint;
-static int16_t	 pid_speed_m1_setpoint;
-static int16_t	 pid_speed_m2_setpoint;
+static int16_t	 pid_motor1_setpoint;
+static int16_t	 pid_motor2_setpoint;
 
 static int16_t	pid_robot_pos_output;		//angle setpoint
 static int16_t	pid_robot_speed_output;
 static int16_t	pid_balance_output;			//speed for motors
-static int16_t	pid_speed_m1_output;		//pwm for drivers
-static int16_t	pid_speed_m2_output;		//pwm for drivers
+static int16_t	pid_motor1_output;		//pwm for drivers
+static int16_t	pid_motor2_output;		//pwm for drivers
 
 static int16_t	turning_offset;
 
@@ -200,7 +199,7 @@ void system_controller_state_init_basic_hardware(void)
 	leds_set(1);
 
 
-	uart_init(UART_BAUDRATE_9600);			/* Init USART */
+	uart_init(UART_BAUDRATE_115k);			/* Init USART */
 	uart_init_stdio();
 	//printf("usart inited\n");
 
@@ -330,97 +329,117 @@ void system_controller_state_init_controller_environment(void)
 	/* **** DO ***** */
 
 	//initialize PID Controller with saved values
-	pid_robot_pos_config.p_factor = configuration_storage_get_pid_robot_pos_p_factor();
-	pid_robot_pos_config.i_factor = configuration_storage_get_pid_robot_pos_i_factor();
-	pid_robot_pos_config.d_factor = configuration_storage_get_pid_robot_pos_d_factor();
-	pid_robot_pos_config.pid_scalingfactor = configuration_storage_get_pid_robot_pos_scalingfactor();
+	pid_robot_position_config.p_factor = configuration_storage_get_pid_p_factor(PID_ROBOT_POSITION);
+	pid_robot_position_config.i_factor = configuration_storage_get_pid_i_factor(PID_ROBOT_POSITION);
+	pid_robot_position_config.d_factor = configuration_storage_get_pid_d_factor(PID_ROBOT_POSITION);
+	pid_robot_position_config.scalingfactor = configuration_storage_get_pid_scalingfactor(PID_ROBOT_POSITION);
+	pid_robot_position_config.limit = configuration_storage_get_pid_limit(PID_ROBOT_POSITION);
 
+	pid_robot_speed_config.p_factor = configuration_storage_get_pid_p_factor(PID_ROBOT_SPEED);
+	pid_robot_speed_config.i_factor = configuration_storage_get_pid_i_factor(PID_ROBOT_SPEED);
+	pid_robot_speed_config.d_factor = configuration_storage_get_pid_d_factor(PID_ROBOT_SPEED);
+	pid_robot_speed_config.scalingfactor = configuration_storage_get_pid_scalingfactor(PID_ROBOT_SPEED);
+	pid_robot_speed_config.limit = configuration_storage_get_pid_limit(PID_ROBOT_SPEED);
 
-	pid_balance_config.p_factor = configuration_storage_get_pid_balance_p_factor();
-	pid_balance_config.i_factor = configuration_storage_get_pid_balance_i_factor();
-	pid_balance_config.d_factor = configuration_storage_get_pid_balance_d_factor();
-	pid_balance_config.pid_scalingfactor = configuration_storage_get_pid_balance_scalingfactor();
+	pid_balance_config.p_factor = configuration_storage_get_pid_p_factor(PID_BALANCE);
+	pid_balance_config.i_factor = configuration_storage_get_pid_i_factor(PID_BALANCE);
+	pid_balance_config.d_factor = configuration_storage_get_pid_d_factor(PID_BALANCE);
+	pid_balance_config.scalingfactor = configuration_storage_get_pid_scalingfactor(PID_BALANCE);
+	pid_balance_config.limit = configuration_storage_get_pid_limit(PID_BALANCE);
 
-//	pid_balance_edge_config.p_factor = configuration_storage_get_pid_edge_p_factor();
-//	pid_balance_edge_config.i_factor = configuration_storage_get_pid_edge_i_factor();
-//	pid_balance_edge_config.d_factor = configuration_storage_get_pid_edge_d_factor();
-//	pid_balance_edge_config.pid_scalingfactor = configuration_storage_get_pid_edge_scalingfactor();
-//
-//	pid_balance_edge_angle = configuration_storage_get_pid_edge_angle();
+	pid_motor1_config.p_factor = configuration_storage_get_pid_p_factor(PID_MOTOR_1);
+	pid_motor1_config.i_factor = configuration_storage_get_pid_i_factor(PID_MOTOR_1);
+	pid_motor1_config.d_factor = configuration_storage_get_pid_d_factor(PID_MOTOR_1);
+	pid_motor1_config.scalingfactor = configuration_storage_get_pid_scalingfactor(PID_MOTOR_1);
+	pid_motor1_config.limit = configuration_storage_get_pid_limit(PID_MOTOR_1);
 
-	//TODO: HACK FIXME define variables in configuration storage
-	pid_speed_motor_config.p_factor = configuration_storage_get_pid_speed_motor_p_factor();
-	pid_speed_motor_config.i_factor = configuration_storage_get_pid_speed_motor_i_factor();
-	pid_speed_motor_config.d_factor = configuration_storage_get_pid_speed_motor_d_factor();
-	pid_speed_motor_config.pid_scalingfactor = configuration_storage_get_pid_speed_motor_scalingfactor();
+	pid_motor2_config.p_factor = configuration_storage_get_pid_p_factor(PID_MOTOR_2);
+	pid_motor2_config.i_factor = configuration_storage_get_pid_i_factor(PID_MOTOR_2);
+	pid_motor2_config.d_factor = configuration_storage_get_pid_d_factor(PID_MOTOR_2);
+	pid_motor2_config.scalingfactor = configuration_storage_get_pid_scalingfactor(PID_MOTOR_2);
+	pid_motor2_config.limit = configuration_storage_get_pid_limit(PID_MOTOR_2);
 
-	printf("robot pos: p:%6d i:%6d d:%6d s:%6d\n",
-			pid_robot_pos_config.p_factor,
-			pid_robot_pos_config.i_factor,
-			pid_robot_pos_config.d_factor,
-			pid_robot_pos_config.pid_scalingfactor);
+	printf("robot position: p:%6d i:%6d d:%6d s:%6d l:%6d\n",
+			pid_robot_position_config.p_factor,
+			pid_robot_position_config.i_factor,
+			pid_robot_position_config.d_factor,
+			pid_robot_position_config.scalingfactor,
+			pid_robot_position_config.limit);
 
-	printf("balance: p:%6d i:%6d d:%6d s:%6d\n",
+	printf("robot speed: p:%6d i:%6d d:%6d s:%6d l:%6d\n",
+			pid_robot_speed_config.p_factor,
+			pid_robot_speed_config.i_factor,
+			pid_robot_speed_config.d_factor,
+			pid_robot_speed_config.scalingfactor,
+			pid_robot_speed_config.limit);
+
+	printf("balance: p:%6d i:%6d d:%6d s:%6d l:%6d\n",
 			pid_balance_config.p_factor,
 			pid_balance_config.i_factor,
 			pid_balance_config.d_factor,
-			pid_balance_config.pid_scalingfactor);
+			pid_balance_config.scalingfactor,
+			pid_balance_config.limit);
 
-	printf("motor speed: p:%6d i:%6d d:%6d s:%6d\n",
-			pid_speed_motor_config.p_factor,
-			pid_speed_motor_config.i_factor,
-			pid_speed_motor_config.d_factor,
-			pid_speed_motor_config.pid_scalingfactor);
+	printf("motor 1: p:%6d i:%6d d:%6d s:%6d l:%6d\n",
+			pid_motor1_config.p_factor,
+			pid_motor1_config.i_factor,
+			pid_motor1_config.d_factor,
+			pid_motor1_config.scalingfactor,
+			pid_motor1_config.limit);
 
-	printf("angle stable: %u\n\n", angle_stable);
-
+	printf("motor 2: p:%6d i:%6d d:%6d s:%6d l:%6d\n",
+			pid_motor2_config.p_factor,
+			pid_motor2_config.i_factor,
+			pid_motor2_config.d_factor,
+			pid_motor2_config.scalingfactor,
+			pid_motor2_config.limit);
 
 	//init pid
-	pid_Init(5, 0, 3, 200,
-			 &pid_robot_pos_data);
+	//(5, 0, 3, 200,
+	pid_Init( pid_robot_position_config.p_factor,
+			  pid_robot_position_config.i_factor,
+			  pid_robot_position_config.d_factor,
+			  pid_robot_position_config.scalingfactor,
+			 &pid_robot_position_data);
 
 
-	pid_Init( pid_robot_pos_config.p_factor,
-			  pid_robot_pos_config.i_factor,
-			  pid_robot_pos_config.d_factor,
-			  pid_robot_pos_config.pid_scalingfactor,
+	pid_Init( pid_robot_speed_config.p_factor,
+			  pid_robot_speed_config.i_factor,
+			  pid_robot_speed_config.d_factor,
+			  pid_robot_speed_config.scalingfactor,
 			 &pid_robot_speed_data);
 
 	//init balance pid
 	pid_Init( pid_balance_config.p_factor,
 			  pid_balance_config.i_factor,
 			  pid_balance_config.d_factor,
-			  pid_balance_config.pid_scalingfactor,
+			  pid_balance_config.scalingfactor,
 			 &pid_balance_data);
 
 	//init motor pids
-	pid_Init( pid_speed_motor_config.p_factor,
-			  pid_speed_motor_config.i_factor,
-			  pid_speed_motor_config.d_factor,
-			  pid_speed_motor_config.pid_scalingfactor,
-			 &pid_speed_m1_data);
+	pid_Init( pid_motor1_config.p_factor,
+			  pid_motor1_config.i_factor,
+			  pid_motor1_config.d_factor,
+			  pid_motor1_config.scalingfactor,
+			 &pid_motor1_data);
 
-	pid_Init( pid_speed_motor_config.p_factor,
-			  pid_speed_motor_config.i_factor,
-			  pid_speed_motor_config.d_factor,
-			  pid_speed_motor_config.pid_scalingfactor,
-			 &pid_speed_m2_data);
-
-	//init steering
-	pid_Init(40, 0, 5, 10, &pid_steering_data);
-
+	pid_Init( pid_motor2_config.p_factor,
+			  pid_motor2_config.i_factor,
+			  pid_motor2_config.d_factor,
+			  pid_motor2_config.scalingfactor,
+			 &pid_motor2_data);
 
 	//set setpoint
-	pid_robot_pos_setpoint	 	= 0;
-	pid_robot_speed_setpoint	= 0;
-	pid_balance_setpoint  	 	= 0;
-	pid_speed_m1_setpoint    	= 0;
-	pid_speed_m2_setpoint    	= 0;
+	pid_robot_position_setpoint	 	= 0;
+	pid_robot_speed_setpoint		= 0;
+	pid_balance_setpoint  	 		= 0;
+	pid_motor1_setpoint    			= 0;
+	pid_motor2_setpoint    			= 0;
 
-	printf("pid_robot_speed setpoint: %d\n", pid_robot_pos_setpoint);
+	printf("pid_robot_speed setpoint: %d\n", pid_robot_position_setpoint);
 	printf("pid_balance     setpoint: %d\n", pid_balance_setpoint);
-	printf("pid_speed_m1    setpoint: %d\n", pid_speed_m1_setpoint);
-	printf("pid_speed_m2    setpoint: %d\n", pid_speed_m2_setpoint);
+	printf("pid_speed_m1    setpoint: %d\n", pid_motor1_setpoint);
+	printf("pid_speed_m2    setpoint: %d\n", pid_motor2_setpoint);
 
 	//restore acceleration offset
 	configuration_storage_get_acceleration_offset_vector(&acceleration_vector);
@@ -592,9 +611,9 @@ void system_controller_state_run_controller(void)
 			//calculate PID robot pos if not in halt zone
 			if(robot_pos != 0) {
 				leds_color(LEDS_COLOR_YELLOW);
-				pid_robot_pos_output = pid_Controller(pid_robot_pos_setpoint,
+				pid_robot_pos_output = pid_Controller(pid_robot_position_setpoint,
 													  robot_pos,
-													  &pid_robot_pos_data);
+													  &pid_robot_position_data);
 
 				//limit pid output
 				if(pid_robot_pos_output > PID_ROBOT_POS_OUTPUT_MAX) {
@@ -654,22 +673,22 @@ void system_controller_state_run_controller(void)
 												&pid_balance_data);
 			pid_balance_output = -pid_balance_output;
 
-			pid_speed_m1_setpoint = pid_balance_output;
-			pid_speed_m2_setpoint = pid_balance_output;
+			pid_motor1_setpoint = pid_balance_output;
+			pid_motor2_setpoint = pid_balance_output;
 
 
 			//calculate PID motor speed
-			pid_speed_m1_output = pid_Controller(pid_speed_m1_setpoint,
+			pid_motor1_output = pid_Controller(pid_motor1_setpoint,
 												 current_speed.motor_1,
-												 &pid_speed_m1_data);
+												 &pid_motor1_data);
 
-			pid_speed_m2_output = pid_Controller(pid_speed_m2_setpoint,
+			pid_motor2_output = pid_Controller(pid_motor2_setpoint,
 												 current_speed.motor_2,
-												 &pid_speed_m2_data);
+												 &pid_motor2_data);
 
 			//prepare new motor speed
-			new_motor_speed.motor_1 = pid_speed_m1_output;
-			new_motor_speed.motor_2 = pid_speed_m2_output;
+			new_motor_speed.motor_1 = pid_motor1_output;
+			new_motor_speed.motor_2 = pid_motor2_output;
 
 			//remote control
 			new_motor_speed.motor_1 += turning_offset;
@@ -808,10 +827,10 @@ void system_controller_parse_command(void)
 			print_data_enabled = false;
 		} else if((command_buffer[0] == 'R') && (command_buffer[1] == 'I')) {
 			//TODO:
-			pid_Reset_Integrator(&pid_robot_pos_data);
+			pid_Reset_Integrator(&pid_robot_position_data);
 			pid_Reset_Integrator(&pid_balance_data);
-			pid_Reset_Integrator(&pid_speed_m1_data);
-			pid_Reset_Integrator(&pid_speed_m2_data);
+			pid_Reset_Integrator(&pid_motor1_data);
+			pid_Reset_Integrator(&pid_motor2_data);
 		}
 
 		//flush uart to prevent runover

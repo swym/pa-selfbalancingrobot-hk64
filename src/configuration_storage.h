@@ -20,11 +20,8 @@
 /* *** DECLARATIONS ********************************************************** */
 
 /* * external type and constants * */
-#define CONFIGURATION_STORAGE_VERSION			112
-#define CONFIGURATION_STORAGE_COMMENT_LENGTH	20
+#define CONFIGURATION_STORAGE_VERSION			114
 
-#define CONFIGURATION_STORAGE_RUN_MODE_NORMAL	0
-#define CONFIGURATION_STORAGE_RUN_MODE_DEBUG	1
 
 /* * external objects            * */
 
@@ -39,11 +36,31 @@ typedef enum  {
 
 } print_data_enum_t;
 
+typedef enum  {
+	PID_NONE,
+	PID_ROBOT_POSITION,
+	PID_ROBOT_SPEED,
+	PID_BALANCE,
+	PID_MOTOR_1,
+	PID_MOTOR_2,
+	FINAL_pids_enum_t_ENTRY
+
+} pid_types_enum_t;
+
+typedef enum  {
+	AXIS_NONE,
+	AXIS_X,
+	AXIS_Y,
+	AXIS_Z,
+	FINAL_axis_enum_t_ENTRY
+} axis_enum_t;
+
 typedef struct {
 	int16_t p_factor;
 	int16_t i_factor;
 	int16_t d_factor;
-	uint16_t pid_scalingfactor;
+	int16_t scalingfactor;
+	int16_t limit;
 } pid_config_t;
 
 typedef struct {
@@ -55,17 +72,20 @@ typedef struct {
 } motionsensor_config_t;
 
 typedef struct {
-	pid_config_t pid_robot_pos;
-	pid_config_t pid_balance; //TODO: Rename to balance...
-	//pid_config_t pid_edge;   //TODO: rename to balance...
-	pid_config_t pid_speed_motor;
-
-	//uint16_t  pid_edge_angle; //TODO: use	motionsensor_angle_t
-	motionsensor_angle_t  angle_stable;
+	pid_config_t pid_robot_position;
+	pid_config_t pid_robot_speed;
+	pid_config_t pid_balance;
+	pid_config_t pid_motor_1_speed;
+	pid_config_t pid_motor_2_speed;
 
 	motionsensor_config_t motionsensor;
 	uint8_t		 motor_acceleration;
-	char comment[CONFIGURATION_STORAGE_COMMENT_LENGTH];
+
+	uint8_t		 speed_straight_limit;
+	uint8_t		 speed_straight_step;
+	uint8_t		 speed_turn_limit;
+	uint8_t		 speed_turn_step;
+
 	uint8_t version;
 	print_data_enum_t print_data_mode;
 	bool has_changed;
@@ -79,64 +99,34 @@ extern void configuration_storage_save_configuration(void);
 extern void configuration_storage_reset_configuration(void);
 
 // getter/setter
-// #-----------
 
-extern int16_t configuration_storage_get_pid_robot_pos_p_factor(void);
-extern void configuration_storage_set_pid_robot_pos_p_factor(int16_t);
+// #- GENERIC PID ----------
 
-extern int16_t configuration_storage_get_pid_robot_pos_i_factor(void);
-extern void configuration_storage_set_pid_robot_pos_i_factor(int16_t);
+extern int16_t configuration_storage_get_pid_p_factor(pid_types_enum_t type);
+extern void    configuration_storage_set_pid_p_factor(pid_types_enum_t type, int16_t value);
 
-extern int16_t configuration_storage_get_pid_robot_pos_d_factor(void);
-extern void configuration_storage_set_pid_robot_pos_d_factor(int16_t);
+extern int16_t configuration_storage_get_pid_i_factor(pid_types_enum_t type);
+extern void    configuration_storage_set_pid_i_factor(pid_types_enum_t type, int16_t value);
 
-extern uint16_t configuration_storage_get_pid_robot_pos_scalingfactor(void);
-extern void configuration_storage_set_pid_robot_pos_scalingfactor(uint16_t);
+extern int16_t configuration_storage_get_pid_d_factor(pid_types_enum_t type);
+extern void    configuration_storage_set_pid_d_factor(pid_types_enum_t type, int16_t value);
 
-// #-----------
+extern int16_t configuration_storage_get_pid_scalingfactor(pid_types_enum_t type);
+extern void    configuration_storage_set_pid_scalingfactor(pid_types_enum_t type, int16_t value);
 
-extern int16_t configuration_storage_get_pid_balance_p_factor(void);
-extern void configuration_storage_set_pid_balance_p_factor(int16_t);
-
-extern int16_t configuration_storage_get_pid_balance_i_factor(void);
-extern void configuration_storage_set_pid_balance_i_factor(int16_t);
-
-extern int16_t configuration_storage_get_pid_balance_d_factor(void);
-extern void configuration_storage_set_pid_balance_d_factor(int16_t);
-
-extern uint16_t configuration_storage_get_pid_balance_scalingfactor(void);
-extern void configuration_storage_set_pid_balance_scalingfactor(uint16_t);
-
-// #-----------
-
-extern int16_t configuration_storage_get_pid_speed_motor_p_factor(void);
-extern void configuration_storage_set_pid_speed_motor_p_factor(int16_t);
-
-extern int16_t configuration_storage_get_pid_speed_motor_i_factor(void);
-extern void configuration_storage_set_pid_speed_motor_i_factor(int16_t);
-
-extern int16_t configuration_storage_get_pid_speed_motor_d_factor(void);
-extern void configuration_storage_set_pid_speed_motor_d_factor(int16_t);
-
-extern uint16_t configuration_storage_get_pid_speed_motor_scalingfactor(void);
-extern void configuration_storage_set_pid_speed_motor_scalingfactor(uint16_t);
-
-// #-----------
+extern int16_t configuration_storage_get_pid_limit(pid_types_enum_t type);
+extern void    configuration_storage_set_pid_limit(pid_types_enum_t type, int16_t value);
 
 
-//extern uint16_t configuration_storage_get_pid_edge_angle(void);
-//extern void configuration_storage_set_pid_edge_angle(uint16_t);
-
-extern motionsensor_angle_t configuration_storage_get_angle_stable(void);
-extern void configuration_storage_set_angle_stable(motionsensor_angle_t);
-
-// #-----------
+// #- MOTION SENSOR ----------
 
 extern void configuration_storage_get_acceleration_offset_vector(acceleration_vector_t * accel_v);
 extern void configuration_storage_set_acceleration_offset_vector(acceleration_vector_t * angular_v);
+extern void configuration_storage_set_acceleration_offset_value(axis_enum_t axis, int16_t value);
 
 extern void configuration_storage_get_angularvelocity_offset_vector(angularvelocity_vector_t * accel_v);
 extern void configuration_storage_set_angularvelocity_offset_vector(angularvelocity_vector_t * angular_v);
+extern void configuration_storage_set_angularvelocity_offset_value(axis_enum_t axis, int16_t value);
 
 extern float configuration_storage_get_complementary_filter_ratio(void);
 extern void configuration_storage_set_complementary_filter_ratio(float ratio);
@@ -147,13 +137,24 @@ extern void configuration_storage_set_valid_acceleration_magnitude(float magnitu
 extern uint16_t configuration_storage_get_angle_scalingfactor(void);
 extern void configuration_storage_set_angle_scalingfactor(uint16_t);
 
-// #-----------
+// #- SPEED LIMITS and STEPS ----------
+
+extern uint8_t configuration_storage_get_speed_straight_limit(void);
+extern void configuration_storage_set_speed_straight_limit(uint8_t);
+
+extern uint8_t configuration_storage_get_speed_straight_step(void);
+extern void configuration_storage_set_speed_straight_step(uint8_t);
+
+extern uint8_t configuration_storage_get_speed_turn_limit(void);
+extern void configuration_storage_set_speed_turn_limit(uint8_t);
+
+extern uint8_t configuration_storage_get_speed_turn_step(void);
+extern void configuration_storage_set_speed_turn_step(uint8_t);
+
+// #- MISC ----------
 
 extern uint8_t configuration_storage_get_motor_acceleration(void);
 extern void configuration_storage_set_motor_acceleration(uint8_t);
-
-extern char * configuration_storage_get_comment(void);
-extern void configuration_storage_set_comment(char * comment);
 
 extern void configuration_storage_set_print_data_mode(print_data_enum_t mode);
 extern print_data_enum_t configuration_storage_get_print_data_mode(void);

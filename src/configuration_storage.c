@@ -64,23 +64,35 @@ void configuration_storage_save_configuration(void)
 
 void configuration_storage_reset_configuration(void)
 {
-	configuration.pid_robot_pos.p_factor = 1;
-	configuration.pid_robot_pos.i_factor = 0;
-	configuration.pid_robot_pos.d_factor = 0;
-	configuration.pid_robot_pos.pid_scalingfactor = 1;
+	configuration.pid_robot_position.p_factor = 1;
+	configuration.pid_robot_position.i_factor = 0;
+	configuration.pid_robot_position.d_factor = 0;
+	configuration.pid_robot_position.scalingfactor = 1;
+	configuration.pid_robot_position.limit = INT16_MAX;
+
+	configuration.pid_robot_speed.p_factor = 1;
+	configuration.pid_robot_speed.i_factor = 0;
+	configuration.pid_robot_speed.d_factor = 0;
+	configuration.pid_robot_speed.scalingfactor = 1;
+	configuration.pid_robot_speed.limit = INT16_MAX;
 
 	configuration.pid_balance.p_factor = 1;
 	configuration.pid_balance.i_factor = 0;
 	configuration.pid_balance.d_factor = 0;
-	configuration.pid_balance.pid_scalingfactor = 1;
+	configuration.pid_balance.scalingfactor = 1;
+	configuration.pid_balance.limit = INT16_MAX;
 
-	configuration.pid_speed_motor.p_factor = 1;
-	configuration.pid_speed_motor.i_factor = 0;
-	configuration.pid_speed_motor.d_factor = 0;
-	configuration.pid_speed_motor.pid_scalingfactor = 1;
+	configuration.pid_motor_1_speed.p_factor = 1;
+	configuration.pid_motor_1_speed.i_factor = 0;
+	configuration.pid_motor_1_speed.d_factor = 0;
+	configuration.pid_motor_1_speed.scalingfactor = 1;
+	configuration.pid_motor_1_speed.limit = INT16_MAX;
 
-	//configuration.pid_edge_angle = INT16_MAX;
-	configuration.angle_stable = INT16_MAX;
+	configuration.pid_motor_2_speed.p_factor = 1;
+	configuration.pid_motor_2_speed.i_factor = 0;
+	configuration.pid_motor_2_speed.d_factor = 0;
+	configuration.pid_motor_2_speed.scalingfactor = 1;
+	configuration.pid_motor_2_speed.limit = INT16_MAX;
 
 	configuration.motionsensor.acceleration_offset_vector.x = 0;
 	configuration.motionsensor.acceleration_offset_vector.y = 0;
@@ -94,165 +106,310 @@ void configuration_storage_reset_configuration(void)
 	configuration.motionsensor.valid_acceleration_magnitude = 1.0;
 	configuration.motionsensor.angle_scalingfactor = 1;
 
+	configuration.speed_straight_limit = 10;
+	configuration.speed_straight_step = 1;
+	configuration.speed_turn_limit = 10;
+	configuration.speed_turn_step = 1;
+
 	configuration.motor_acceleration = 15;
 
-	strncpy(configuration.comment, "- new -", CONFIGURATION_STORAGE_COMMENT_LENGTH);
 	configuration.version = CONFIGURATION_STORAGE_VERSION;
 	configuration.print_data_mode = 1;
 	configuration.has_changed = true;
 }
 
-// #-----------
+// #- GENERIC PID ----------
 
-int16_t configuration_storage_get_pid_robot_pos_p_factor(void)
+//should use a error type also
+int16_t configuration_storage_get_pid_p_factor(pid_types_enum_t type)
 {
-	return configuration.pid_robot_pos.p_factor;
+	int16_t return_value = -1252;	//TODO: replace with real error value
+
+	switch (type) {
+		case PID_ROBOT_POSITION:
+			return_value = configuration.pid_robot_position.p_factor;
+			break;
+		case PID_ROBOT_SPEED:
+			return_value = configuration.pid_robot_speed.p_factor;
+			break;
+		case PID_BALANCE:
+			return_value = configuration.pid_balance.p_factor;
+			break;
+		case PID_MOTOR_1:
+			return_value = configuration.pid_motor_1_speed.p_factor;
+			break;
+		case PID_MOTOR_2:
+			return_value = configuration.pid_motor_2_speed.p_factor;
+			break;
+		default:
+			break;
+	}
+
+	return return_value;
 }
 
-void configuration_storage_set_pid_robot_pos_p_factor(int16_t p_factor)
+void configuration_storage_set_pid_p_factor(pid_types_enum_t type, int16_t value)
 {
-	configuration.pid_robot_pos.p_factor =  p_factor;
-	configuration.has_changed = true;
+	switch (type) {
+		case PID_ROBOT_POSITION:
+			configuration.pid_robot_position.p_factor =  value;
+			configuration.has_changed = true;
+			break;
+		case PID_ROBOT_SPEED:
+			configuration.pid_robot_speed.p_factor =  value;
+			configuration.has_changed = true;
+			break;
+		case PID_BALANCE:
+			configuration.pid_balance.p_factor =  value;
+			configuration.has_changed = true;
+			break;
+		case PID_MOTOR_1:
+			configuration.pid_motor_1_speed.p_factor =  value;
+			configuration.has_changed = true;
+			break;
+		case PID_MOTOR_2:
+			configuration.pid_motor_2_speed.p_factor =  value;
+			configuration.has_changed = true;
+			break;
+		default:
+			break;
+	}
 }
 
-int16_t configuration_storage_get_pid_robot_pos_i_factor(void)
+// -----
+
+//should use a error type also
+int16_t configuration_storage_get_pid_i_factor(pid_types_enum_t type)
 {
-	return configuration.pid_robot_pos.i_factor;
+	int16_t return_value = -1252;	//TODO: replace with real error value
+
+	switch (type) {
+		case PID_ROBOT_POSITION:
+			return_value = configuration.pid_robot_position.i_factor;
+			break;
+		case PID_ROBOT_SPEED:
+			return_value = configuration.pid_robot_speed.i_factor;
+			break;
+		case PID_BALANCE:
+			return_value = configuration.pid_balance.i_factor;
+			break;
+		case PID_MOTOR_1:
+			return_value = configuration.pid_motor_1_speed.i_factor;
+			break;
+		case PID_MOTOR_2:
+			return_value = configuration.pid_motor_2_speed.i_factor;
+			break;
+		default:
+			break;
+	}
+
+	return return_value;
 }
 
-void configuration_storage_set_pid_robot_pos_i_factor(int16_t i_factor)
+void configuration_storage_set_pid_i_factor(pid_types_enum_t type, int16_t value)
 {
-	configuration.pid_robot_pos.i_factor =  i_factor;
-	configuration.has_changed = true;
+	switch (type) {
+		case PID_ROBOT_POSITION:
+			configuration.pid_robot_position.i_factor =  value;
+			configuration.has_changed = true;
+			break;
+		case PID_ROBOT_SPEED:
+			configuration.pid_robot_speed.i_factor =  value;
+			configuration.has_changed = true;
+			break;
+		case PID_BALANCE:
+			configuration.pid_balance.i_factor =  value;
+			configuration.has_changed = true;
+			break;
+		case PID_MOTOR_1:
+			configuration.pid_motor_1_speed.i_factor =  value;
+			configuration.has_changed = true;
+			break;
+		case PID_MOTOR_2:
+			configuration.pid_motor_2_speed.i_factor =  value;
+			configuration.has_changed = true;
+			break;
+		default:
+			break;
+	}
 }
 
-int16_t configuration_storage_get_pid_robot_pos_d_factor(void)
+// -----
+
+//should use a error type also
+int16_t configuration_storage_get_pid_d_factor(pid_types_enum_t type)
 {
-	return configuration.pid_robot_pos.d_factor;
+	int16_t return_value = -1252;	//TODO: replace with real error value
+
+	switch (type) {
+		case PID_ROBOT_POSITION:
+			return_value = configuration.pid_robot_position.d_factor;
+			break;
+		case PID_ROBOT_SPEED:
+			return_value = configuration.pid_robot_speed.d_factor;
+			break;
+		case PID_BALANCE:
+			return_value = configuration.pid_balance.d_factor;
+			break;
+		case PID_MOTOR_1:
+			return_value = configuration.pid_motor_1_speed.d_factor;
+			break;
+		case PID_MOTOR_2:
+			return_value = configuration.pid_motor_2_speed.d_factor;
+			break;
+		default:
+			break;
+	}
+
+	return return_value;
 }
 
-void configuration_storage_set_pid_robot_pos_d_factor(int16_t d_factor)
+void configuration_storage_set_pid_d_factor(pid_types_enum_t type, int16_t value)
 {
-	configuration.pid_robot_pos.d_factor =  d_factor;
-	configuration.has_changed = true;
+	switch (type) {
+		case PID_ROBOT_POSITION:
+			configuration.pid_robot_position.d_factor =  value;
+			configuration.has_changed = true;
+			break;
+		case PID_ROBOT_SPEED:
+			configuration.pid_robot_speed.d_factor =  value;
+			configuration.has_changed = true;
+			break;
+		case PID_BALANCE:
+			configuration.pid_balance.d_factor =  value;
+			configuration.has_changed = true;
+			break;
+		case PID_MOTOR_1:
+			configuration.pid_motor_1_speed.d_factor =  value;
+			configuration.has_changed = true;
+			break;
+		case PID_MOTOR_2:
+			configuration.pid_motor_2_speed.d_factor =  value;
+			configuration.has_changed = true;
+			break;
+		default:
+			break;
+	}
 }
 
-uint16_t configuration_storage_get_pid_robot_pos_scalingfactor(void)
+// -----
+
+//should use a error type also
+int16_t configuration_storage_get_pid_scalingfactor(pid_types_enum_t type)
 {
-	return configuration.pid_robot_pos.pid_scalingfactor;
+	int16_t return_value = -1252;	//TODO: replace with real error value
+
+	switch (type) {
+		case PID_ROBOT_POSITION:
+			return_value = configuration.pid_robot_position.scalingfactor;
+			break;
+		case PID_ROBOT_SPEED:
+			return_value = configuration.pid_robot_speed.scalingfactor;
+			break;
+		case PID_BALANCE:
+			return_value = configuration.pid_balance.scalingfactor;
+			break;
+		case PID_MOTOR_1:
+			return_value = configuration.pid_motor_1_speed.scalingfactor;
+			break;
+		case PID_MOTOR_2:
+			return_value = configuration.pid_motor_2_speed.scalingfactor;
+			break;
+		default:
+			break;
+	}
+
+	return return_value;
 }
 
-void configuration_storage_set_pid_robot_pos_scalingfactor(uint16_t pid_scalingfactor)
+void configuration_storage_set_pid_scalingfactor(pid_types_enum_t type, int16_t value)
 {
-	configuration.pid_robot_pos.pid_scalingfactor = pid_scalingfactor;
-	configuration.has_changed = true;
+	switch (type) {
+		case PID_ROBOT_POSITION:
+			configuration.pid_robot_position.scalingfactor =  value;
+			configuration.has_changed = true;
+			break;
+		case PID_ROBOT_SPEED:
+			configuration.pid_robot_speed.scalingfactor =  value;
+			configuration.has_changed = true;
+			break;
+		case PID_BALANCE:
+			configuration.pid_balance.scalingfactor =  value;
+			configuration.has_changed = true;
+			break;
+		case PID_MOTOR_1:
+			configuration.pid_motor_1_speed.scalingfactor =  value;
+			configuration.has_changed = true;
+			break;
+		case PID_MOTOR_2:
+			configuration.pid_motor_2_speed.scalingfactor =  value;
+			configuration.has_changed = true;
+			break;
+		default:
+			break;
+	}
 }
 
-// #-----------
+// -----
 
-int16_t configuration_storage_get_pid_balance_p_factor(void)
+//should use a error type also
+int16_t configuration_storage_get_pid_limit(pid_types_enum_t type)
 {
-	return configuration.pid_balance.p_factor;
+	int16_t return_value = -1252;	//TODO: replace with real error value
+
+	switch (type) {
+		case PID_ROBOT_POSITION:
+			return_value = configuration.pid_robot_position.limit;
+			break;
+		case PID_ROBOT_SPEED:
+			return_value = configuration.pid_robot_speed.limit;
+			break;
+		case PID_BALANCE:
+			return_value = configuration.pid_balance.limit;
+			break;
+		case PID_MOTOR_1:
+			return_value = configuration.pid_motor_1_speed.limit;
+			break;
+		case PID_MOTOR_2:
+			return_value = configuration.pid_motor_2_speed.limit;
+			break;
+		default:
+			break;
+	}
+
+	return return_value;
 }
 
-void configuration_storage_set_pid_balance_p_factor(int16_t p_factor)
+void configuration_storage_set_pid_limit(pid_types_enum_t type, int16_t value)
 {
-	configuration.pid_balance.p_factor =  p_factor;
-	configuration.has_changed = true;
+	switch (type) {
+		case PID_ROBOT_POSITION:
+			configuration.pid_robot_position.limit =  value;
+			configuration.has_changed = true;
+			break;
+		case PID_ROBOT_SPEED:
+			configuration.pid_robot_speed.limit =  value;
+			configuration.has_changed = true;
+			break;
+		case PID_BALANCE:
+			configuration.pid_balance.limit =  value;
+			configuration.has_changed = true;
+			break;
+		case PID_MOTOR_1:
+			configuration.pid_motor_1_speed.limit =  value;
+			configuration.has_changed = true;
+			break;
+		case PID_MOTOR_2:
+			configuration.pid_motor_2_speed.limit =  value;
+			configuration.has_changed = true;
+			break;
+		default:
+			break;
+	}
 }
 
-int16_t configuration_storage_get_pid_balance_i_factor(void)
-{
-	return configuration.pid_balance.i_factor;
-}
+// -----
 
-void configuration_storage_set_pid_balance_i_factor(int16_t i_factor)
-{
-	configuration.pid_balance.i_factor =  i_factor;
-	configuration.has_changed = true;
-}
-
-int16_t configuration_storage_get_pid_balance_d_factor(void)
-{
-	return configuration.pid_balance.d_factor;
-}
-
-void configuration_storage_set_pid_balance_d_factor(int16_t d_factor)
-{
-	configuration.pid_balance.d_factor =  d_factor;
-	configuration.has_changed = true;
-}
-
-uint16_t configuration_storage_get_pid_balance_scalingfactor(void)
-{
-	return configuration.pid_balance.pid_scalingfactor;
-}
-
-void configuration_storage_set_pid_balance_scalingfactor(uint16_t pid_scalingfactor)
-{
-	configuration.pid_balance.pid_scalingfactor = pid_scalingfactor;
-	configuration.has_changed = true;
-}
-
-// #-----------
-
-int16_t configuration_storage_get_pid_speed_motor_p_factor(void)
-{
-	return configuration.pid_speed_motor.p_factor;
-}
-
-void configuration_storage_set_pid_speed_motor_p_factor(int16_t p_factor)
-{
-	configuration.pid_speed_motor.p_factor =  p_factor;
-	configuration.has_changed = true;
-}
-
-int16_t configuration_storage_get_pid_speed_motor_i_factor(void)
-{
-	return configuration.pid_speed_motor.i_factor;
-}
-
-void configuration_storage_set_pid_speed_motor_i_factor(int16_t i_factor)
-{
-	configuration.pid_speed_motor.i_factor =  i_factor;
-	configuration.has_changed = true;
-}
-
-int16_t configuration_storage_get_pid_speed_motor_d_factor(void)
-{
-	return configuration.pid_speed_motor.d_factor;
-}
-
-void configuration_storage_set_pid_speed_motor_d_factor(int16_t d_factor)
-{
-	configuration.pid_speed_motor.d_factor =  d_factor;
-	configuration.has_changed = true;
-}
-
-uint16_t configuration_storage_get_pid_speed_motor_scalingfactor(void)
-{
-	return configuration.pid_speed_motor.pid_scalingfactor;
-}
-
-void configuration_storage_set_pid_speed_motor_scalingfactor(uint16_t pid_scalingfactor)
-{
-	configuration.pid_speed_motor.pid_scalingfactor = pid_scalingfactor;
-	configuration.has_changed = true;
-}
-
-// #-----------
-
-
-motionsensor_angle_t configuration_storage_get_angle_stable(void)
-{
-	return configuration.angle_stable;
-}
-
-void configuration_storage_set_angle_stable(motionsensor_angle_t angle)
-{
-	configuration.angle_stable = angle;
-	configuration.has_changed = true;
-}
 
 void configuration_storage_get_acceleration_offset_vector(acceleration_vector_t * accel_v)
 {
@@ -272,6 +429,26 @@ void configuration_storage_set_acceleration_offset_vector(acceleration_vector_t 
 	configuration.has_changed = true;
 }
 
+void configuration_storage_set_acceleration_offset_value(axis_enum_t axis, int16_t value)
+{
+	switch (axis) {
+		case AXIS_X:
+			configuration.motionsensor.acceleration_offset_vector.x = value;
+			configuration.has_changed = true;
+			break;
+		case AXIS_Y:
+			configuration.motionsensor.acceleration_offset_vector.y = value;
+			configuration.has_changed = true;
+			break;
+		case AXIS_Z:
+			configuration.motionsensor.acceleration_offset_vector.z = value;
+			configuration.has_changed = true;
+			break;
+		default:
+			break;
+	}
+}
+
 void configuration_storage_get_angularvelocity_offset_vector(angularvelocity_vector_t * angular_v)
 {
 	angular_v->x = configuration.motionsensor.angularvelocity_offset_vector.x;
@@ -288,6 +465,26 @@ void configuration_storage_set_angularvelocity_offset_vector(angularvelocity_vec
 	configuration.motionsensor.angularvelocity_offset_vector.z = angular_v->z;
 
 	configuration.has_changed = true;
+}
+
+void configuration_storage_set_angularvelocity_offset_value(axis_enum_t axis, int16_t value)
+{
+	switch (axis) {
+		case AXIS_X:
+			configuration.motionsensor.angularvelocity_offset_vector.x = value;
+			configuration.has_changed = true;
+			break;
+		case AXIS_Y:
+			configuration.motionsensor.angularvelocity_offset_vector.y = value;
+			configuration.has_changed = true;
+			break;
+		case AXIS_Z:
+			configuration.motionsensor.angularvelocity_offset_vector.z = value;
+			configuration.has_changed = true;
+			break;
+		default:
+			break;
+	}
 }
 
 float configuration_storage_get_complementary_filter_ratio(void)
@@ -326,11 +523,60 @@ void configuration_storage_set_angle_scalingfactor(uint16_t as)
 	configuration.has_changed = true;
 }
 
+// ----
 
-char * configuration_storage_get_comment(void)
+uint8_t configuration_storage_get_speed_straight_limit(void)
 {
-	return configuration.comment;
+	return configuration.speed_straight_limit;
 }
+
+void configuration_storage_set_speed_straight_limit(uint8_t limit)
+{
+	configuration.speed_straight_limit = limit;
+	configuration.has_changed = true;
+}
+
+// ----
+
+uint8_t configuration_storage_get_speed_straight_step(void)
+{
+	return configuration.speed_straight_step;
+}
+
+void configuration_storage_set_speed_straight_step(uint8_t step)
+{
+	configuration.speed_straight_step = step;
+	configuration.has_changed = true;
+}
+
+// ----
+
+uint8_t configuration_storage_get_speed_turn_limit(void)
+{
+	return configuration.speed_turn_limit;
+}
+
+void configuration_storage_set_speed_turn_limit(uint8_t limit)
+{
+	configuration.speed_turn_limit = limit;
+	configuration.has_changed = true;
+}
+
+// ----
+
+uint8_t configuration_storage_get_speed_turn_step(void)
+{
+	return configuration.speed_turn_step;
+}
+
+void configuration_storage_set_speed_turn_step(uint8_t step)
+{
+	configuration.speed_turn_step = step;
+	configuration.has_changed = true;
+}
+
+// ----
+
 
 uint8_t configuration_storage_get_motor_acceleration(void)
 {
@@ -352,16 +598,6 @@ extern void configuration_storage_set_motor_acceleration(uint8_t accel)
 {
 	configuration.motor_acceleration = accel;
 }
-
-void configuration_storage_set_comment(char *new_comment)
-{
-	strncpy(configuration.comment,
-			new_comment,
-			CONFIGURATION_STORAGE_COMMENT_LENGTH);
-
-	configuration.has_changed = true;
-}
-
 
 bool configuration_storage_config_changed(void)
 {
