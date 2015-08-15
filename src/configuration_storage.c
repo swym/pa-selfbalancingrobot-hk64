@@ -424,6 +424,26 @@ void configuration_storage_set_acceleration_offset_vector(acceleration_vector_t 
 	configuration.has_changed = true;
 }
 
+void configuration_storage_set_acceleration_offset_value(axis_enum_t axis, int16_t value)
+{
+	switch (axis) {
+		case AXIS_X:
+			configuration.motionsensor.acceleration_offset_vector.x = value;
+			configuration.has_changed = true;
+			break;
+		case AXIS_Y:
+			configuration.motionsensor.acceleration_offset_vector.y = value;
+			configuration.has_changed = true;
+			break;
+		case AXIS_Z:
+			configuration.motionsensor.acceleration_offset_vector.z = value;
+			configuration.has_changed = true;
+			break;
+		default:
+			break;
+	}
+}
+
 void configuration_storage_get_angularvelocity_offset_vector(angularvelocity_vector_t * angular_v)
 {
 	angular_v->x = configuration.motionsensor.angularvelocity_offset_vector.x;
@@ -440,6 +460,26 @@ void configuration_storage_set_angularvelocity_offset_vector(angularvelocity_vec
 	configuration.motionsensor.angularvelocity_offset_vector.z = angular_v->z;
 
 	configuration.has_changed = true;
+}
+
+void configuration_storage_set_angularvelocity_offset_value(axis_enum_t axis, int16_t value)
+{
+	switch (axis) {
+		case AXIS_X:
+			configuration.motionsensor.angularvelocity_offset_vector.x = value;
+			configuration.has_changed = true;
+			break;
+		case AXIS_Y:
+			configuration.motionsensor.angularvelocity_offset_vector.y = value;
+			configuration.has_changed = true;
+			break;
+		case AXIS_Z:
+			configuration.motionsensor.angularvelocity_offset_vector.z = value;
+			configuration.has_changed = true;
+			break;
+		default:
+			break;
+	}
 }
 
 float configuration_storage_get_complementary_filter_ratio(void)

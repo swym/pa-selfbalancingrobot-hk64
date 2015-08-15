@@ -47,6 +47,14 @@ typedef enum  {
 
 } pid_types_enum_t;
 
+typedef enum  {
+	AXIS_NONE,
+	AXIS_X,
+	AXIS_Y,
+	AXIS_Z,
+	FINAL_pids_enum_t_ENTRY
+} axis_enum_t;
+
 typedef struct {
 	int16_t p_factor;
 	int16_t i_factor;
@@ -108,9 +116,11 @@ extern void    configuration_storage_set_pid_limit(pid_types_enum_t type, int16_
 
 extern void configuration_storage_get_acceleration_offset_vector(acceleration_vector_t * accel_v);
 extern void configuration_storage_set_acceleration_offset_vector(acceleration_vector_t * angular_v);
+extern void configuration_storage_set_acceleration_offset_value(axis_enum_t axis, int16_t value);
 
 extern void configuration_storage_get_angularvelocity_offset_vector(angularvelocity_vector_t * accel_v);
 extern void configuration_storage_set_angularvelocity_offset_vector(angularvelocity_vector_t * angular_v);
+extern void configuration_storage_set_angularvelocity_offset_value(axis_enum_t axis, int16_t value);
 
 extern float configuration_storage_get_complementary_filter_ratio(void);
 extern void configuration_storage_set_complementary_filter_ratio(float ratio);
