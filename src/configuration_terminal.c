@@ -125,7 +125,7 @@ static const char string_print_help_angle_scaling[] PROGMEM = "fa,<0..%d> - set 
 
 static const char string_print_help_motor_acceleration[] PROGMEM = "ma,<0..%d> - set the motor acceleration";
 
-static const char string_print_help_print_data_mode_1[] PROGMEM = "pm,<0..%d> - set print data mode";
+static const char string_print_help_print_data_mode_1[] PROGMEM = "dm,<0..%d> - set print data mode";
 static const char string_print_help_print_data_mode_2[] PROGMEM = "    0 - none, 1 - ticker, 2 - angle & pid, 3 - all raw";
 static const char string_print_help_print_data_mode_3[] PROGMEM = "    4 - all filtered, 5 - really all (filtered)";
 static const char string_print_help_print_data_new_offsets[] PROGMEM = "z - set new offsets for motionsensor";
