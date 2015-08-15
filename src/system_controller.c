@@ -330,16 +330,16 @@ void system_controller_state_init_controller_environment(void)
 	/* **** DO ***** */
 
 	//initialize PID Controller with saved values
-	pid_robot_pos_config.p_factor = configuration_storage_get_pid_robot_pos_p_factor();
-	pid_robot_pos_config.i_factor = configuration_storage_get_pid_robot_pos_i_factor();
-	pid_robot_pos_config.d_factor = configuration_storage_get_pid_robot_pos_d_factor();
-	pid_robot_pos_config.scalingfactor = configuration_storage_get_pid_robot_pos_scalingfactor();
+	pid_robot_pos_config.p_factor = configuration_storage_get_pid_p_factor(PID_ROBOT_POSITION);
+	pid_robot_pos_config.i_factor = configuration_storage_get_pid_i_factor(PID_ROBOT_POSITION);
+	pid_robot_pos_config.d_factor = configuration_storage_get_pid_d_factor(PID_ROBOT_POSITION);
+	pid_robot_pos_config.scalingfactor = configuration_storage_get_pid_scalingfactor(PID_ROBOT_POSITION);
 
 
-	pid_balance_config.p_factor = configuration_storage_get_pid_balance_p_factor();
-	pid_balance_config.i_factor = configuration_storage_get_pid_balance_i_factor();
-	pid_balance_config.d_factor = configuration_storage_get_pid_balance_d_factor();
-	pid_balance_config.scalingfactor = configuration_storage_get_pid_balance_scalingfactor();
+	pid_balance_config.p_factor = configuration_storage_get_pid_p_factor(PID_BALANCE);
+	pid_balance_config.i_factor = configuration_storage_get_pid_i_factor(PID_BALANCE);
+	pid_balance_config.d_factor = configuration_storage_get_pid_d_factor(PID_BALANCE);
+	pid_balance_config.scalingfactor = configuration_storage_get_pid_scalingfactor(PID_BALANCE);
 
 //	pid_balance_edge_config.p_factor = configuration_storage_get_pid_edge_p_factor();
 //	pid_balance_edge_config.i_factor = configuration_storage_get_pid_edge_i_factor();
@@ -349,10 +349,10 @@ void system_controller_state_init_controller_environment(void)
 //	pid_balance_edge_angle = configuration_storage_get_pid_edge_angle();
 
 	//TODO: HACK FIXME define variables in configuration storage
-	pid_speed_motor_config.p_factor = configuration_storage_get_pid_speed_motor_p_factor();
-	pid_speed_motor_config.i_factor = configuration_storage_get_pid_speed_motor_i_factor();
-	pid_speed_motor_config.d_factor = configuration_storage_get_pid_speed_motor_d_factor();
-	pid_speed_motor_config.scalingfactor = configuration_storage_get_pid_speed_motor_scalingfactor();
+	pid_speed_motor_config.p_factor = configuration_storage_get_pid_p_factor(PID_MOTOR_1);
+	pid_speed_motor_config.i_factor = configuration_storage_get_pid_i_factor(PID_MOTOR_1);
+	pid_speed_motor_config.d_factor = configuration_storage_get_pid_d_factor(PID_MOTOR_1);
+	pid_speed_motor_config.scalingfactor = configuration_storage_get_pid_scalingfactor(PID_MOTOR_1);
 
 	printf("robot pos: p:%6d i:%6d d:%6d s:%6d\n",
 			pid_robot_pos_config.p_factor,
