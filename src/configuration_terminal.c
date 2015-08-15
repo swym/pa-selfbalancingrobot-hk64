@@ -53,7 +53,9 @@ typedef enum {
 	STATE_SET_PID,
 	STATE_SET_FILTER_PARAMETER,
 	STATE_SET_MOTOR_PARAMETER,
-	STATE_SET_OFFSET,
+	STATE_SET_OFFSET_ACCELERATION,
+	STATE_SET_OFFSET_ANGULARVELOCITY,
+	STATE_SET_OFFSET_AUTOMATIC,
 	STATE_SET_PRINT_DATA_MODE,
 	STATE_RESET_CONFIG,
 	STATE_SAVE_CONFIG,
@@ -106,6 +108,8 @@ static const char string_print_help_pid_5[] PROGMEM = "          b - balance";
 static const char string_print_help_pid_6[] PROGMEM = "          1 - motor_1";
 static const char string_print_help_pid_7[] PROGMEM = "          2 - motor_2";
 
+static const char string_print_offset_acceleration[] PROGMEM = "a?,<0..max> - manual offset for acceleration where '?' is axis";
+static const char string_print_offset_angularvelocity[] PROGMEM = "v?,<0..max> - manual offset for angularvelocity where '?' is axis"";
 
 static const char string_print_help_complementary_filter_ratio[] PROGMEM = "fc,<0..%f> - set the ratio of complementary filter";
 static const char string_print_help_valid_acceleration_magnitude[] PROGMEM = "fm,<0..%f> - set validacceleration magnitude";
@@ -132,17 +136,19 @@ static const char string_INVALID_NUMBER[] PROGMEM = "invalid number!\n";
 
 /* * local function declarations * */
 static void configuration_terminal_state_read_input(void);
+static void configuration_terminal_state_read_pid_selection_pid(void);
 static void configuration_terminal_state_print_help(void);
 static void configuration_terminal_state_print_config(void);
 static void configuration_terminal_state_set_pid_parameter(void);
 static void configuration_terminal_state_set_motor_parameter(void);
 static void configuration_terminal_state_set_filter_parameter(void);
-static void configuration_terminal_state_set_offset(void);
+static void configuration_terminal_state_set_offset_acceleration(void);
+static void configuration_terminal_state_set_offset_angularvelocity(void);
+static void configuration_terminal_state_set_offset_automatic(void);
 static void configuration_terminal_state_set_print_data_mode(void);
 static void configuration_terminal_state_reset_configuration(void);
 static void configuration_terminal_state_save_configuration(void);
 
-static void configuration_terminal_state_read_pid_selection_pid(void);
 
 static bool parse_input2int16(int16_t *value, const int16_t min, const int16_t max);
 static bool parse_input2float(float *value, const float min, const float max);
@@ -185,8 +191,16 @@ void configuration_terminal_state_machine(void)
 				configuration_terminal_state_set_motor_parameter();
 				break;
 
-			case STATE_SET_OFFSET:
-				configuration_terminal_state_set_offset();
+			case STATE_SET_OFFSET_ACCELERATION:
+				configuration_terminal_state_set_offset_acceleration();
+				break;
+
+			case STATE_SET_OFFSET_ANGULARVELOCITY:
+				configuration_terminal_state_set_offset_angularvelocity();
+				break;
+
+			case STATE_SET_OFFSET_AUTOMATIC:
+				configuration_terminal_state_set_offset_automatic();
 				break;
 
 			case STATE_SET_PRINT_DATA_MODE:
@@ -234,8 +248,14 @@ void configuration_terminal_state_read_input(void)
 		case 'm':
 			next_state = STATE_SET_MOTOR_PARAMETER;
 			break;
+		case 'a':
+			next_state = STATE_SET_OFFSET_ACCELERATION;
+			break;
+		case 'v':
+			next_state = STATE_SET_OFFSET_ANGULARVELOCITY;
+			break;
 		case 'z':
-			next_state = STATE_SET_OFFSET;
+			next_state = STATE_SET_OFFSET_AUTOMATIC;
 			break;
 		case 'd':
 			next_state = STATE_SET_PRINT_DATA_MODE;
@@ -290,6 +310,9 @@ void configuration_terminal_state_print_help(void)
 	printf_P(string_print_help_pid_6);	printf_P(string_LF);
 	printf_P(string_print_help_pid_7);	printf_P(string_LF);
 	printf_P(string_LF);
+
+	printf_P(string_print_offset_acceleration);		printf_P(string_LF);
+	printf_P(string_print_offset_angularvelocity);	printf_P(string_LF);
 
 	printf_P(string_print_help_complementary_filter_ratio, MOTIONSENSOR_COMPLEMTARY_FILTER_RATIO_BASE); printf_P(string_LF);
 	printf_P(string_print_help_valid_acceleration_magnitude, 1.0);										printf_P(string_LF);
@@ -505,7 +528,77 @@ void configuration_terminal_state_set_motor_parameter(void)
 	next_state = STATE_READ_INPUT;
 }
 
-void configuration_terminal_state_set_offset(void)
+void configuration_terminal_state_set_offset_acceleration(void)
+{
+
+	int16_t tmp_int16 = 0;
+
+	switch (input_buffer[INPUT_BUFFER_COMMAND_INDEX]) {
+		case 'x':
+			if(parse_input2int16(&tmp_int16, 0, INT16_MAX)) {
+				configuration_storage_set_acceleration_offset_value(AXIS_X, tmp_int16);
+				printf_P(string_OK);
+			}
+			break;
+
+		case 'y':
+			if(parse_input2int16(&tmp_int16, 0, INT16_MAX)) {
+				configuration_storage_set_acceleration_offset_value(AXIS_Y, tmp_int16);
+				printf_P(string_OK);
+			}
+			break;
+
+		case 'z':
+			if(parse_input2int16(&tmp_int16, 0, INT16_MAX)) {
+				configuration_storage_set_acceleration_offset_value(AXIS_Z, tmp_int16);
+				printf_P(string_OK);
+			}
+			break;
+
+		default:
+			printf_P(string_INVALID_SELECT);
+			break;
+	}
+
+	next_state = STATE_READ_INPUT;
+}
+
+void configuration_terminal_state_set_offset_angularvelocity(void)
+{
+
+	int16_t tmp_int16 = 0;
+
+	switch (input_buffer[INPUT_BUFFER_COMMAND_INDEX]) {
+		case 'x':
+			if(parse_input2int16(&tmp_int16, 0, INT16_MAX)) {
+				configuration_storage_set_angularvelocity_offset_value(AXIS_X, tmp_int16);
+				printf_P(string_OK);
+			}
+			break;
+
+		case 'y':
+			if(parse_input2int16(&tmp_int16, 0, INT16_MAX)) {
+				configuration_storage_set_angularvelocity_offset_value(AXIS_Y, tmp_int16);
+				printf_P(string_OK);
+			}
+			break;
+
+		case 'z':
+			if(parse_input2int16(&tmp_int16, 0, INT16_MAX)) {
+				configuration_storage_set_angularvelocity_offset_value(AXIS_Z, tmp_int16);
+				printf_P(string_OK);
+			}
+			break;
+
+		default:
+			printf_P(string_INVALID_SELECT);
+			break;
+	}
+
+	next_state = STATE_READ_INPUT;
+}
+
+void configuration_terminal_state_set_offset_automatic(void)
 {
 	acceleration_vector_t acceleration_offset;
 	angularvelocity_vector_t angularvelocity_offset;
