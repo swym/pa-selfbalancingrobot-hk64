@@ -72,13 +72,13 @@ static configuration_terminal_state_t next_state;
 
 static char input_buffer[INPUT_BUFFER_MAX];
 
-static const char string_terminal_name_pid_robot_position[] PROGMEM = "pid_robot_position";
-static const char string_terminal_name_pid_speed[]          PROGMEM = "pid_robot_speed   ";
-static const char string_terminal_name_pid_balance[]        PROGMEM = "pid_balance       ";
-static const char string_terminal_name_pid_motor_one[]      PROGMEM = "pid_motor_1       ";
-static const char string_terminal_name_pid_motor_two[]      PROGMEM = "pid_motor_2       ";
+static const char string_terminal_name_pid_robot_position[] PROGMEM = "pid_robot_position:";
+static const char string_terminal_name_pid_speed[]          PROGMEM = "pid_robot_speed:   ";
+static const char string_terminal_name_pid_balance[]        PROGMEM = "pid_balance:       ";
+static const char string_terminal_name_pid_motor_one[]      PROGMEM = "pid_motor_1:       ";
+static const char string_terminal_name_pid_motor_two[]      PROGMEM = "pid_motor_2:       ";
 
-static const char string_terminal_pid_header[] PROGMEM = "                        p      i      d      s      l";
+static const char string_terminal_pid_header[] PROGMEM = "                         p      i      d      s      l";
 //string const
 static const char string_terminal_pid_p[] PROGMEM = " %6i";
 static const char string_terminal_pid_i[] PROGMEM = " %6i";
@@ -90,15 +90,13 @@ static const char string_terminal_complementary_filter_ratio[] PROGMEM = "comple
 static const char string_terminal_valid_acceleration_magnitude[] PROGMEM = "valid_acceleration_magnitude: %f";
 static const char string_terminal_angle_scaling[] PROGMEM = "motionsensor.angle_scalingfactor: %u";
 
-static const char string_terminal_speed_limits_straight[] PROGMEM = "max speed  straight   limit: %4i   step: %4i";
-static const char string_terminal_speed_limits_turn[] PROGMEM =     "max speed  turn       limit: %4i   step: %4i";
+static const char string_terminal_speed_limits_straight[] PROGMEM = "max speed:  straight   limit: %4i   step: %4i";
+static const char string_terminal_speed_limits_turn[] PROGMEM =     "max speed:  turn       limit: %4i   step: %4i";
 
-static const char string_terminal_motionsensor_offset_accel_x[] PROGMEM = "motionsensor.acceleration_offset.x: %i";
-static const char string_terminal_motionsensor_offset_accel_y[] PROGMEM = "motionsensor.acceleration_offset.y: %i";
-static const char string_terminal_motionsensor_offset_accel_z[] PROGMEM = "motionsensor.acceleration_offset.z: %i";
-static const char string_terminal_motionsensor_offset_angular_x[] PROGMEM = "motionsensor.angularvelocity_offset.x: %i";
-static const char string_terminal_motionsensor_offset_angular_y[] PROGMEM = "motionsensor.angularvelocity_offset.y: %i";
-static const char string_terminal_motionsensor_offset_angular_z[] PROGMEM = "motionsensor.angularvelocity_offset.z: %i";
+static const char string_terminal_offset_header[] PROGMEM  = "                             x      y      z";
+static const char string_terminal_offset_accel[] PROGMEM   = "acceleration_offset:   ";
+static const char string_terminal_offset_angular[] PROGMEM = "angularvelocity_offset:";
+static const char string_terminal_offset_xyz[] PROGMEM = " %6i %6i %6i";
 
 static const char string_terminal_motor_acceleration[] PROGMEM = "motor_control.acceleration: %i";
 static const char string_terminal_print_data_mode[] PROGMEM = "print_data_mode: %i";
@@ -416,16 +414,25 @@ void configuration_terminal_state_print_config(void)
 	printf_P(string_terminal_pid_s, configuration_storage_get_pid_scalingfactor(PID_MOTOR_2));
 	printf_P(string_terminal_pid_l, configuration_storage_get_pid_limit(PID_MOTOR_2));
 	printf_P(string_LF);
+	printf_P(string_LF);
+
+	printf_P(string_terminal_offset_header);
+	printf_P(string_LF);
+
+	printf_P(string_terminal_offset_accel);
+	printf_P(string_terminal_offset_xyz, accel_offset.x, accel_offset.y, accel_offset.z);
+	printf_P(string_LF);
+
+	printf_P(string_terminal_offset_angular);
+	printf_P(string_terminal_offset_xyz, angular_offset.x, angular_offset.y, angular_offset.z);
+	printf_P(string_LF);
+	printf_P(string_LF);
 
 	printf_P(string_terminal_complementary_filter_ratio, configuration_storage_get_complementary_filter_ratio());		printf_P(string_LF);
 	printf_P(string_terminal_valid_acceleration_magnitude, configuration_storage_get_valid_acceleration_magnitude());	printf_P(string_LF);
 	printf_P(string_terminal_angle_scaling, configuration_storage_get_angle_scalingfactor());				printf_P(string_LF);
-	printf_P(string_terminal_motionsensor_offset_accel_x, accel_offset.x);									printf_P(string_LF);
-	printf_P(string_terminal_motionsensor_offset_accel_y, accel_offset.y);									printf_P(string_LF);
-	printf_P(string_terminal_motionsensor_offset_accel_z, accel_offset.z);									printf_P(string_LF);
-	printf_P(string_terminal_motionsensor_offset_angular_x, angular_offset.x);								printf_P(string_LF);
-	printf_P(string_terminal_motionsensor_offset_angular_y, angular_offset.y);								printf_P(string_LF);
-	printf_P(string_terminal_motionsensor_offset_angular_z, angular_offset.z);								printf_P(string_LF);
+
+
 
 	printf_P(string_terminal_speed_limits_straight,
 			 configuration_storage_get_speed_straight_limit(),
