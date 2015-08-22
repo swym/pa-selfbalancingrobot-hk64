@@ -647,73 +647,64 @@ void system_controller_state_run_controller(void)
 
 #endif
 
-			//decide how robot_speed_setpoint is controlled
 
-			if(timer_command_timeout > 0) { 		//robot is remote controlled
-													// -> remote control alters set point
+			//calculate pid output for position controller for use as robot_speed_setpoint
+			pid_robot_pos_output = pid_Controller(pid_robot_position_setpoint,
+												  robot_pos,
+												  &pid_robot_position_data);
+
+			//but decide how robot_speed_setpoint is set
+			if(timer_command_timeout > 0) {
+				//robot is remote controlled
+				// -> remote control alters set point
+
 				leds_color(LEDS_COLOR_BLUE);
 
 				//reset robot_pos integral
 				motor_control_reset_position();
 
-				//update set_point
-				system_controller_update_pid_robot_speed_setpoint();
+				//reset position integral
+				//pid_Reset_Integrator(&pid_robot_position_data);
 
-				//calculate robot speed
-				pid_robot_speed_output = pid_Controller(pid_robot_speed_setpoint,
-														robot_speed_avg.avg,
-														&pid_robot_speed_data);
+				//pid_robot_speed_target is controlled by remote
 
-				pid_balance_setpoint = pid_robot_speed_output;
+			} else if(robot_pos != 0) {
+				//robot is not in halt zone
+				// -> roboter shall drive back into halt zone using pid
 
-			} else if(robot_pos != 0) {				//robot is not in halt zone
-													// -> roboter shall drive back into halt zone using pid
 				leds_color(LEDS_COLOR_YELLOW);
 
 				//reset commands from remote control
 				system_controller_reset_commands();
 
-				//calculate pid output for position controller
-				pid_robot_pos_output = pid_Controller(pid_robot_position_setpoint,
-													  robot_pos,
-													  &pid_robot_position_data);
-
 				pid_robot_speed_target = pid_robot_pos_output;
 
-				//update set_point
-				system_controller_update_pid_robot_speed_setpoint();
-
-				//calculate robot speed
-				pid_robot_speed_output = pid_Controller(pid_robot_speed_setpoint,
-														robot_speed_avg.avg,
-														&pid_robot_speed_data);
-
-				pid_balance_setpoint = pid_robot_speed_output;
 
 			} else {
-				leds_color(LEDS_COLOR_GREEN);		//robot is in halt zone
-													// -> set_point will be set to zero
+				leds_color(LEDS_COLOR_GREEN);
+				//robot is in halt zone
+				// -> set_point will be set to zero
 
 				//reset commands from remote control
 				system_controller_reset_commands();
 
-				//slow down robot
-				pid_robot_speed_output = -robot_speed_avg.avg;
+				//reset position integral
+				//pid_Reset_Integrator(&pid_robot_position_data);
 
-				leds_color(LEDS_COLOR_GREEN);
-
-				//limit pid output
-				if(pid_robot_speed_output > PID_ROBOT_SLOWING_OUTPUT_MAX) {
-					pid_robot_speed_output = PID_ROBOT_SLOWING_OUTPUT_MAX;
-				}
-
-				if(pid_robot_speed_output < PID_ROBOT_SLOWING_OUTPUT_MIN) {
-					pid_robot_speed_output = PID_ROBOT_SLOWING_OUTPUT_MIN;
-				}
-
-				pid_balance_setpoint = pid_robot_speed_output;
+				//set speed_target to zero
+				pid_robot_speed_target = 0;
 			}
 
+
+			//graceful update speed_setpoint to prevent to fast speed changes
+			system_controller_update_pid_robot_speed_setpoint();
+
+			//calculate robot speed
+			pid_robot_speed_output = pid_Controller(pid_robot_speed_setpoint,
+													robot_speed_avg.avg,
+													&pid_robot_speed_data);
+
+			pid_balance_setpoint = pid_robot_speed_output;
 
 
 			//calculate PID balance
@@ -768,9 +759,14 @@ void system_controller_state_run_controller(void)
 			system_controller_parse_command();
 
 			//display speed on leds
-			leds_set((uint8_t)abs(pid_balance_setpoint));
-			if(pid_balance_setpoint < 0) {
+			leds_set((uint8_t)abs(pid_robot_speed_target));
+
+			if(robot_pos > 0)
 				leds_toggle(LED7);
+			else if(robot_pos < 0) {
+				leds_toggle(LED6);
+			} else {
+				leds_set((uint8_t)abs(pid_robot_speed_target));
 			}
 
 			//PORT_LEDS = (uint8_t)(abs(pid_balance_output));
@@ -788,7 +784,7 @@ void system_controller_state_run_controller(void)
 	/* *** EXIT **** */
 
 	//stop motors
-	leds_color(LEDS_COLOR_RED);
+	leds_color(LEDS_COLOR_CYAN);
 	system_controller_halt_motors();
 	leds_color(LEDS_COLOR_BLACK);
 
