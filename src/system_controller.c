@@ -128,6 +128,8 @@ static void system_controller_state_init_remaining_hardware(void);
 static void system_controller_state_run_controller(void);
 
 static void system_controller_halt_motors(void);
+static void system_controller_update_pid_robot_speed_setpoint(void);
+static void system_controller_update_turning_offset(void);
 
 // print functions
 static void system_controller_print_ticker(void);
@@ -138,6 +140,7 @@ static void system_controller_print_data_really_all_filtered(void);
 
 //parse command
 static void system_controller_parse_command(void);
+static void system_controller_reset_commands(void);
 
 
 /* *** FUNCTION DEFINITIONS ************************************************** */
@@ -396,6 +399,7 @@ void system_controller_state_init_controller_environment(void)
 
 	//init pid
 	//(5, 0, 3, 200,
+	//TODO: limit pid_robot_pos_output with PID_ROBOT_POS_OUTPUT_MAX
 	pid_Init( pid_robot_position_config.p_factor,
 			  pid_robot_position_config.i_factor,
 			  pid_robot_position_config.d_factor,
@@ -554,8 +558,8 @@ static int32_t robot_real_pos;
 static filter_moving_average_t robot_speed_avg;
 
 static char command_buffer[COMMAND_BUFFER_MAX];
-static int16_t command_speed;
-static int16_t command_turn;
+static int16_t pid_robot_speed_target;
+static int16_t turning_offset_target;
 //static int16_t command_pid_balance_setpoint;
 
 void system_controller_state_run_controller(void)
@@ -595,24 +599,7 @@ void system_controller_state_run_controller(void)
 
 			filter_moving_average_put_element(&robot_speed_avg, robot_speed);
 
-#if 1
-			pid_robot_speed_output = pid_Controller(pid_robot_speed_setpoint,
-													robot_speed_avg.avg,
-													&pid_robot_speed_data);
-
-//			if(pid_robot_speed_output > 24) {
-//				pid_robot_speed_output = 24;
-//			}
-//
-//			if(pid_robot_speed_output < -24) {
-//				pid_robot_speed_output = -24;
-//			}
-
-			pid_balance_setpoint = pid_robot_speed_output;
-
-
-
-#else
+#if 0
 			//calculate PID robot pos if not in halt zone
 			if(robot_pos != 0) {
 				leds_color(LEDS_COLOR_YELLOW);
@@ -650,27 +637,84 @@ void system_controller_state_run_controller(void)
 			}
 
 
-			//test if robot is remote controlled
-			if(timer_command_timeout != 0) {
-				//remote controlled; use command_pid_balance_setpoint and reset robot_pos integral
-				pid_balance_setpoint = command_pid_balance_setpoint;
-				motor_control_reset_position();
-				leds_color(LEDS_COLOR_BLUE);
-			}
+//			//test if robot is remote controlled
+//			if(timer_command_timeout != 0) {
+//				//remote controlled; use command_pid_balance_setpoint and reset robot_pos integral
+//				pid_balance_setpoint = command_pid_balance_setpoint;
+//				motor_control_reset_position();
+//				leds_color(LEDS_COLOR_BLUE);
+//			}
 
 #endif
 
-			if(timer_command_timeout > 0) {
+			//decide how robot_speed_setpoint is controlled
+
+			if(timer_command_timeout > 0) { 		//robot is remote controlled
+													// -> remote control alters set point
 				leds_color(LEDS_COLOR_BLUE);
-				//remote controlled; use command_pid_balance_setpoint and reset robot_pos integral
+
+				//reset robot_pos integral
 				motor_control_reset_position();
 
+				//update set_point
+				system_controller_update_pid_robot_speed_setpoint();
+
+				//calculate robot speed
+				pid_robot_speed_output = pid_Controller(pid_robot_speed_setpoint,
+														robot_speed_avg.avg,
+														&pid_robot_speed_data);
+
+				pid_balance_setpoint = pid_robot_speed_output;
+
+			} else if(robot_pos != 0) {				//robot is not in halt zone
+													// -> roboter shall drive back into halt zone using pid
+				leds_color(LEDS_COLOR_YELLOW);
+
+				//reset commands from remote control
+				system_controller_reset_commands();
+
+				//calculate pid output for position controller
+				pid_robot_pos_output = pid_Controller(pid_robot_position_setpoint,
+													  robot_pos,
+													  &pid_robot_position_data);
+
+				pid_robot_speed_target = pid_robot_pos_output;
+
+				//update set_point
+				system_controller_update_pid_robot_speed_setpoint();
+
+				//calculate robot speed
+				pid_robot_speed_output = pid_Controller(pid_robot_speed_setpoint,
+														robot_speed_avg.avg,
+														&pid_robot_speed_data);
+
+				pid_balance_setpoint = pid_robot_speed_output;
+
 			} else {
+				leds_color(LEDS_COLOR_GREEN);		//robot is in halt zone
+													// -> set_point will be set to zero
+
+				//reset commands from remote control
+				system_controller_reset_commands();
+
+				//slow down robot
+				pid_robot_speed_output = -robot_speed_avg.avg;
+
 				leds_color(LEDS_COLOR_GREEN);
 
-				command_speed = 0;
-				command_turn = 0;
+				//limit pid output
+				if(pid_robot_speed_output > PID_ROBOT_SLOWING_OUTPUT_MAX) {
+					pid_robot_speed_output = PID_ROBOT_SLOWING_OUTPUT_MAX;
+				}
+
+				if(pid_robot_speed_output < PID_ROBOT_SLOWING_OUTPUT_MIN) {
+					pid_robot_speed_output = PID_ROBOT_SLOWING_OUTPUT_MIN;
+				}
+
+				pid_balance_setpoint = pid_robot_speed_output;
 			}
+
+
 
 			//calculate PID balance
 			pid_balance_output = pid_Controller(pid_balance_setpoint,
@@ -696,6 +740,8 @@ void system_controller_state_run_controller(void)
 			new_motor_speed.motor_2 = pid_motor2_output;
 
 			//remote control
+			system_controller_update_turning_offset();
+
 			new_motor_speed.motor_1 += turning_offset;
 			new_motor_speed.motor_2 -= turning_offset;
 
@@ -723,6 +769,10 @@ void system_controller_state_run_controller(void)
 
 			//display speed on leds
 			leds_set((uint8_t)abs(pid_balance_setpoint));
+			if(pid_balance_setpoint < 0) {
+				leds_toggle(LED7);
+			}
+
 			//PORT_LEDS = (uint8_t)(abs(pid_balance_output));
 			//PORT_LEDS = (uint8_t)(abs(pid_robot_pos_output));
 
@@ -743,6 +793,31 @@ void system_controller_state_run_controller(void)
 	leds_color(LEDS_COLOR_BLACK);
 
 	next_state = STATE_LOAD_CONFIGURATON;
+}
+
+void system_controller_update_pid_robot_speed_setpoint()
+{
+	int16_t speed_diff;
+
+	//Update setpoints and speeds
+	speed_diff = pid_robot_speed_target - pid_robot_speed_setpoint;
+	if(speed_diff > 0) {
+		pid_robot_speed_setpoint++;
+	} else if(speed_diff < 0) {
+		pid_robot_speed_setpoint--;
+	}
+}
+
+void system_controller_update_turning_offset()
+{
+	int16_t speed_diff;
+
+	speed_diff = turning_offset_target - turning_offset;
+	if(speed_diff > 0) {
+		turning_offset++;
+	} else if(speed_diff < 0) {
+		turning_offset--;
+	}
 }
 
 void system_controller_halt_motors(void)
@@ -777,7 +852,6 @@ void system_controller_halt_motors(void)
 void system_controller_parse_command(void)
 {
 	uint8_t cmd_len = uart_gets(command_buffer, COMMAND_BUFFER_MAX);
-	int16_t speed_diff;
 
 	if(cmd_len) {
 		if(command_buffer[0] == 'S') {
@@ -787,35 +861,36 @@ void system_controller_parse_command(void)
 			switch (command_buffer[1]) {
 				case 'F':
 
-					if(command_speed < 16) {
-						command_speed += 2;
+					//TODO: use limits from config store
+					if(pid_robot_speed_target < 16) {
+						pid_robot_speed_target += 2;
 					}
 					break;
 
 				case 'B':
 
-					if(command_speed > -16) {
-						command_speed -= 2;
+					if(pid_robot_speed_target > -16) {
+						pid_robot_speed_target -= 2;
 					}
 					break;
 
 				case 'H':
 
-					command_speed = 0;
-					command_turn = 0;
+					pid_robot_speed_target = 0;
+					turning_offset_target = 0;
 					break;
 
 				case 'R':
 
-					if(command_turn < 21) {
-						command_turn += 3;
+					if(turning_offset_target < 21) {
+						turning_offset_target += 3;
 					}
 					break;
 
 				case 'L':
 
-					if(command_turn > -21) {
-						command_turn -= 3;
+					if(turning_offset_target > -21) {
+						turning_offset_target -= 3;
 					}
 					break;
 
@@ -841,21 +916,12 @@ void system_controller_parse_command(void)
 		//flush uart to prevent runover
 		uart_flush();
 	}
+}
 
-	//Update setpoints and speeds
-	speed_diff = command_speed - pid_robot_speed_setpoint;
-	if(speed_diff > 0) {
-		pid_robot_speed_setpoint++;
-	} else if(speed_diff < 0) {
-		pid_robot_speed_setpoint--;
-	}
-
-	speed_diff = command_turn - turning_offset;
-	if(speed_diff > 0) {
-		turning_offset++;
-	} else if(speed_diff < 0) {
-		turning_offset--;
-	}
+void system_controller_reset_commands(void)
+{
+	pid_robot_speed_target = 0;
+	turning_offset_target = 0;
 }
 
 
@@ -938,8 +1004,8 @@ static void system_controller_print_data_really_all_filtered(void)
 	motionsensor_motiondata_t motiondata;
 	motionsensor_get_filtered_motiondata(&motiondata);
 
-	int16_t angle_accel = (int16_t)(motionsensor_get_angle_acceleration() * 1000.0);
-	int8_t magnitude    = (int8_t)(motionsensor_get_angle_acceleration_magnitude() * 100.0);
+//	int16_t angle_accel = (int16_t)(motionsensor_get_angle_acceleration() * 1000.0);
+//	int8_t magnitude    = (int8_t)(motionsensor_get_angle_acceleration_magnitude() * 100.0);
 
 	//header: type: A
 	//header: size payload: 13
